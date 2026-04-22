@@ -1,0 +1,8 @@
+{
+  "name": "healthos-ts-workspace",
+  "private": true,
+  "workspaces": ["packages/*"],
+  "scripts": {
+    "build": "npm run build --workspaces"
+  }
+}

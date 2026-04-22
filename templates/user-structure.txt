@@ -1,0 +1,11 @@
+users/<cpf-hash>/
+  identity/
+  identifiers/
+  memories/
+  artifacts/
+  drafts/
+  consent/
+  provenance/
+  reidentification/
+  sessions/
+  exports/

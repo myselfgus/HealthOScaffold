@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "healthos/entities/servico",
+  "type": "object",
+  "required": ["id", "nome", "tipo"],
+  "properties": {
+    "id": {"type": "string", "format": "uuid"},
+    "nome": {"type": "string"},
+    "tipo": {"type": "string"},
+    "cnpjToken": {"type": ["string", "null"]}
+  }
+}

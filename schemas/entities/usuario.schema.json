@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "healthos/entities/usuario",
+  "type": "object",
+  "required": ["id", "cpfHash", "civilToken", "active"],
+  "properties": {
+    "id": {"type": "string", "format": "uuid"},
+    "cpfHash": {"type": "string"},
+    "civilToken": {"type": "string"},
+    "active": {"type": "boolean"}
+  }
+}

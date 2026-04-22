@@ -1,0 +1,12 @@
+{
+  "tagOwners": {
+    "tag:healthos-node": ["autogroup:admin"]
+  },
+  "acls": [
+    {
+      "action": "accept",
+      "src": ["autogroup:admin"],
+      "dst": ["tag:healthos-node:*"]
+    }
+  ]
+}

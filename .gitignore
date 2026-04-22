@@ -1,0 +1,29 @@
+# macOS
+.DS_Store
+
+# Swift
+.build/
+Packages/
+.swiftpm/
+
+# Node
+node_modules/
+dist/
+.pnpm-store/
+
+# Python
+.venv/
+__pycache__/
+.pytest_cache/
+
+# Secrets and local config
+.env
+.env.local
+*.p12
+*.pfx
+*.key
+*.pem
+
+# Data
+runtime-data/
+coverage/

@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "healthos/contracts/agent-message",
+  "type": "object",
+  "required": ["from", "to", "kind", "payload"],
+  "properties": {
+    "from": {"type": "string"},
+    "to": {"type": "string"},
+    "kind": {"type": "string"},
+    "payload": {"type": "object"},
+    "correlationId": {"type": ["string", "null"]}
+  }
+}

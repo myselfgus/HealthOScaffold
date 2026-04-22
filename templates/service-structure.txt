@@ -1,0 +1,9 @@
+services/<service-id>/
+  config/
+  members/
+  patients/
+  records/
+  drafts/
+  gates/
+  provenance/
+  analytics/

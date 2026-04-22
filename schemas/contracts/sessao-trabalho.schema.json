@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "healthos/contracts/sessao-trabalho",
+  "type": "object",
+  "required": ["id", "kind", "serviceId", "professionalUserId", "tempoUsuarioInicio"],
+  "properties": {
+    "id": {"type": "string", "format": "uuid"},
+    "kind": {
+      "type": "string",
+      "enum": ["encounter", "chart_review", "document_close", "post_visit", "pre_briefing", "admin_block", "handoff"]
+    },
+    "serviceId": {"type": "string", "format": "uuid"},
+    "professionalUserId": {"type": "string", "format": "uuid"},
+    "patientUserId": {"type": ["string", "null"], "format": "uuid"},
+    "habilitationId": {"type": ["string", "null"], "format": "uuid"},
+    "tempoUsuarioInicio": {"type": "string", "format": "date-time"}
+  }
+}

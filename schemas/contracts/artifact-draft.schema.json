@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "healthos/contracts/artifact-draft",
+  "type": "object",
+  "required": ["id", "sessionId", "kind", "status", "payload"],
+  "properties": {
+    "id": {"type": "string", "format": "uuid"},
+    "sessionId": {"type": "string", "format": "uuid"},
+    "kind": {
+      "type": "string",
+      "enum": ["soap", "prescription", "referral", "note", "retrieval_summary", "admin_task_list"]
+    },
+    "status": {
+      "type": "string",
+      "enum": ["draft", "awaiting_gate", "approved", "rejected", "superseded"]
+    },
+    "payload": {"type": "object"},
+    "sourceEventIds": {"type": "array", "items": {"type": "string", "format": "uuid"}}
+  }
+}

@@ -15,6 +15,13 @@ Files touched:
 - `docs/architecture/15-mesh-provider.md`
 - `ops/network/*`
 
+### OPS-002 Define operator dashboards/minimum observability contract
+Outcome:
+- minimum operator visibility indicators and alert classes defined
+Files touched:
+- `docs/architecture/26-operator-observability-contract.md`
+- `docs/architecture/14-operations-runbook.md`
+
 ### ML-001 Define provider benchmark and selection policy
 Outcome:
 - provider routing baseline, benchmark dimensions, task-class policy outcomes, and benchmark harness artifacts documented
@@ -29,28 +36,25 @@ Files touched:
 - `python/README.md`
 - `python/healthos_ml/*`
 
+### ML-003 Define benchmark threshold policy by task class
+Outcome:
+- explicit threshold guidance added by task class for provider selection decisions
+Files touched:
+- `docs/architecture/27-provider-threshold-policy.md`
+- `docs/architecture/16-providers-and-ml.md`
+
 ## READY
 
-### OPS-002 Define operator dashboards/minimum observability contract
+### OPS-003 Define incident-response command set for first operator tools
 Objective:
-- specify which operational indicators must appear in technical/operator surfaces
+- list canonical operator actions for runtime failure, queue saturation, backup concern, and integrity incident handling
 Files:
 - `docs/architecture/14-operations-runbook.md`
-- optional future ops docs
+- `docs/architecture/26-operator-observability-contract.md`
 Dependencies:
-- OPS-001, NET-001
+- OPS-001, OPS-002
 Definition of done:
-- operator-facing observability expectations are explicit enough for implementation
-
-### ML-003 Define benchmark threshold policy by task class
-Objective:
-- specify what counts as acceptable latency/quality/privacy tradeoff per task class
-Files:
-- `docs/architecture/16-providers-and-ml.md`
-Dependencies:
-- ML-001, ML-002
-Definition of done:
-- provider selection decisions can be justified against explicit thresholds rather than only descriptive dimensions
+- first operator tooling can map visible incidents to explicit action vocabulary
 
 ## TESTS / VALIDATION
 

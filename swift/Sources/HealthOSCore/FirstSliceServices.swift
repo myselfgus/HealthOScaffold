@@ -359,8 +359,8 @@ public actor BoundedContextRetrievalService {
             guard query.allowedKinds.contains(entry.snippetKind) else { return nil }
             if let recencyFloor, entry.snippet.occurredAt < recencyFloor { return nil }
 
-            let haystack = (entry.snippet.summary + " " + entry.snippet.tags.joined(separator: " ")).lowercased()
-            let matchedTerms = normalizedTerms.filter { haystack.contains($0) }.sorted()
+            let haystackSet = Set(tokenize(entry.snippet.summary) + entry.snippet.tags.map { $0.lowercased() })
+            let matchedTerms = normalizedTerms.filter { haystackSet.contains($0) }.sorted()
             let score = matchedTerms.count * 3 + entry.snippet.tags.count
             if !normalizedTerms.isEmpty && matchedTerms.isEmpty { return nil }
 
@@ -387,5 +387,13 @@ public actor BoundedContextRetrievalService {
             source: "file-backed-record-index",
             isFallbackEmpty: matches.isEmpty
         )
+    }
+
+    private func tokenize(_ text: String) -> [String] {
+        let separators = CharacterSet.alphanumerics.inverted
+        return text
+            .lowercased()
+            .components(separatedBy: separators)
+            .filter { $0.count >= 3 }
     }
 }

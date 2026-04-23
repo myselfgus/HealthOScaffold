@@ -284,6 +284,130 @@ public actor FirstSliceRunner {
             to: &provenanceRecords
         )
 
+        let referralDraftDocument = await orchestrator.composeReferralDraft(
+            session: session,
+            transcription: transcription,
+            context: retrieval,
+            sourceSOAPDraft: draftDocument,
+            sourceSOAPDraftRef: draftRef
+        )
+        let referralDraftData = try JSONEncoder.healthOS.encode(referralDraftDocument)
+        let referralDraftRef = try await storage.put(
+            StoragePutRequest(
+                owner: .servico(serviceId: service.id),
+                kind: "drafts-referral",
+                layer: .derivedArtifacts,
+                content: referralDraftData,
+                metadata: [
+                    "sessionId": session.id.uuidString,
+                    "draftId": referralDraftDocument.draft.id.uuidString,
+                    "sourceSOAPDraftId": draft.draft.id.uuidString,
+                    "draftStatus": referralDraftDocument.draft.status.rawValue,
+                    "readyForFutureGate": String(referralDraftDocument.readyForFutureGate)
+                ]
+            )
+        )
+        try await storage.audit(
+            objectRef: referralDraftRef,
+            action: "write-referral-draft",
+            actorId: professional.id.uuidString,
+            metadata: lawfulContext
+        )
+        let referralDraft = ReferralDraftPackage(
+            document: referralDraftDocument,
+            draftRef: referralDraftRef
+        )
+        events.append(
+            SessionEventRecord(
+                sessionId: session.id,
+                kind: .referralDraftComposed,
+                payload: FirstSliceSessionEventPayload(
+                    summary: "Referral draft composed and persisted as a draft-only derivative.",
+                    attributes: [
+                        "draftId": referralDraft.draft.id.uuidString,
+                        "draftStatus": referralDraft.draft.status.rawValue,
+                        "specialtyTarget": referralDraft.document.specialtyTarget,
+                        "sourceSOAPDraftId": draft.draft.id.uuidString
+                    ]
+                )
+            )
+        )
+        try await appendProvenance(
+            .init(
+                actorId: "aaci.referral-draft",
+                operation: "draft.compose.referral",
+                providerName: "apple-foundation",
+                modelName: "stub",
+                modelVersion: "v1",
+                promptVersion: "referral-draft-v1",
+                outputHash: referralDraftRef.contentHash,
+                timestamp: .now
+            ),
+            to: &provenanceRecords
+        )
+
+        let prescriptionDraftDocument = await orchestrator.composePrescriptionDraft(
+            session: session,
+            transcription: transcription,
+            context: retrieval,
+            sourceSOAPDraft: draftDocument,
+            sourceSOAPDraftRef: draftRef
+        )
+        let prescriptionDraftData = try JSONEncoder.healthOS.encode(prescriptionDraftDocument)
+        let prescriptionDraftRef = try await storage.put(
+            StoragePutRequest(
+                owner: .servico(serviceId: service.id),
+                kind: "drafts-prescription",
+                layer: .derivedArtifacts,
+                content: prescriptionDraftData,
+                metadata: [
+                    "sessionId": session.id.uuidString,
+                    "draftId": prescriptionDraftDocument.draft.id.uuidString,
+                    "sourceSOAPDraftId": draft.draft.id.uuidString,
+                    "draftStatus": prescriptionDraftDocument.draft.status.rawValue,
+                    "readyForFutureGate": String(prescriptionDraftDocument.readyForFutureGate)
+                ]
+            )
+        )
+        try await storage.audit(
+            objectRef: prescriptionDraftRef,
+            action: "write-prescription-draft",
+            actorId: professional.id.uuidString,
+            metadata: lawfulContext
+        )
+        let prescriptionDraft = PrescriptionDraftPackage(
+            document: prescriptionDraftDocument,
+            draftRef: prescriptionDraftRef
+        )
+        events.append(
+            SessionEventRecord(
+                sessionId: session.id,
+                kind: .prescriptionDraftComposed,
+                payload: FirstSliceSessionEventPayload(
+                    summary: "Prescription draft composed and persisted as a draft-only derivative.",
+                    attributes: [
+                        "draftId": prescriptionDraft.draft.id.uuidString,
+                        "draftStatus": prescriptionDraft.draft.status.rawValue,
+                        "medicationSuggestion": prescriptionDraft.document.medicationSuggestion,
+                        "sourceSOAPDraftId": draft.draft.id.uuidString
+                    ]
+                )
+            )
+        )
+        try await appendProvenance(
+            .init(
+                actorId: "aaci.prescription-draft",
+                operation: "draft.compose.prescription",
+                providerName: "apple-foundation",
+                modelName: "stub",
+                modelVersion: "v1",
+                promptVersion: "prescription-draft-v1",
+                outputHash: prescriptionDraftRef.contentHash,
+                timestamp: .now
+            ),
+            to: &provenanceRecords
+        )
+
         let gateRequest = await gateService.createRequest(for: draft.draft)
         events.append(
             SessionEventRecord(
@@ -455,6 +579,8 @@ public actor FirstSliceRunner {
             transcription: transcription,
             retrieval: retrieval,
             draft: draft,
+            referralDraft: referralDraft,
+            prescriptionDraft: prescriptionDraft,
             gate: gate,
             finalDocument: finalDocument,
             summary: SliceRunSummary(
@@ -471,6 +597,12 @@ public actor FirstSliceRunner {
                 transcriptionSource: transcription.source,
                 draftObjectPath: draft.draftRef.objectPath,
                 reviewedDraftStatus: gate.reviewedDraftStatus,
+                referralDraftStatus: referralDraft.draft.status,
+                referralDraftObjectPath: referralDraft.draftRef.objectPath,
+                referralDraftSummary: referralDraft.document.noteSummary,
+                prescriptionDraftStatus: prescriptionDraft.draft.status,
+                prescriptionDraftObjectPath: prescriptionDraft.draftRef.objectPath,
+                prescriptionDraftSummary: prescriptionDraft.document.noteSummary,
                 finalDocumentStatus: finalDocument?.document.status,
                 finalDocumentObjectPath: finalDocument?.documentRef.objectPath,
                 finalDocumentSummary: finalDocument?.document.summary,

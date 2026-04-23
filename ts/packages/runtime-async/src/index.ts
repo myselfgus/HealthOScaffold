@@ -1,5 +1,9 @@
 import type { SessionWork } from "\u0040healthos/contracts";
 
+declare const process: {
+  argv: string[];
+};
+
 export interface AsyncJob {
   id: string;
   kind: "reprocess" | "briefing" | "consolidation" | "evaluation";

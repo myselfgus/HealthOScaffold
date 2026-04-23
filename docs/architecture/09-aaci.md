@@ -167,6 +167,11 @@ Governance hooks:
 Never does:
 - issue final referral without gate
 
+Current first-slice executable slice status:
+- now materialized as a typed draft-only derivative linked back to the same session/SOAP/context spine
+- persists provenance-capable referral draft artifacts
+- still does not issue or effectuate a referral in this wave
+
 ### PrescriptionDraftAgent
 Role:
 - structures prescription drafts from bounded input
@@ -180,6 +185,11 @@ Governance hooks:
 - provenance capture, service context
 Never does:
 - create effective prescription without gate
+
+Current first-slice executable slice status:
+- now materialized as a typed draft-only derivative linked back to the same session/SOAP/context spine
+- keeps medication suggestion/instructions as free-text draft material only
+- still does not emit an effective prescription in this wave
 
 ### NoteOrganizerAgent
 Role:
@@ -212,6 +222,7 @@ Never does:
 ## Invariants
 - AACI never finalizes a health act
 - AACI produces drafts, retrieval outputs, and structured assistance
+- AACI may now derive SOAP, referral, and prescription drafts from the same bounded first-slice spine, but only SOAP finalization is effectable in the current wave
 - AACI may rank and assemble bounded context locally, but it must surface weak or empty context honestly
 - every meaningful step should be provenance-capable
 - access remains bounded by consent/habilitation/context

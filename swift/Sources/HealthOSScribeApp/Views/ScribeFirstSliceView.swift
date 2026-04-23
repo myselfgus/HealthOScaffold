@@ -190,13 +190,17 @@ private struct SliceOutputsCard: View {
                     title: "Retrieval summary",
                     text: retrievalText
                 )
-                OutputBlock(title: "Draft preview", text: model.bridgeState?.draftPreview ?? "Nenhum draft visivel ainda.")
+                OutputBlock(title: "SOAP draft preview", text: model.bridgeState?.draftPreview ?? "Nenhum draft SOAP visivel ainda.")
+                OutputBlock(title: "Referral draft", text: model.referralDraftSummaryText)
+                OutputBlock(title: "Prescription draft", text: model.prescriptionDraftSummaryText)
                 OutputBlock(title: "Gate review", text: model.gateReviewSummaryText)
-                OutputBlock(title: "Final document", text: model.finalSummaryText)
+                OutputBlock(title: "Final SOAP document", text: model.finalSummaryText)
 
-                LabeledContent("Draft state", value: model.bridgeState?.draftState.rawValue ?? "empty")
+                LabeledContent("SOAP draft state", value: model.bridgeState?.draftState.rawValue ?? "empty")
+                LabeledContent("Referral draft state", value: model.bridgeState?.referralDraft.state.rawValue ?? "none")
+                LabeledContent("Prescription draft state", value: model.bridgeState?.prescriptionDraft.state.rawValue ?? "none")
                 LabeledContent("Gate state", value: model.bridgeState?.gateState.rawValue ?? "none")
-                LabeledContent("Final document state", value: model.bridgeState?.finalDocument.state.rawValue ?? "none")
+                LabeledContent("Final SOAP document state", value: model.bridgeState?.finalDocument.state.rawValue ?? "none")
             }
             .frame(maxWidth: .infinity, alignment: .leading)
         }

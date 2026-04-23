@@ -6,6 +6,8 @@ Current phase: Controlled implementation — first vertical slice started
 
 ## Completed recently
 
+- first slice now derives typed referral and prescription drafts from the same session/SOAP/context spine, with persisted artifacts, events, and provenance while keeping both explicitly draft-only
+- minimal Scribe surface + CLI now expose referral/prescription draft previews and statuses separately from SOAP draft, gate review, and finalized SOAP document state
 - first-slice Scribe bridge upgraded with explicit command/result envelopes (session start, patient selection, capture submission, draft refresh, gate resolution)
 - command results now carry explicit dispositions for complete/partial/degraded/deny/operational-failure outcomes
 - CLI flow refactored to consume the envelope-based bridge API step-by-step instead of one implicit bridge call
@@ -74,7 +76,7 @@ Current phase: Controlled implementation — first vertical slice started
 
 ## In progress
 
-- first vertical slice implementation continues with seeded-text compatibility, a structured local retrieval/context package, richer gate/document semantics, and a now-wired local-audio path, while real local transcription and earlier draft-refresh finalization remain deferred
+- first vertical slice implementation continues with seeded-text compatibility, a structured local retrieval/context package, richer gate/document semantics, draft-only referral/prescription derivatives, and a now-wired local-audio path, while real local transcription and earlier draft-refresh finalization remain deferred
 
 ## Known gaps
 
@@ -83,12 +85,12 @@ Current phase: Controlled implementation — first vertical slice started
 - bounded retrieval now uses a stronger local score (lexical/tag/recency/category/intent), but still stops well short of semantic retrieval or embeddings
 - Scribe now has a minimal validation UI surface, but it is not yet a full/final app shell
 - draft refresh remains preview/degraded until gate resolution runs the full executable spine
-- only SOAP document finalization is enriched in this wave; broader regulatory document families remain intentionally deferred
+- referral/prescription drafts now exist, but their regulatory effectuation/issuance remains intentionally deferred
 
 ## Open blockers / decisions
 
 - decide when to replace the current stubbed local transcription path with a real local Apple-first transcription provider
-- decide whether the next first-slice step after this wave is microphone capture, or moving draft/retrieval finalization earlier than gate resolution
+- decide whether the next first-slice step after this wave is microphone capture, moving draft/retrieval finalization earlier than gate resolution, or introducing lawful effectuation paths for referral/prescription
 - decide when to convert the AI skills into enforced reusable workflows/templates
 - decide when to replace the current deterministic local retrieval/context package with semantic/clinical retrieval while preserving lawful scope and local-first constraints
 

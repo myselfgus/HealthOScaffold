@@ -133,6 +133,38 @@ export interface SOAPDraftDocument {
   noteSummary: string;
 }
 
+export interface DerivedDraftSpineLink {
+  sourceSessionId: string;
+  sourceSOAPDraftId: string;
+  sourceSOAPDraftStatus: DraftStatus;
+  sourceSOAPDraftObjectPath: string;
+  sourceContextStatus: "ready" | "partial" | "empty" | "degraded";
+  sourceContextSummary: string;
+}
+
+export interface ReferralDraftDocument {
+  draft: ArtifactDraft;
+  specialtyTarget: string;
+  reason: string;
+  contextSummary: string;
+  noteSummary: string;
+  readyForFutureGate: boolean;
+  draftOnlyNote: string;
+  spineLink: DerivedDraftSpineLink;
+}
+
+export interface PrescriptionDraftDocument {
+  draft: ArtifactDraft;
+  medicationSuggestion: string;
+  instructionsDraft: string;
+  rationale: string;
+  contextSummary: string;
+  noteSummary: string;
+  readyForFutureGate: boolean;
+  draftOnlyNote: string;
+  spineLink: DerivedDraftSpineLink;
+}
+
 export interface FinalDocumentSourceLink {
   sourceDraftId: string;
   sourceDraftKind: DraftKind;

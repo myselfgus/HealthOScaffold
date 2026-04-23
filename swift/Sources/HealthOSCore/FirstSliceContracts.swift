@@ -656,6 +656,146 @@ public struct DraftPackage: Codable, Sendable {
     }
 }
 
+public struct DerivedDraftSpineLink: Codable, Sendable {
+    public let sourceSessionId: UUID
+    public let sourceSOAPDraftId: UUID
+    public let sourceSOAPDraftStatus: DraftStatus
+    public let sourceSOAPDraftObjectPath: String
+    public let sourceContextStatus: RetrievalContextStatus
+    public let sourceContextSummary: String
+
+    public init(
+        sourceSessionId: UUID,
+        sourceSOAPDraftId: UUID,
+        sourceSOAPDraftStatus: DraftStatus,
+        sourceSOAPDraftObjectPath: String,
+        sourceContextStatus: RetrievalContextStatus,
+        sourceContextSummary: String
+    ) {
+        self.sourceSessionId = sourceSessionId
+        self.sourceSOAPDraftId = sourceSOAPDraftId
+        self.sourceSOAPDraftStatus = sourceSOAPDraftStatus
+        self.sourceSOAPDraftObjectPath = sourceSOAPDraftObjectPath
+        self.sourceContextStatus = sourceContextStatus
+        self.sourceContextSummary = sourceContextSummary
+    }
+}
+
+public struct ReferralDraftDocument: Codable, Sendable {
+    public let draft: ArtifactDraft
+    public let specialtyTarget: String
+    public let reason: String
+    public let contextSummary: String
+    public let noteSummary: String
+    public let readyForFutureGate: Bool
+    public let draftOnlyNote: String
+    public let spineLink: DerivedDraftSpineLink
+
+    public init(
+        draft: ArtifactDraft,
+        specialtyTarget: String,
+        reason: String,
+        contextSummary: String,
+        noteSummary: String,
+        readyForFutureGate: Bool,
+        draftOnlyNote: String,
+        spineLink: DerivedDraftSpineLink
+    ) {
+        self.draft = draft
+        self.specialtyTarget = specialtyTarget
+        self.reason = reason
+        self.contextSummary = contextSummary
+        self.noteSummary = noteSummary
+        self.readyForFutureGate = readyForFutureGate
+        self.draftOnlyNote = draftOnlyNote
+        self.spineLink = spineLink
+    }
+
+    public var previewText: String {
+        [
+            "target: \(specialtyTarget)",
+            "reason: \(reason)",
+            "summary: \(noteSummary)",
+            "context: \(contextSummary)",
+            draftOnlyNote
+        ]
+        .joined(separator: "\n")
+    }
+}
+
+public struct ReferralDraftPackage: Codable, Sendable {
+    public let document: ReferralDraftDocument
+    public let draftRef: StorageObjectRef
+
+    public init(document: ReferralDraftDocument, draftRef: StorageObjectRef) {
+        self.document = document
+        self.draftRef = draftRef
+    }
+
+    public var draft: ArtifactDraft {
+        document.draft
+    }
+}
+
+public struct PrescriptionDraftDocument: Codable, Sendable {
+    public let draft: ArtifactDraft
+    public let medicationSuggestion: String
+    public let instructionsDraft: String
+    public let rationale: String
+    public let contextSummary: String
+    public let noteSummary: String
+    public let readyForFutureGate: Bool
+    public let draftOnlyNote: String
+    public let spineLink: DerivedDraftSpineLink
+
+    public init(
+        draft: ArtifactDraft,
+        medicationSuggestion: String,
+        instructionsDraft: String,
+        rationale: String,
+        contextSummary: String,
+        noteSummary: String,
+        readyForFutureGate: Bool,
+        draftOnlyNote: String,
+        spineLink: DerivedDraftSpineLink
+    ) {
+        self.draft = draft
+        self.medicationSuggestion = medicationSuggestion
+        self.instructionsDraft = instructionsDraft
+        self.rationale = rationale
+        self.contextSummary = contextSummary
+        self.noteSummary = noteSummary
+        self.readyForFutureGate = readyForFutureGate
+        self.draftOnlyNote = draftOnlyNote
+        self.spineLink = spineLink
+    }
+
+    public var previewText: String {
+        [
+            "suggestion: \(medicationSuggestion)",
+            "instructions: \(instructionsDraft)",
+            "rationale: \(rationale)",
+            "context: \(contextSummary)",
+            draftOnlyNote
+        ]
+        .joined(separator: "\n")
+    }
+}
+
+public struct PrescriptionDraftPackage: Codable, Sendable {
+    public let document: PrescriptionDraftDocument
+    public let draftRef: StorageObjectRef
+
+    public init(document: PrescriptionDraftDocument, draftRef: StorageObjectRef) {
+        self.document = document
+        self.draftRef = draftRef
+    }
+
+    public var draft: ArtifactDraft {
+        document.draft
+    }
+}
+
 public struct FinalDocumentSourceLink: Codable, Sendable {
     public let sourceDraftId: UUID
     public let sourceDraftKind: DraftKind
@@ -777,6 +917,12 @@ public struct SliceRunSummary: Codable, Sendable {
     public let transcriptionSource: String
     public let draftObjectPath: String
     public let reviewedDraftStatus: DraftStatus
+    public let referralDraftStatus: DraftStatus
+    public let referralDraftObjectPath: String
+    public let referralDraftSummary: String
+    public let prescriptionDraftStatus: DraftStatus
+    public let prescriptionDraftObjectPath: String
+    public let prescriptionDraftSummary: String
     public let finalDocumentStatus: FinalDocumentStatus?
     public let finalDocumentObjectPath: String?
     public let finalDocumentSummary: String?
@@ -802,6 +948,12 @@ public struct SliceRunSummary: Codable, Sendable {
         transcriptionSource: String,
         draftObjectPath: String,
         reviewedDraftStatus: DraftStatus,
+        referralDraftStatus: DraftStatus,
+        referralDraftObjectPath: String,
+        referralDraftSummary: String,
+        prescriptionDraftStatus: DraftStatus,
+        prescriptionDraftObjectPath: String,
+        prescriptionDraftSummary: String,
         finalDocumentStatus: FinalDocumentStatus?,
         finalDocumentObjectPath: String?,
         finalDocumentSummary: String?,
@@ -826,6 +978,12 @@ public struct SliceRunSummary: Codable, Sendable {
         self.transcriptionSource = transcriptionSource
         self.draftObjectPath = draftObjectPath
         self.reviewedDraftStatus = reviewedDraftStatus
+        self.referralDraftStatus = referralDraftStatus
+        self.referralDraftObjectPath = referralDraftObjectPath
+        self.referralDraftSummary = referralDraftSummary
+        self.prescriptionDraftStatus = prescriptionDraftStatus
+        self.prescriptionDraftObjectPath = prescriptionDraftObjectPath
+        self.prescriptionDraftSummary = prescriptionDraftSummary
         self.finalDocumentStatus = finalDocumentStatus
         self.finalDocumentObjectPath = finalDocumentObjectPath
         self.finalDocumentSummary = finalDocumentSummary
@@ -846,6 +1004,8 @@ public enum FirstSliceSessionEventKind: String, Codable, Sendable {
     case transcriptionProcessed = "transcription.processed"
     case contextRetrieved = "context.retrieved"
     case draftComposed = "draft.composed"
+    case referralDraftComposed = "draft.referral.composed"
+    case prescriptionDraftComposed = "draft.prescription.composed"
     case gateRequested = "gate.requested"
     case gateResolved = "gate.resolved"
     case finalDocumentPersisted = "final.document.persisted"
@@ -888,6 +1048,8 @@ public struct FirstSliceRunResult: Codable, Sendable {
     public let transcription: TranscriptionOutput
     public let retrieval: RetrievalContextPackage
     public let draft: DraftPackage
+    public let referralDraft: ReferralDraftPackage
+    public let prescriptionDraft: PrescriptionDraftPackage
     public let gate: GateOutcomeSummary
     public let finalDocument: FinalDocumentPackage?
     public let summary: SliceRunSummary
@@ -899,6 +1061,8 @@ public struct FirstSliceRunResult: Codable, Sendable {
         transcription: TranscriptionOutput,
         retrieval: RetrievalContextPackage,
         draft: DraftPackage,
+        referralDraft: ReferralDraftPackage,
+        prescriptionDraft: PrescriptionDraftPackage,
         gate: GateOutcomeSummary,
         finalDocument: FinalDocumentPackage?,
         summary: SliceRunSummary,
@@ -909,6 +1073,8 @@ public struct FirstSliceRunResult: Codable, Sendable {
         self.transcription = transcription
         self.retrieval = retrieval
         self.draft = draft
+        self.referralDraft = referralDraft
+        self.prescriptionDraft = prescriptionDraft
         self.gate = gate
         self.finalDocument = finalDocument
         self.summary = summary

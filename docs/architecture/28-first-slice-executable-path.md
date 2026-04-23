@@ -19,11 +19,12 @@ The current Swift executable path (CLI plus minimal Scribe SwiftUI surface) exer
 10. assemble a structured clinical-operational context package
 11. record retrieval-context event
 12. compose a SOAP draft
-13. create a gate request
-14. resolve the gate as approved/rejected
-15. persist a finalized SOAP document when approved
-16. append provenance records
-17. persist gate and event artifacts
+13. derive referral and prescription drafts from the same bounded spine
+14. create a gate request
+15. resolve the gate as approved/rejected
+16. persist a finalized SOAP document when approved
+17. append provenance records
+18. persist gate and event artifacts
 
 ## Files involved
 - `swift/Sources/HealthOSCore/FirstSliceServices.swift`
@@ -53,10 +54,12 @@ The current Swift executable path (CLI plus minimal Scribe SwiftUI surface) exer
 - retrieval scoring now combines normalized lexical/tag matching with deterministic recency/category/intent boosts, while remaining fully local and bounded
 - a structured local context package now sits between raw retrieval matches and AACI draft composition, exposing summary, highlights, supporting snippets, provenance hints, and explicit `ready` / `partial` / `empty` / `degraded` truth
 - the first slice now distinguishes typed SOAP draft snapshots from finalized SOAP documents, with explicit source-draft and gate linkage carried into the final persisted payload
+- the executable spine now also materializes typed referral and prescription drafts as draft-only derivatives linked back to the same session/SOAP/context spine
+- referral/prescription drafts are persisted with their own object refs, session events, and provenance records while remaining explicitly non-effective
 - gate request/resolution contracts now carry review type, finalization target, rationale, reviewer role, and reviewed timestamp
 - retrieval bridge state now exposes UI-ready status/source/count/summary/highlight fields including explicit degraded and partial modes
 - a minimal macOS SwiftUI Scribe surface now consumes the same bridge through a small view model instead of touching core/runtime services directly
-- the minimal Scribe surface now shows gate review summary and final-document state/path separately from draft preview
+- the minimal Scribe surface now shows SOAP draft preview, referral/prescription draft-only previews, gate review summary, and final-document state/path as separate truths
 - the same `HealthOSFirstSliceSupport` target now backs both CLI and SwiftUI validation paths, reducing duplicated first-slice wiring
 
 ## What remains intentionally stubbed
@@ -65,7 +68,7 @@ The current Swift executable path (CLI plus minimal Scribe SwiftUI surface) exer
 - context retrieval still uses a bounded, file-backed patient record index; it is stronger now, but still deterministic/local rather than semantic/vector-based
 - the SwiftUI surface is validation-only and not yet the full Scribe product UI
 - draft refresh is currently degraded preview only; full draft/retrieval material is still finalized in the same executable step as gate resolution
-- only SOAP document finalization is enriched in this wave; referrals/prescriptions remain future draft-only work
+- referral/prescription derivation now exists, but effectuation/issuance remains out of scope for this wave
 - retrieval ranking is still local-first lexical/tag/recency/category/intent bounded; no semantic search, embeddings, or vector DB are in this wave
 
 ## Why this is acceptable now

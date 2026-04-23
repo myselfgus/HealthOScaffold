@@ -112,6 +112,270 @@ public actor AACIOrchestrator {
             noteSummary: assessment
         )
     }
+
+    public func composeReferralDraft(
+        session: SessaoTrabalho,
+        transcription: TranscriptionOutput,
+        context: RetrievalContextPackage,
+        sourceSOAPDraft: SOAPDraftDocument,
+        sourceSOAPDraftRef: StorageObjectRef
+    ) async -> ReferralDraftDocument {
+        let heuristics = makeDerivedDraftHeuristics(transcription: transcription, context: context)
+        let specialtyTarget = referralSpecialtyTarget(from: heuristics)
+        let reason = referralReason(from: heuristics)
+        let noteSummary: String
+        if heuristics.limitedSignal {
+            noteSummary = "Referral draft estruturado com sinal clinico bounded limitado; especialidade e urgencia seguem dependentes de revisao humana."
+        } else {
+            noteSummary = "Referral draft estruturado a partir do mesmo spine documental do SOAP, pronto apenas para futura revisao humana."
+        }
+        let draftOnlyNote = "Draft only. Este encaminhamento nao foi emitido nem efetivado; permanece apenas como rascunho ligado ao spine da sessao."
+        let spineLink = DerivedDraftSpineLink(
+            sourceSessionId: session.id,
+            sourceSOAPDraftId: sourceSOAPDraft.draft.id,
+            sourceSOAPDraftStatus: sourceSOAPDraft.draft.status,
+            sourceSOAPDraftObjectPath: sourceSOAPDraftRef.objectPath,
+            sourceContextStatus: context.status,
+            sourceContextSummary: context.summary
+        )
+        let draft = ArtifactDraft(
+            sessionId: session.id,
+            kind: .referral,
+            status: .draft,
+            author: DraftAuthorIdentity(
+                actorId: "aaci.referral-draft",
+                semanticRole: "referral-draft-composer"
+            ),
+            payload: [
+                "specialtyTarget": specialtyTarget,
+                "reason": reason,
+                "contextSummary": context.summary,
+                "noteSummary": noteSummary,
+                "draftOnlyNote": draftOnlyNote,
+                "sourceSOAPDraftId": sourceSOAPDraft.draft.id.uuidString
+            ]
+        )
+        return ReferralDraftDocument(
+            draft: draft,
+            specialtyTarget: specialtyTarget,
+            reason: reason,
+            contextSummary: context.summary,
+            noteSummary: noteSummary,
+            readyForFutureGate: true,
+            draftOnlyNote: draftOnlyNote,
+            spineLink: spineLink
+        )
+    }
+
+    public func composePrescriptionDraft(
+        session: SessaoTrabalho,
+        transcription: TranscriptionOutput,
+        context: RetrievalContextPackage,
+        sourceSOAPDraft: SOAPDraftDocument,
+        sourceSOAPDraftRef: StorageObjectRef
+    ) async -> PrescriptionDraftDocument {
+        let heuristics = makeDerivedDraftHeuristics(transcription: transcription, context: context)
+        let medicationSuggestion = prescriptionMedicationSuggestion(from: heuristics)
+        let instructionsDraft = prescriptionInstructions(from: heuristics)
+        let rationale = prescriptionRationale(from: heuristics, context: context)
+        let noteSummary: String
+        if heuristics.limitedSignal {
+            noteSummary = "Prescription draft mantido em texto livre e com baixa especificidade por sinal bounded insuficiente."
+        } else {
+            noteSummary = "Prescription draft em texto livre estruturado a partir do mesmo spine da sessao, sem constituir prescricao efetiva."
+        }
+        let draftOnlyNote = "Draft only. Esta sugestao medicamentosa nao equivale a prescricao emitida; dose, agente e efetivacao continuam dependentes de revisao humana."
+        let spineLink = DerivedDraftSpineLink(
+            sourceSessionId: session.id,
+            sourceSOAPDraftId: sourceSOAPDraft.draft.id,
+            sourceSOAPDraftStatus: sourceSOAPDraft.draft.status,
+            sourceSOAPDraftObjectPath: sourceSOAPDraftRef.objectPath,
+            sourceContextStatus: context.status,
+            sourceContextSummary: context.summary
+        )
+        let draft = ArtifactDraft(
+            sessionId: session.id,
+            kind: .prescription,
+            status: .draft,
+            author: DraftAuthorIdentity(
+                actorId: "aaci.prescription-draft",
+                semanticRole: "prescription-draft-composer"
+            ),
+            payload: [
+                "medicationSuggestion": medicationSuggestion,
+                "instructionsDraft": instructionsDraft,
+                "rationale": rationale,
+                "contextSummary": context.summary,
+                "noteSummary": noteSummary,
+                "draftOnlyNote": draftOnlyNote,
+                "sourceSOAPDraftId": sourceSOAPDraft.draft.id.uuidString
+            ]
+        )
+        return PrescriptionDraftDocument(
+            draft: draft,
+            medicationSuggestion: medicationSuggestion,
+            instructionsDraft: instructionsDraft,
+            rationale: rationale,
+            contextSummary: context.summary,
+            noteSummary: noteSummary,
+            readyForFutureGate: true,
+            draftOnlyNote: draftOnlyNote,
+            spineLink: spineLink
+        )
+    }
+
+    private func makeDerivedDraftHeuristics(
+        transcription: TranscriptionOutput,
+        context: RetrievalContextPackage
+    ) -> DerivedDraftHeuristics {
+        let sourceValues =
+            [transcription.workflowText, context.summary]
+            + context.highlights.map(\.summary)
+            + context.supportingMatches.map(\.summary)
+        let tokens = Set(normalizedTokens(in: sourceValues))
+        let categories = Set(context.highlights.map(\.category) + context.supportingMatches.map(\.category))
+        return DerivedDraftHeuristics(
+            tokens: tokens,
+            categories: categories,
+            contextStatus: context.status
+        )
+    }
+
+    private func referralSpecialtyTarget(from heuristics: DerivedDraftHeuristics) -> String {
+        if heuristics.hasSleepSignal && heuristics.hasSymptomSignal {
+            return "Neurologia / Medicina do Sono"
+        }
+        if heuristics.hasSleepSignal {
+            return "Medicina do Sono"
+        }
+        if heuristics.hasSymptomSignal {
+            return "Neurologia"
+        }
+        if heuristics.hasAllergySignal {
+            return "Alergologia"
+        }
+        if heuristics.hasMedicationSignal {
+            return "Revisao clinica da medicacao"
+        }
+        return "Especialidade a definir em revisao profissional"
+    }
+
+    private func referralReason(from heuristics: DerivedDraftHeuristics) -> String {
+        if heuristics.limitedSignal {
+            return "Contexto bounded insuficiente para um encaminhamento mais especifico; revisar necessidade e destino clinico manualmente."
+        }
+        if heuristics.hasSleepSignal && heuristics.hasSymptomSignal {
+            return "Persistencia de sintomas com componente de sono associado no encontro atual e no contexto local bounded."
+        }
+        if heuristics.hasSleepSignal {
+            return "Queixa de piora do sono/insônia com suporte no contexto local bounded."
+        }
+        if heuristics.hasSymptomSignal {
+            return "Sintomas ativos relatados no encontro com necessidade potencial de avaliacao especializada."
+        }
+        if heuristics.hasAllergySignal {
+            return "Revisao especializada sugerida por sinal de seguranca/alergia no contexto local bounded."
+        }
+        return "Rascunho organizacional preparado a partir do mesmo spine da sessao; destino clinico depende de revisao humana."
+    }
+
+    private func prescriptionMedicationSuggestion(from heuristics: DerivedDraftHeuristics) -> String {
+        if heuristics.limitedSignal {
+            return "Sugestao medicamentosa a definir em revisao profissional."
+        }
+        if heuristics.mentionsMelatonin || heuristics.hasSleepSignal {
+            return "Melatonina em texto livre (confirmar agente, dose e adequacao em revisao profissional)."
+        }
+        if heuristics.hasSymptomSignal {
+            return "Medicacao sintomatica para cefaleia/dor em texto livre (confirmar agente e dose em revisao profissional)."
+        }
+        if heuristics.hasMedicationSignal {
+            return "Revisar medicacao atual antes de qualquer nova prescricao."
+        }
+        return "Sugestao livre de medicacao somente para revisao humana."
+    }
+
+    private func prescriptionInstructions(from heuristics: DerivedDraftHeuristics) -> String {
+        if heuristics.limitedSignal {
+            return "Sem posologia efetiva nesta onda; instrucoes finais dependem de revisao humana."
+        }
+        if heuristics.mentionsMelatonin || heuristics.hasSleepSignal {
+            return "Uso noturno em texto livre; posologia e duracao a definir em revisao profissional."
+        }
+        if heuristics.hasSymptomSignal {
+            return "Uso sintomatico em texto livre; agente, dose e limites dependem de revisao profissional."
+        }
+        return "Instrucoes nao efetivas; somente base para futura revisao humana."
+    }
+
+    private func prescriptionRationale(
+        from heuristics: DerivedDraftHeuristics,
+        context: RetrievalContextPackage
+    ) -> String {
+        if heuristics.limitedSignal {
+            return "O spine atual nao reuniu sinal suficiente para uma sugestao medicamentosa mais especifica."
+        }
+        if heuristics.mentionsMelatonin {
+            return "O contexto local bounded ja menciona melatonina e sintomas de sono, entao o draft preserva essa pista sem efetivar uma prescricao."
+        }
+        if heuristics.hasSleepSignal {
+            return "A queixa de sono aparece tanto na captura quanto no contexto bounded, justificando uma sugestao livre para revisao humana."
+        }
+        if heuristics.hasSymptomSignal {
+            return "O encontro atual trouxe sintoma ativo; o draft organiza apenas uma sugestao livre de controle sintomatico, sem prescricao efetiva."
+        }
+        return "Draft estruturado a partir do mesmo contexto bounded: \(context.summary)"
+    }
+}
+
+private struct DerivedDraftHeuristics {
+    let tokens: Set<String>
+    let categories: Set<RecordClinicalCategory>
+    let contextStatus: RetrievalContextStatus
+
+    var hasSleepSignal: Bool {
+        categories.contains(.sleep)
+            || tokens.contains(where: { ["sono", "insonia", "dormir", "melatonina"].contains($0) })
+    }
+
+    var hasSymptomSignal: Bool {
+        categories.contains(.symptom)
+            || tokens.contains(where: { ["cefaleia", "dor", "sintoma", "enxaqueca"].contains($0) })
+    }
+
+    var hasMedicationSignal: Bool {
+        categories.contains(.medication)
+            || tokens.contains(where: { ["medicacao", "medicamento", "remedio", "melatonina"].contains($0) })
+    }
+
+    var hasAllergySignal: Bool {
+        categories.contains(.allergy)
+            || tokens.contains(where: { ["alergia", "seguranca"].contains($0) })
+    }
+
+    var mentionsMelatonin: Bool {
+        tokens.contains("melatonina")
+    }
+
+    var limitedSignal: Bool {
+        switch contextStatus {
+        case .degraded, .empty:
+            return true
+        case .partial, .ready:
+            return tokens.isEmpty
+        }
+    }
+}
+
+private func normalizedTokens(in values: [String]) -> [String] {
+    let separators = CharacterSet.alphanumerics.inverted
+    return values
+        .flatMap {
+            $0.folding(options: [.diacriticInsensitive, .caseInsensitive], locale: .current)
+                .components(separatedBy: separators)
+        }
+        .filter { $0.count >= 3 }
+        .map { $0.lowercased() }
 }
 
 private func makeBoundary(

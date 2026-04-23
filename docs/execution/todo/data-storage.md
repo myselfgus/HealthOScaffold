@@ -1,19 +1,21 @@
 # TODO — Data and storage
 
-## READY AFTER PHASE 01
+## COMPLETED
 
 ### DS-001 Replace stubbed directory layout with canonical implementation
-Objective:
-- implement full directory scaffold creation in Swift and align it with templates and docs
-Files:
+Outcome:
+- canonical directory tree implementation added in Swift for root, user, service, and agent trees
+Files touched:
 - `swift/Sources/HealthOSCore/DirectoryLayout.swift`
-- `templates/user-structure.txt`
-- `templates/service-structure.txt`
-Dependencies:
-- CL-001, CL-002
-Definition of done:
-- code and templates match
-- user, service, agent, model, network, backup, log trees are reproducible
+
+### DS-003 Define StorageService API
+Outcome:
+- explicit storage contract added with owner, layer, object reference, and lawful-context-based operations
+Files touched:
+- `swift/Sources/HealthOSCore/StorageContracts.swift`
+- `docs/architecture/07-storage-and-sql.md`
+
+## READY
 
 ### DS-002 Refine SQL migration
 Objective:
@@ -27,16 +29,15 @@ Dependencies:
 Definition of done:
 - migration is understandable and aligned to docs
 
-### DS-003 Define StorageService API
+### DS-004 Add lawful-context examples for storage reads
 Objective:
-- specify put/get/list/audit operations for object/document storage
+- document concrete examples of read contexts across user-owned and service-owned objects
 Files:
 - `docs/architecture/07-storage-and-sql.md`
-- `swift/Sources/HealthOSCore/*`
 Dependencies:
-- CL-002
+- DS-003
 Definition of done:
-- storage API is explicit and references consent/provenance hooks
+- storage contract is actionable for runtime implementation and access checks
 
 ## TESTS / VALIDATION
 

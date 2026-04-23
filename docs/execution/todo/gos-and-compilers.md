@@ -16,6 +16,8 @@ It is intentionally not about scenario-specific implementations.
 - [x] GOS named and placed in architecture
 - [x] GOS explicitly declared subordinate to HealthOS Core
 - [x] canonical schema added for compiled JSON form
+- [x] lightweight authoring schema added for YAML source documents
+- [x] bundle-manifest schema added for compiled bundle lifecycle
 - [x] primitive families declared explicitly
 - [x] authoring conventions for YAML source form documented
 - [x] generic blank YAML authoring template added
@@ -43,9 +45,12 @@ It is intentionally not about scenario-specific implementations.
 - [ ] executable runtime loader/binding contracts still need implementation
 
 ## 5. Storage / lifecycle
-- [ ] canonical storage location/versioning strategy for compiled GOS packages
-- [ ] activation/deprecation lifecycle for GOS packages
-- [ ] rollback strategy for invalid or superseded compiled packages
+- [x] canonical storage/location posture documented
+- [x] lifecycle states documented
+- [x] rollback posture documented
+- [x] bundle-manifest schema added
+- [ ] activation/deprecation mechanics still need implementation
+- [ ] bundle registry/storage implementation still needs implementation
 
 ## 6. App boundary discipline
 - [x] app-boundary doctrine clarified: apps do not interpret GOS as sovereign law
@@ -58,6 +63,9 @@ Any future work on GOS should begin from:
 - `docs/architecture/29-governed-operational-spec.md`
 - `docs/architecture/30-gos-authoring-and-compiler.md`
 - `docs/architecture/31-gos-runtime-binding.md`
+- `docs/architecture/32-gos-bundles-and-lifecycle.md`
 - `schemas/governed-operational-spec.schema.json`
+- `schemas/governed-operational-spec-authoring.schema.json`
+- `schemas/governed-operational-spec-bundle-manifest.schema.json`
 - `gos/templates/blank.gos.yaml`
 - `ts/packages/healthos-gos-tooling/`

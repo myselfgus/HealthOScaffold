@@ -2,6 +2,15 @@
 
 ## COMPLETED
 
+### RT-005 Refine sovereignty/privacy/topology vocabulary for runtime-facing doctrine
+Outcome:
+- patient sovereignty language aligned to governance/control instead of physical byte custody claims
+- data-layer and overview docs aligned with lawfulContext, pseudonymization, and online-only mesh posture
+Files touched:
+- `docs/architecture/01-overview.md`
+- `docs/architecture/05-data-layers.md`
+- `docs/architecture/10-app-state-model.md`
+
 ### RT-001 Formalize actor vs agent model
 Outcome:
 - actor/agent distinction formalized in architecture and reflected in Swift/TypeScript contracts

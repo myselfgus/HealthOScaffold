@@ -2,12 +2,13 @@
 
 ## Policy
 
-HealthOS is local-first. Remote access is private-first.
+HealthOS is online-only within a private mesh posture.
+It is not an offline-first system.
 
 ## Modes
-- local loopback traffic for core and runtimes
+- loopback/private traffic for local core-runtime coordination inside a node
+- private mesh/VPN for trusted device and operator access
 - local LAN administrative access only if explicitly allowed
-- mesh/VPN for trusted device access
 - no direct public exposure of data services
 - optional reverse proxy for future remote interfaces after explicit hardening
 

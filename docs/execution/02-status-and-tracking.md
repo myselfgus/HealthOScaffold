@@ -6,6 +6,13 @@ Current phase: Controlled implementation — first vertical slice started
 
 ## Completed recently
 
+- doctrinal consolidation wave completed: HealthOS reinforced as health-exclusive sovereign environment (not generic cloud)
+- interface doctrine refined to make compliance architecturalized in core seams/contracts, with explicit app-boundary guarantee limits
+- privacy/sovereignty language refined: patient sovereignty framed as governance/access control, while HealthOS remains infrastructure custodian
+- topology vocabulary refined: single-node clarified as canonical bootstrap minimum; production projection clarified as operator-owned Apple Silicon sovereign health fabric (physically distributed, logically one)
+- ADR 0009 added for topology vocabulary and single-node bootstrap framing
+- ADR 0010 added for health-exclusive ontology and architecturalized compliance
+- strategic regulatory backlog added (break-glass, legal retention vs visibility, regulatory audit pathways, assinatura digital qualificada, interoperability roadmap)
 - first slice now derives typed referral and prescription drafts from the same session/SOAP/context spine, with persisted artifacts, events, and provenance while keeping both explicitly draft-only
 - minimal Scribe surface + CLI now expose referral/prescription draft previews and statuses separately from SOAP draft, gate review, and finalized SOAP document state
 - first-slice Scribe bridge upgraded with explicit command/result envelopes (session start, patient selection, capture submission, draft refresh, gate resolution)
@@ -77,6 +84,7 @@ Current phase: Controlled implementation — first vertical slice started
 ## In progress
 
 - first vertical slice implementation continues with seeded-text compatibility, a structured local retrieval/context package, richer gate/document semantics, draft-only referral/prescription derivatives, and a now-wired local-audio path, while real local transcription and earlier draft-refresh finalization remain deferred
+- doctrinal language hardening completed for sovereignty/privacy/compliance/topology without introducing infrastructure expansion
 
 ## Known gaps
 
@@ -92,7 +100,7 @@ Current phase: Controlled implementation — first vertical slice started
 - decide when to replace the current stubbed local transcription path with a real local Apple-first transcription provider
 - decide whether the next first-slice step after this wave is microphone capture, moving draft/retrieval finalization earlier than gate resolution, or introducing lawful effectuation paths for referral/prescription
 - decide when to convert the AI skills into enforced reusable workflows/templates
-- decide when to replace the current deterministic local retrieval/context package with semantic/clinical retrieval while preserving lawful scope and local-first constraints
+- decide when to replace the current deterministic local retrieval/context package with semantic/clinical retrieval while preserving lawful scope and topology-invariant governance constraints
 
 ## Tracking rules
 

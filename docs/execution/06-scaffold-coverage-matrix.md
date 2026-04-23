@@ -7,8 +7,10 @@ Legend:
 
 ## 1. Canonical system identity
 - [x] HealthOS defined as the whole system
+- [x] HealthOS explicitly defined as health-exclusive by ontology (not generic cloud + plugins)
 - [x] AACI defined as runtime inside HealthOS
 - [x] app/interface distinction established
+- [x] architecturalized-compliance doctrine established (apps consume seams, do not reimplement law)
 - [x] substrate/core/runtime/agent/app hierarchy established
 - [x] glossary added
 - [x] interface doctrine established: HealthOS is not end-user UX; apps/interfaces are end-user UX
@@ -67,7 +69,9 @@ Legend:
 - [x] minimal Scribe surface now exposes structured retrieval summary/highlights/source hints with explicit partial/empty/degraded context truth
 
 ## 7. Networking / operations
-- [x] local-first stance established
+- [x] topology doctrine refined: single-node as canonical bootstrap minimum, not system identity
+- [x] production projection clarified as operator-owned Apple Silicon sovereign health fabric (physically distributed, logically one)
+- [x] online-only mesh access posture made explicit
 - [x] mesh/VPN posture established
 - [x] launchd/backup/network docs scaffolded
 - [x] runbook detail exists at meaningful baseline
@@ -101,7 +105,7 @@ Legend:
 - [x] minimal SwiftUI Scribe surface consumes the same executable slice via shared support wiring
 - [x] bounded file-backed retrieval substrate integrated into first slice executable spine
 - [x] bounded retrieval now assembles a structured local clinical-operational context package before AACI draft composition
-- [x] local-first audio file capture path is integrated into the first slice with persisted audio artifacts and explicit degraded transcription behavior
+- [x] local audio file capture path is integrated into the first slice with persisted audio artifacts and explicit degraded transcription behavior
 - [x] first slice now distinguishes draft SOAP snapshots from finalized SOAP documents with explicit source-draft and gate linkage
 - [x] first slice now derives referral and prescription drafts as explicit draft-only artifacts linked to the same session/SOAP/context spine
 - [x] minimal Scribe surface now reflects draft review, gate review, and finalized-document state separately
@@ -116,3 +120,9 @@ Legend:
 The scaffold is no longer merely an outline.
 It is a strong pre-implementation foundation.
 What remains is mostly optional hardening and procedural refinement, not identity or architecture rescue work.
+
+## 11. Doctrinal precision wave (sovereignty/compliance/topology)
+- [x] patient sovereignty language refined to governance/control (without claiming full physical custody of bits)
+- [x] privacy posture clarified as layered + pseudonymous + lawfulContext-mediated + core-visible operational data
+- [x] topology vocabulary refined beyond ambiguous local-first framing
+- [x] strategic regulatory backlog registered as future architecture expansion (not current implementation)

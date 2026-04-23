@@ -4,6 +4,15 @@
 
 HealthOS is the full sovereign computational environment for health operations.
 
+HealthOS is health-exclusive by ontology.
+It is not generic cloud infrastructure with healthcare plugins.
+Its core primitives are health-native from the start, including:
+- professional record (`RegistroProfissional`) and habilitation windows
+- consent with explicit clinical purpose/finality
+- mandatory human gate before regulatory effectuation
+- clinical-operational drafts and finalized documents with lineage
+- provenance and audit semantics anchored in health operations
+
 It contains:
 - storage/drive/cloud behavior
 - governance and access rules
@@ -41,6 +50,9 @@ Anything regulatory remains draft until the human gate resolves it.
 
 HealthOS may process operational data, but directly identifying data is strongly separated, protected, pseudonymized, and reidentified only via governed flows.
 
+The system is not zero-knowledge against its own core.
+The core must see operational content to apply law and produce governed runtime behavior.
+
 ## Deployment stance
 
 Canonical minimum deployment:
@@ -49,9 +61,11 @@ Canonical minimum deployment:
 - local PostgreSQL
 - canonical filesystem store
 - launchd-supervised local services
-- private mesh/VPN access
+- private mesh connectivity
 
-Future deployment:
-- multi-node private mesh/cloud
-- same ontology
-- changed topology only
+Production-shaping projection:
+- operator-owned Apple Silicon sovereign health fabric
+- physically distributed when needed
+- ontologically one HealthOS environment
+- online access through private mesh surfaces only
+- same ontology, contracts, and law across topology changes

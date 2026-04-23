@@ -3,6 +3,16 @@
 ## Purpose
 Service-facing operational interface for patient management and service work visibility.
 
+## What CloudClinic is
+- the service operations UX
+- the place where queues, pending work, service-scoped patient operations, and document/gate visibility become operationally manageable
+- the service-layer cockpit, not the clinical session cockpit
+
+## What CloudClinic is not
+- not the patient sovereignty app
+- not the live professional session workspace
+- not the owner of service law or access law
+
 ## Primary flows
 - service dashboard
 - patient registry
@@ -10,6 +20,35 @@ Service-facing operational interface for patient management and service work vis
 - draft and gate visibility
 - operational documents
 - service-level coordination
+
+## Primary screens
+- dashboard
+- patient registry
+- queue board
+- pending drafts
+- pending gates
+- service documents / operational records
+- staff activity / coordination view
+
+## Key UI states
+- queue empty / ready / saturated / deferred / failed
+- gate queue pending / reviewing / resolved
+- draft visibility ready / awaiting_gate / approved / rejected
+- runtime health healthy / degraded / failed
+
+## Important service flows
+1. inspect current operational load
+2. locate patient within service context
+3. view pending documents and drafts
+4. route pending work to professionals/operators
+5. inspect service-level gate backlog
+6. inspect high-level operational history
+
+## Boundaries
+- CloudClinic may show service-scoped work and visibility
+- CloudClinic may not impersonate patient sovereignty functions from Sortio
+- CloudClinic may not replace Scribe as the live professional workspace
+- CloudClinic may not redefine service access law in its own UI state
 
 ## Boundary
 CloudClinic is service-facing. It must not absorb patient sovereignty functions from Sortio or professional session functions from Scribe.

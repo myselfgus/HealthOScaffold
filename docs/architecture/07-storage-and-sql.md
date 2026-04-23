@@ -43,7 +43,94 @@ Guideline:
 - payload identity lives in object path + content hash
 - direct identifiers stay out of convenience path names beyond governed pseudonymous keys
 
+## Lawful-context examples
+
+### Example 1: patient-owned artifact read by the same user
+Context:
+- actor = user-agent runtime acting for the same user
+- owner = `usuario(cpfHash)`
+- basis = self-access
+- expected result = allowed
+
+Minimal lawfulContext example:
+```json
+{
+  "actorRole": "user-agent",
+  "actorUserId": "<same-user-id>",
+  "accessBasis": "self",
+  "scope": "own-data"
+}
+```
+
+### Example 2: service professional retrieving patient operational context during active work session
+Context:
+- actor = AACI/ContextRetrievalAgent under professional session
+- owner = patient-linked operational artifact in service scope
+- basis = active habilitation + matching consent/finality + active session
+- expected result = allowed if scope matches
+
+Minimal lawfulContext example:
+```json
+{
+  "actorRole": "professional-agent",
+  "habilitationId": "<active-habilitation-id>",
+  "serviceId": "<service-id>",
+  "patientUserId": "<patient-id>",
+  "consentBasis": "matched",
+  "finalidade": "care-context-retrieval",
+  "sessionId": "<session-id>"
+}
+```
+
+### Example 3: service professional attempting read after habilitation closed
+Context:
+- actor = professional or subagent
+- basis = stale/closed habilitation
+- expected result = denied
+
+Minimal lawfulContext example:
+```json
+{
+  "actorRole": "professional-agent",
+  "habilitationId": "<closed-habilitation-id>",
+  "serviceId": "<service-id>",
+  "patientUserId": "<patient-id>",
+  "consentBasis": "matched",
+  "finalidade": "care-context-retrieval"
+}
+```
+
+Decision rule:
+- deny because access basis is no longer temporally valid
+
+### Example 4: re-identification layer access by ordinary operational agent
+Context:
+- actor = AACI or async subagent
+- owner = re-identification mapping layer
+- basis = operational convenience only
+- expected result = denied
+
+Decision rule:
+- re-identification is never granted by convenience
+- explicit governed authorization is required
+
+### Example 5: audit/list operation for service-owned drafts
+Context:
+- actor = CloudClinic service-facing interface under operator context
+- owner = `servico(serviceId)`
+- basis = service-scoped role and lawful operational visibility
+- expected result = allowed for references and metadata, not necessarily for all payload bodies
+
+Minimal lawfulContext example:
+```json
+{
+  "actorRole": "service-operator",
+  "serviceId": "<service-id>",
+  "accessBasis": "service-scope",
+  "scope": "draft-metadata"
+}
+```
+
 ## Open tasks
-- expand migration comments and invariants
 - decide first concrete hash strategy implementation for object content verification
-- add lawful-context examples for reads across user/service scopes
+- decide whether lawfulContext should remain a flexible map or become a stricter shared transport envelope

@@ -41,19 +41,25 @@ Files touched:
 - `docs/architecture/24-sortio-screen-contracts.md`
 - `docs/architecture/25-cloudclinic-screen-contracts.md`
 
-## READY
-
 ### APP-004 Link screen contracts back into main app architecture docs
-Objective:
-- add explicit references from Scribe, Sortio, and CloudClinic docs to the new screen-contract documents
-Files:
+Outcome:
+- app overview docs now point explicitly to their detailed screen-contract documents
+Files touched:
 - `docs/architecture/11-scribe.md`
 - `docs/architecture/12-sortio.md`
 - `docs/architecture/13-cloudclinic.md`
+
+## READY
+
+### APP-005 Define command/result envelopes for UI actions
+Objective:
+- specify canonical action/result payload shapes for first implementation wave across app interactions
+Files:
+- future contracts/docs to be added
 Dependencies:
-- APP-003
+- APP-003, APP-004
 Definition of done:
-- app overview docs and screen-contract docs form one navigable set
+- first implementation wave can map screen actions to explicit command/result envelopes with minimal ambiguity
 
 ## TESTS / VALIDATION
 

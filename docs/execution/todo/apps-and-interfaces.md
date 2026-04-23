@@ -103,6 +103,28 @@ Files touched:
 - `docs/architecture/23-scribe-screen-contracts.md`
 - `docs/architecture/28-first-slice-executable-path.md`
 
+### SCRIBE-005 Enrich gate review and finalized-document visibility on the minimal Scribe surface
+Outcome:
+- Scribe now shows draft preview, gate review summary, and finalized-document state/path as separate surfaces instead of collapsing them into one generic success blob
+- the bridge keeps gate reject explicit without treating it as a technical crash, and final-document state stays distinct from draft state
+- the app still consumes `ScribeFirstSliceFacade` contracts rather than reimplementing consent, habilitation, gate, or effectuation law
+Files touched:
+- `swift/Sources/HealthOSCore/CanonicalTypes.swift`
+- `swift/Sources/HealthOSCore/Entities.swift`
+- `swift/Sources/HealthOSCore/GateContracts.swift`
+- `swift/Sources/HealthOSCore/FirstSliceContracts.swift`
+- `swift/Sources/HealthOSCore/ScribeFirstSliceBridge.swift`
+- `swift/Sources/HealthOSCore/SharedEnvelopeVocabulary.swift`
+- `swift/Sources/HealthOSFirstSliceSupport/FirstSliceRunner.swift`
+- `swift/Sources/HealthOSFirstSliceSupport/ScribeFirstSliceAdapter.swift`
+- `swift/Sources/HealthOSCLI/CLIEntrypoint.swift`
+- `swift/Sources/HealthOSScribeApp/Models/ScribeFirstSliceViewModel.swift`
+- `swift/Sources/HealthOSScribeApp/Views/ScribeFirstSliceView.swift`
+- `docs/architecture/06-core-services.md`
+- `docs/architecture/11-scribe.md`
+- `docs/architecture/23-scribe-screen-contracts.md`
+- `docs/architecture/28-first-slice-executable-path.md`
+
 ## READY
 
 ## TESTS / VALIDATION
@@ -112,6 +134,7 @@ Files touched:
 - app boundaries match user role and service context
 - `swift build`
 - `swift run HealthOSCLI`
+- `swift run HealthOSCLI --reject-gate`
 - `swift run HealthOSCLI --audio-file /System/Library/Sounds/Glass.aiff`
 - `swift run HealthOSScribeApp --smoke-test`
 - `swift run HealthOSScribeApp --smoke-test-audio`

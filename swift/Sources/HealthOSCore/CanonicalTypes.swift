@@ -16,12 +16,40 @@ public enum SessionKind: String, Codable, Sendable {
     case handoff
 }
 
+public enum DraftKind: String, Codable, Sendable {
+    case soap
+    case prescription
+    case referral
+    case note
+    case retrievalSummary = "retrieval_summary"
+    case adminTaskList = "admin_task_list"
+}
+
 public enum DraftStatus: String, Codable, Sendable {
     case draft
     case awaitingGate = "awaiting_gate"
     case approved
     case rejected
     case superseded
+}
+
+public enum GateRequestStatus: String, Codable, Sendable {
+    case pending
+    case approved
+    case rejected
+    case cancelled
+}
+
+public enum GateReviewType: String, Codable, Sendable {
+    case professionalDocumentReview = "professional_document_review"
+}
+
+public enum FinalDocumentKind: String, Codable, Sendable {
+    case soapNote = "soap_note"
+}
+
+public enum FinalDocumentStatus: String, Codable, Sendable {
+    case finalized
 }
 
 public enum GateResolutionKind: String, Codable, Sendable {

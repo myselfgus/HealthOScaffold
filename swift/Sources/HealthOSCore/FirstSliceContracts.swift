@@ -582,56 +582,183 @@ public struct BoundedRetrievalResult: Codable, Sendable {
     }
 }
 
-public struct DraftPackage: Codable, Sendable {
-    public let draft: ArtifactDraft
-    public let draftRef: StorageObjectRef
-
-    public init(draft: ArtifactDraft, draftRef: StorageObjectRef) {
-        self.draft = draft
-        self.draftRef = draftRef
-    }
-}
-
-public enum FinalArtifactStatus: String, Codable, Sendable {
-    case effective
-}
-
-public struct FinalArtifactPayload: Codable, Sendable {
-    public let sessionId: UUID
-    public let sourceDraftId: UUID
-    public let status: FinalArtifactStatus
+public struct SOAPNoteSections: Codable, Sendable {
     public let subjective: String
     public let objective: String
     public let assessment: String
     public let plan: String
 
     public init(
-        sessionId: UUID,
-        sourceDraftId: UUID,
-        status: FinalArtifactStatus,
         subjective: String,
         objective: String,
         assessment: String,
         plan: String
     ) {
-        self.sessionId = sessionId
-        self.sourceDraftId = sourceDraftId
-        self.status = status
         self.subjective = subjective
         self.objective = objective
         self.assessment = assessment
         self.plan = plan
+    }
+
+    public var previewText: String {
+        [
+            "S: \(subjective)",
+            "O: \(objective)",
+            "A: \(assessment)",
+            "P: \(plan)"
+        ]
+        .joined(separator: "\n")
+    }
+
+    public var payload: [String: String] {
+        [
+            "subjective": subjective,
+            "objective": objective,
+            "assessment": assessment,
+            "plan": plan
+        ]
+    }
+}
+
+public struct SOAPDraftDocument: Codable, Sendable {
+    public let draft: ArtifactDraft
+    public let sections: SOAPNoteSections
+    public let contextStatus: RetrievalContextStatus
+    public let contextSummary: String
+    public let noteSummary: String
+
+    public init(
+        draft: ArtifactDraft,
+        sections: SOAPNoteSections,
+        contextStatus: RetrievalContextStatus,
+        contextSummary: String,
+        noteSummary: String
+    ) {
+        self.draft = draft
+        self.sections = sections
+        self.contextStatus = contextStatus
+        self.contextSummary = contextSummary
+        self.noteSummary = noteSummary
+    }
+}
+
+public struct DraftPackage: Codable, Sendable {
+    public let soapDraft: SOAPDraftDocument
+    public let draftRef: StorageObjectRef
+
+    public init(soapDraft: SOAPDraftDocument, draftRef: StorageObjectRef) {
+        self.soapDraft = soapDraft
+        self.draftRef = draftRef
+    }
+
+    public var draft: ArtifactDraft {
+        soapDraft.draft
+    }
+}
+
+public struct FinalDocumentSourceLink: Codable, Sendable {
+    public let sourceDraftId: UUID
+    public let sourceDraftKind: DraftKind
+    public let sourceDraftStatus: DraftStatus
+    public let sourceDraftObjectPath: String
+    public let gateRequestId: UUID
+    public let gateResolutionId: UUID
+
+    public init(
+        sourceDraftId: UUID,
+        sourceDraftKind: DraftKind,
+        sourceDraftStatus: DraftStatus,
+        sourceDraftObjectPath: String,
+        gateRequestId: UUID,
+        gateResolutionId: UUID
+    ) {
+        self.sourceDraftId = sourceDraftId
+        self.sourceDraftKind = sourceDraftKind
+        self.sourceDraftStatus = sourceDraftStatus
+        self.sourceDraftObjectPath = sourceDraftObjectPath
+        self.gateRequestId = gateRequestId
+        self.gateResolutionId = gateResolutionId
+    }
+}
+
+public struct DocumentFinalizationMetadata: Codable, Sendable {
+    public let finalizedAt: Date
+    public let finalizerUserId: UUID
+    public let finalizerRole: String
+    public let reviewType: GateReviewType
+    public let gateResolution: GateResolutionKind
+
+    public init(
+        finalizedAt: Date,
+        finalizerUserId: UUID,
+        finalizerRole: String,
+        reviewType: GateReviewType,
+        gateResolution: GateResolutionKind
+    ) {
+        self.finalizedAt = finalizedAt
+        self.finalizerUserId = finalizerUserId
+        self.finalizerRole = finalizerRole
+        self.reviewType = reviewType
+        self.gateResolution = gateResolution
+    }
+}
+
+public struct FinalizedSOAPDocument: Codable, Sendable {
+    public let id: UUID
+    public let sessionId: UUID
+    public let kind: FinalDocumentKind
+    public let status: FinalDocumentStatus
+    public let sections: SOAPNoteSections
+    public let source: FinalDocumentSourceLink
+    public let finalization: DocumentFinalizationMetadata
+    public let summary: String
+
+    public init(
+        id: UUID = UUID(),
+        sessionId: UUID,
+        kind: FinalDocumentKind,
+        status: FinalDocumentStatus,
+        sections: SOAPNoteSections,
+        source: FinalDocumentSourceLink,
+        finalization: DocumentFinalizationMetadata,
+        summary: String
+    ) {
+        self.id = id
+        self.sessionId = sessionId
+        self.kind = kind
+        self.status = status
+        self.sections = sections
+        self.source = source
+        self.finalization = finalization
+        self.summary = summary
+    }
+}
+
+public struct FinalDocumentPackage: Codable, Sendable {
+    public let document: FinalizedSOAPDocument
+    public let documentRef: StorageObjectRef
+
+    public init(document: FinalizedSOAPDocument, documentRef: StorageObjectRef) {
+        self.document = document
+        self.documentRef = documentRef
     }
 }
 
 public struct GateOutcomeSummary: Codable, Sendable {
     public let request: GateRequest
     public let resolution: GateResolution
+    public let reviewedDraftStatus: DraftStatus
     public let approved: Bool
 
-    public init(request: GateRequest, resolution: GateResolution, approved: Bool) {
+    public init(
+        request: GateRequest,
+        resolution: GateResolution,
+        reviewedDraftStatus: DraftStatus,
+        approved: Bool
+    ) {
         self.request = request
         self.resolution = resolution
+        self.reviewedDraftStatus = reviewedDraftStatus
         self.approved = approved
     }
 }
@@ -640,12 +767,19 @@ public struct SliceRunSummary: Codable, Sendable {
     public let sessionId: UUID
     public let captureMode: CaptureMode
     public let gateApproved: Bool
+    public let gateResolution: GateResolutionKind
+    public let gateReviewedAt: Date
+    public let gateReviewType: GateReviewType
+    public let finalizationTarget: FinalDocumentKind
     public let audioCaptureObjectPath: String?
     public let transcriptObjectPath: String?
     public let transcriptionStatus: TranscriptionStatus
     public let transcriptionSource: String
     public let draftObjectPath: String
-    public let finalArtifactObjectPath: String?
+    public let reviewedDraftStatus: DraftStatus
+    public let finalDocumentStatus: FinalDocumentStatus?
+    public let finalDocumentObjectPath: String?
+    public let finalDocumentSummary: String?
     public let retrievalMatchCount: Int
     public let retrievalSource: String
     public let retrievalContextStatus: RetrievalContextStatus
@@ -658,12 +792,19 @@ public struct SliceRunSummary: Codable, Sendable {
         sessionId: UUID,
         captureMode: CaptureMode,
         gateApproved: Bool,
+        gateResolution: GateResolutionKind,
+        gateReviewedAt: Date,
+        gateReviewType: GateReviewType,
+        finalizationTarget: FinalDocumentKind,
         audioCaptureObjectPath: String?,
         transcriptObjectPath: String?,
         transcriptionStatus: TranscriptionStatus,
         transcriptionSource: String,
         draftObjectPath: String,
-        finalArtifactObjectPath: String?,
+        reviewedDraftStatus: DraftStatus,
+        finalDocumentStatus: FinalDocumentStatus?,
+        finalDocumentObjectPath: String?,
+        finalDocumentSummary: String?,
         retrievalMatchCount: Int,
         retrievalSource: String,
         retrievalContextStatus: RetrievalContextStatus,
@@ -675,12 +816,19 @@ public struct SliceRunSummary: Codable, Sendable {
         self.sessionId = sessionId
         self.captureMode = captureMode
         self.gateApproved = gateApproved
+        self.gateResolution = gateResolution
+        self.gateReviewedAt = gateReviewedAt
+        self.gateReviewType = gateReviewType
+        self.finalizationTarget = finalizationTarget
         self.audioCaptureObjectPath = audioCaptureObjectPath
         self.transcriptObjectPath = transcriptObjectPath
         self.transcriptionStatus = transcriptionStatus
         self.transcriptionSource = transcriptionSource
         self.draftObjectPath = draftObjectPath
-        self.finalArtifactObjectPath = finalArtifactObjectPath
+        self.reviewedDraftStatus = reviewedDraftStatus
+        self.finalDocumentStatus = finalDocumentStatus
+        self.finalDocumentObjectPath = finalDocumentObjectPath
+        self.finalDocumentSummary = finalDocumentSummary
         self.retrievalMatchCount = retrievalMatchCount
         self.retrievalSource = retrievalSource
         self.retrievalContextStatus = retrievalContextStatus
@@ -700,7 +848,7 @@ public enum FirstSliceSessionEventKind: String, Codable, Sendable {
     case draftComposed = "draft.composed"
     case gateRequested = "gate.requested"
     case gateResolved = "gate.resolved"
-    case finalArtifactPersisted = "final.artifact.persisted"
+    case finalDocumentPersisted = "final.document.persisted"
 }
 
 public struct FirstSliceSessionEventPayload: Codable, Sendable {
@@ -741,7 +889,7 @@ public struct FirstSliceRunResult: Codable, Sendable {
     public let retrieval: RetrievalContextPackage
     public let draft: DraftPackage
     public let gate: GateOutcomeSummary
-    public let finalArtifactRef: StorageObjectRef?
+    public let finalDocument: FinalDocumentPackage?
     public let summary: SliceRunSummary
     public let provenanceRecords: [ProvenanceRecord]
     public let events: [SessionEventRecord]
@@ -752,7 +900,7 @@ public struct FirstSliceRunResult: Codable, Sendable {
         retrieval: RetrievalContextPackage,
         draft: DraftPackage,
         gate: GateOutcomeSummary,
-        finalArtifactRef: StorageObjectRef?,
+        finalDocument: FinalDocumentPackage?,
         summary: SliceRunSummary,
         provenanceRecords: [ProvenanceRecord],
         events: [SessionEventRecord]
@@ -762,7 +910,7 @@ public struct FirstSliceRunResult: Codable, Sendable {
         self.retrieval = retrieval
         self.draft = draft
         self.gate = gate
-        self.finalArtifactRef = finalArtifactRef
+        self.finalDocument = finalDocument
         self.summary = summary
         self.provenanceRecords = provenanceRecords
         self.events = events

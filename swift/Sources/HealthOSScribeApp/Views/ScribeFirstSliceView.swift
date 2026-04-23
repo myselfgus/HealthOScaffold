@@ -191,10 +191,12 @@ private struct SliceOutputsCard: View {
                     text: retrievalText
                 )
                 OutputBlock(title: "Draft preview", text: model.bridgeState?.draftPreview ?? "Nenhum draft visivel ainda.")
+                OutputBlock(title: "Gate review", text: model.gateReviewSummaryText)
+                OutputBlock(title: "Final document", text: model.finalSummaryText)
 
                 LabeledContent("Draft state", value: model.bridgeState?.draftState.rawValue ?? "empty")
                 LabeledContent("Gate state", value: model.bridgeState?.gateState.rawValue ?? "none")
-                LabeledContent("Final summary", value: model.finalSummaryText)
+                LabeledContent("Final document state", value: model.bridgeState?.finalDocument.state.rawValue ?? "none")
             }
             .frame(maxWidth: .infinity, alignment: .leading)
         }

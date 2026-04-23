@@ -56,19 +56,33 @@ public struct SessaoTrabalho: Codable, Sendable, Identifiable {
     }
 }
 
+public struct DraftAuthorIdentity: Codable, Sendable {
+    public let actorId: String
+    public let semanticRole: String
+
+    public init(actorId: String, semanticRole: String) {
+        self.actorId = actorId
+        self.semanticRole = semanticRole
+    }
+}
+
 public struct ArtifactDraft: Codable, Sendable, Identifiable {
     public let id: UUID
     public let sessionId: UUID
-    public let kind: String
+    public let kind: DraftKind
     public let status: DraftStatus
+    public let createdAt: Date
+    public let author: DraftAuthorIdentity
     public let payload: [String: String]
     public let sourceEventIds: [UUID]
 
     public init(
         id: UUID = UUID(),
         sessionId: UUID,
-        kind: String,
+        kind: DraftKind,
         status: DraftStatus = .draft,
+        createdAt: Date = .now,
+        author: DraftAuthorIdentity,
         payload: [String: String],
         sourceEventIds: [UUID] = []
     ) {
@@ -76,6 +90,8 @@ public struct ArtifactDraft: Codable, Sendable, Identifiable {
         self.sessionId = sessionId
         self.kind = kind
         self.status = status
+        self.createdAt = createdAt
+        self.author = author
         self.payload = payload
         self.sourceEventIds = sourceEventIds
     }

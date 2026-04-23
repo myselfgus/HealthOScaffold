@@ -52,7 +52,7 @@ Current phase: Controlled implementation — first vertical slice started
 - first vertical slice core services, file-backed persistence, and CLI runner added
 - first-slice executable spine refactored with typed envelopes/contracts for capture, transcription, retrieval, draft, gate outcome, and run summary
 - first-slice session events upgraded to typed event model with explicit event kind and payload envelopes
-- first-slice provenance recording made more consistent across transcription, retrieval, draft compose, gate resolve, and final artifact effectuation
+- first-slice provenance recording made more consistent across transcription, retrieval, draft compose, gate resolve, and final document finalization
 - minimal Scribe bridge contract + adapter added to consume the first-slice spine without moving law into the app layer
 - first-slice bounded retrieval substrate added with typed query/match/result contracts and file-backed service-record index
 - FirstSliceRunner now uses deterministic bounded retrieval + provenance/event wiring instead of hardcoded synthetic context list
@@ -67,10 +67,14 @@ Current phase: Controlled implementation — first vertical slice started
 - bounded retrieval now carries richer snippet/index/match metadata, deterministic score breakdown, and a structured `RetrievalContextPackage` between raw matches and AACI draft composition
 - first-slice local context assembly now produces explicit `ready` / `partial` / `empty` / `degraded` states with summary/highlights/source hints for both CLI and Scribe
 - local validation now confirms the strengthened retrieval/context path across CLI and Scribe seeded-text and local-audio smoke flows
+- first-slice gate workflow now carries richer review semantics (review type, target, rationale, reviewer role/timestamp) and keeps gate rejection explicit without treating it as a technical crash
+- SOAP draft and finalized SOAP document are now separate typed contracts with explicit lineage between source draft, gate request/resolution, and persisted final document
+- minimal Scribe surface now shows draft preview, gate review summary, and finalized-document state/path as distinct truths
+- local validation now also confirms explicit approve/reject semantics, including withheld final-document state on CLI rejection runs
 
 ## In progress
 
-- first vertical slice implementation continues with seeded-text compatibility, a structured local retrieval/context package, and a now-wired local-audio path, while real local transcription and earlier draft-refresh finalization remain deferred
+- first vertical slice implementation continues with seeded-text compatibility, a structured local retrieval/context package, richer gate/document semantics, and a now-wired local-audio path, while real local transcription and earlier draft-refresh finalization remain deferred
 
 ## Known gaps
 
@@ -79,6 +83,7 @@ Current phase: Controlled implementation — first vertical slice started
 - bounded retrieval now uses a stronger local score (lexical/tag/recency/category/intent), but still stops well short of semantic retrieval or embeddings
 - Scribe now has a minimal validation UI surface, but it is not yet a full/final app shell
 - draft refresh remains preview/degraded until gate resolution runs the full executable spine
+- only SOAP document finalization is enriched in this wave; broader regulatory document families remain intentionally deferred
 
 ## Open blockers / decisions
 

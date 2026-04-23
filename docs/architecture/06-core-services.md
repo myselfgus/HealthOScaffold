@@ -50,19 +50,19 @@ Deny / failure outputs:
 
 ## GateService
 Responsibilities:
-- create gate requests from drafts
-- capture resolutions and signatures
-- prevent regulatory effect before resolution
+- create gate requests from drafts with explicit review type, finalization target, and rationale
+- capture resolutions, reviewer role, timestamp, and signature expectations
+- prevent regulatory effect or document finalization before resolution
 
 Success output:
 - pending gate request
-- approved/rejected/cancelled gate resolution
+- approved/rejected/cancelled gate resolution with explicit reviewer context
 
 Deny / failure outputs:
 - draft not eligible for gate
 - wrong resolver role
 - required signature absent or invalid
-- attempt to treat unresolved draft as effective act
+- attempt to treat unresolved draft as effective act or finalized document
 
 ## ProvenanceService
 Responsibilities:

@@ -61,11 +61,102 @@ export interface RuntimeStatus {
   message?: string;
 }
 
+export type DraftKind =
+  | "soap"
+  | "prescription"
+  | "referral"
+  | "note"
+  | "retrieval_summary"
+  | "admin_task_list";
+
+export type DraftStatus = "draft" | "awaiting_gate" | "approved" | "rejected" | "superseded";
+
+export type GateRequestStatus = "pending" | "approved" | "rejected" | "cancelled";
+
+export type GateReviewType = "professional_document_review";
+
+export type FinalDocumentKind = "soap_note";
+
+export type FinalDocumentStatus = "finalized";
+
+export interface DraftAuthorIdentity {
+  actorId: string;
+  semanticRole: string;
+}
+
+export interface ArtifactDraft {
+  id: string;
+  sessionId: string;
+  kind: DraftKind;
+  status: DraftStatus;
+  createdAt: string;
+  author: DraftAuthorIdentity;
+  payload: Record<string, string>;
+  sourceEventIds?: string[];
+}
+
 export interface GateRequest {
   id: string;
   draftId: string;
   requestedAction: string;
   requiredRole: string;
+  requiredReviewType: GateReviewType;
+  finalizationTarget: FinalDocumentKind;
   requiresSignature: boolean;
-  status: "pending" | "approved" | "rejected" | "cancelled";
+  rationaleNote?: string | null;
+  status: GateRequestStatus;
+  requestedAt: string;
+}
+
+export interface GateResolution {
+  id: string;
+  gateRequestId: string;
+  resolverUserId: string;
+  resolverRole: string;
+  resolution: "approved" | "rejected" | "cancelled";
+  rationaleNote?: string | null;
+  reviewedAt: string;
+}
+
+export interface SOAPNoteSections {
+  subjective: string;
+  objective: string;
+  assessment: string;
+  plan: string;
+}
+
+export interface SOAPDraftDocument {
+  draft: ArtifactDraft;
+  sections: SOAPNoteSections;
+  contextStatus: "ready" | "partial" | "empty" | "degraded";
+  contextSummary: string;
+  noteSummary: string;
+}
+
+export interface FinalDocumentSourceLink {
+  sourceDraftId: string;
+  sourceDraftKind: DraftKind;
+  sourceDraftStatus: DraftStatus;
+  sourceDraftObjectPath: string;
+  gateRequestId: string;
+  gateResolutionId: string;
+}
+
+export interface DocumentFinalizationMetadata {
+  finalizedAt: string;
+  finalizerUserId: string;
+  finalizerRole: string;
+  reviewType: GateReviewType;
+  gateResolution: "approved" | "rejected" | "cancelled";
+}
+
+export interface FinalizedSOAPDocument {
+  id: string;
+  sessionId: string;
+  kind: FinalDocumentKind;
+  status: FinalDocumentStatus;
+  sections: SOAPNoteSections;
+  source: FinalDocumentSourceLink;
+  finalization: DocumentFinalizationMetadata;
+  summary: string;
 }

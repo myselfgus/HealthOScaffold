@@ -2,13 +2,32 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "healthos/contracts/gate-request",
   "type": "object",
-  "required": ["id", "draftId", "requestedAction", "requiredRole", "status"],
+  "required": [
+    "id",
+    "draftId",
+    "requestedAction",
+    "requiredRole",
+    "requiredReviewType",
+    "finalizationTarget",
+    "status",
+    "requestedAt"
+  ],
   "properties": {
     "id": {"type": "string", "format": "uuid"},
     "draftId": {"type": "string", "format": "uuid"},
     "requestedAction": {"type": "string"},
     "requiredRole": {"type": "string"},
+    "requiredReviewType": {
+      "type": "string",
+      "enum": ["professional_document_review"]
+    },
+    "finalizationTarget": {
+      "type": "string",
+      "enum": ["soap_note"]
+    },
     "requiresSignature": {"type": "boolean"},
-    "status": {"type": "string", "enum": ["pending", "approved", "rejected", "cancelled"]}
+    "rationaleNote": {"type": ["string", "null"]},
+    "status": {"type": "string", "enum": ["pending", "approved", "rejected", "cancelled"]},
+    "requestedAt": {"type": "string", "format": "date-time"}
   }
 }

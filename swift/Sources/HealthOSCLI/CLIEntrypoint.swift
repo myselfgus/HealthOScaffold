@@ -7,6 +7,7 @@ struct HealthOSCLI {
     static func main() async {
         do {
             let arguments = Array(ProcessInfo.processInfo.arguments.dropFirst())
+            let approveGate = !arguments.contains("--reject-gate")
             let environment = try await ScribeFirstSliceDemoBootstrap.makeEnvironment()
             guard let patient = environment.patients.first else {
                 throw CLIError.invalidState("Demo bootstrap did not provide a patient.")
@@ -48,7 +49,7 @@ struct HealthOSCLI {
             }
 
             let gateResult = await environment.facade.resolveGate(
-                ResolveGateCommand(sessionId: startedState.sessionId, approve: true)
+                ResolveGateCommand(sessionId: startedState.sessionId, approve: approveGate)
             )
             guard let bridgeState = gateResult.state, let summary = bridgeState.runSummary else {
                 throw CLIError.invalidState("Gate resolution failed: \(describeIssues(gateResult.issues))")
@@ -64,12 +65,17 @@ struct HealthOSCLI {
             print("transcription_source=\(summary.transcriptionSource)")
             print("transcript=\(summary.transcriptObjectPath ?? "<not available>")")
             print("draft=\(summary.draftObjectPath)")
+            print("draft_review_status=\(summary.reviewedDraftStatus.rawValue)")
             print("gate=\(bridgeState.gateState.rawValue)")
-            if let finalPath = summary.finalArtifactObjectPath {
-                print("final=\(finalPath)")
+            print("gate_resolution=\(summary.gateResolution.rawValue)")
+            print("gate_review_type=\(summary.gateReviewType.rawValue)")
+            print("final_document_state=\(bridgeState.finalDocument.state.rawValue)")
+            if let finalPath = summary.finalDocumentObjectPath {
+                print("final_document=\(finalPath)")
             } else {
-                print("final=<not effectuated>")
+                print("final_document=<not effectuated>")
             }
+            print("final_document_summary=\(bridgeState.finalDocument.summary)")
             print("retrieval_source=\(bridgeState.retrieval.source)")
             print("retrieval_matches=\(bridgeState.retrieval.matchCount)")
             print("retrieval_status=\(bridgeState.retrieval.status.rawValue)")

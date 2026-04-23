@@ -17,6 +17,7 @@ Legend:
 - [x] user, service, professional record, membership, habilitation represented
 - [x] consent represented as first-class object
 - [x] gate request and gate resolution represented
+- [x] gate workflow now carries explicit review type, finalization target, rationale, and reviewer metadata
 - [x] provenance represented
 - [x] deny/failure semantics explicitly documented for core services
 - [~] some law-level invariants still need stronger contract wording
@@ -101,6 +102,8 @@ Legend:
 - [x] bounded file-backed retrieval substrate integrated into first slice executable spine
 - [x] bounded retrieval now assembles a structured local clinical-operational context package before AACI draft composition
 - [x] local-first audio file capture path is integrated into the first slice with persisted audio artifacts and explicit degraded transcription behavior
+- [x] first slice now distinguishes draft SOAP snapshots from finalized SOAP documents with explicit source-draft and gate linkage
+- [x] minimal Scribe surface now reflects draft review, gate review, and finalized-document state separately
 - [~] local-audio transcription remains stubbed; a real Apple-first local provider is still deferred
 - [~] retrieval quality is now deterministic lexical/tag/recency/category/intent bounded; semantic retrieval is intentionally deferred
 - [~] a few procedural/operator details still remain optional hardening before heavy implementation

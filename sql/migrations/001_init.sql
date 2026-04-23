@@ -184,6 +184,8 @@ CREATE TABLE drafts (
   draft_type TEXT NOT NULL,
   payload_json JSONB NOT NULL,
   status TEXT NOT NULL DEFAULT 'draft',
+  author_actor_id TEXT NOT NULL,
+  author_semantic_role TEXT NOT NULL,
   created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
   superseded_by UUID
 );
@@ -193,7 +195,10 @@ CREATE TABLE gate_requests (
   draft_id UUID NOT NULL REFERENCES drafts(id),
   requested_action TEXT NOT NULL,
   required_role TEXT NOT NULL,
+  required_review_type TEXT NOT NULL,
+  finalization_target TEXT NOT NULL,
   requires_signature BOOLEAN NOT NULL DEFAULT FALSE,
+  rationale_note TEXT,
   status TEXT NOT NULL DEFAULT 'pending',
   requested_at TIMESTAMPTZ NOT NULL DEFAULT now(),
   resolved_at TIMESTAMPTZ
@@ -203,10 +208,11 @@ CREATE TABLE gate_resolutions (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   gate_request_id UUID NOT NULL REFERENCES gate_requests(id),
   resolver_user_id UUID NOT NULL REFERENCES usuarios(id),
+  resolver_role TEXT NOT NULL,
   resolution TEXT NOT NULL,
-  resolution_note TEXT,
+  rationale_note TEXT,
   signature_blob BYTEA,
-  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+  reviewed_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
 -- ============================================================================

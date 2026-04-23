@@ -72,6 +72,7 @@ Contract calls:
 Result states:
 - ready
 - awaiting_gate
+- approved
 - rejected
 - failed
 
@@ -79,7 +80,7 @@ Result states:
 Primary actions:
 - approve
 - reject
-- inspect rationale / signature requirement
+- inspect rationale / signature requirement / review type / finalization target
 Contract calls:
 - GateService resolve
 Result states:
@@ -123,8 +124,11 @@ Every result returns:
 - match count
 - retrieval summary
 - top highlights / source items / optional notice
+- draft preview plus draft review state
+- gate review summary (state, review type, target, rationale, reviewer role/timestamp)
+- final-document summary/path/state that stays distinct from draft approval state
 
-In the current executable spine, `requestDraftRefresh` intentionally returns degraded when only preview state is available; full retrieval/draft-final snapshots still become complete at gate resolution execution. This preserves current law-bearing core flow while keeping state transport explicit for future UI wiring.
+In the current executable spine, `requestDraftRefresh` intentionally returns degraded when only preview state is available; full retrieval/draft-final snapshots still become complete at gate resolution execution. The bridge now still exposes honest preview-only gate/document state during this step so the app can distinguish "awaiting human review" from "finalized".
 
 ## Minimal SwiftUI first-slice implementation
 
@@ -136,11 +140,11 @@ The current macOS validation surface in `HealthOSScribeApp` maps these contracts
 - approve/reject buttons -> `resolveGate(ResolveGateCommand)`
 
 The UI consumes:
-- `ScribeSessionBridgeState` for capture mode, transcription preview/status, retrieval summary/highlights/source hints, draft preview, gate state, and final summary/path
+- `ScribeSessionBridgeState` for capture mode, transcription preview/status, retrieval summary/highlights/source hints, draft preview, gate review state/summary, and final document summary/path
 - `HealthOSCommandDisposition` + typed `HealthOSIssue` for degraded, deny, and operational-failure rendering
 
 The UI does not own:
 - consent validation
 - habilitation validation
 - gate law
-- final artifact effectuation
+- final document effectuation

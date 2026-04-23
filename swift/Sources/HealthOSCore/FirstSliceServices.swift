@@ -86,9 +86,12 @@ public actor SimpleGateService {
     public func createRequest(for draft: ArtifactDraft) -> GateRequest {
         GateRequest(
             draftId: draft.id,
-            requestedAction: "effectuate-soap-note",
+            requestedAction: "finalize-soap-note",
             requiredRole: "professional",
-            requiresSignature: true
+            requiredReviewType: .professionalDocumentReview,
+            finalizationTarget: .soapNote,
+            requiresSignature: true,
+            rationaleNote: "Professional review is required before a SOAP draft becomes an effective document."
         )
     }
 
@@ -96,8 +99,11 @@ public actor SimpleGateService {
         GateResolution(
             gateRequestId: request.id,
             resolverUserId: resolverUserId,
+            resolverRole: request.requiredRole,
             resolution: approve ? .approved : .rejected,
-            note: approve ? "Approved by professional gate." : "Rejected by professional gate."
+            rationaleNote: approve
+                ? "Professional review approved document finalization."
+                : "Professional review rejected document finalization."
         )
     }
 }

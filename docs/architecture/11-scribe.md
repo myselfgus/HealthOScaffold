@@ -6,6 +6,7 @@ Professional-facing interface for session work with AACI support.
 ## What Scribe is
 - the professional UX for live and near-live work
 - the place where drafts and gates become visible to the professional
+- the place where draft review and finalized-document state become explicitly distinct
 - the place where degraded runtime states must be made understandable without pretending they are legal decisions
 
 ## What Scribe is not
@@ -52,7 +53,8 @@ Professional-facing interface for session work with AACI support.
 - transcription pending / ready / degraded / unavailable
 - context ready / partial / empty / degraded / denied
 - draft ready / awaiting_gate / rejected / approved
-- gate pending / reviewing / approved / rejected
+- gate pending / reviewing / approved / rejected / cancelled
+- final document none / awaiting_gate / finalized / withheld
 
 ## Related detailed contract
 See:
@@ -61,7 +63,7 @@ See:
 ## Boundaries
 - Scribe may request actions through core/runtime contracts
 - Scribe may display degraded or denied states
-- Scribe may not invent authorization success or finalize artifacts without gate resolution
+- Scribe may not invent authorization success or finalize documents without gate resolution
 
 ## Current minimal SwiftUI surface
 
@@ -69,11 +71,13 @@ The scaffold now includes a minimal macOS SwiftUI validation surface in:
 - `swift/Sources/HealthOSScribeApp/`
 
 This surface is intentionally narrow:
-- one window with session start, patient selection, capture-mode choice (seeded text or local audio file), draft preview, gate actions, and result sections
+- one window with session start, patient selection, capture-mode choice (seeded text or local audio file), draft preview, gate review summary, and final-document result sections
 - state is consumed through a small UI view model that talks to `ScribeFirstSliceFacade`
 - executable slice orchestration remains outside the app in `HealthOSFirstSliceSupport`
 - transcription status/source and structured retrieval state are shown explicitly instead of being implied from other UI state
 - retrieval now surfaces summary, highlights, source hints, match count, and explicit `partial` / `empty` / `degraded` truth without moving law into the app
+- gate review now surfaces review type, target, rationale, and reviewer timing/role without making SwiftUI the owner of gate law
+- final-document state now stays separate from draft state, including explicit finalized vs withheld truth
 
 This surface is intentionally not the final Scribe UI:
 - no design system or navigation architecture has been introduced
@@ -106,7 +110,7 @@ Every result carries a `disposition` (`HealthOSCommandDisposition`) that keeps d
 - degraded state
 - operational failure
 
-This improves UI readiness while preserving law ownership in core services (consent, habilitation, gate, and effectuation remain outside app ownership).
+This improves UI readiness while preserving law ownership in core services (consent, habilitation, gate, and document finalization remain outside app ownership).
 
 
 ## First slice relevance

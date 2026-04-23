@@ -198,7 +198,7 @@ public actor ScribeFirstSliceAdapter: ScribeFirstSliceFacade {
             draftState: .awaitingGate,
             gateState: .pending,
             transcriptPreview: baseState.transcriptPreview,
-            draftPreview: baseState.draftPreview,
+            draftPreview: previewDraftText(for: workspace.capture),
             transcription: baseState.transcription,
             retrieval: ScribeRetrievalBridgeState(
                 status: .degraded,
@@ -208,6 +208,17 @@ public actor ScribeFirstSliceAdapter: ScribeFirstSliceFacade {
                 highlights: [],
                 sourceItems: [],
                 notice: "O first slice atual ainda produz retrieval e draft finais junto da execucao principal."
+            ),
+            gateReview: ScribeGateReviewBridgeState(
+                state: .pending,
+                requiredReviewType: .professionalDocumentReview,
+                finalizationTarget: .soapNote,
+                requestedAction: "finalize-soap-note",
+                rationaleNote: "Revisao profissional ainda precisa confirmar o draft antes de qualquer efetivacao documental."
+            ),
+            finalDocument: ScribeFinalDocumentBridgeState(
+                state: .awaitingGate,
+                summary: "Documento final ainda nao existe; a efetivacao depende de gate humano explicito."
             ),
             runSummary: nil
         )
@@ -300,7 +311,7 @@ public actor ScribeFirstSliceAdapter: ScribeFirstSliceFacade {
         return ScribeSessionBridgeState(
             sessionId: sessionId,
             captureMode: workspace?.capture?.mode,
-            draftState: workspace?.capture == nil ? .empty : .ready,
+            draftState: .empty,
             gateState: .none,
             transcriptPreview: transcriptPreview,
             draftPreview: "",
@@ -314,6 +325,11 @@ public actor ScribeFirstSliceAdapter: ScribeFirstSliceFacade {
                 sourceItems: [],
                 notice: "A montagem de contexto estruturado aparece quando o spine executa retrieval local."
             ),
+            gateReview: ScribeGateReviewBridgeState(state: .none),
+            finalDocument: ScribeFinalDocumentBridgeState(
+                state: .none,
+                summary: "Nenhum documento final foi efetivado nesta sessao."
+            ),
             runSummary: nil
         )
     }
@@ -322,15 +338,10 @@ public actor ScribeFirstSliceAdapter: ScribeFirstSliceFacade {
         from result: FirstSliceRunResult,
         sessionId: UUID
     ) -> ScribeSessionBridgeState {
-        let gateState: ScribeGateState = result.gate.approved ? .approved : .rejected
-        let draftState: ScribeDraftState = result.gate.approved ? .approved : .rejected
+        let gateState = gateState(for: result.gate.resolution.resolution)
+        let draftState = draftState(for: result.gate.reviewedDraftStatus)
         let transcriptPreview = String(result.transcription.workflowText.prefix(200))
-        let draftPreview = [
-            result.draft.draft.payload["subjective"] ?? "",
-            result.draft.draft.payload["assessment"] ?? ""
-        ]
-        .filter { !$0.isEmpty }
-        .joined(separator: " | ")
+        let draftPreview = result.draft.soapDraft.sections.previewText
 
         let retrievalStatus: ScribeRetrievalStatus
         switch result.retrieval.status {
@@ -347,6 +358,7 @@ public actor ScribeFirstSliceAdapter: ScribeFirstSliceFacade {
             "\($0.headline): \($0.summary)"
         }
         let retrievalSources = Array(Set(result.retrieval.highlights.map(\.sourceRef))).sorted()
+        let finalDocument = makeFinalDocumentState(from: result)
 
         return ScribeSessionBridgeState(
             sessionId: sessionId,
@@ -365,6 +377,16 @@ public actor ScribeFirstSliceAdapter: ScribeFirstSliceFacade {
                 sourceItems: retrievalSources,
                 notice: result.retrieval.notice
             ),
+            gateReview: ScribeGateReviewBridgeState(
+                state: gateState,
+                requiredReviewType: result.gate.request.requiredReviewType,
+                finalizationTarget: result.gate.request.finalizationTarget,
+                requestedAction: result.gate.request.requestedAction,
+                rationaleNote: result.gate.resolution.rationaleNote ?? result.gate.request.rationaleNote,
+                reviewedAt: result.gate.resolution.reviewedAt,
+                resolverRole: result.gate.resolution.resolverRole
+            ),
+            finalDocument: finalDocument,
             runSummary: result.summary
         )
     }
@@ -400,6 +422,10 @@ public actor ScribeFirstSliceAdapter: ScribeFirstSliceFacade {
     }
 
     private func completionDisposition(for result: FirstSliceRunResult) -> HealthOSCommandDisposition {
+        if result.gate.approved, result.finalDocument == nil {
+            return .operationalFailure
+        }
+
         if !result.gate.approved {
             return .governedDeny
         }
@@ -420,6 +446,16 @@ public actor ScribeFirstSliceAdapter: ScribeFirstSliceFacade {
 
     private func completionIssues(from result: FirstSliceRunResult) -> [HealthOSIssue] {
         var issues: [HealthOSIssue] = []
+
+        if !result.gate.approved {
+            issues.append(
+                .init(
+                    code: .gateRejected,
+                    message: result.gate.resolution.rationaleNote
+                        ?? "The professional gate rejected document finalization for the current draft."
+                )
+            )
+        }
 
         switch result.transcription.status {
         case .degraded:
@@ -472,6 +508,76 @@ public actor ScribeFirstSliceAdapter: ScribeFirstSliceFacade {
         }
 
         return issues
+    }
+
+    private func previewDraftText(for capture: SessionCaptureInput?) -> String {
+        guard let capture else { return "" }
+
+        switch capture.mode {
+        case .seededText:
+            let subjective = capture.normalizedText ?? ""
+            return SOAPNoteSections(
+                subjective: subjective,
+                objective: "Contexto final ainda nao foi consolidado no spine executavel.",
+                assessment: "Preview de draft aguardando revisao profissional e retrieval final.",
+                plan: "Finalizacao documental ainda nao efetivada."
+            )
+            .previewText
+        case .localAudioFile:
+            let displayName = capture.audioReference?.displayName ?? "audio local"
+            return SOAPNoteSections(
+                subjective: "Captura local selecionada: \(displayName)",
+                objective: "Transcript e contexto final ainda nao foram montados.",
+                assessment: "Preview de draft aguarda transcription/local retrieval completos.",
+                plan: "Gate humano continua necessario para qualquer documento efetivado."
+            )
+            .previewText
+        }
+    }
+
+    private func gateState(for resolution: GateResolutionKind) -> ScribeGateState {
+        switch resolution {
+        case .approved:
+            return .approved
+        case .rejected:
+            return .rejected
+        case .cancelled:
+            return .cancelled
+        }
+    }
+
+    private func draftState(for status: DraftStatus) -> ScribeDraftState {
+        switch status {
+        case .approved:
+            return .approved
+        case .rejected, .superseded:
+            return .rejected
+        case .awaitingGate:
+            return .awaitingGate
+        case .draft:
+            return .ready
+        }
+    }
+
+    private func makeFinalDocumentState(from result: FirstSliceRunResult) -> ScribeFinalDocumentBridgeState {
+        if let finalDocument = result.finalDocument {
+            return ScribeFinalDocumentBridgeState(
+                state: .finalized,
+                status: finalDocument.document.status,
+                summary: finalDocument.document.summary,
+                objectPath: finalDocument.documentRef.objectPath,
+                finalizedAt: finalDocument.document.finalization.finalizedAt,
+                sourceDraftId: finalDocument.document.source.sourceDraftId,
+                gateResolutionId: finalDocument.document.source.gateResolutionId
+            )
+        }
+
+        return ScribeFinalDocumentBridgeState(
+            state: .withheld,
+            summary: "Documento final nao foi persistido porque o gate documental nao aprovou a efetivacao.",
+            sourceDraftId: result.draft.draft.id,
+            gateResolutionId: result.gate.resolution.id
+        )
     }
 
     private func issues(for error: Error) -> [HealthOSIssue] {

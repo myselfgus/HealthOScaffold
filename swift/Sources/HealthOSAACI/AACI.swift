@@ -64,7 +64,7 @@ public actor AACIOrchestrator {
         session: SessaoTrabalho,
         transcription: TranscriptionOutput,
         context: RetrievalContextPackage
-    ) async -> ArtifactDraft {
+    ) async -> SOAPDraftDocument {
         let objective: String
         if context.highlights.isEmpty {
             objective = context.summary
@@ -88,13 +88,29 @@ public actor AACIOrchestrator {
         case (.degraded, _), (.unavailable, _), (.pending, _):
             assessment = "Draft assembled with explicit transcription degradation; professional review remains required."
         }
-        let payload = [
-            "subjective": transcription.workflowText,
-            "objective": objective,
-            "assessment": assessment,
-            "plan": "TODO"
-        ]
-        return ArtifactDraft(sessionId: session.id, kind: "soap", payload: payload)
+        let sections = SOAPNoteSections(
+            subjective: transcription.workflowText,
+            objective: objective,
+            assessment: assessment,
+            plan: "TODO"
+        )
+        let draft = ArtifactDraft(
+            sessionId: session.id,
+            kind: .soap,
+            status: .awaitingGate,
+            author: DraftAuthorIdentity(
+                actorId: "aaci.draft-composer",
+                semanticRole: "draft-composer"
+            ),
+            payload: sections.payload
+        )
+        return SOAPDraftDocument(
+            draft: draft,
+            sections: sections,
+            contextStatus: context.status,
+            contextSummary: context.summary,
+            noteSummary: assessment
+        )
     }
 }
 

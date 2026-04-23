@@ -13,6 +13,7 @@ public enum ScribeGateState: String, Codable, Sendable {
     case pending
     case approved
     case rejected
+    case cancelled
 }
 
 public enum ScribeRetrievalStatus: String, Codable, Sendable {
@@ -20,6 +21,13 @@ public enum ScribeRetrievalStatus: String, Codable, Sendable {
     case partial
     case empty
     case degraded
+}
+
+public enum ScribeFinalDocumentState: String, Codable, Sendable {
+    case none
+    case awaitingGate = "awaiting_gate"
+    case finalized
+    case withheld
 }
 
 public struct StartProfessionalSessionCommand: Codable, Sendable {
@@ -117,6 +125,62 @@ public struct ScribeTranscriptionBridgeState: Codable, Sendable {
     }
 }
 
+public struct ScribeGateReviewBridgeState: Codable, Sendable {
+    public let state: ScribeGateState
+    public let requiredReviewType: GateReviewType?
+    public let finalizationTarget: FinalDocumentKind?
+    public let requestedAction: String?
+    public let rationaleNote: String?
+    public let reviewedAt: Date?
+    public let resolverRole: String?
+
+    public init(
+        state: ScribeGateState,
+        requiredReviewType: GateReviewType? = nil,
+        finalizationTarget: FinalDocumentKind? = nil,
+        requestedAction: String? = nil,
+        rationaleNote: String? = nil,
+        reviewedAt: Date? = nil,
+        resolverRole: String? = nil
+    ) {
+        self.state = state
+        self.requiredReviewType = requiredReviewType
+        self.finalizationTarget = finalizationTarget
+        self.requestedAction = requestedAction
+        self.rationaleNote = rationaleNote
+        self.reviewedAt = reviewedAt
+        self.resolverRole = resolverRole
+    }
+}
+
+public struct ScribeFinalDocumentBridgeState: Codable, Sendable {
+    public let state: ScribeFinalDocumentState
+    public let status: FinalDocumentStatus?
+    public let summary: String
+    public let objectPath: String?
+    public let finalizedAt: Date?
+    public let sourceDraftId: UUID?
+    public let gateResolutionId: UUID?
+
+    public init(
+        state: ScribeFinalDocumentState,
+        status: FinalDocumentStatus? = nil,
+        summary: String,
+        objectPath: String? = nil,
+        finalizedAt: Date? = nil,
+        sourceDraftId: UUID? = nil,
+        gateResolutionId: UUID? = nil
+    ) {
+        self.state = state
+        self.status = status
+        self.summary = summary
+        self.objectPath = objectPath
+        self.finalizedAt = finalizedAt
+        self.sourceDraftId = sourceDraftId
+        self.gateResolutionId = gateResolutionId
+    }
+}
+
 public struct ScribeSessionBridgeState: Codable, Sendable {
     public let sessionId: UUID
     public let captureMode: CaptureMode?
@@ -126,6 +190,8 @@ public struct ScribeSessionBridgeState: Codable, Sendable {
     public let draftPreview: String
     public let transcription: ScribeTranscriptionBridgeState
     public let retrieval: ScribeRetrievalBridgeState
+    public let gateReview: ScribeGateReviewBridgeState
+    public let finalDocument: ScribeFinalDocumentBridgeState
     public let runSummary: SliceRunSummary?
 
     public init(
@@ -137,6 +203,8 @@ public struct ScribeSessionBridgeState: Codable, Sendable {
         draftPreview: String,
         transcription: ScribeTranscriptionBridgeState,
         retrieval: ScribeRetrievalBridgeState,
+        gateReview: ScribeGateReviewBridgeState,
+        finalDocument: ScribeFinalDocumentBridgeState,
         runSummary: SliceRunSummary?
     ) {
         self.sessionId = sessionId
@@ -147,6 +215,8 @@ public struct ScribeSessionBridgeState: Codable, Sendable {
         self.draftPreview = draftPreview
         self.transcription = transcription
         self.retrieval = retrieval
+        self.gateReview = gateReview
+        self.finalDocument = finalDocument
         self.runSummary = runSummary
     }
 }

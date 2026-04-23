@@ -109,15 +109,30 @@ final class ScribeFirstSliceViewModel {
 
     var finalSummaryText: String {
         guard let state = bridgeState else {
-            return "Sem artefato final ainda."
+            return "Sem documento final ainda."
         }
-        guard let summary = state.runSummary else {
-            return "Fluxo ainda em preparação; gate não resolvido."
+        let summary = state.finalDocument.summary
+        if let finalPath = state.finalDocument.objectPath {
+            return "\(summary) Caminho: \(finalPath)"
         }
-        if let finalPath = summary.finalArtifactObjectPath {
-            return "Aprovado com artefato final persistido em \(finalPath)"
+        return summary
+    }
+
+    var gateReviewSummaryText: String {
+        guard let gateReview = bridgeState?.gateReview else {
+            return "Nenhuma revisão de gate visível ainda."
         }
-        return "Sem artefato final efetivado. Gate: \(state.gateState.rawValue)"
+
+        return [
+            "state: \(gateReview.state.rawValue)",
+            "review_type: \(gateReview.requiredReviewType?.rawValue ?? "none")",
+            "target: \(gateReview.finalizationTarget?.rawValue ?? "none")",
+            "action: \(gateReview.requestedAction ?? "none")",
+            "resolver_role: \(gateReview.resolverRole ?? "pending")",
+            "reviewed_at: \(gateReview.reviewedAt?.formatted(date: .numeric, time: .standard) ?? "pending")",
+            gateReview.rationaleNote ?? "sem rationale explicita"
+        ]
+        .joined(separator: "\n")
     }
 
     func loadIfNeeded() async {
@@ -318,10 +333,12 @@ final class ScribeFirstSliceViewModel {
         print("transcription_status=\(state.transcription.status.rawValue)")
         print("draft_state=\(state.draftState.rawValue)")
         print("gate_state=\(state.gateState.rawValue)")
+        print("gate_review=\(state.gateReview.state.rawValue)")
         print("retrieval_status=\(state.retrieval.status.rawValue)")
         print("retrieval_matches=\(state.retrieval.matchCount)")
         print("retrieval_summary=\(state.retrieval.summary)")
-        print("final=\(summary.finalArtifactObjectPath ?? "<not effectuated>")")
+        print("final_document_state=\(state.finalDocument.state.rawValue)")
+        print("final_document=\(summary.finalDocumentObjectPath ?? "<not effectuated>")")
         print("issues=\(displayIssues)")
         return true
     }

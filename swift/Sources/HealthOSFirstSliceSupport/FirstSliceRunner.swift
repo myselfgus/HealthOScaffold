@@ -235,30 +235,38 @@ public actor FirstSliceRunner {
             to: &provenanceRecords
         )
 
-        let draftModel = await orchestrator.composeSOAPDraft(
+        let draftDocument = await orchestrator.composeSOAPDraft(
             session: session,
             transcription: transcription,
             context: retrieval
         )
-        let draftData = try JSONEncoder.healthOS.encode(draftModel)
+        let draftData = try JSONEncoder.healthOS.encode(draftDocument)
         let draftRef = try await storage.put(
             StoragePutRequest(
                 owner: .servico(serviceId: service.id),
                 kind: "drafts-soap",
                 layer: .derivedArtifacts,
                 content: draftData,
-                metadata: ["sessionId": session.id.uuidString, "draftId": draftModel.id.uuidString]
+                metadata: [
+                    "sessionId": session.id.uuidString,
+                    "draftId": draftDocument.draft.id.uuidString,
+                    "draftStatus": draftDocument.draft.status.rawValue
+                ]
             )
         )
         try await storage.audit(objectRef: draftRef, action: "write-draft", actorId: professional.id.uuidString, metadata: lawfulContext)
-        let draft = DraftPackage(draft: draftModel, draftRef: draftRef)
+        let draft = DraftPackage(soapDraft: draftDocument, draftRef: draftRef)
         events.append(
             SessionEventRecord(
                 sessionId: session.id,
                 kind: .draftComposed,
                 payload: FirstSliceSessionEventPayload(
                     summary: "SOAP draft composed and persisted.",
-                    attributes: ["draftId": draft.draft.id.uuidString]
+                    attributes: [
+                        "draftId": draft.draft.id.uuidString,
+                        "draftStatus": draft.draft.status.rawValue,
+                        "contextStatus": draft.soapDraft.contextStatus.rawValue
+                    ]
                 )
             )
         )
@@ -269,7 +277,7 @@ public actor FirstSliceRunner {
                 providerName: "apple-foundation",
                 modelName: "stub",
                 modelVersion: "v1",
-                promptVersion: "soap-v1",
+                promptVersion: "soap-v2",
                 outputHash: draft.draftRef.contentHash,
                 timestamp: .now
             ),
@@ -283,7 +291,11 @@ public actor FirstSliceRunner {
                 kind: .gateRequested,
                 payload: FirstSliceSessionEventPayload(
                     summary: "Gate requested for draft.",
-                    attributes: ["gateRequestId": gateRequest.id.uuidString]
+                    attributes: [
+                        "gateRequestId": gateRequest.id.uuidString,
+                        "reviewType": gateRequest.requiredReviewType.rawValue,
+                        "target": gateRequest.finalizationTarget.rawValue
+                    ]
                 )
             )
         )
@@ -292,9 +304,19 @@ public actor FirstSliceRunner {
             resolverUserId: professional.id,
             approve: input.gateApprove
         )
+        let reviewedDraftStatus: DraftStatus
+        switch gateResolution.resolution {
+        case .approved:
+            reviewedDraftStatus = .approved
+        case .rejected:
+            reviewedDraftStatus = .rejected
+        case .cancelled:
+            reviewedDraftStatus = .superseded
+        }
         let gate = GateOutcomeSummary(
             request: gateRequest,
             resolution: gateResolution,
+            reviewedDraftStatus: reviewedDraftStatus,
             approved: gateResolution.resolution == .approved
         )
         events.append(
@@ -303,7 +325,10 @@ public actor FirstSliceRunner {
                 kind: .gateResolved,
                 payload: FirstSliceSessionEventPayload(
                     summary: "Gate resolved by professional.",
-                    attributes: ["resolution": gate.resolution.resolution.rawValue]
+                    attributes: [
+                        "resolution": gate.resolution.resolution.rawValue,
+                        "reviewedDraftStatus": gate.reviewedDraftStatus.rawValue
+                    ]
                 )
             )
         )
@@ -316,59 +341,81 @@ public actor FirstSliceRunner {
             to: &provenanceRecords
         )
 
-        let finalArtifactRef: StorageObjectRef?
+        let finalDocument: FinalDocumentPackage?
         if gate.approved {
-            let finalPayload = FinalArtifactPayload(
+            let finalizedAt = Date()
+            let finalPayload = FinalizedSOAPDocument(
                 sessionId: session.id,
-                sourceDraftId: draft.draft.id,
-                status: .effective,
-                subjective: draft.draft.payload["subjective"] ?? "",
-                objective: draft.draft.payload["objective"] ?? "",
-                assessment: draft.draft.payload["assessment"] ?? "",
-                plan: draft.draft.payload["plan"] ?? ""
+                kind: gate.request.finalizationTarget,
+                status: .finalized,
+                sections: draft.soapDraft.sections,
+                source: FinalDocumentSourceLink(
+                    sourceDraftId: draft.draft.id,
+                    sourceDraftKind: draft.draft.kind,
+                    sourceDraftStatus: gate.reviewedDraftStatus,
+                    sourceDraftObjectPath: draft.draftRef.objectPath,
+                    gateRequestId: gate.request.id,
+                    gateResolutionId: gate.resolution.id
+                ),
+                finalization: DocumentFinalizationMetadata(
+                    finalizedAt: finalizedAt,
+                    finalizerUserId: professional.id,
+                    finalizerRole: gate.resolution.resolverRole,
+                    reviewType: gate.request.requiredReviewType,
+                    gateResolution: gate.resolution.resolution
+                ),
+                summary: "SOAP finalized after explicit professional gate approval."
             )
             let finalData = try JSONEncoder.healthOS.encode(finalPayload)
-            finalArtifactRef = try await storage.put(
+            let finalDocumentRef = try await storage.put(
                 StoragePutRequest(
                     owner: .servico(serviceId: service.id),
-                    kind: "soap-final",
+                    kind: "documents-soap-final",
                     layer: .operationalContent,
                     content: finalData,
                     metadata: [
                         "sessionId": session.id.uuidString,
-                        "sourceDraftId": draft.draft.id.uuidString
+                        "sourceDraftId": draft.draft.id.uuidString,
+                        "gateRequestId": gate.request.id.uuidString,
+                        "gateResolutionId": gate.resolution.id.uuidString,
+                        "finalDocumentId": finalPayload.id.uuidString
                     ]
                 )
             )
-            if let finalArtifactRef {
-                try await storage.audit(
-                    objectRef: finalArtifactRef,
-                    action: "write-final-artifact",
-                    actorId: professional.id.uuidString,
-                    metadata: lawfulContext
-                )
-                events.append(
-                    SessionEventRecord(
-                        sessionId: session.id,
-                        kind: .finalArtifactPersisted,
-                        payload: FirstSliceSessionEventPayload(
-                            summary: "Final artifact persisted after gate approval.",
-                            attributes: ["objectPath": finalArtifactRef.objectPath]
-                        )
+            try await storage.audit(
+                objectRef: finalDocumentRef,
+                action: "write-final-document",
+                actorId: professional.id.uuidString,
+                metadata: lawfulContext
+            )
+            events.append(
+                SessionEventRecord(
+                    sessionId: session.id,
+                    kind: .finalDocumentPersisted,
+                    payload: FirstSliceSessionEventPayload(
+                        summary: "Final SOAP document persisted after gate approval.",
+                        attributes: [
+                            "objectPath": finalDocumentRef.objectPath,
+                            "finalDocumentId": finalPayload.id.uuidString
+                        ]
                     )
                 )
-                try await appendProvenance(
-                    .init(
-                        actorId: professional.id.uuidString,
-                        operation: "artifact.effectuate.soap",
-                        outputHash: finalArtifactRef.contentHash,
-                        timestamp: .now
-                    ),
-                    to: &provenanceRecords
-                )
-            }
+            )
+            try await appendProvenance(
+                .init(
+                    actorId: professional.id.uuidString,
+                    operation: "document.finalize.soap",
+                    outputHash: finalDocumentRef.contentHash,
+                    timestamp: finalizedAt
+                ),
+                to: &provenanceRecords
+            )
+            finalDocument = FinalDocumentPackage(
+                document: finalPayload,
+                documentRef: finalDocumentRef
+            )
         } else {
-            finalArtifactRef = nil
+            finalDocument = nil
         }
 
         let gateRequestData = try JSONEncoder.healthOS.encode(gate.request)
@@ -409,17 +456,24 @@ public actor FirstSliceRunner {
             retrieval: retrieval,
             draft: draft,
             gate: gate,
-            finalArtifactRef: finalArtifactRef,
+            finalDocument: finalDocument,
             summary: SliceRunSummary(
                 sessionId: session.id,
                 captureMode: input.capture.mode,
                 gateApproved: gate.approved,
+                gateResolution: gate.resolution.resolution,
+                gateReviewedAt: gate.resolution.reviewedAt,
+                gateReviewType: gate.request.requiredReviewType,
+                finalizationTarget: gate.request.finalizationTarget,
                 audioCaptureObjectPath: transcription.audioCapture?.storedRef.objectPath,
                 transcriptObjectPath: transcription.transcriptRef?.objectPath,
                 transcriptionStatus: transcription.status,
                 transcriptionSource: transcription.source,
                 draftObjectPath: draft.draftRef.objectPath,
-                finalArtifactObjectPath: finalArtifactRef?.objectPath,
+                reviewedDraftStatus: gate.reviewedDraftStatus,
+                finalDocumentStatus: finalDocument?.document.status,
+                finalDocumentObjectPath: finalDocument?.documentRef.objectPath,
+                finalDocumentSummary: finalDocument?.document.summary,
                 retrievalMatchCount: retrieval.supportingMatches.count,
                 retrievalSource: retrieval.boundedResult.source,
                 retrievalContextStatus: retrieval.status,

@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "healthos/contracts/finalized-soap-document",
+  "type": "object",
+  "required": ["id", "sessionId", "kind", "status", "sections", "source", "finalization", "summary"],
+  "properties": {
+    "id": {"type": "string", "format": "uuid"},
+    "sessionId": {"type": "string", "format": "uuid"},
+    "kind": {"type": "string", "enum": ["soap_note"]},
+    "status": {"type": "string", "enum": ["finalized"]},
+    "sections": {
+      "type": "object",
+      "required": ["subjective", "objective", "assessment", "plan"],
+      "properties": {
+        "subjective": {"type": "string"},
+        "objective": {"type": "string"},
+        "assessment": {"type": "string"},
+        "plan": {"type": "string"}
+      }
+    },
+    "source": {
+      "type": "object",
+      "required": [
+        "sourceDraftId",
+        "sourceDraftKind",
+        "sourceDraftStatus",
+        "sourceDraftObjectPath",
+        "gateRequestId",
+        "gateResolutionId"
+      ],
+      "properties": {
+        "sourceDraftId": {"type": "string", "format": "uuid"},
+        "sourceDraftKind": {"type": "string", "enum": ["soap", "prescription", "referral", "note", "retrieval_summary", "admin_task_list"]},
+        "sourceDraftStatus": {"type": "string", "enum": ["draft", "awaiting_gate", "approved", "rejected", "superseded"]},
+        "sourceDraftObjectPath": {"type": "string"},
+        "gateRequestId": {"type": "string", "format": "uuid"},
+        "gateResolutionId": {"type": "string", "format": "uuid"}
+      }
+    },
+    "finalization": {
+      "type": "object",
+      "required": ["finalizedAt", "finalizerUserId", "finalizerRole", "reviewType", "gateResolution"],
+      "properties": {
+        "finalizedAt": {"type": "string", "format": "date-time"},
+        "finalizerUserId": {"type": "string", "format": "uuid"},
+        "finalizerRole": {"type": "string"},
+        "reviewType": {"type": "string", "enum": ["professional_document_review"]},
+        "gateResolution": {"type": "string", "enum": ["approved", "rejected", "cancelled"]}
+      }
+    },
+    "summary": {"type": "string"}
+  }
+}

@@ -29,7 +29,7 @@ Legend:
 - [x] canonical directory implementation in Swift exists
 - [x] storage API contract exists explicitly
 - [x] initial hash/integrity strategy is established
-- [~] lawfulContext transport strictness still needs final decision
+- [x] lawfulContext v1 decision is established
 
 ## 4. Runtime / actor / agent model
 - [x] actor/agent distinction documented and typed
@@ -38,7 +38,7 @@ Legend:
 - [x] lifecycle states formalized across docs, schema, Swift, and TypeScript
 - [x] permission/boundary model established at scaffold level
 - [x] retry/backpressure baseline exists
-- [~] runtime-state surface policy across apps still needs one more closure pass
+- [x] runtime-state surfacing doctrine exists
 
 ## 5. AACI
 - [x] purpose and boundaries established
@@ -47,7 +47,7 @@ Legend:
 - [x] initial subagents established
 - [x] subagent contracts substantially defined
 - [x] provider-routing baseline exists by task class
-- [~] provider-routing policy still needs threshold/benchmark detail for stronger operational closure
+- [x] provider-threshold policy exists by task class
 
 ## 6. Apps / interfaces
 - [x] Scribe defined
@@ -56,45 +56,43 @@ Legend:
 - [x] app/core separation established
 - [x] shared state vocabulary exists
 - [x] primary flow maps exist for all three apps
-- [~] runtime-state surfaces and some deeper screen/interaction contracts still need closure
+- [x] runtime-state surfaces are defined
+- [x] screen-level interaction contracts exist
 
 ## 7. Networking / operations
 - [x] local-first stance established
 - [x] mesh/VPN posture established
 - [x] launchd/backup/network docs scaffolded
-- [~] runbook detail still needs closure
-- [~] MeshProvider abstraction still needs fuller contract form
+- [x] runbook detail exists at meaningful baseline
+- [x] MeshProvider abstraction has meaningful contract form
+- [~] operator incident-command vocabulary can still be made more explicit
 
 ## 8. Providers / ML
 - [x] provider abstraction established
 - [x] offline ML boundary established
 - [x] fine-tuning/adapters concept scaffolded
 - [x] provider benchmark dimensions and routing outcomes exist
-- [~] dataset governance and promotion/rollback need fuller procedural detail
+- [x] dataset governance and promotion/rollback baseline exists
+- [~] operator review checklist for promotions can still be added
 
 ## 9. AI execution layer
 - [x] master plan created
 - [x] AI operating protocol created
 - [x] status tracking created
 - [x] definition of done created
-- [x] skills roadmap created
-- [~] skills are still early skeletons, not full reusable skill packs
+- [x] skills index exists and multiple domain skills exist
+- [~] skills can still be hardened into even more prescriptive reusable packs
 
 ## 10. First vertical slice readiness
 - [x] slice target defined
 - [x] slice dependency order defined
 - [x] core-law failure semantics no longer block honest closure
 - [x] storage and runtime baselines are strong enough for controlled implementation
-- [~] app runtime-state surfacing and provider-threshold details still need tightening before heavy implementation
+- [x] app-state and interaction baselines are strong enough for controlled implementation
+- [~] a few procedural/operator details still remain optional hardening before heavy implementation
 
 ## Practical reading
 
-The scaffold is already real and structured.
-What remains is not identity of the system, but closure work on:
-- runtime-state surfacing into apps
-- ops detail
-- provider/ML governance detail
-- lawfulContext transport strictness
-- stronger reusable AI skills
-
-That means the project is in a late pre-coding hardening phase with most foundational identity, contract, boundary, and flow questions already anchored.
+The scaffold is no longer merely an outline.
+It is a strong pre-implementation foundation.
+What remains is mostly optional hardening and procedural refinement, not identity or architecture rescue work.

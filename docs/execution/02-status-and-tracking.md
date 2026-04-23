@@ -25,18 +25,18 @@ Current phase: Phase 02 — Data and storage foundation
 - explicit storage contract added to Swift core
 - storage architecture document aligned to the storage contract
 - core-law deny/failure semantics documented
+- initial SQL migration reorganized with sections, notes, and invariant comments
+- lawful-context examples added to storage architecture
 
 ## In progress
 
-- moving from phase 01 closure into phase 02 storage precision
-- refining SQL and lawful-context details
+- closing phase 02 storage precision
 - preparing stronger runtime-precision closure before heavy implementation
 
 ## Known gaps
 
 - app interfaces are still architectural shells, not detailed task systems
-- SQL migration still needs readability/comment refinement
-- lawful-context examples for storage reads still need explicit documentation
+- content-hash strategy/integrity-verification details still need explicit closure
 - runtime lifecycle typing and permission/failure precision still need closure
 - future AI skills exist only as initial skeletons, not yet as a complete skill system
 
@@ -46,6 +46,7 @@ Current phase: Phase 02 — Data and storage foundation
 - decide when to convert the initial AI skill skeletons into enforced reusable workflows
 - define shared error-envelope strategy for loopback local services, if needed
 - decide how far to formalize runtime lifecycle and permission errors before slice implementation
+- decide first concrete hash strategy for object content verification
 
 ## Tracking rules
 

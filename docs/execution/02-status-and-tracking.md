@@ -27,32 +27,37 @@ Current phase: Phase 03 — Runtime / actor / agent contracts
 - core-law deny/failure semantics documented
 - initial SQL migration reorganized with sections, notes, and invariant comments
 - lawful-context examples added to storage architecture
+- initial object-integrity/hash strategy documented
 - runtime lifecycle formalized in docs, schema, Swift, and TypeScript
 - actor/agent distinction formalized and typed
 - AACI session model expanded with bounded meaning and path classes
 - AACI subagent contracts substantially defined in docs and Swift
 - agent boundary and descriptor schemas added
+- runtime retry/backpressure baseline documented
+- provider-routing baseline documented by task class
+- shared app state vocabulary expanded
+- Scribe, Sortio, and CloudClinic flow maps expanded
 
 ## In progress
 
-- closing phase 03 runtime precision
-- preparing next closure wave around provider-routing policy, retry/backpressure policy, and app-flow precision
+- moving from runtime contract hardening into late pre-coding closure
+- identifying the last policy/details that should be closed before heavier implementation work
 
 ## Known gaps
 
-- app interfaces are still architectural shells, not detailed task systems
-- content-hash strategy/integrity-verification details still need explicit closure
-- retry/backpressure policy per runtime still needs fuller operational definition
-- provider-routing policy by task class still needs stronger operational definition
-- future AI skills exist only as initial skeletons, not yet as a complete skill system
+- runtime-state surfaces across apps still need one more explicit closure pass
+- lawfulContext may still need a stricter transport envelope decision
+- ops runbook detail still needs strengthening
+- provider/ML governance still needs deeper procedural detail for datasets, promotion, and rollback
+- AI skills are still scaffolds, not fully reusable operational packs
 
 ## Open blockers / decisions
 
 - decide whether first runnable slice should keep capture mocked or add native audio earlier
 - decide when to convert the initial AI skill skeletons into enforced reusable workflows
 - define shared error-envelope strategy for loopback local services, if needed
-- decide first concrete hash strategy for object content verification
-- decide how aggressively to formalize runtime backpressure/retry before slice implementation
+- decide whether lawfulContext remains flexible map-based or becomes strict transport contract
+- decide how much provider benchmark thresholding should be formalized before slice implementation
 
 ## Tracking rules
 

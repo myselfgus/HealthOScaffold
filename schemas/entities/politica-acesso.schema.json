@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "healthos/entities/politica-acesso",
+  "type": "object",
+  "required": ["ownerKind", "allowedBy"],
+  "properties": {
+    "ownerKind": {"type": "string", "enum": ["usuario", "servico"]},
+    "allowedBy": {"type": "string", "enum": ["consentimento", "habilitacao", "sistema"]},
+    "scope": {"type": "object"},
+    "timeWindow": {"type": ["object", "null"]},
+    "notes": {"type": ["string", "null"]}
+  }
+}

@@ -222,7 +222,7 @@ actor FirstSliceRunner {
             let finalPayload = FinalArtifactPayload(
                 sessionId: session.id,
                 sourceDraftId: draft.draft.id,
-                status: "effective",
+                status: .effective,
                 subjective: draft.draft.payload["subjective"] ?? "",
                 objective: draft.draft.payload["objective"] ?? "",
                 assessment: draft.draft.payload["assessment"] ?? "",

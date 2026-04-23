@@ -1,0 +1,364 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://healthos.dev/schemas/governed-operational-spec.schema.json",
+  "title": "Governed Operational Spec",
+  "description": "Canonical compiled JSON schema for HealthOS Governed Operational Spec (GOS).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "spec_id",
+    "spec_family",
+    "version",
+    "metadata",
+    "signal_specs",
+    "slot_specs",
+    "derivation_specs",
+    "task_specs",
+    "tool_binding_specs",
+    "draft_output_specs",
+    "guard_specs",
+    "deadline_specs",
+    "evidence_hook_specs",
+    "human_gate_requirement_specs",
+    "escalation_specs",
+    "scope_requirement_specs"
+  ],
+  "properties": {
+    "spec_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "spec_family": {
+      "type": "string",
+      "enum": [
+        "workflow",
+        "policy",
+        "document",
+        "service_rule",
+        "operational_bundle"
+      ]
+    },
+    "version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "metadata": {
+      "$ref": "#/$defs/metadata"
+    },
+    "signal_specs": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/signalSpec" }
+    },
+    "slot_specs": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/slotSpec" }
+    },
+    "derivation_specs": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/derivationSpec" }
+    },
+    "task_specs": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/taskSpec" }
+    },
+    "tool_binding_specs": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/toolBindingSpec" }
+    },
+    "draft_output_specs": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/draftOutputSpec" }
+    },
+    "guard_specs": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/guardSpec" }
+    },
+    "deadline_specs": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/deadlineSpec" }
+    },
+    "evidence_hook_specs": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/evidenceHookSpec" }
+    },
+    "human_gate_requirement_specs": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/humanGateRequirementSpec" }
+    },
+    "escalation_specs": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/escalationSpec" }
+    },
+    "scope_requirement_specs": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/scopeRequirementSpec" }
+    }
+  },
+  "$defs": {
+    "stringMap": {
+      "type": "object",
+      "additionalProperties": { "type": "string" }
+    },
+    "metadata": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["title", "status", "authoring_form", "compiled_form"],
+      "properties": {
+        "title": { "type": "string", "minLength": 1 },
+        "description": { "type": "string" },
+        "status": {
+          "type": "string",
+          "enum": ["draft", "reviewed", "active", "deprecated"]
+        },
+        "authoring_form": {
+          "type": "string",
+          "enum": ["yaml", "json", "other_declarative"]
+        },
+        "compiled_form": {
+          "type": "string",
+          "enum": ["json"]
+        },
+        "source_references": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/sourceReference" }
+        },
+        "jurisdictions": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "service_types": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "runtime_modes": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "tags": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "sourceReference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "reference"],
+      "properties": {
+        "kind": {
+          "type": "string",
+          "enum": ["protocol", "policy", "guideline", "service_rule", "document_rule", "other"]
+        },
+        "reference": { "type": "string", "minLength": 1 },
+        "version": { "type": "string" },
+        "effective_from": { "type": "string", "format": "date" },
+        "effective_to": { "type": "string", "format": "date" }
+      }
+    },
+    "signalSpec": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["signal_id", "kind", "source_class"],
+      "properties": {
+        "signal_id": { "type": "string", "minLength": 1 },
+        "kind": { "type": "string" },
+        "source_class": {
+          "type": "string",
+          "enum": ["transcript", "audio_ref", "device_stream", "record_ref", "service_event", "user_input", "other"]
+        },
+        "required": { "type": "boolean" },
+        "notes": { "type": "string" },
+        "metadata": { "$ref": "#/$defs/stringMap" }
+      }
+    },
+    "slotSpec": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["slot_id", "data_type", "required"],
+      "properties": {
+        "slot_id": { "type": "string", "minLength": 1 },
+        "data_type": { "type": "string" },
+        "required": { "type": "boolean" },
+        "source_signal_ids": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "fallback_behavior": {
+          "type": "string",
+          "enum": ["ask", "reuse_recent", "degrade_honestly", "skip_if_optional"]
+        },
+        "metadata": { "$ref": "#/$defs/stringMap" }
+      }
+    },
+    "derivationSpec": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["derivation_id", "inputs", "outputs", "method_kind"],
+      "properties": {
+        "derivation_id": { "type": "string", "minLength": 1 },
+        "inputs": { "type": "array", "items": { "type": "string" } },
+        "outputs": { "type": "array", "items": { "type": "string" } },
+        "method_kind": {
+          "type": "string",
+          "enum": ["deterministic", "bounded_reasoning", "calculated", "classifier"]
+        },
+        "requires_human_review": { "type": "boolean" },
+        "metadata": { "$ref": "#/$defs/stringMap" }
+      }
+    },
+    "taskSpec": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["task_id", "task_class", "inputs", "outputs"],
+      "properties": {
+        "task_id": { "type": "string", "minLength": 1 },
+        "task_class": {
+          "type": "string",
+          "enum": ["extract", "derive", "retrieve", "compose", "structure", "summarize", "admin_action", "prepare_draft", "other"]
+        },
+        "inputs": { "type": "array", "items": { "type": "string" } },
+        "outputs": { "type": "array", "items": { "type": "string" } },
+        "preconditions": { "type": "array", "items": { "type": "string" } },
+        "degraded_behavior": {
+          "type": "string",
+          "enum": ["return_partial", "return_empty", "escalate", "stop"]
+        },
+        "metadata": { "$ref": "#/$defs/stringMap" }
+      }
+    },
+    "toolBindingSpec": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["binding_id", "task_id", "tool_class"],
+      "properties": {
+        "binding_id": { "type": "string", "minLength": 1 },
+        "task_id": { "type": "string", "minLength": 1 },
+        "tool_class": {
+          "type": "string",
+          "enum": ["language_model", "speech_to_text", "retrieval", "formatter", "storage", "timer", "other"]
+        },
+        "binding_strategy": {
+          "type": "string",
+          "enum": ["required", "preferred", "fallback", "runtime_selected"]
+        },
+        "metadata": { "$ref": "#/$defs/stringMap" }
+      }
+    },
+    "draftOutputSpec": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["draft_output_id", "draft_kind", "status"],
+      "properties": {
+        "draft_output_id": { "type": "string", "minLength": 1 },
+        "draft_kind": { "type": "string" },
+        "status": {
+          "type": "string",
+          "enum": ["draft_only"]
+        },
+        "source_task_ids": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "requires_gate": { "type": "boolean" },
+        "metadata": { "$ref": "#/$defs/stringMap" }
+      }
+    },
+    "guardSpec": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["guard_id", "guard_class", "trigger"],
+      "properties": {
+        "guard_id": { "type": "string", "minLength": 1 },
+        "guard_class": {
+          "type": "string",
+          "enum": ["predictive", "consistency", "quality", "risk", "escalation_gate"]
+        },
+        "trigger": { "type": "string", "minLength": 1 },
+        "action": {
+          "type": "string",
+          "enum": ["suggest", "mark_degraded", "escalate", "stop"]
+        },
+        "metadata": { "$ref": "#/$defs/stringMap" }
+      }
+    },
+    "deadlineSpec": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["deadline_id", "target_ref", "target_duration"],
+      "properties": {
+        "deadline_id": { "type": "string", "minLength": 1 },
+        "target_ref": { "type": "string", "minLength": 1 },
+        "target_duration": { "type": "string", "minLength": 1 },
+        "miss_behavior": {
+          "type": "string",
+          "enum": ["escalate", "mark_degraded", "notify", "stop"]
+        },
+        "metadata": { "$ref": "#/$defs/stringMap" }
+      }
+    },
+    "evidenceHookSpec": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["hook_id", "phase", "capture"],
+      "properties": {
+        "hook_id": { "type": "string", "minLength": 1 },
+        "phase": {
+          "type": "string",
+          "enum": ["input", "derivation", "task", "draft_output", "gate_needed", "escalation"]
+        },
+        "capture": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["provenance", "audit_entry", "input_hash", "output_hash", "runtime_state", "summary"]
+          }
+        },
+        "metadata": { "$ref": "#/$defs/stringMap" }
+      }
+    },
+    "humanGateRequirementSpec": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["gate_requirement_id", "target_ref", "review_type"],
+      "properties": {
+        "gate_requirement_id": { "type": "string", "minLength": 1 },
+        "target_ref": { "type": "string", "minLength": 1 },
+        "review_type": { "type": "string" },
+        "required_role": { "type": "string" },
+        "metadata": { "$ref": "#/$defs/stringMap" }
+      }
+    },
+    "escalationSpec": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["escalation_id", "trigger_ref", "escalation_action"],
+      "properties": {
+        "escalation_id": { "type": "string", "minLength": 1 },
+        "trigger_ref": { "type": "string", "minLength": 1 },
+        "escalation_action": {
+          "type": "string",
+          "enum": ["notify_human", "raise_priority", "mark_degraded", "stop_task_chain"]
+        },
+        "metadata": { "$ref": "#/$defs/stringMap" }
+      }
+    },
+    "scopeRequirementSpec": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["scope_requirement_id", "scope_kind", "expectation"],
+      "properties": {
+        "scope_requirement_id": { "type": "string", "minLength": 1 },
+        "scope_kind": {
+          "type": "string",
+          "enum": ["consent", "habilitation", "service_context", "finality", "session_context", "actor_role"]
+        },
+        "expectation": { "type": "string", "minLength": 1 },
+        "failure_disposition": {
+          "type": "string",
+          "enum": ["governed_deny", "operational_failure", "degraded"]
+        },
+        "metadata": { "$ref": "#/$defs/stringMap" }
+      }
+    }
+  }
+}

@@ -1,0 +1,38 @@
+spec_id: gos.blank
+spec_family: workflow
+version: 0.1.0
+metadata:
+  title: Blank GOS Template
+  description: >-
+    Generic authoring template for a Governed Operational Spec.
+    Replace ids, descriptions, and primitive-family content as needed.
+  status: draft
+  authoring_form: yaml
+  notes: >-
+    This template is intentionally scenario-agnostic.
+  source_references: []
+  tags: []
+
+signal_specs: []
+
+slot_specs: []
+
+ derivation_specs: []
+
+task_specs: []
+
+tool_binding_specs: []
+
+draft_output_specs: []
+
+guard_specs: []
+
+deadline_specs: []
+
+evidence_hook_specs: []
+
+human_gate_requirement_specs: []
+
+escalation_specs: []
+
+scope_requirement_specs: []

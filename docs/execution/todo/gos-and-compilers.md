@@ -17,50 +17,47 @@ It is intentionally not about scenario-specific implementations.
 - [x] GOS explicitly declared subordinate to HealthOS Core
 - [x] canonical schema added for compiled JSON form
 - [x] primitive families declared explicitly
-- [ ] authoring conventions for YAML source form documented
+- [x] authoring conventions for YAML source form documented
+- [x] generic blank YAML authoring template added
 - [ ] glossary entries added for GOS vocabulary if not already present
 
 ## 2. Compiler pipeline
-- [ ] define source-canonicalization stage
-- [ ] define normalization stage from human-authored text to reviewed structured draft
-- [ ] define compiler output contract from declarative authoring form to canonical JSON
-- [ ] preserve source provenance in compiler output
-- [ ] define conservative failure rules for ambiguous source text
-- [ ] define human review/correction loop before activation
+- [x] source-canonicalization stage documented
+- [x] normalization stage documented
+- [x] compiler output contract documented
+- [x] conservative failure doctrine documented
+- [x] TypeScript compiler/CLI scaffold added
+- [~] source provenance preservation needs stronger implementation
+- [~] human review/correction loop still needs stronger implementation support
 
 ## 3. Validation
-- [ ] add schema validation workflow for canonical GOS JSON
-- [ ] add cross-reference validation (task refs, slot refs, gate refs, deadline refs)
-- [ ] add non-goal/invariant validation (no effectuation semantics without explicit human gate requirement)
-- [ ] add validation for evidence hook completeness where required
+- [x] cross-reference validation scaffold added
+- [ ] schema validation workflow for canonical GOS JSON still needs implementation
+- [ ] invariant validation still needs implementation
+- [ ] evidence-hook completeness validation still needs implementation
 
 ## 4. Runtime binding
-- [ ] define how AACI subagents bind to GOS primitive families
-- [ ] define GOS-to-agent routing contract
-- [ ] define how GOS drives extraction without hardcoding prompt logic
-- [ ] define how GOS drives draft preparation without confusing draft and final artifact
-- [ ] define how GOS binds deadlines/escalations into runtime state surfaces
-- [ ] define how GOS scope requirements map to lawful-context prechecks
+- [x] AACI-to-GOS binding doctrine documented
+- [x] GOS-to-agent routing doctrine documented
+- [x] draft/gate/scope discipline documented for runtime use
+- [ ] executable runtime loader/binding contracts still need implementation
 
 ## 5. Storage / lifecycle
-- [ ] define canonical storage location/versioning strategy for compiled GOS packages
-- [ ] define activation/deprecation lifecycle for GOS packages
-- [ ] define rollback strategy when a compiled GOS package is invalid or superseded
+- [ ] canonical storage location/versioning strategy for compiled GOS packages
+- [ ] activation/deprecation lifecycle for GOS packages
+- [ ] rollback strategy for invalid or superseded compiled packages
 
 ## 6. App boundary discipline
-- [ ] define which GOS-derived states are allowed to surface to apps
-- [ ] confirm that apps never become sovereign interpreters of GOS
-- [ ] add examples of allowed Scribe/Sortio/CloudClinic consumption patterns
-
-## 7. Future strategic extensions (not immediate implementation)
-- [ ] break-glass / emergency-access compatible GOS bindings
-- [ ] legal-retention / visibility constraints where operational specs intersect with governance law
-- [ ] regulatory audit pathway bindings
-- [ ] interoperability-oriented export bindings (future only)
+- [x] app-boundary doctrine clarified: apps do not interpret GOS as sovereign law
+- [ ] examples of allowed Scribe/Sortio/CloudClinic consumption patterns
 
 ## Reading rule
 
 Any future work on GOS should begin from:
 - `docs/adr/0011-governed-operational-spec-is-subordinate-to-core.md`
 - `docs/architecture/29-governed-operational-spec.md`
+- `docs/architecture/30-gos-authoring-and-compiler.md`
+- `docs/architecture/31-gos-runtime-binding.md`
 - `schemas/governed-operational-spec.schema.json`
+- `gos/templates/blank.gos.yaml`
+- `ts/packages/healthos-gos-tooling/`

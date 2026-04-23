@@ -99,6 +99,10 @@ Apps consume core/runtime contracts. They do not invent separate law models.
 An app may show degraded states, but it may not reinterpret them as legal/governance success.
 For example, a degraded retrieval does not imply access was authorized; it only indicates an operational state.
 
+## Runtime-state surfaces doctrine
+Detailed doctrine for how runtime truth appears in apps lives in:
+- `docs/architecture/22-runtime-state-surfaces.md`
+
 ## Role-specific emphasis
 - Scribe emphasizes SessionContext, DraftReviewState, GateReviewState, RuntimeHealthState
 - Sortio emphasizes ConsentManagementState, AuditTrailState, RuntimeHealthState

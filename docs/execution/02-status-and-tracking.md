@@ -2,7 +2,7 @@
 
 ## Current global status
 
-Current phase: Phase 00 — Governance and execution discipline
+Current phase: Phase 01 — Core laws of HealthOS
 
 ## Completed recently
 
@@ -12,28 +12,32 @@ Current phase: Phase 00 — Governance and execution discipline
 - initial schemas created
 - Swift / TypeScript / Python boundaries scaffolded
 - initial SQL migration created
-- execution layer started
+- execution layer created
+- AI operating protocol and context bundle created
+- AI skills roadmap and initial skill skeletons created
+- missing core governance schemas added for consent, habilitation, provenance, gate resolution, professional record, service membership, finality, and access policy
+- core services architecture skeleton added
 
 ## In progress
 
-- phase files
-- executable backlog decomposition
-- AI operating instructions
+- refining phase 01 core-law closure
+- converting remaining implicit governance semantics into explicit machine-readable or prose contracts
+- preparing exact local seam decision between Swift and TypeScript
 
 ## Known gaps
 
-- execution layer was missing until now
-- TODOs were not yet decomposed by domain and dependency
-- app interfaces are still architectural shells, not detailed task systems
 - directory layout implementation is still minimal/stub-like in one Swift file
-- there is no explicit readiness checklist per phase yet
+- app interfaces are still architectural shells, not detailed task systems
+- local API seam between Swift and TypeScript is not yet fixed by ADR
+- denial/failure semantics for some core services still need explicit contract text
+- schema sanity pass across all new governance schemas is still pending
 
 ## Open blockers / decisions
 
 - refine canonical directory implementation in Swift beyond current stub
-- add more complete JSON Schemas for consent, habilitation, provenance, and gate resolution
 - decide exact initial local API boundary between Swift and TypeScript services
-- define whether first runnable slice should keep capture mocked or add native audio earlier
+- decide whether first runnable slice should keep capture mocked or add native audio earlier
+- define explicit deny/error contract outputs for IdentityService, ConsentService, HabilitationService, GateService, and DataStoreService
 
 ## Tracking rules
 

@@ -41,6 +41,10 @@ Patient/user-facing sovereignty interface.
 4. request export
 5. ask user-agent for explanation or retrieval within own scope
 
+## Related detailed contract
+See:
+- `docs/architecture/24-sortio-screen-contracts.md`
+
 ## Boundaries
 - Sortio may never behave as if it is the professional authority
 - Sortio may expose audit and access visibility, but it does not redefine access law

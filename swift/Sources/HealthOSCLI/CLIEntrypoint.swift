@@ -48,9 +48,13 @@ struct HealthOSCLI {
             } else {
                 print("final=<not effectuated>")
             }
+            print("retrieval_source=\(bridgeState.runSummary.retrievalSource)")
+            print("retrieval_matches=\(bridgeState.runSummary.retrievalMatchCount)")
+            print("retrieval_fallback_empty=\(bridgeState.runSummary.retrievalFallbackEmpty)")
             print("provenance_count=\(bridgeState.runSummary.provenanceCount)")
             print("event_count=\(bridgeState.runSummary.eventCount)")
             print("scribe_gate_state=\(bridgeState.gateState.rawValue)")
+            print("scribe_retrieval_status=\(bridgeState.retrieval.status.rawValue)")
         } catch {
             FileHandle.standardError.write(Data("HealthOSCLI failed: \(error)\n".utf8))
             exit(1)

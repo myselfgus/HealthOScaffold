@@ -51,10 +51,126 @@ public struct TranscriptionResult: Codable, Sendable {
 public struct RetrievalContextPackage: Codable, Sendable {
     public let finalidade: String
     public let contextItems: [String]
+    public let boundedResult: BoundedRetrievalResult
 
-    public init(finalidade: String, contextItems: [String]) {
+    public init(finalidade: String, contextItems: [String], boundedResult: BoundedRetrievalResult) {
         self.finalidade = finalidade
         self.contextItems = contextItems
+        self.boundedResult = boundedResult
+    }
+}
+
+public enum RecordSnippetKind: String, Codable, Sendable, CaseIterable {
+    case encounterSummary = "encounter-summary"
+    case allergy = "allergy"
+    case medication = "medication"
+    case observation = "observation"
+}
+
+public struct PatientRecordSnippet: Codable, Sendable {
+    public let summary: String
+    public let tags: [String]
+    public let occurredAt: Date
+
+    public init(summary: String, tags: [String], occurredAt: Date) {
+        self.summary = summary
+        self.tags = tags
+        self.occurredAt = occurredAt
+    }
+}
+
+public struct RecordIndexEntry: Codable, Sendable, Identifiable {
+    public let id: UUID
+    public let serviceId: UUID
+    public let patientUserId: UUID
+    public let snippetKind: RecordSnippetKind
+    public let snippet: PatientRecordSnippet
+    public let sourceRef: String
+
+    public init(
+        id: UUID = UUID(),
+        serviceId: UUID,
+        patientUserId: UUID,
+        snippetKind: RecordSnippetKind,
+        snippet: PatientRecordSnippet,
+        sourceRef: String
+    ) {
+        self.id = id
+        self.serviceId = serviceId
+        self.patientUserId = patientUserId
+        self.snippetKind = snippetKind
+        self.snippet = snippet
+        self.sourceRef = sourceRef
+    }
+}
+
+public struct RetrievalQuery: Codable, Sendable {
+    public let serviceId: UUID
+    public let patientUserId: UUID
+    public let finalidade: String
+    public let terms: [String]
+    public let allowedKinds: [RecordSnippetKind]
+    public let maxMatches: Int
+    public let recencyDays: Int?
+
+    public init(
+        serviceId: UUID,
+        patientUserId: UUID,
+        finalidade: String,
+        terms: [String],
+        allowedKinds: [RecordSnippetKind] = RecordSnippetKind.allCases,
+        maxMatches: Int = 5,
+        recencyDays: Int? = 365
+    ) {
+        self.serviceId = serviceId
+        self.patientUserId = patientUserId
+        self.finalidade = finalidade
+        self.terms = terms
+        self.allowedKinds = allowedKinds
+        self.maxMatches = maxMatches
+        self.recencyDays = recencyDays
+    }
+}
+
+public struct RetrievalMatch: Codable, Sendable, Identifiable {
+    public let id: UUID
+    public let snippetKind: RecordSnippetKind
+    public let summary: String
+    public let sourceRef: String
+    public let score: Int
+    public let matchedTerms: [String]
+    public let occurredAt: Date
+
+    public init(
+        id: UUID,
+        snippetKind: RecordSnippetKind,
+        summary: String,
+        sourceRef: String,
+        score: Int,
+        matchedTerms: [String],
+        occurredAt: Date
+    ) {
+        self.id = id
+        self.snippetKind = snippetKind
+        self.summary = summary
+        self.sourceRef = sourceRef
+        self.score = score
+        self.matchedTerms = matchedTerms
+        self.occurredAt = occurredAt
+    }
+}
+
+public struct BoundedRetrievalResult: Codable, Sendable {
+    public let query: RetrievalQuery
+    public let matches: [RetrievalMatch]
+    public let source: String
+    public let isFallbackEmpty: Bool
+
+    public init(query: RetrievalQuery, matches: [RetrievalMatch], source: String, isFallbackEmpty: Bool) {
+        self.query = query
+        self.matches = matches
+        self.source = source
+        self.isFallbackEmpty = isFallbackEmpty
     }
 }
 
@@ -118,6 +234,9 @@ public struct SliceRunSummary: Codable, Sendable {
     public let transcriptObjectPath: String
     public let draftObjectPath: String
     public let finalArtifactObjectPath: String?
+    public let retrievalMatchCount: Int
+    public let retrievalSource: String
+    public let retrievalFallbackEmpty: Bool
     public let eventCount: Int
     public let provenanceCount: Int
 
@@ -127,6 +246,9 @@ public struct SliceRunSummary: Codable, Sendable {
         transcriptObjectPath: String,
         draftObjectPath: String,
         finalArtifactObjectPath: String?,
+        retrievalMatchCount: Int,
+        retrievalSource: String,
+        retrievalFallbackEmpty: Bool,
         eventCount: Int,
         provenanceCount: Int
     ) {
@@ -135,6 +257,9 @@ public struct SliceRunSummary: Codable, Sendable {
         self.transcriptObjectPath = transcriptObjectPath
         self.draftObjectPath = draftObjectPath
         self.finalArtifactObjectPath = finalArtifactObjectPath
+        self.retrievalMatchCount = retrievalMatchCount
+        self.retrievalSource = retrievalSource
+        self.retrievalFallbackEmpty = retrievalFallbackEmpty
         self.eventCount = eventCount
         self.provenanceCount = provenanceCount
     }

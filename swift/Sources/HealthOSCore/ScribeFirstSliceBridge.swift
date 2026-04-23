@@ -15,12 +15,32 @@ public enum ScribeGateState: String, Codable, Sendable {
     case rejected
 }
 
+public enum ScribeRetrievalStatus: String, Codable, Sendable {
+    case ready
+    case empty
+}
+
+public struct ScribeRetrievalBridgeState: Codable, Sendable {
+    public let status: ScribeRetrievalStatus
+    public let source: String
+    public let matchCount: Int
+    public let previewItems: [String]
+
+    public init(status: ScribeRetrievalStatus, source: String, matchCount: Int, previewItems: [String]) {
+        self.status = status
+        self.source = source
+        self.matchCount = matchCount
+        self.previewItems = previewItems
+    }
+}
+
 public struct ScribeSessionBridgeState: Codable, Sendable {
     public let sessionId: UUID
     public let draftState: ScribeDraftState
     public let gateState: ScribeGateState
     public let transcriptPreview: String
     public let draftPreview: String
+    public let retrieval: ScribeRetrievalBridgeState
     public let runSummary: SliceRunSummary
 
     public init(
@@ -29,6 +49,7 @@ public struct ScribeSessionBridgeState: Codable, Sendable {
         gateState: ScribeGateState,
         transcriptPreview: String,
         draftPreview: String,
+        retrieval: ScribeRetrievalBridgeState,
         runSummary: SliceRunSummary
     ) {
         self.sessionId = sessionId
@@ -36,6 +57,7 @@ public struct ScribeSessionBridgeState: Codable, Sendable {
         self.gateState = gateState
         self.transcriptPreview = transcriptPreview
         self.draftPreview = draftPreview
+        self.retrieval = retrieval
         self.runSummary = runSummary
     }
 }

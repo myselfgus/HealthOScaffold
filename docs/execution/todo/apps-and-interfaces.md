@@ -49,17 +49,16 @@ Files touched:
 - `docs/architecture/12-sortio.md`
 - `docs/architecture/13-cloudclinic.md`
 
-## READY
-
 ### APP-005 Define command/result envelopes for UI actions
-Objective:
-- specify canonical action/result payload shapes for first implementation wave across app interactions
-Files:
-- future contracts/docs to be added
-Dependencies:
-- APP-003, APP-004
-Definition of done:
-- first implementation wave can map screen actions to explicit command/result envelopes with minimal ambiguity
+Outcome:
+- first-slice contracts now expose explicit envelopes for session input, transcription result, retrieval result, draft package, gate outcome summary, and run summary
+- Scribe-facing facade/state bridge added so UI can consume the executable slice without owning core law
+Files touched:
+- `swift/Sources/HealthOSCore/FirstSliceContracts.swift`
+- `swift/Sources/HealthOSCore/ScribeFirstSliceBridge.swift`
+- `swift/Sources/HealthOSCLI/ScribeFirstSliceAdapter.swift`
+
+## READY
 
 ## TESTS / VALIDATION
 

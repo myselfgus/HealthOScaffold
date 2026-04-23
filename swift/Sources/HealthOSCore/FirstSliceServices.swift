@@ -49,53 +49,6 @@ public struct ConsentContext: Codable, Sendable {
     }
 }
 
-public struct SessionEventRecord: Codable, Sendable, Identifiable {
-    public let id: UUID
-    public let sessionId: UUID
-    public let kind: String
-    public let payload: [String: String]
-    public let createdAt: Date
-
-    public init(id: UUID = UUID(), sessionId: UUID, kind: String, payload: [String: String], createdAt: Date = .now) {
-        self.id = id
-        self.sessionId = sessionId
-        self.kind = kind
-        self.payload = payload
-        self.createdAt = createdAt
-    }
-}
-
-public struct FirstSliceRunResult: Codable, Sendable {
-    public let session: SessaoTrabalho
-    public let transcriptRef: StorageObjectRef
-    public let draftRef: StorageObjectRef
-    public let finalArtifactRef: StorageObjectRef?
-    public let gateRequest: GateRequest
-    public let gateResolution: GateResolution
-    public let provenanceRecords: [ProvenanceRecord]
-    public let events: [SessionEventRecord]
-
-    public init(
-        session: SessaoTrabalho,
-        transcriptRef: StorageObjectRef,
-        draftRef: StorageObjectRef,
-        finalArtifactRef: StorageObjectRef?,
-        gateRequest: GateRequest,
-        gateResolution: GateResolution,
-        provenanceRecords: [ProvenanceRecord],
-        events: [SessionEventRecord]
-    ) {
-        self.session = session
-        self.transcriptRef = transcriptRef
-        self.draftRef = draftRef
-        self.finalArtifactRef = finalArtifactRef
-        self.gateRequest = gateRequest
-        self.gateResolution = gateResolution
-        self.provenanceRecords = provenanceRecords
-        self.events = events
-    }
-}
-
 public actor SimpleHabilitationService {
     public init() {}
 

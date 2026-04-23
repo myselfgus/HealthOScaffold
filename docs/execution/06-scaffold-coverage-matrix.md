@@ -58,6 +58,7 @@ Legend:
 - [x] primary flow maps exist for all three apps
 - [x] runtime-state surfaces are defined
 - [x] screen-level interaction contracts exist
+- [x] first-slice-to-Scribe bridge contract exists (facade/state surface, no UI law ownership)
 
 ## 7. Networking / operations
 - [x] local-first stance established
@@ -89,6 +90,7 @@ Legend:
 - [x] core-law failure semantics no longer block honest closure
 - [x] storage and runtime baselines are strong enough for controlled implementation
 - [x] app-state and interaction baselines are strong enough for controlled implementation
+- [x] first-slice executable contracts are typed enough for app/runtime integration without ad hoc payload coupling
 - [~] a few procedural/operator details still remain optional hardening before heavy implementation
 
 ## Practical reading

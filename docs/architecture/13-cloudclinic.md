@@ -44,6 +44,10 @@ Service-facing operational interface for patient management and service work vis
 5. inspect service-level gate backlog
 6. inspect high-level operational history
 
+## Related detailed contract
+See:
+- `docs/architecture/25-cloudclinic-screen-contracts.md`
+
 ## Boundaries
 - CloudClinic may show service-scoped work and visibility
 - CloudClinic may not impersonate patient sovereignty functions from Sortio

@@ -4,6 +4,7 @@ HealthOS is the full platform. AACI is one runtime inside HealthOS.
 
 This scaffold establishes a single-node, Apple-Silicon-first architecture for a sovereign health operations environment with:
 - a canonical core for identity, consent, habilitation, provenance, gates, and storage
+- a Governed Operational Spec (GOS) layer for compiling human-authored operational language into runtime-consumable structure
 - an AACI runtime for ambient, agentic, bureaucratic automation
 - an async runtime for deferred jobs and reprocessing
 - a user-agent runtime for patient/user interactions
@@ -17,6 +18,8 @@ Material substrate
   └─ Apple Silicon host(s), macOS, disk, networking, backups
 HealthOS Core
   └─ identity, storage, governance, schemas, actor/agent/runtime contracts
+Governed Operational Spec (GOS)
+  └─ operational translation layer from human-authored rules to executable runtime structure
 HealthOS Runtimes
   ├─ AACI Runtime
   ├─ Async Runtime

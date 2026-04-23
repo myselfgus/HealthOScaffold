@@ -2,7 +2,7 @@
 
 ## Current global status
 
-Current phase: Late pre-coding hardening
+Current phase: Controlled implementation — first vertical slice started
 
 ## Completed recently
 
@@ -45,26 +45,28 @@ Current phase: Late pre-coding hardening
 - operations runbook strengthened
 - MeshProvider contract strengthened
 - provider/ML governance made more procedural
+- first vertical slice executable path documented
+- first vertical slice core services, file-backed persistence, and CLI runner added
 
 ## In progress
 
-- consolidating the scaffold as a strong pre-implementation foundation
-- identifying only optional hardening items before heavier implementation work
+- first vertical slice implementation is underway in Swift/CLI
+- shifting from scaffold hardening into executable spine construction
 
 ## Known gaps
 
-- some law-level invariants could still be stated even more rigorously
-- operator incident-command vocabulary can still be made more explicit
-- provider promotion review checklist can still be added
-- AI skills can still be hardened into even more prescriptive reusable packs
+- capture is still text-seeded rather than native audio capture
+- transcription remains stubbed
+- context retrieval remains synthetic/bounded rather than connected to a real record index
+- UI apps are not yet wired to the executable slice
 - command/result envelopes for UI actions can still be made more explicit
 
 ## Open blockers / decisions
 
-- decide whether first runnable slice should keep capture mocked or add native audio earlier
-- decide when to convert the AI skills into enforced reusable workflows/templates
+- decide whether the next step for the slice is native audio capture or stronger retrieval wiring
+- decide when to wire Scribe to the same executable spine
 - define shared error-envelope strategy for loopback local services, if needed
-- decide whether to add stricter transport envelopes beyond current v1 flexible lawfulContext approach in a later wave
+- decide when to convert the AI skills into enforced reusable workflows/templates
 
 ## Tracking rules
 

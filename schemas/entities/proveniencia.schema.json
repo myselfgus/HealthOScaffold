@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "healthos/entities/proveniencia",
+  "type": "object",
+  "required": ["id", "operation", "tempoSistema"],
+  "properties": {
+    "id": {"type": "string", "format": "uuid"},
+    "agenteId": {"type": ["string", "null"]},
+    "operation": {"type": "string"},
+    "inputHash": {"type": ["string", "null"]},
+    "outputHash": {"type": ["string", "null"]},
+    "providerName": {"type": ["string", "null"]},
+    "modelName": {"type": ["string", "null"]},
+    "modelVersion": {"type": ["string", "null"]},
+    "promptVersion": {"type": ["string", "null"]},
+    "costEstimate": {"type": ["number", "null"]},
+    "tempoSistema": {"type": "string", "format": "date-time"},
+    "metadata": {"type": "object"}
+  }
+}

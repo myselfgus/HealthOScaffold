@@ -1,5 +1,13 @@
 # TODO — Ops, network, providers, ML
 
+## COMPLETED
+
+### ML-001 Define provider benchmark and selection policy
+Outcome:
+- provider routing baseline, benchmark dimensions, and task-class policy outcomes documented
+Files touched:
+- `docs/architecture/16-providers-and-ml.md`
+
 ## READY AFTER PHASE 00
 
 ### OPS-001 Define single-node runbook
@@ -23,17 +31,6 @@ Dependencies:
 - phase 00
 Definition of done:
 - private access rules are explicit and future mesh expansion does not alter ontology
-
-### ML-001 Define provider benchmark and selection policy
-Objective:
-- specify how providers are compared by latency, privacy mode, task fit, and quality
-Files:
-- `docs/architecture/16-providers-and-ml.md`
-- `swift/Sources/HealthOSProviders/*`
-Dependencies:
-- AACI-002
-Definition of done:
-- provider choice is governed and reproducible
 
 ### ML-002 Define fine-tuning governance
 Objective:

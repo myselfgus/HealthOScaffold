@@ -28,21 +28,22 @@ Legend:
 - [x] de-identification / re-identification concept exists
 - [x] canonical directory implementation in Swift exists
 - [x] storage API contract exists explicitly
-- [~] SQL migration refinement and lawful-context examples still need closure
+- [~] hash/integrity strategy still needs final closure
 
 ## 4. Runtime / actor / agent model
-- [x] actor/agent distinction documented
+- [x] actor/agent distinction documented and typed
 - [x] runtime set established (AACI, async, user-agent)
 - [x] message/mailbox concept exists
-- [~] lifecycle states need stronger typed/formal closure
-- [~] permission and failure model need fuller closure
+- [x] lifecycle states formalized across docs, schema, Swift, and TypeScript
+- [x] permission/boundary model established at scaffold level
+- [~] retry/backpressure policy still needs fuller operational closure
 
 ## 5. AACI
 - [x] purpose and boundaries established
-- [x] session modes established
+- [x] session modes established with bounded meaning
 - [x] hot/warm/cold path concept established
 - [x] initial subagents established
-- [~] subagent contracts still need fuller detail
+- [x] subagent contracts substantially defined
 - [~] provider routing needs fuller operational policy
 
 ## 6. Apps / interfaces
@@ -78,16 +79,16 @@ Legend:
 - [x] slice target defined
 - [x] slice dependency order defined
 - [x] core-law failure semantics no longer block honest closure
-- [~] runtime precision, app-flow precision, and storage-lawful-context detail still need tightening before heavy implementation
+- [~] app-flow precision, provider-routing policy, retry/backpressure detail, and hash/integrity strategy still need tightening before heavy implementation
 
 ## Practical reading
 
 The scaffold is already real and structured.
 What remains is not identity of the system, but closure work on:
-- law precision beyond baseline
-- runtime precision
+- runtime operational policy
 - app flow precision
 - ops detail
 - provider/ML governance detail
+- hash/integrity strategy
 
-That means the project is in a serious pre-coding hardening phase with most foundational identity and contract questions already anchored.
+That means the project is in a strong pre-coding hardening phase with most foundational identity, contract, and boundary questions already anchored.

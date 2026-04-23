@@ -2,7 +2,7 @@
 
 ## Current global status
 
-Current phase: Phase 01 — Core laws of HealthOS
+Current phase: Phase 02 — Data and storage foundation
 
 ## Completed recently
 
@@ -19,27 +19,33 @@ Current phase: Phase 01 — Core laws of HealthOS
 - core services architecture skeleton added
 - ADR created for the initial local Swift/TypeScript seam
 - glossary added to reduce ontology drift for future AI work
+- schema governance audit completed
+- ADR and doctrine added clarifying that HealthOS is not end-user UX; apps/interfaces own end-user UX
+- canonical directory layout implemented in Swift
+- explicit storage contract added to Swift core
+- storage architecture document aligned to the storage contract
+- core-law deny/failure semantics documented
 
 ## In progress
 
-- refining phase 01 core-law closure
-- converting remaining implicit governance semantics into explicit machine-readable or prose contracts
-- preparing a clean schema sanity pass across governance objects
+- moving from phase 01 closure into phase 02 storage precision
+- refining SQL and lawful-context details
+- preparing stronger runtime-precision closure before heavy implementation
 
 ## Known gaps
 
-- directory layout implementation is still minimal/stub-like in one Swift file
 - app interfaces are still architectural shells, not detailed task systems
-- denial/failure semantics for some core services still need explicit contract text
-- schema sanity pass across all new governance schemas is still pending
+- SQL migration still needs readability/comment refinement
+- lawful-context examples for storage reads still need explicit documentation
+- runtime lifecycle typing and permission/failure precision still need closure
 - future AI skills exist only as initial skeletons, not yet as a complete skill system
 
 ## Open blockers / decisions
 
-- refine canonical directory implementation in Swift beyond current stub
 - decide whether first runnable slice should keep capture mocked or add native audio earlier
-- define explicit deny/error contract outputs for IdentityService, ConsentService, HabilitationService, GateService, and DataStoreService
 - decide when to convert the initial AI skill skeletons into enforced reusable workflows
+- define shared error-envelope strategy for loopback local services, if needed
+- decide how far to formalize runtime lifecycle and permission errors before slice implementation
 
 ## Tracking rules
 

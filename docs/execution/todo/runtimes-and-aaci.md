@@ -40,29 +40,30 @@ Files touched:
 - `schemas/contracts/agent-boundary.schema.json`
 - `schemas/contracts/agent-descriptor.schema.json`
 
-## READY
-
 ### RT-003 Decide retry envelope and backpressure policy by runtime
-Objective:
-- define how hot path, warm path, and async work should degrade, retry, or fail visibly
-Files:
-- `docs/architecture/08-runtime-actor-agent-model.md`
-- optional runtime docs/contracts
-Dependencies:
-- RT-002, AACI-002
-Definition of done:
-- runtime failure handling is operationally actionable instead of merely named
+Outcome:
+- runtime operational policy added covering degradation, retry, backpressure, and failure visibility across AACI hot/warm paths, async runtime, and user-agent runtime
+Files touched:
+- `docs/architecture/20-runtime-operational-policy.md`
 
 ### AACI-004 Define provider-routing policy per task class
-Objective:
-- specify which task classes prefer local/private-first providers and when remote fallback is permitted
-Files:
-- `docs/architecture/09-aaci.md`
+Outcome:
+- provider routing baseline defined by task class, privacy mode, and fallback policy
+Files touched:
 - `docs/architecture/16-providers-and-ml.md`
+
+## READY
+
+### RT-004 Define runtime status surfaces for apps/interfaces
+Objective:
+- specify which runtime states and degraded modes must surface into Scribe, Sortio, and CloudClinic
+Files:
+- `docs/architecture/10-app-state-model.md`
+- app architecture docs as needed
 Dependencies:
-- AACI-002, AACI-003
+- RT-003, AACI-004
 Definition of done:
-- provider routing becomes policy-driven and compatible with privacy posture
+- runtime state visibility is consistent across apps and does not invent governance meaning
 
 ## TESTS / VALIDATION
 

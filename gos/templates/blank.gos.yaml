@@ -17,7 +17,7 @@ signal_specs: []
 
 slot_specs: []
 
- derivation_specs: []
+derivation_specs: []
 
 task_specs: []
 

@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://healthos.dev/schemas/governed-operational-spec-authoring.schema.json",
+  "title": "Governed Operational Spec Authoring Document",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "spec_id",
+    "spec_family",
+    "version",
+    "metadata",
+    "signal_specs",
+    "slot_specs",
+    "derivation_specs",
+    "task_specs",
+    "tool_binding_specs",
+    "draft_output_specs",
+    "guard_specs",
+    "deadline_specs",
+    "evidence_hook_specs",
+    "human_gate_requirement_specs",
+    "escalation_specs",
+    "scope_requirement_specs"
+  ],
+  "properties": {
+    "spec_id": { "type": "string" },
+    "spec_family": { "type": "string" },
+    "version": { "type": "string" },
+    "metadata": {
+      "type": "object",
+      "required": ["title", "status", "authoring_form"],
+      "properties": {
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "status": { "type": "string" },
+        "authoring_form": { "type": "string", "enum": ["yaml"] },
+        "notes": { "type": "string" }
+      },
+      "additionalProperties": true
+    },
+    "signal_specs": { "type": "array" },
+    "slot_specs": { "type": "array" },
+    "derivation_specs": { "type": "array" },
+    "task_specs": { "type": "array" },
+    "tool_binding_specs": { "type": "array" },
+    "draft_output_specs": { "type": "array" },
+    "guard_specs": { "type": "array" },
+    "deadline_specs": { "type": "array" },
+    "evidence_hook_specs": { "type": "array" },
+    "human_gate_requirement_specs": { "type": "array" },
+    "escalation_specs": { "type": "array" },
+    "scope_requirement_specs": { "type": "array" }
+  }
+}

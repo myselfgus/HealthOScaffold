@@ -89,6 +89,21 @@ Files touched:
 - `docs/architecture/09-aaci.md`
 - `docs/architecture/28-first-slice-executable-path.md`
 
+### AACI-007 Materialize referral and prescription draft derivatives in the first slice
+Outcome:
+- AACI now materializes typed referral and prescription drafts from the same session/SOAP/context spine
+- both derivatives persist their own artifacts, provenance records, and session events while remaining explicitly `draft`
+- the current wave still does not issue/effectuate referral or prescription acts
+Files touched:
+- `swift/Sources/HealthOSCore/FirstSliceContracts.swift`
+- `swift/Sources/HealthOSAACI/AACI.swift`
+- `swift/Sources/HealthOSFirstSliceSupport/FirstSliceRunner.swift`
+- `ts/packages/contracts/src/index.ts`
+- `schemas/contracts/referral-draft-document.schema.json`
+- `schemas/contracts/prescription-draft-document.schema.json`
+- `docs/architecture/09-aaci.md`
+- `docs/architecture/28-first-slice-executable-path.md`
+
 ## READY
 
 ## TESTS / VALIDATION

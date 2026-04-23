@@ -30,6 +30,12 @@ public enum ScribeFinalDocumentState: String, Codable, Sendable {
     case withheld
 }
 
+public enum ScribeDerivedDraftState: String, Codable, Sendable {
+    case none
+    case preview
+    case draftOnly = "draft_only"
+}
+
 public struct StartProfessionalSessionCommand: Codable, Sendable {
     public let professional: Usuario
     public let service: Servico
@@ -181,6 +187,37 @@ public struct ScribeFinalDocumentBridgeState: Codable, Sendable {
     }
 }
 
+public struct ScribeDerivedDraftBridgeState: Codable, Sendable {
+    public let kind: DraftKind
+    public let state: ScribeDerivedDraftState
+    public let draftStatus: DraftStatus?
+    public let summary: String
+    public let preview: String
+    public let objectPath: String?
+    public let readyForFutureGate: Bool
+    public let draftOnlyNote: String?
+
+    public init(
+        kind: DraftKind,
+        state: ScribeDerivedDraftState,
+        draftStatus: DraftStatus? = nil,
+        summary: String,
+        preview: String,
+        objectPath: String? = nil,
+        readyForFutureGate: Bool = false,
+        draftOnlyNote: String? = nil
+    ) {
+        self.kind = kind
+        self.state = state
+        self.draftStatus = draftStatus
+        self.summary = summary
+        self.preview = preview
+        self.objectPath = objectPath
+        self.readyForFutureGate = readyForFutureGate
+        self.draftOnlyNote = draftOnlyNote
+    }
+}
+
 public struct ScribeSessionBridgeState: Codable, Sendable {
     public let sessionId: UUID
     public let captureMode: CaptureMode?
@@ -191,6 +228,8 @@ public struct ScribeSessionBridgeState: Codable, Sendable {
     public let transcription: ScribeTranscriptionBridgeState
     public let retrieval: ScribeRetrievalBridgeState
     public let gateReview: ScribeGateReviewBridgeState
+    public let referralDraft: ScribeDerivedDraftBridgeState
+    public let prescriptionDraft: ScribeDerivedDraftBridgeState
     public let finalDocument: ScribeFinalDocumentBridgeState
     public let runSummary: SliceRunSummary?
 
@@ -204,6 +243,8 @@ public struct ScribeSessionBridgeState: Codable, Sendable {
         transcription: ScribeTranscriptionBridgeState,
         retrieval: ScribeRetrievalBridgeState,
         gateReview: ScribeGateReviewBridgeState,
+        referralDraft: ScribeDerivedDraftBridgeState,
+        prescriptionDraft: ScribeDerivedDraftBridgeState,
         finalDocument: ScribeFinalDocumentBridgeState,
         runSummary: SliceRunSummary?
     ) {
@@ -216,6 +257,8 @@ public struct ScribeSessionBridgeState: Codable, Sendable {
         self.transcription = transcription
         self.retrieval = retrieval
         self.gateReview = gateReview
+        self.referralDraft = referralDraft
+        self.prescriptionDraft = prescriptionDraft
         self.finalDocument = finalDocument
         self.runSummary = runSummary
     }

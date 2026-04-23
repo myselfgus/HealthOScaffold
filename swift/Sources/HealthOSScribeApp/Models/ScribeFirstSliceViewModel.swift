@@ -118,6 +118,14 @@ final class ScribeFirstSliceViewModel {
         return summary
     }
 
+    var referralDraftSummaryText: String {
+        derivedDraftSummaryText(for: bridgeState?.referralDraft, empty: "Nenhum referral draft ainda.")
+    }
+
+    var prescriptionDraftSummaryText: String {
+        derivedDraftSummaryText(for: bridgeState?.prescriptionDraft, empty: "Nenhum prescription draft ainda.")
+    }
+
     var gateReviewSummaryText: String {
         guard let gateReview = bridgeState?.gateReview else {
             return "Nenhuma revisão de gate visível ainda."
@@ -337,6 +345,10 @@ final class ScribeFirstSliceViewModel {
         print("retrieval_status=\(state.retrieval.status.rawValue)")
         print("retrieval_matches=\(state.retrieval.matchCount)")
         print("retrieval_summary=\(state.retrieval.summary)")
+        print("referral_draft_state=\(state.referralDraft.state.rawValue)")
+        print("referral_draft_status=\(state.referralDraft.draftStatus?.rawValue ?? "none")")
+        print("prescription_draft_state=\(state.prescriptionDraft.state.rawValue)")
+        print("prescription_draft_status=\(state.prescriptionDraft.draftStatus?.rawValue ?? "none")")
         print("final_document_state=\(state.finalDocument.state.rawValue)")
         print("final_document=\(summary.finalDocumentObjectPath ?? "<not effectuated>")")
         print("issues=\(displayIssues)")
@@ -512,5 +524,27 @@ final class ScribeFirstSliceViewModel {
         return candidates
             .map { URL(fileURLWithPath: $0) }
             .first { fileManager.fileExists(atPath: $0.path) }
+    }
+
+    private func derivedDraftSummaryText(
+        for state: ScribeDerivedDraftBridgeState?,
+        empty: String
+    ) -> String {
+        guard let state else { return empty }
+
+        var lines = [
+            "state: \(state.state.rawValue)",
+            "draft_status: \(state.draftStatus?.rawValue ?? "none")",
+            "summary: \(state.summary)",
+            state.preview
+        ]
+        if let objectPath = state.objectPath {
+            lines.append("object_path: \(objectPath)")
+        }
+        lines.append("ready_for_future_gate: \(state.readyForFutureGate)")
+        if let draftOnlyNote = state.draftOnlyNote {
+            lines.append(draftOnlyNote)
+        }
+        return lines.joined(separator: "\n")
     }
 }

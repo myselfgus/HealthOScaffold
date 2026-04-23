@@ -125,6 +125,22 @@ Files touched:
 - `docs/architecture/23-scribe-screen-contracts.md`
 - `docs/architecture/28-first-slice-executable-path.md`
 
+### SCRIBE-006 Surface referral and prescription draft derivatives on the minimal Scribe surface
+Outcome:
+- Scribe now shows referral/prescription draft previews and `draft_only` state separately from SOAP draft, gate review, and finalized SOAP document state
+- CLI and SwiftUI validation paths now make the draft-only semantics explicit so users do not confuse derived drafts with issued/effective acts
+- the app still consumes `ScribeFirstSliceFacade` contracts rather than reimplementing referral/prescription law
+Files touched:
+- `swift/Sources/HealthOSCore/ScribeFirstSliceBridge.swift`
+- `swift/Sources/HealthOSFirstSliceSupport/ScribeFirstSliceAdapter.swift`
+- `swift/Sources/HealthOSCLI/CLIEntrypoint.swift`
+- `swift/Sources/HealthOSScribeApp/Models/ScribeFirstSliceViewModel.swift`
+- `swift/Sources/HealthOSScribeApp/Views/ScribeFirstSliceView.swift`
+- `docs/architecture/11-scribe.md`
+- `docs/architecture/23-scribe-screen-contracts.md`
+- `docs/execution/02-status-and-tracking.md`
+- `docs/execution/06-scaffold-coverage-matrix.md`
+
 ## READY
 
 ## TESTS / VALIDATION

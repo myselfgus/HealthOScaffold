@@ -62,11 +62,13 @@ Result states:
 
 ## Draft review pane
 Primary actions:
-- inspect draft
+- inspect SOAP draft plus derived referral/prescription drafts
 - request refresh/regeneration
 - send to gate
 Contract calls:
 - DraftComposerAgent
+- ReferralDraftAgent
+- PrescriptionDraftAgent
 - provenance append
 - GateService create request
 Result states:
@@ -75,6 +77,11 @@ Result states:
 - approved
 - rejected
 - failed
+
+Derived draft-specific visibility in the current wave:
+- referral draft may appear as `preview` before the executable spine runs, then as `draft_only`
+- prescription draft may appear as `preview` before the executable spine runs, then as `draft_only`
+- neither derived draft may render as issued/effective/prescribed/referred in this wave
 
 ## Gate review panel
 Primary actions:
@@ -124,7 +131,9 @@ Every result returns:
 - match count
 - retrieval summary
 - top highlights / source items / optional notice
-- draft preview plus draft review state
+- SOAP draft preview plus SOAP draft review state
+- referral draft preview/state/object path/draft-only note
+- prescription draft preview/state/object path/draft-only note
 - gate review summary (state, review type, target, rationale, reviewer role/timestamp)
 - final-document summary/path/state that stays distinct from draft approval state
 
@@ -140,7 +149,7 @@ The current macOS validation surface in `HealthOSScribeApp` maps these contracts
 - approve/reject buttons -> `resolveGate(ResolveGateCommand)`
 
 The UI consumes:
-- `ScribeSessionBridgeState` for capture mode, transcription preview/status, retrieval summary/highlights/source hints, draft preview, gate review state/summary, and final document summary/path
+- `ScribeSessionBridgeState` for capture mode, transcription preview/status, retrieval summary/highlights/source hints, SOAP draft preview, derived referral/prescription draft previews, gate review state/summary, and final document summary/path
 - `HealthOSCommandDisposition` + typed `HealthOSIssue` for degraded, deny, and operational-failure rendering
 
 The UI does not own:
@@ -148,3 +157,4 @@ The UI does not own:
 - habilitation validation
 - gate law
 - final document effectuation
+- referral/prescription effectuation

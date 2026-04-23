@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "healthos/contracts/referral-draft-document",
+  "type": "object",
+  "required": [
+    "draft",
+    "specialtyTarget",
+    "reason",
+    "contextSummary",
+    "noteSummary",
+    "readyForFutureGate",
+    "draftOnlyNote",
+    "spineLink"
+  ],
+  "properties": {
+    "draft": {"$ref": "artifact-draft.schema.json"},
+    "specialtyTarget": {"type": "string"},
+    "reason": {"type": "string"},
+    "contextSummary": {"type": "string"},
+    "noteSummary": {"type": "string"},
+    "readyForFutureGate": {"type": "boolean"},
+    "draftOnlyNote": {"type": "string"},
+    "spineLink": {
+      "type": "object",
+      "required": [
+        "sourceSessionId",
+        "sourceSOAPDraftId",
+        "sourceSOAPDraftStatus",
+        "sourceSOAPDraftObjectPath",
+        "sourceContextStatus",
+        "sourceContextSummary"
+      ],
+      "properties": {
+        "sourceSessionId": {"type": "string", "format": "uuid"},
+        "sourceSOAPDraftId": {"type": "string", "format": "uuid"},
+        "sourceSOAPDraftStatus": {
+          "type": "string",
+          "enum": ["draft", "awaiting_gate", "approved", "rejected", "superseded"]
+        },
+        "sourceSOAPDraftObjectPath": {"type": "string"},
+        "sourceContextStatus": {
+          "type": "string",
+          "enum": ["ready", "partial", "empty", "degraded"]
+        },
+        "sourceContextSummary": {"type": "string"}
+      }
+    }
+  }
+}

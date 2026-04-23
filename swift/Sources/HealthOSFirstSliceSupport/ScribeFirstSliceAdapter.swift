@@ -216,6 +216,20 @@ public actor ScribeFirstSliceAdapter: ScribeFirstSliceFacade {
                 requestedAction: "finalize-soap-note",
                 rationaleNote: "Revisao profissional ainda precisa confirmar o draft antes de qualquer efetivacao documental."
             ),
+            referralDraft: ScribeDerivedDraftBridgeState(
+                kind: .referral,
+                state: .preview,
+                summary: "Preview de referral draft disponivel; a estruturacao tipada ainda depende da execucao principal do spine.",
+                preview: previewReferralDraftText(for: workspace.capture),
+                readyForFutureGate: false
+            ),
+            prescriptionDraft: ScribeDerivedDraftBridgeState(
+                kind: .prescription,
+                state: .preview,
+                summary: "Preview de prescription draft disponivel; a estruturacao tipada ainda depende da execucao principal do spine.",
+                preview: previewPrescriptionDraftText(for: workspace.capture),
+                readyForFutureGate: false
+            ),
             finalDocument: ScribeFinalDocumentBridgeState(
                 state: .awaitingGate,
                 summary: "Documento final ainda nao existe; a efetivacao depende de gate humano explicito."
@@ -326,6 +340,14 @@ public actor ScribeFirstSliceAdapter: ScribeFirstSliceFacade {
                 notice: "A montagem de contexto estruturado aparece quando o spine executa retrieval local."
             ),
             gateReview: ScribeGateReviewBridgeState(state: .none),
+            referralDraft: makeEmptyDerivedDraftState(
+                kind: .referral,
+                summary: "Nenhum referral draft foi estruturado nesta sessao ainda."
+            ),
+            prescriptionDraft: makeEmptyDerivedDraftState(
+                kind: .prescription,
+                summary: "Nenhum prescription draft foi estruturado nesta sessao ainda."
+            ),
             finalDocument: ScribeFinalDocumentBridgeState(
                 state: .none,
                 summary: "Nenhum documento final foi efetivado nesta sessao."
@@ -359,6 +381,8 @@ public actor ScribeFirstSliceAdapter: ScribeFirstSliceFacade {
         }
         let retrievalSources = Array(Set(result.retrieval.highlights.map(\.sourceRef))).sorted()
         let finalDocument = makeFinalDocumentState(from: result)
+        let referralDraft = makeDerivedDraftState(from: result.referralDraft)
+        let prescriptionDraft = makeDerivedDraftState(from: result.prescriptionDraft)
 
         return ScribeSessionBridgeState(
             sessionId: sessionId,
@@ -386,6 +410,8 @@ public actor ScribeFirstSliceAdapter: ScribeFirstSliceFacade {
                 reviewedAt: result.gate.resolution.reviewedAt,
                 resolverRole: result.gate.resolution.resolverRole
             ),
+            referralDraft: referralDraft,
+            prescriptionDraft: prescriptionDraft,
             finalDocument: finalDocument,
             runSummary: result.summary
         )
@@ -535,6 +561,58 @@ public actor ScribeFirstSliceAdapter: ScribeFirstSliceFacade {
         }
     }
 
+    private func previewReferralDraftText(for capture: SessionCaptureInput?) -> String {
+        guard let capture else {
+            return "Nenhum referral draft em preview ainda."
+        }
+
+        switch capture.mode {
+        case .seededText:
+            return [
+                "target: Especialidade a confirmar",
+                "reason: sinais do encontro atual ainda aguardam contexto bounded final",
+                "summary: preview-only; referral segue draft-only nesta onda",
+                "Draft only. Nenhum encaminhamento foi emitido."
+            ]
+            .joined(separator: "\n")
+        case .localAudioFile:
+            let displayName = capture.audioReference?.displayName ?? "audio local"
+            return [
+                "target: Especialidade a confirmar",
+                "reason: audio local \(displayName) ainda depende de transcription/retrieval finais",
+                "summary: preview-only; referral segue draft-only nesta onda",
+                "Draft only. Nenhum encaminhamento foi emitido."
+            ]
+            .joined(separator: "\n")
+        }
+    }
+
+    private func previewPrescriptionDraftText(for capture: SessionCaptureInput?) -> String {
+        guard let capture else {
+            return "Nenhum prescription draft em preview ainda."
+        }
+
+        switch capture.mode {
+        case .seededText:
+            return [
+                "suggestion: texto livre a confirmar",
+                "instructions: posologia e agente dependem de revisao humana",
+                "summary: preview-only; prescription segue draft-only nesta onda",
+                "Draft only. Nenhuma prescricao foi emitida."
+            ]
+            .joined(separator: "\n")
+        case .localAudioFile:
+            let displayName = capture.audioReference?.displayName ?? "audio local"
+            return [
+                "suggestion: texto livre a confirmar",
+                "instructions: audio local \(displayName) ainda precisa de transcription/retrieval finais",
+                "summary: preview-only; prescription segue draft-only nesta onda",
+                "Draft only. Nenhuma prescricao foi emitida."
+            ]
+            .joined(separator: "\n")
+        }
+    }
+
     private func gateState(for resolution: GateResolutionKind) -> ScribeGateState {
         switch resolution {
         case .approved:
@@ -577,6 +655,48 @@ public actor ScribeFirstSliceAdapter: ScribeFirstSliceFacade {
             summary: "Documento final nao foi persistido porque o gate documental nao aprovou a efetivacao.",
             sourceDraftId: result.draft.draft.id,
             gateResolutionId: result.gate.resolution.id
+        )
+    }
+
+    private func makeEmptyDerivedDraftState(
+        kind: DraftKind,
+        summary: String
+    ) -> ScribeDerivedDraftBridgeState {
+        ScribeDerivedDraftBridgeState(
+            kind: kind,
+            state: .none,
+            summary: summary,
+            preview: summary
+        )
+    }
+
+    private func makeDerivedDraftState(
+        from package: ReferralDraftPackage
+    ) -> ScribeDerivedDraftBridgeState {
+        ScribeDerivedDraftBridgeState(
+            kind: .referral,
+            state: .draftOnly,
+            draftStatus: package.draft.status,
+            summary: package.document.noteSummary,
+            preview: package.document.previewText,
+            objectPath: package.draftRef.objectPath,
+            readyForFutureGate: package.document.readyForFutureGate,
+            draftOnlyNote: package.document.draftOnlyNote
+        )
+    }
+
+    private func makeDerivedDraftState(
+        from package: PrescriptionDraftPackage
+    ) -> ScribeDerivedDraftBridgeState {
+        ScribeDerivedDraftBridgeState(
+            kind: .prescription,
+            state: .draftOnly,
+            draftStatus: package.draft.status,
+            summary: package.document.noteSummary,
+            preview: package.document.previewText,
+            objectPath: package.draftRef.objectPath,
+            readyForFutureGate: package.document.readyForFutureGate,
+            draftOnlyNote: package.document.draftOnlyNote
         )
     }
 

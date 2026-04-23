@@ -103,9 +103,12 @@ Legend:
 - [x] bounded retrieval now assembles a structured local clinical-operational context package before AACI draft composition
 - [x] local-first audio file capture path is integrated into the first slice with persisted audio artifacts and explicit degraded transcription behavior
 - [x] first slice now distinguishes draft SOAP snapshots from finalized SOAP documents with explicit source-draft and gate linkage
+- [x] first slice now derives referral and prescription drafts as explicit draft-only artifacts linked to the same session/SOAP/context spine
 - [x] minimal Scribe surface now reflects draft review, gate review, and finalized-document state separately
+- [x] minimal Scribe surface now reflects referral/prescription draft-only previews separately from SOAP draft and finalized SOAP document state
 - [~] local-audio transcription remains stubbed; a real Apple-first local provider is still deferred
 - [~] retrieval quality is now deterministic lexical/tag/recency/category/intent bounded; semantic retrieval is intentionally deferred
+- [~] referral/prescription effectuation remains intentionally out of scope; only draft derivation is established in this wave
 - [~] a few procedural/operator details still remain optional hardening before heavy implementation
 
 ## Practical reading

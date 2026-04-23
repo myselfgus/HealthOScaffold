@@ -62,5 +62,33 @@ See:
 - Scribe may display degraded or denied states
 - Scribe may not invent authorization success or finalize artifacts without gate resolution
 
+## First-slice command/result envelopes
+
+Scribe now consumes explicit first-slice command/result envelopes via the bridge contract, instead of a single implicit run call.
+
+Commands currently formalized:
+- `StartProfessionalSessionCommand`
+- `SelectPatientCommand`
+- `SubmitSessionCaptureCommand`
+- `RequestDraftRefreshCommand`
+- `ResolveGateCommand`
+
+Result envelopes currently formalized:
+- `SessionStartResult`
+- `PatientSelectionResult`
+- `CaptureSubmissionResult`
+- `DraftStateResult`
+- `GateResolutionResult`
+
+Every result carries a `disposition` that keeps distinctions explicit between:
+- complete success
+- partial success
+- governed deny
+- degraded state
+- operational failure
+
+This improves UI readiness while preserving law ownership in core services (consent, habilitation, gate, and effectuation remain outside app ownership).
+
+
 ## First slice relevance
 Scribe is the primary interface for the first end-to-end slice.

@@ -91,3 +91,28 @@ Result states:
 - ready
 - partially redacted
 - failed
+
+
+## Bridge command/result contract (first executable slice)
+
+The first executable bridge now uses explicit command/result envelopes to reduce ambiguity between app intent and core/runtime execution.
+
+Commands:
+- `startProfessionalSession(StartProfessionalSessionCommand)`
+- `selectPatient(SelectPatientCommand)`
+- `submitSessionCapture(SubmitSessionCaptureCommand)`
+- `requestDraftRefresh(RequestDraftRefreshCommand)`
+- `resolveGate(ResolveGateCommand)`
+
+Every result returns:
+- `disposition`: `complete_success`, `partial_success`, `governed_deny`, `degraded`, or `operational_failure`
+- `state`: `ScribeSessionBridgeState?` snapshot for UI consumption
+- `issues`: typed issues (`code`, `message`)
+
+`ScribeSessionBridgeState` exposes retrieval state in UI-ready form:
+- retrieval status (`ready`, `empty`, `degraded`)
+- retrieval source
+- match count
+- preview items
+
+In the current executable spine, `requestDraftRefresh` intentionally returns degraded when only preview state is available; full retrieval/draft-final snapshots still become complete at gate resolution execution. This preserves current law-bearing core flow while keeping state transport explicit for future UI wiring.

@@ -6,13 +6,16 @@ Current phase: Controlled implementation — first vertical slice started
 
 ## Completed recently
 
+- GOS lifecycle/storage architecture document added with bundle identity, lifecycle states, activation posture, rollback posture, and canonical storage recommendation
+- lightweight authoring schema added for YAML-form GOS source documents
+- GOS bundle-manifest schema added for compiled-bundle lifecycle representation
 - GOS moved beyond doctrine-only and now has authoring/compiler/validator scaffolding in-repo
 - GOS authoring and compiler architecture document added
 - GOS runtime-binding architecture document added
 - generic GOS authoring workspace added under `gos/` with blank YAML template
 - TypeScript package `@healthos/gos-tooling` added with parse/canonicalize/validate/CLI scaffolds
 - README expanded to surface GOS workspace and tooling as first-class repository components
-- GOS backlog updated to reflect authoring, compiler, validator, and runtime-binding scaffolds now in place
+- GOS backlog updated to reflect authoring, compiler, validator, runtime-binding, and lifecycle scaffolds now in place
 - Governed Operational Spec (GOS) introduced as a formal subordinate layer between HealthOS Core and runtimes
 - ADR 0011 added to establish GOS as HealthOS-native intermediate operational spec, explicitly subordinate to core law
 - GOS architecture document added with canonical placement, constitutional boundary, primitive families, compiler posture, and runtime posture
@@ -98,7 +101,7 @@ Current phase: Controlled implementation — first vertical slice started
 
 - first vertical slice implementation continues with seeded-text compatibility, a structured local retrieval/context package, richer gate/document semantics, draft-only referral/prescription derivatives, and a now-wired local-audio path, while real local transcription and earlier draft-refresh finalization remain deferred
 - doctrinal language hardening completed for sovereignty/privacy/compliance/topology without introducing infrastructure expansion
-- GOS now exists as doctrine + schema + authoring workspace + compiler/validator/CLI scaffolds, while schema-workflow validation, activation lifecycle, and executable runtime loader/binding work remain open
+- GOS now exists as doctrine + schema + authoring workspace + compiler/validator/CLI scaffolds + lifecycle/bundle posture, while schema-workflow validation, activation mechanics, and executable runtime loader/binding work remain open
 
 ## Known gaps
 
@@ -108,7 +111,7 @@ Current phase: Controlled implementation — first vertical slice started
 - Scribe now has a minimal validation UI surface, but it is not yet a full/final app shell
 - draft refresh remains preview/degraded until gate resolution runs the full executable spine
 - referral/prescription drafts now exist, but their regulatory effectuation/issuance remains intentionally deferred
-- GOS still needs schema-workflow validation, stronger provenance-preserving compile output, activation/deprecation lifecycle, and executable runtime loader/binding contracts
+- GOS still needs schema-workflow validation, stronger provenance-preserving compile output, activation/deprecation mechanics, bundle storage/registry implementation, and executable runtime loader/binding contracts
 
 ## Open blockers / decisions
 

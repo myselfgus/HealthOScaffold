@@ -264,7 +264,6 @@ public actor FileBackedProvenanceLedger {
     }
 }
 
-
 public actor FileBackedRecordIndex {
     private let root: URL
     private let encoder: JSONEncoder
@@ -281,8 +280,24 @@ public actor FileBackedRecordIndex {
 
     public func replaceEntries(serviceId: UUID, entries: [RecordIndexEntry]) throws {
         let fileURL = indexFileURL(serviceId: serviceId)
+        var existing: [RecordIndexEntry] = []
+        if FileManager.default.fileExists(atPath: fileURL.path) {
+            let data = try Data(contentsOf: fileURL)
+            existing = (try? decoder.decode([RecordIndexEntry].self, from: data)) ?? []
+        }
+
+        let replacementKeys = Set(entries.map { CompositeKey(serviceId: $0.serviceId, patientUserId: $0.patientUserId, id: $0.id) })
+        existing.removeAll { replacementKeys.contains(CompositeKey(serviceId: $0.serviceId, patientUserId: $0.patientUserId, id: $0.id)) }
+        existing.append(contentsOf: entries)
+        existing.sort {
+            if $0.serviceId != $1.serviceId { return $0.serviceId.uuidString < $1.serviceId.uuidString }
+            if $0.patientUserId != $1.patientUserId { return $0.patientUserId.uuidString < $1.patientUserId.uuidString }
+            if $0.snippet.occurredAt != $1.snippet.occurredAt { return $0.snippet.occurredAt > $1.snippet.occurredAt }
+            return $0.id.uuidString < $1.id.uuidString
+        }
+
         try FileManager.default.createDirectory(at: fileURL.deletingLastPathComponent(), withIntermediateDirectories: true)
-        try encoder.encode(entries).write(to: fileURL)
+        try encoder.encode(existing).write(to: fileURL)
     }
 
     public func entries(
@@ -318,6 +333,12 @@ public actor FileBackedRecordIndex {
         guard lawfulContext["patientUserId"] == patientUserId.uuidString else {
             throw FirstSliceError.retrievalScopeViolation
         }
+    }
+
+    private struct CompositeKey: Hashable {
+        let serviceId: UUID
+        let patientUserId: UUID
+        let id: UUID
     }
 }
 

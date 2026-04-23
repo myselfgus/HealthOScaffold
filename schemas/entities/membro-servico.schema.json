@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "healthos/entities/membro-servico",
+  "type": "object",
+  "required": ["id", "servicoId", "registroProfissionalId", "papel", "ativo", "desde"],
+  "properties": {
+    "id": {"type": "string", "format": "uuid"},
+    "servicoId": {"type": "string", "format": "uuid"},
+    "registroProfissionalId": {"type": "string", "format": "uuid"},
+    "papel": {"type": "string"},
+    "ativo": {"type": "boolean"},
+    "desde": {"type": "string", "format": "date-time"},
+    "ate": {"type": ["string", "null"], "format": "date-time"}
+  }
+}

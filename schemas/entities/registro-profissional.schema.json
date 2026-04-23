@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "healthos/entities/registro-profissional",
+  "type": "object",
+  "required": ["id", "usuarioId", "conselhoTipo", "numero", "uf", "validado"],
+  "properties": {
+    "id": {"type": "string", "format": "uuid"},
+    "usuarioId": {"type": "string", "format": "uuid"},
+    "conselhoTipo": {"type": "string"},
+    "numero": {"type": "string"},
+    "uf": {"type": "string", "minLength": 2, "maxLength": 2},
+    "validado": {"type": "boolean"},
+    "validadoEm": {"type": ["string", "null"], "format": "date-time"}
+  }
+}

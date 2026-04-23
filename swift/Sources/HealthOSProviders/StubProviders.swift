@@ -36,7 +36,10 @@ public struct NativeSpeechProvider: SpeechToTextProvider {
 
     public init() {}
 
-    public func transcribe(audioURL: URL) async throws -> String {
-        return "[transcript stub for \(audioURL.lastPathComponent)]"
+    public func transcribe(audioURL: URL) async throws -> SpeechTranscriptionResult {
+        SpeechTranscriptionResult(
+            status: .degraded,
+            message: "Native local transcription remains stubbed for now; audio was stored locally but transcript text is unavailable for \(audioURL.lastPathComponent)."
+        )
     }
 }

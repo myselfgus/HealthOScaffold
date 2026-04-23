@@ -29,7 +29,9 @@ Result states:
 
 ## Active session workspace
 Primary actions:
+- choose capture mode
 - start capture
+- select local audio file
 - pause capture
 - observe live session state
 Contract calls:
@@ -37,7 +39,9 @@ Contract calls:
 - capture event emission
 Result states:
 - active
+- transcription pending
 - degraded transcription
+- transcription unavailable
 - degraded retrieval
 - paused
 - failed
@@ -109,7 +113,9 @@ Every result returns:
 - `state`: `ScribeSessionBridgeState?` snapshot for UI consumption
 - `issues`: typed issues (`HealthOSIssueCode`, `message`, optional `HealthOSFailureKind`)
 
-`ScribeSessionBridgeState` exposes retrieval state in UI-ready form:
+`ScribeSessionBridgeState` exposes UI-ready operational state including:
+- capture mode (`seeded_text` or `local_audio_file`)
+- transcription status/source/audio display name
 - retrieval status (`ready`, `empty`, `degraded`)
 - retrieval source
 - match count
@@ -122,12 +128,12 @@ In the current executable spine, `requestDraftRefresh` intentionally returns deg
 The current macOS validation surface in `HealthOSScribeApp` maps these contracts directly:
 - session start section -> `startProfessionalSession(StartProfessionalSessionCommand)`
 - patient selection controls -> `selectPatient(SelectPatientCommand)`
-- seeded capture field + submit action -> `submitSessionCapture(SubmitSessionCaptureCommand)`
+- capture-mode picker plus seeded-text editor or local-audio file chooser -> `submitSessionCapture(SubmitSessionCaptureCommand)`
 - advance action -> `requestDraftRefresh(RequestDraftRefreshCommand)`
 - approve/reject buttons -> `resolveGate(ResolveGateCommand)`
 
 The UI consumes:
-- `ScribeSessionBridgeState` for transcript preview, retrieval summary, draft preview, gate state, and final summary/path
+- `ScribeSessionBridgeState` for capture mode, transcription preview/status, retrieval summary, draft preview, gate state, and final summary/path
 - `HealthOSCommandDisposition` + typed `HealthOSIssue` for degraded, deny, and operational-failure rendering
 
 The UI does not own:

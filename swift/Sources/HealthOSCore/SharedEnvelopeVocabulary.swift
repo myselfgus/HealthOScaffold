@@ -23,11 +23,15 @@ public enum HealthOSIssueCode: String, Codable, Sendable {
     case patientMissing = "patient.missing"
     case captureMissing = "capture.missing"
     case captureIncomplete = "capture.incomplete"
+    case captureAudioFileMissing = "capture.audio_file_missing"
+    case captureAudioFileUnreadable = "capture.audio_file_unreadable"
 
     case professionalInactive = "habilitation.inactive_professional"
     case patientInactive = "consent.inactive_patient"
 
     case serviceInvalid = "service.invalid"
+    case transcriptionDegraded = "transcription.degraded"
+    case transcriptionUnavailable = "transcription.unavailable"
     case draftRefreshDegraded = "draft.refresh.degraded"
     case spineExecutionFailed = "spine.execution_failed"
 }

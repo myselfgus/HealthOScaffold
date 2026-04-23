@@ -109,6 +109,49 @@ public actor ScribeFirstSliceAdapter: ScribeFirstSliceFacade {
                 ]
             )
         }
+        guard command.capture.isUsable else {
+            return CaptureSubmissionResult(
+                disposition: .partialSuccess,
+                state: makePendingState(sessionId: command.sessionId, workspace: workspace),
+                issues: [
+                    .init(
+                        code: .captureIncomplete,
+                        message: "Capture input must include seeded text or a local audio file reference.",
+                        failureKind: .validation
+                    )
+                ]
+            )
+        }
+        if command.capture.mode == .localAudioFile,
+           let audioReference = command.capture.audioReference {
+            let fileManager = FileManager.default
+            guard fileManager.fileExists(atPath: audioReference.filePath) else {
+                return CaptureSubmissionResult(
+                    disposition: .operationalFailure,
+                    state: makePendingState(sessionId: command.sessionId, workspace: workspace),
+                    issues: [
+                        .init(
+                            code: .captureAudioFileMissing,
+                            message: "Selected local audio file is no longer available at \(audioReference.filePath).",
+                            failureKind: .dependency
+                        )
+                    ]
+                )
+            }
+            guard fileManager.isReadableFile(atPath: audioReference.filePath) else {
+                return CaptureSubmissionResult(
+                    disposition: .operationalFailure,
+                    state: makePendingState(sessionId: command.sessionId, workspace: workspace),
+                    issues: [
+                        .init(
+                            code: .captureAudioFileUnreadable,
+                            message: "Selected local audio file is not readable from the current app session.",
+                            failureKind: .dependency
+                        )
+                    ]
+                )
+            }
+        }
 
         workspace.capture = command.capture
         workspaces[command.sessionId] = workspace
@@ -151,10 +194,12 @@ public actor ScribeFirstSliceAdapter: ScribeFirstSliceFacade {
         let baseState = makePendingState(sessionId: command.sessionId, workspace: workspace)
         let draftReadyState = ScribeSessionBridgeState(
             sessionId: baseState.sessionId,
+            captureMode: baseState.captureMode,
             draftState: .awaitingGate,
             gateState: .pending,
             transcriptPreview: baseState.transcriptPreview,
             draftPreview: baseState.draftPreview,
+            transcription: baseState.transcription,
             retrieval: ScribeRetrievalBridgeState(
                 status: .degraded,
                 source: "pending-run",
@@ -227,22 +272,19 @@ public actor ScribeFirstSliceAdapter: ScribeFirstSliceFacade {
             )
             let runResult = try await runner.run(input: runInput)
             let bridgeState = makeCompletedState(from: runResult, sessionId: command.sessionId)
+            let issues = completionIssues(from: runResult)
             workspaces.removeValue(forKey: command.sessionId)
-            let disposition: HealthOSCommandDisposition = runResult.gate.approved
-                ? .completeSuccess
-                : .governedDeny
-            return GateResolutionResult(disposition: disposition, state: bridgeState)
+            let disposition = completionDisposition(for: runResult)
+            return GateResolutionResult(
+                disposition: disposition,
+                state: bridgeState,
+                issues: issues
+            )
         } catch {
             return GateResolutionResult(
                 disposition: .operationalFailure,
                 state: makePendingState(sessionId: command.sessionId, workspace: workspace),
-                issues: [
-                    .init(
-                        code: .spineExecutionFailed,
-                        message: "First slice execution failed: \(error.localizedDescription)",
-                        failureKind: .internalFailure
-                    )
-                ]
+                issues: issues(for: error)
             )
         }
     }
@@ -251,13 +293,15 @@ public actor ScribeFirstSliceAdapter: ScribeFirstSliceFacade {
         sessionId: UUID,
         workspace: SessionWorkspace? = nil
     ) -> ScribeSessionBridgeState {
-        let transcriptPreview = workspace?.capture.map { String($0.rawText.prefix(120)) } ?? ""
+        let transcriptPreview = workspace?.capture.map { String($0.previewText.prefix(160)) } ?? ""
         return ScribeSessionBridgeState(
             sessionId: sessionId,
+            captureMode: workspace?.capture?.mode,
             draftState: workspace?.capture == nil ? .empty : .ready,
             gateState: .none,
             transcriptPreview: transcriptPreview,
             draftPreview: "",
+            transcription: pendingTranscriptionState(for: workspace?.capture),
             retrieval: ScribeRetrievalBridgeState(
                 status: .degraded,
                 source: "pending-run",
@@ -274,7 +318,7 @@ public actor ScribeFirstSliceAdapter: ScribeFirstSliceFacade {
     ) -> ScribeSessionBridgeState {
         let gateState: ScribeGateState = result.gate.approved ? .approved : .rejected
         let draftState: ScribeDraftState = result.gate.approved ? .approved : .rejected
-        let transcriptPreview = String(result.transcription.transcriptText.prefix(160))
+        let transcriptPreview = String(result.transcription.workflowText.prefix(200))
         let draftPreview = [
             result.draft.draft.payload["subjective"] ?? "",
             result.draft.draft.payload["assessment"] ?? ""
@@ -282,17 +326,24 @@ public actor ScribeFirstSliceAdapter: ScribeFirstSliceFacade {
         .filter { !$0.isEmpty }
         .joined(separator: " | ")
 
-        let retrievalStatus: ScribeRetrievalStatus = result.retrieval.boundedResult.isFallbackEmpty
-            ? .empty
-            : .ready
+        let retrievalStatus: ScribeRetrievalStatus
+        if result.transcription.status != .ready && result.retrieval.boundedResult.isFallbackEmpty {
+            retrievalStatus = .degraded
+        } else if result.retrieval.boundedResult.isFallbackEmpty {
+            retrievalStatus = .empty
+        } else {
+            retrievalStatus = .ready
+        }
         let retrievalPreview = Array(result.retrieval.contextItems.prefix(3))
 
         return ScribeSessionBridgeState(
             sessionId: sessionId,
+            captureMode: result.summary.captureMode,
             draftState: draftState,
             gateState: gateState,
             transcriptPreview: transcriptPreview,
             draftPreview: draftPreview,
+            transcription: completedTranscriptionState(from: result.transcription),
             retrieval: ScribeRetrievalBridgeState(
                 status: retrievalStatus,
                 source: result.retrieval.boundedResult.source,
@@ -301,5 +352,104 @@ public actor ScribeFirstSliceAdapter: ScribeFirstSliceFacade {
             ),
             runSummary: result.summary
         )
+    }
+
+    private func pendingTranscriptionState(
+        for capture: SessionCaptureInput?
+    ) -> ScribeTranscriptionBridgeState {
+        guard let capture else {
+            return ScribeTranscriptionBridgeState(status: .pending, source: "not-started")
+        }
+
+        switch capture.mode {
+        case .seededText:
+            return ScribeTranscriptionBridgeState(status: .ready, source: "seeded-text")
+        case .localAudioFile:
+            return ScribeTranscriptionBridgeState(
+                status: .pending,
+                source: "pending-run",
+                audioDisplayName: capture.audioReference?.displayName
+            )
+        }
+    }
+
+    private func completedTranscriptionState(
+        from output: TranscriptionOutput
+    ) -> ScribeTranscriptionBridgeState {
+        ScribeTranscriptionBridgeState(
+            status: output.status,
+            source: output.source,
+            audioDisplayName: output.audioCapture?.reference.displayName,
+            issueMessage: output.issueMessage
+        )
+    }
+
+    private func completionDisposition(for result: FirstSliceRunResult) -> HealthOSCommandDisposition {
+        if !result.gate.approved {
+            return .governedDeny
+        }
+
+        switch result.transcription.status {
+        case .ready:
+            return .completeSuccess
+        case .pending, .degraded, .unavailable:
+            return .degraded
+        }
+    }
+
+    private func completionIssues(from result: FirstSliceRunResult) -> [HealthOSIssue] {
+        switch result.transcription.status {
+        case .degraded:
+            return [
+                .init(
+                    code: .transcriptionDegraded,
+                    message: result.transcription.issueMessage
+                        ?? "Transcription completed in degraded mode for the current capture."
+                )
+            ]
+        case .unavailable:
+            return [
+                .init(
+                    code: .transcriptionUnavailable,
+                    message: result.transcription.issueMessage
+                        ?? "Transcription was unavailable for the current capture."
+                )
+            ]
+        case .pending, .ready:
+            return []
+        }
+    }
+
+    private func issues(for error: Error) -> [HealthOSIssue] {
+        if let firstSliceError = error as? FirstSliceError {
+            switch firstSliceError {
+            case .audioCaptureFileMissing(let path):
+                return [
+                    .init(
+                        code: .captureAudioFileMissing,
+                        message: "Selected local audio file is missing at \(path).",
+                        failureKind: .dependency
+                    )
+                ]
+            case .audioCaptureFileUnreadable(let path):
+                return [
+                    .init(
+                        code: .captureAudioFileUnreadable,
+                        message: "Selected local audio file could not be read at \(path).",
+                        failureKind: .dependency
+                    )
+                ]
+            default:
+                break
+            }
+        }
+
+        return [
+            .init(
+                code: .spineExecutionFailed,
+                message: "First slice execution failed: \(error.localizedDescription)",
+                failureKind: .internalFailure
+            )
+        ]
     }
 }

@@ -62,22 +62,25 @@ Current phase: Controlled implementation — first vertical slice started
 - first-slice runner/adapter wiring extracted into shared Swift support target so CLI and app surfaces consume the same executable slice path
 - minimal macOS SwiftUI Scribe surface added as `HealthOSScribeApp` with a small observable view model over `ScribeFirstSliceFacade`
 - local validation now covers both `swift run HealthOSCLI` and `swift run HealthOSScribeApp --smoke-test`
+- first slice now accepts seeded text or local audio file capture, persists local audio artifacts, and surfaces explicit transcription state (`ready` / `degraded` / `unavailable`)
+- local validation now also covers `swift run HealthOSCLI --audio-file /System/Library/Sounds/Glass.aiff` and `swift run HealthOSScribeApp --smoke-test-audio`
 
 ## In progress
 
-- first vertical slice implementation continues with a now-wired minimal Scribe SwiftUI surface, while richer capture and draft-refresh behavior remain deferred
+- first vertical slice implementation continues with seeded-text compatibility and a now-wired local-audio path, while real local transcription and earlier draft-refresh finalization remain deferred
 
 ## Known gaps
 
-- capture is still text-seeded rather than native audio capture
-- transcription remains stubbed
+- microphone capture is not implemented yet; the current local-first audio path uses file selection/import
+- local transcription remains stubbed, so audio capture degrades honestly instead of yielding fabricated transcript text
 - bounded retrieval now uses file-backed index, but still lexical/tag-based (no semantic retrieval yet)
 - Scribe now has a minimal validation UI surface, but it is not yet a full/final app shell
 - draft refresh remains preview/degraded until gate resolution runs the full executable spine
 
 ## Open blockers / decisions
 
-- decide whether the next step for the slice is native audio capture or moving draft/retrieval finalization earlier than gate resolution
+- decide when to replace the current stubbed local transcription path with a real local Apple-first transcription provider
+- decide whether the next first-slice step after this wave is microphone capture, or moving draft/retrieval finalization earlier than gate resolution
 - decide when to convert the AI skills into enforced reusable workflows/templates
 - decide when to replace lexical bounded retrieval with semantic/clinical retrieval while preserving lawful scope and local-first constraints
 

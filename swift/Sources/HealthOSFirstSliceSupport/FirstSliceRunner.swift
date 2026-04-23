@@ -31,6 +31,8 @@ public actor FirstSliceRunner {
         let patient = input.patient
         let service = input.service
 
+        try validateCapture(input.capture)
+
         let habilitation = try await habilitationService.validate(professional: professional, service: service)
         let consent = try await consentService.validate(patient: patient, finalidade: "care-context-retrieval")
 
@@ -41,6 +43,16 @@ public actor FirstSliceRunner {
             patientUserId: patient.id,
             habilitationId: habilitation.id
         )
+
+        let lawfulContext: [String: String] = [
+            "actorRole": "professional-agent",
+            "scope": "care-context",
+            "serviceId": service.id.uuidString,
+            "patientUserId": patient.id.uuidString,
+            "habilitationId": habilitation.id.uuidString,
+            "finalidade": consent.finalidade,
+            "sessionId": session.id.uuidString
+        ]
 
         var events: [SessionEventRecord] = []
         var provenanceRecords: [ProvenanceRecord] = []
@@ -72,51 +84,101 @@ public actor FirstSliceRunner {
                 kind: .captureReceived,
                 payload: FirstSliceSessionEventPayload(
                     summary: "Capture input accepted.",
-                    attributes: ["captureKind": input.capture.kind.rawValue]
+                    attributes: ["captureMode": input.capture.mode.rawValue]
                 )
             )
         )
 
-        let transcriptText = "[transcribed] \(input.capture.rawText)"
-        let transcriptData = Data(transcriptText.utf8)
-        let lawfulContext: [String: String] = [
-            "actorRole": "professional-agent",
-            "scope": "care-context",
-            "serviceId": service.id.uuidString,
-            "patientUserId": patient.id.uuidString,
-            "habilitationId": habilitation.id.uuidString,
-            "finalidade": consent.finalidade,
-            "sessionId": session.id.uuidString
-        ]
-        let transcriptRef = try await storage.put(
-            StoragePutRequest(
-                owner: .servico(serviceId: service.id),
-                kind: "transcripts",
-                layer: .operationalContent,
-                content: transcriptData,
-                metadata: ["sessionId": session.id.uuidString, "patientUserId": patient.id.uuidString]
-            )
+        let audioCapture = try await persistAudioCaptureIfNeeded(
+            from: input.capture,
+            sessionId: session.id,
+            serviceId: service.id,
+            patientUserId: patient.id,
+            actorId: professional.id.uuidString,
+            lawfulContext: lawfulContext
         )
-        try await storage.audit(objectRef: transcriptRef, action: "write-transcript", actorId: professional.id.uuidString, metadata: lawfulContext)
-        let transcription = TranscriptionResult(transcriptText: transcriptText, transcriptRef: transcriptRef)
+        if let audioCapture {
+            events.append(
+                SessionEventRecord(
+                    sessionId: session.id,
+                    kind: .audioCapturePersisted,
+                    payload: FirstSliceSessionEventPayload(
+                        summary: "Local audio capture persisted.",
+                        attributes: [
+                            "objectPath": audioCapture.storedRef.objectPath,
+                            "displayName": audioCapture.reference.displayName
+                        ]
+                    )
+                )
+            )
+            try await appendProvenance(
+                .init(
+                    actorId: "aaci.capture",
+                    operation: "capture.audio.persist",
+                    outputHash: audioCapture.storedRef.contentHash,
+                    timestamp: .now
+                ),
+                to: &provenanceRecords
+            )
+        }
+
+        let transcriptionInput = TranscriptionInput(
+            captureMode: input.capture.mode,
+            seededText: input.capture.normalizedText,
+            audioCapture: audioCapture
+        )
+        var transcription = await orchestrator.transcribe(transcriptionInput)
+        let normalizedTranscriptionText = transcription.transcriptText?
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+        if transcription.status == .ready,
+           normalizedTranscriptionText?.isEmpty != false {
+            transcription = TranscriptionOutput(
+                status: .degraded,
+                source: transcription.source,
+                audioCapture: transcription.audioCapture,
+                issueMessage: "Transcription provider reported ready but produced no transcript text."
+            )
+        }
+
+        if let transcriptText = normalizedTranscriptionText,
+           !transcriptText.isEmpty {
+            let transcriptRef = try await persistTranscript(
+                transcriptText,
+                sessionId: session.id,
+                serviceId: service.id,
+                patientUserId: patient.id,
+                actorId: professional.id.uuidString,
+                lawfulContext: lawfulContext
+            )
+            transcription = TranscriptionOutput(
+                status: transcription.status == .ready ? .ready : .degraded,
+                source: transcription.source,
+                transcriptText: transcriptText,
+                transcriptRef: transcriptRef,
+                audioCapture: transcription.audioCapture,
+                issueMessage: transcription.issueMessage
+            )
+        }
+
         events.append(
             SessionEventRecord(
                 sessionId: session.id,
-                kind: .transcriptGenerated,
+                kind: .transcriptionProcessed,
                 payload: FirstSliceSessionEventPayload(
-                    summary: "Transcript persisted.",
-                    attributes: ["objectPath": transcription.transcriptRef.objectPath]
+                    summary: transcriptionEventSummary(for: transcription),
+                    attributes: transcriptionEventAttributes(for: transcription)
                 )
             )
         )
         try await appendProvenance(
             .init(
                 actorId: "aaci.transcription",
-                operation: "transcript.generate",
-                providerName: "native-speech-stub",
-                modelName: "stub",
+                operation: "transcription.process",
+                providerName: transcription.source,
+                modelName: transcription.source == "seeded-text" ? nil : "stub",
                 modelVersion: "v1",
-                outputHash: transcription.transcriptRef.contentHash,
+                inputHash: transcription.audioCapture?.storedRef.contentHash,
+                outputHash: transcription.transcriptRef?.contentHash,
                 timestamp: .now
             ),
             to: &provenanceRecords
@@ -128,7 +190,7 @@ public actor FirstSliceRunner {
             serviceId: service.id,
             patientUserId: patient.id,
             finalidade: consent.finalidade,
-            terms: retrievalTerms(from: transcriptText),
+            terms: retrievalTerms(from: transcription.transcriptText),
             allowedKinds: [.encounterSummary, .allergy, .observation],
             maxMatches: 4,
             recencyDays: 365
@@ -145,11 +207,15 @@ public actor FirstSliceRunner {
                 sessionId: session.id,
                 kind: .contextRetrieved,
                 payload: FirstSliceSessionEventPayload(
-                    summary: boundedResult.isFallbackEmpty ? "No bounded context matches found." : "Bounded context retrieved.",
+                    summary: retrievalEventSummary(
+                        transcription: transcription,
+                        boundedResult: boundedResult
+                    ),
                     attributes: [
                         "count": String(retrieval.contextItems.count),
                         "source": boundedResult.source,
-                        "fallbackEmpty": String(boundedResult.isFallbackEmpty)
+                        "fallbackEmpty": String(boundedResult.isFallbackEmpty),
+                        "transcriptionStatus": transcription.status.rawValue
                     ]
                 )
             )
@@ -167,7 +233,7 @@ public actor FirstSliceRunner {
 
         let draftModel = await orchestrator.composeSOAPDraft(
             session: session,
-            transcript: transcription.transcriptText,
+            transcription: transcription,
             context: retrieval.contextItems
         )
         let draftData = try JSONEncoder.healthOS.encode(draftModel)
@@ -342,8 +408,12 @@ public actor FirstSliceRunner {
             finalArtifactRef: finalArtifactRef,
             summary: SliceRunSummary(
                 sessionId: session.id,
+                captureMode: input.capture.mode,
                 gateApproved: gate.approved,
-                transcriptObjectPath: transcription.transcriptRef.objectPath,
+                audioCaptureObjectPath: transcription.audioCapture?.storedRef.objectPath,
+                transcriptObjectPath: transcription.transcriptRef?.objectPath,
+                transcriptionStatus: transcription.status,
+                transcriptionSource: transcription.source,
                 draftObjectPath: draft.draftRef.objectPath,
                 finalArtifactObjectPath: finalArtifactRef?.objectPath,
                 retrievalMatchCount: retrieval.boundedResult.matches.count,
@@ -365,7 +435,134 @@ public actor FirstSliceRunner {
         try await provenance.append(record)
     }
 
-    private func retrievalTerms(from text: String) -> [String] {
+    private func validateCapture(_ capture: SessionCaptureInput) throws {
+        guard capture.isUsable else {
+            throw FirstSliceError.invalidCaptureInput("missing text or audio reference")
+        }
+    }
+
+    private func persistAudioCaptureIfNeeded(
+        from capture: SessionCaptureInput,
+        sessionId: UUID,
+        serviceId: UUID,
+        patientUserId: UUID,
+        actorId: String,
+        lawfulContext: [String: String]
+    ) async throws -> AudioCaptureArtifact? {
+        guard capture.mode == .localAudioFile else { return nil }
+        guard let audioReference = capture.audioReference else {
+            throw FirstSliceError.invalidCaptureInput("audio mode requires a local audio reference")
+        }
+
+        let fileURL = audioReference.fileURL
+        guard FileManager.default.fileExists(atPath: fileURL.path) else {
+            throw FirstSliceError.audioCaptureFileMissing(fileURL.path)
+        }
+
+        let audioData: Data
+        do {
+            audioData = try Data(contentsOf: fileURL)
+        } catch {
+            throw FirstSliceError.audioCaptureFileUnreadable(fileURL.path)
+        }
+
+        let storedRef = try await storage.put(
+            StoragePutRequest(
+                owner: .servico(serviceId: serviceId),
+                kind: "capture-audio",
+                layer: .operationalContent,
+                content: audioData,
+                metadata: [
+                    "sessionId": sessionId.uuidString,
+                    "patientUserId": patientUserId.uuidString,
+                    "displayName": audioReference.displayName
+                ]
+            )
+        )
+        try await storage.audit(
+            objectRef: storedRef,
+            action: "write-audio-capture",
+            actorId: actorId,
+            metadata: lawfulContext
+        )
+        return AudioCaptureArtifact(reference: audioReference, storedRef: storedRef)
+    }
+
+    private func persistTranscript(
+        _ transcriptText: String,
+        sessionId: UUID,
+        serviceId: UUID,
+        patientUserId: UUID,
+        actorId: String,
+        lawfulContext: [String: String]
+    ) async throws -> StorageObjectRef {
+        let transcriptData = Data(transcriptText.utf8)
+        let transcriptRef = try await storage.put(
+            StoragePutRequest(
+                owner: .servico(serviceId: serviceId),
+                kind: "transcripts",
+                layer: .operationalContent,
+                content: transcriptData,
+                metadata: [
+                    "sessionId": sessionId.uuidString,
+                    "patientUserId": patientUserId.uuidString
+                ]
+            )
+        )
+        try await storage.audit(
+            objectRef: transcriptRef,
+            action: "write-transcript",
+            actorId: actorId,
+            metadata: lawfulContext
+        )
+        return transcriptRef
+    }
+
+    private func transcriptionEventSummary(for transcription: TranscriptionOutput) -> String {
+        switch transcription.status {
+        case .ready:
+            return "Transcript generated and persisted."
+        case .pending:
+            return "Transcription remains pending."
+        case .degraded:
+            return "Transcription completed in degraded mode."
+        case .unavailable:
+            return "Transcription was unavailable for the current capture."
+        }
+    }
+
+    private func transcriptionEventAttributes(for transcription: TranscriptionOutput) -> [String: String] {
+        var attributes: [String: String] = [
+            "status": transcription.status.rawValue,
+            "source": transcription.source
+        ]
+        if let transcriptRef = transcription.transcriptRef {
+            attributes["objectPath"] = transcriptRef.objectPath
+        }
+        if let audioCapture = transcription.audioCapture {
+            attributes["audioObjectPath"] = audioCapture.storedRef.objectPath
+            attributes["audioDisplayName"] = audioCapture.reference.displayName
+        }
+        if let issueMessage = transcription.issueMessage {
+            attributes["issue"] = issueMessage
+        }
+        return attributes
+    }
+
+    private func retrievalEventSummary(
+        transcription: TranscriptionOutput,
+        boundedResult: BoundedRetrievalResult
+    ) -> String {
+        if transcription.status != .ready && boundedResult.query.terms.isEmpty {
+            return "Bounded context retrieval degraded because transcription produced no searchable text."
+        }
+        return boundedResult.isFallbackEmpty
+            ? "No bounded context matches found."
+            : "Bounded context retrieved."
+    }
+
+    private func retrievalTerms(from text: String?) -> [String] {
+        guard let text else { return [] }
         let separators = CharacterSet.alphanumerics.inverted
         return text
             .lowercased()

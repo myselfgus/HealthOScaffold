@@ -4,6 +4,9 @@ public enum FirstSliceError: Error, LocalizedError, Sendable {
     case inactiveProfessionalUser
     case inactivePatientUser
     case invalidService
+    case invalidCaptureInput(String)
+    case audioCaptureFileMissing(String)
+    case audioCaptureFileUnreadable(String)
     case missingLawfulContext(String)
     case storageIntegrityFailure(String)
     case retrievalScopeViolation
@@ -16,6 +19,12 @@ public enum FirstSliceError: Error, LocalizedError, Sendable {
             return "Patient user is inactive."
         case .invalidService:
             return "Service is invalid for this operation."
+        case .invalidCaptureInput(let detail):
+            return "Capture input is invalid: \(detail)."
+        case .audioCaptureFileMissing(let path):
+            return "Audio capture file is missing at path: \(path)."
+        case .audioCaptureFileUnreadable(let path):
+            return "Audio capture file could not be read at path: \(path)."
         case .missingLawfulContext(let key):
             return "Missing lawful context key: \(key)."
         case .storageIntegrityFailure(let path):
@@ -354,6 +363,15 @@ public actor BoundedContextRetrievalService {
         let now = Date()
         let normalizedTerms = Set(query.terms.map { $0.trimmingCharacters(in: .whitespacesAndNewlines).lowercased() }.filter { $0.count >= 3 })
         let recencyFloor: Date? = query.recencyDays.map { Calendar.current.date(byAdding: .day, value: -$0, to: now) ?? .distantPast }
+
+        guard !normalizedTerms.isEmpty else {
+            return BoundedRetrievalResult(
+                query: query,
+                matches: [],
+                source: "file-backed-record-index:no-query-terms",
+                isFallbackEmpty: true
+            )
+        }
 
         let scored: [RetrievalMatch] = entries.compactMap { entry in
             guard query.allowedKinds.contains(entry.snippetKind) else { return nil }

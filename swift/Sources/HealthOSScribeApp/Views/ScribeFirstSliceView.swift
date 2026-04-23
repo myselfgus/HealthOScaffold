@@ -1,4 +1,5 @@
 import SwiftUI
+import UniformTypeIdentifiers
 import HealthOSCore
 
 struct ScribeFirstSliceView: View {
@@ -38,6 +39,9 @@ private struct SurfaceSummaryCard: View {
                 if let disposition = model.lastDisposition {
                     LabeledContent("Last disposition", value: disposition.rawValue)
                 }
+                LabeledContent("Capture mode", value: model.captureMode.rawValue)
+                LabeledContent("Transcription status", value: model.transcriptionStatusText)
+                LabeledContent("Transcription source", value: model.transcriptionSourceText)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
         }
@@ -60,7 +64,7 @@ private struct SessionSetupCard: View {
                 if let sessionId = model.sessionId {
                     LabeledContent("Session id", value: sessionId.uuidString)
                 } else {
-                    Text("Abra a sessao para habilitar selecao de paciente e captura seeded-text.")
+                    Text("Abra a sessao para habilitar selecao de paciente e captura por texto seeded ou audio local.")
                         .foregroundStyle(.secondary)
                 }
             }
@@ -96,11 +100,39 @@ private struct WorkspaceCard: View {
                     }
                 }
 
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("Capture text (seeded)")
-                    TextEditor(text: $model.captureText)
-                        .font(.body.monospaced())
-                        .frame(minHeight: 120)
+                Picker("Capture mode", selection: $model.captureMode) {
+                    ForEach(CaptureMode.allCases, id: \.self) { mode in
+                        Text(mode == .seededText ? "Seeded text" : "Local audio file")
+                            .tag(mode)
+                    }
+                }
+                .pickerStyle(.segmented)
+
+                if model.captureMode == .seededText {
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("Capture text (seeded)")
+                        TextEditor(text: $model.captureText)
+                            .font(.body.monospaced())
+                            .frame(minHeight: 120)
+                    }
+                } else {
+                    VStack(alignment: .leading, spacing: 10) {
+                        Text("Local audio file")
+                        Text(model.selectedAudioLabel)
+                            .foregroundStyle(.secondary)
+
+                        HStack {
+                            Button("Choose audio file") {
+                                model.isImportingAudio = true
+                            }
+
+                            if model.selectedAudioCapture != nil {
+                                Button("Use seeded text instead") {
+                                    model.captureMode = .seededText
+                                }
+                            }
+                        }
+                    }
                 }
 
                 HStack {
@@ -137,6 +169,12 @@ private struct WorkspaceCard: View {
             }
             .frame(maxWidth: .infinity, alignment: .leading)
         }
+        .fileImporter(
+            isPresented: $model.isImportingAudio,
+            allowedContentTypes: [.audio]
+        ) { result in
+            model.handleAudioSelection(result)
+        }
     }
 }
 
@@ -147,6 +185,7 @@ private struct SliceOutputsCard: View {
         GroupBox("3. Slice Outputs") {
             VStack(alignment: .leading, spacing: 14) {
                 OutputBlock(title: "Transcript preview", text: model.bridgeState?.transcriptPreview ?? "Nenhuma captura submetida ainda.")
+                OutputBlock(title: "Transcription status", text: transcriptionText)
                 OutputBlock(
                     title: "Retrieval summary",
                     text: retrievalText
@@ -174,6 +213,20 @@ private struct SliceOutputsCard: View {
             "source: \(retrieval.source)",
             "matches: \(retrieval.matchCount)",
             preview
+        ]
+        .joined(separator: "\n")
+    }
+
+    private var transcriptionText: String {
+        guard let transcription = model.bridgeState?.transcription else {
+            return "Nenhuma transcription executada ainda."
+        }
+
+        return [
+            "status: \(transcription.status.rawValue)",
+            "source: \(transcription.source)",
+            "audio: \(transcription.audioDisplayName ?? "none")",
+            transcription.issueMessage ?? "sem issue explicita"
         ]
         .joined(separator: "\n")
     }

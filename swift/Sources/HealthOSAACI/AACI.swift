@@ -14,11 +14,67 @@ public actor AACIOrchestrator {
         return "AACI session \(session.id.uuidString) started via \(decision.providerName)"
     }
 
-    public func composeSOAPDraft(session: SessaoTrabalho, transcript: String, context: [String]) async -> ArtifactDraft {
+    public func transcribe(_ input: TranscriptionInput) async -> TranscriptionOutput {
+        switch input.captureMode {
+        case .seededText:
+            return TranscriptionOutput(
+                status: .ready,
+                source: "seeded-text",
+                transcriptText: input.seededText,
+                audioCapture: input.audioCapture
+            )
+        case .localAudioFile:
+            guard let audioCapture = input.audioCapture else {
+                return TranscriptionOutput(
+                    status: .unavailable,
+                    source: "local-audio",
+                    issueMessage: "No local audio artifact was available for transcription."
+                )
+            }
+            guard let provider = await router.speechProvider(taskKind: "transcription") else {
+                return TranscriptionOutput(
+                    status: .unavailable,
+                    source: "none",
+                    audioCapture: audioCapture,
+                    issueMessage: "No local speech provider is registered for the current first-slice environment."
+                )
+            }
+
+            do {
+                let result = try await provider.transcribe(audioURL: audioCapture.reference.fileURL)
+                return TranscriptionOutput(
+                    status: result.status,
+                    source: provider.providerName,
+                    transcriptText: result.transcriptText,
+                    audioCapture: audioCapture,
+                    issueMessage: result.message
+                )
+            } catch {
+                return TranscriptionOutput(
+                    status: .degraded,
+                    source: provider.providerName,
+                    audioCapture: audioCapture,
+                    issueMessage: "Local transcription failed: \(error.localizedDescription)"
+                )
+            }
+        }
+    }
+
+    public func composeSOAPDraft(
+        session: SessaoTrabalho,
+        transcription: TranscriptionOutput,
+        context: [String]
+    ) async -> ArtifactDraft {
+        let objective = context.isEmpty
+            ? "No bounded context matched the current capture."
+            : context.joined(separator: "\n")
+        let assessment = transcription.status == .ready
+            ? "TODO"
+            : "Draft assembled with explicit transcription degradation; professional review remains required."
         let payload = [
-            "subjective": transcript,
-            "objective": context.joined(separator: "\n"),
-            "assessment": "TODO",
+            "subjective": transcription.workflowText,
+            "objective": objective,
+            "assessment": assessment,
             "plan": "TODO"
         ]
         return ArtifactDraft(sessionId: session.id, kind: "soap", payload: payload)

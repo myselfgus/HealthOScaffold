@@ -24,17 +24,23 @@ final class ScribeFirstSliceViewModel {
 
     enum DegradedMode: String {
         case none
+        case transcriptionDegraded = "transcription_degraded"
         case retrievalDegraded = "retrieval_degraded"
         case partialResults = "partial_results"
     }
 
     let smokeTestMode = ProcessInfo.processInfo.arguments.contains("--smoke-test")
+        || ProcessInfo.processInfo.arguments.contains("--smoke-test-audio")
+    let audioSmokeTestMode = ProcessInfo.processInfo.arguments.contains("--smoke-test-audio")
 
     var professionalToken = ""
     var serviceName = ""
     var availablePatients: [Usuario] = []
     var selectedPatientID: UUID?
+    var captureMode: CaptureMode = .seededText
     var captureText = "Paciente relata dor de cabeça, insônia e piora do sono há uma semana."
+    var selectedAudioCapture: AudioCaptureReference?
+    var isImportingAudio = false
 
     var sessionState: SessionSurfaceState = .idle
     var runtimeHealth: RuntimeSurfaceHealth = .unknown
@@ -60,6 +66,15 @@ final class ScribeFirstSliceViewModel {
         availablePatients.first { $0.id == selectedPatientID }
     }
 
+    var captureInputReady: Bool {
+        switch captureMode {
+        case .seededText:
+            return !captureText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+        case .localAudioFile:
+            return selectedAudioCapture != nil
+        }
+    }
+
     var canStartSession: Bool {
         facade != nil && !isBusy && sessionId == nil
     }
@@ -69,15 +84,27 @@ final class ScribeFirstSliceViewModel {
     }
 
     var canSubmitCapture: Bool {
-        !isBusy && sessionId != nil && !captureText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+        !isBusy && sessionId != nil && captureInputReady
     }
 
     var canRequestDraftPreview: Bool {
-        !isBusy && sessionId != nil && !captureText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+        !isBusy && sessionId != nil && captureInputReady
     }
 
     var canResolveGate: Bool {
-        !isBusy && sessionId != nil && !captureText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+        !isBusy && sessionId != nil && captureInputReady
+    }
+
+    var selectedAudioLabel: String {
+        selectedAudioCapture?.displayName ?? "Nenhum arquivo de audio selecionado."
+    }
+
+    var transcriptionStatusText: String {
+        bridgeState?.transcription.status.rawValue ?? "pending"
+    }
+
+    var transcriptionSourceText: String {
+        bridgeState?.transcription.source ?? "not-started"
     }
 
     var finalSummaryText: String {
@@ -183,11 +210,22 @@ final class ScribeFirstSliceViewModel {
             return
         }
 
-        beginAction("submitting seeded capture")
+        guard let capture = currentCaptureInput() else {
+            issues = [
+                .init(
+                    code: .captureIncomplete,
+                    message: "Escolha texto seeded ou um arquivo de audio local antes de submeter a captura.",
+                    failureKind: .validation
+                )
+            ]
+            return
+        }
+
+        beginAction(capture.mode == .seededText ? "submitting seeded capture" : "submitting local audio capture")
         let result = await facade.submitSessionCapture(
             SubmitSessionCaptureCommand(
                 sessionId: sessionId,
-                capture: SessionCaptureInput(rawText: captureText)
+                capture: capture
             )
         )
         consumeResult(
@@ -258,6 +296,8 @@ final class ScribeFirstSliceViewModel {
         await loadIfNeeded()
         guard didLoad else { return false }
 
+        configureSmokeCaptureIfNeeded()
+
         await startSession()
         if sessionId == nil { return false }
 
@@ -274,6 +314,8 @@ final class ScribeFirstSliceViewModel {
 
         print("HealthOSScribeApp smoke test complete")
         print("session=\(state.sessionId.uuidString)")
+        print("capture_mode=\(state.captureMode?.rawValue ?? "none")")
+        print("transcription_status=\(state.transcription.status.rawValue)")
         print("draft_state=\(state.draftState.rawValue)")
         print("gate_state=\(state.gateState.rawValue)")
         print("retrieval_status=\(state.retrieval.status.rawValue)")
@@ -281,6 +323,25 @@ final class ScribeFirstSliceViewModel {
         print("final=\(summary.finalArtifactObjectPath ?? "<not effectuated>")")
         print("issues=\(displayIssues)")
         return true
+    }
+
+    func handleAudioSelection(_ result: Result<URL, Error>) {
+        switch result {
+        case .success(let url):
+            selectedAudioCapture = AudioCaptureReference(fileURL: url)
+            captureMode = .localAudioFile
+            issues = []
+            lastAction = "local audio selected"
+        case .failure(let error):
+            issues = [
+                .init(
+                    code: .captureAudioFileUnreadable,
+                    message: "Nao foi possivel selecionar o arquivo de audio local: \(error.localizedDescription)",
+                    failureKind: .dependency
+                )
+            ]
+            lastAction = "audio selection failed"
+        }
     }
 
     var displayIssues: String {
@@ -343,25 +404,18 @@ final class ScribeFirstSliceViewModel {
             }
         }
 
-        switch disposition {
-        case .completeSuccess, .partialSuccess:
-            runtimeHealth = .healthy
-            degradedMode = .none
-        case .degraded:
-            runtimeHealth = .degraded
-            degradedMode = .retrievalDegraded
-        case .governedDeny:
-            runtimeHealth = .healthy
-            degradedMode = .none
-        case .operationalFailure:
+        if disposition == .operationalFailure {
             runtimeHealth = .failed
             degradedMode = .partialResults
-        }
-
-        if let state,
-           state.retrieval.status == .degraded,
-           state.retrieval.source != "pending-run" {
+        } else if state?.transcription.status == .degraded || state?.transcription.status == .unavailable {
+            runtimeHealth = .degraded
+            degradedMode = .transcriptionDegraded
+        } else if state?.retrieval.status == .degraded || disposition == .degraded {
+            runtimeHealth = .degraded
             degradedMode = .retrievalDegraded
+        } else {
+            runtimeHealth = .healthy
+            degradedMode = .none
         }
 
         lastAction = issues.isEmpty ? successAction : "\(successAction) with issues"
@@ -396,5 +450,46 @@ final class ScribeFirstSliceViewModel {
         ]
         lastAction = "bridge unavailable"
         isBusy = false
+    }
+
+    private func currentCaptureInput() -> SessionCaptureInput? {
+        switch captureMode {
+        case .seededText:
+            let text = captureText.trimmingCharacters(in: .whitespacesAndNewlines)
+            guard !text.isEmpty else { return nil }
+            return SessionCaptureInput(rawText: text)
+        case .localAudioFile:
+            guard let selectedAudioCapture else { return nil }
+            return SessionCaptureInput(audioReference: selectedAudioCapture)
+        }
+    }
+
+    private func configureSmokeCaptureIfNeeded() {
+        guard audioSmokeTestMode else { return }
+        guard let smokeAudioURL = Self.defaultSmokeAudioURL() else {
+            issues = [
+                .init(
+                    code: .captureAudioFileMissing,
+                    message: "No system audio fixture was found for the local audio smoke test.",
+                    failureKind: .dependency
+                )
+            ]
+            return
+        }
+
+        captureMode = .localAudioFile
+        selectedAudioCapture = AudioCaptureReference(fileURL: smokeAudioURL)
+    }
+
+    private static func defaultSmokeAudioURL(fileManager: FileManager = .default) -> URL? {
+        let candidates = [
+            "/System/Library/Sounds/Glass.aiff",
+            "/System/Library/Sounds/Funk.aiff",
+            "/System/Library/Sounds/Ping.aiff"
+        ]
+
+        return candidates
+            .map { URL(fileURLWithPath: $0) }
+            .first { fileManager.fileExists(atPath: $0.path) }
     }
 }

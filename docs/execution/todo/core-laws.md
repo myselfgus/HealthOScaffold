@@ -15,6 +15,12 @@ Outcome:
 Files touched:
 - `docs/architecture/06-core-services.md`
 
+### CL-003 Decide exact local API seam between Swift and TS
+Outcome:
+- initial seam fixed as loopback HTTP + PostgreSQL metadata + filesystem/object references
+Files touched:
+- `docs/adr/0006-local-swift-ts-seam.md`
+
 ## READY
 
 ### CL-004 Define deny/failure semantics for core services
@@ -24,7 +30,7 @@ Files:
 - `docs/architecture/06-core-services.md`
 - optionally schemas/contracts if needed
 Dependencies:
-- CL-001, CL-002
+- CL-001, CL-002, CL-003
 Definition of done:
 - each core service exposes lawful deny/failure outputs and these are not left implicit
 
@@ -38,16 +44,6 @@ Dependencies:
 - CL-001
 Definition of done:
 - no contradictory field names or state vocabularies remain across governance schemas
-
-## BLOCKER-CHECK
-
-### CL-003 Decide exact local API seam between Swift and TS
-Objective:
-- choose whether the first seam is HTTP loopback, file/event, or mixed
-Blocker reason:
-- affects runtime integration and app/service boundaries
-Definition of done:
-- decision recorded in ADR
 
 ## TESTS / VALIDATION
 

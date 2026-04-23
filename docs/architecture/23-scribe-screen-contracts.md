@@ -116,3 +116,22 @@ Every result returns:
 - preview items
 
 In the current executable spine, `requestDraftRefresh` intentionally returns degraded when only preview state is available; full retrieval/draft-final snapshots still become complete at gate resolution execution. This preserves current law-bearing core flow while keeping state transport explicit for future UI wiring.
+
+## Minimal SwiftUI first-slice implementation
+
+The current macOS validation surface in `HealthOSScribeApp` maps these contracts directly:
+- session start section -> `startProfessionalSession(StartProfessionalSessionCommand)`
+- patient selection controls -> `selectPatient(SelectPatientCommand)`
+- seeded capture field + submit action -> `submitSessionCapture(SubmitSessionCaptureCommand)`
+- advance action -> `requestDraftRefresh(RequestDraftRefreshCommand)`
+- approve/reject buttons -> `resolveGate(ResolveGateCommand)`
+
+The UI consumes:
+- `ScribeSessionBridgeState` for transcript preview, retrieval summary, draft preview, gate state, and final summary/path
+- `HealthOSCommandDisposition` + typed `HealthOSIssue` for degraded, deny, and operational-failure rendering
+
+The UI does not own:
+- consent validation
+- habilitation validation
+- gate law
+- final artifact effectuation

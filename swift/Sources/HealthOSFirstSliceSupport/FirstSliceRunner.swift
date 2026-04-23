@@ -3,7 +3,7 @@ import HealthOSCore
 import HealthOSProviders
 import HealthOSAACI
 
-actor FirstSliceRunner {
+public actor FirstSliceRunner {
     private let root: URL
     private let habilitationService: SimpleHabilitationService
     private let consentService: SimpleConsentService
@@ -14,7 +14,7 @@ actor FirstSliceRunner {
     private let retrieval: BoundedContextRetrievalService
     private let recordIndex: FileBackedRecordIndex
 
-    init(root: URL, orchestrator: AACIOrchestrator) {
+    public init(root: URL, orchestrator: AACIOrchestrator) {
         self.root = root
         self.habilitationService = SimpleHabilitationService()
         self.consentService = SimpleConsentService()
@@ -26,7 +26,7 @@ actor FirstSliceRunner {
         self.retrieval = BoundedContextRetrievalService(index: self.recordIndex)
     }
 
-    func run(input: FirstSliceSessionInput) async throws -> FirstSliceRunResult {
+    public func run(input: FirstSliceSessionInput) async throws -> FirstSliceRunResult {
         let professional = input.professional
         let patient = input.patient
         let service = input.service
@@ -165,7 +165,11 @@ actor FirstSliceRunner {
             to: &provenanceRecords
         )
 
-        let draftModel = await orchestrator.composeSOAPDraft(session: session, transcript: transcription.transcriptText, context: retrieval.contextItems)
+        let draftModel = await orchestrator.composeSOAPDraft(
+            session: session,
+            transcript: transcription.transcriptText,
+            context: retrieval.contextItems
+        )
         let draftData = try JSONEncoder.healthOS.encode(draftModel)
         let draftRef = try await storage.put(
             StoragePutRequest(
@@ -213,7 +217,11 @@ actor FirstSliceRunner {
                 )
             )
         )
-        let gateResolution = await gateService.resolve(gateRequest, resolverUserId: professional.id, approve: input.gateApprove)
+        let gateResolution = await gateService.resolve(
+            gateRequest,
+            resolverUserId: professional.id,
+            approve: input.gateApprove
+        )
         let gate = GateOutcomeSummary(
             request: gateRequest,
             resolution: gateResolution,
@@ -256,11 +264,19 @@ actor FirstSliceRunner {
                     kind: "soap-final",
                     layer: .operationalContent,
                     content: finalData,
-                    metadata: ["sessionId": session.id.uuidString, "sourceDraftId": draft.draft.id.uuidString]
+                    metadata: [
+                        "sessionId": session.id.uuidString,
+                        "sourceDraftId": draft.draft.id.uuidString
+                    ]
                 )
             )
             if let finalArtifactRef {
-                try await storage.audit(objectRef: finalArtifactRef, action: "write-final-artifact", actorId: professional.id.uuidString, metadata: lawfulContext)
+                try await storage.audit(
+                    objectRef: finalArtifactRef,
+                    action: "write-final-artifact",
+                    actorId: professional.id.uuidString,
+                    metadata: lawfulContext
+                )
                 events.append(
                     SessionEventRecord(
                         sessionId: session.id,
@@ -287,11 +303,35 @@ actor FirstSliceRunner {
 
         let gateRequestData = try JSONEncoder.healthOS.encode(gate.request)
         let gateResolutionData = try JSONEncoder.healthOS.encode(gate.resolution)
-        _ = try await storage.put(StoragePutRequest(owner: .servico(serviceId: service.id), kind: "gate-requests", layer: .governanceMetadata, content: gateRequestData, metadata: ["sessionId": session.id.uuidString]))
-        _ = try await storage.put(StoragePutRequest(owner: .servico(serviceId: service.id), kind: "gate-resolutions", layer: .governanceMetadata, content: gateResolutionData, metadata: ["sessionId": session.id.uuidString]))
+        _ = try await storage.put(
+            StoragePutRequest(
+                owner: .servico(serviceId: service.id),
+                kind: "gate-requests",
+                layer: .governanceMetadata,
+                content: gateRequestData,
+                metadata: ["sessionId": session.id.uuidString]
+            )
+        )
+        _ = try await storage.put(
+            StoragePutRequest(
+                owner: .servico(serviceId: service.id),
+                kind: "gate-resolutions",
+                layer: .governanceMetadata,
+                content: gateResolutionData,
+                metadata: ["sessionId": session.id.uuidString]
+            )
+        )
 
         let eventsData = try JSONEncoder.healthOS.encode(events)
-        _ = try await storage.put(StoragePutRequest(owner: .servico(serviceId: service.id), kind: "session-events", layer: .governanceMetadata, content: eventsData, metadata: ["sessionId": session.id.uuidString]))
+        _ = try await storage.put(
+            StoragePutRequest(
+                owner: .servico(serviceId: service.id),
+                kind: "session-events",
+                layer: .governanceMetadata,
+                content: eventsData,
+                metadata: ["sessionId": session.id.uuidString]
+            )
+        )
 
         return FirstSliceRunResult(
             session: session,
@@ -317,7 +357,10 @@ actor FirstSliceRunner {
         )
     }
 
-    private func appendProvenance(_ record: ProvenanceRecord, to records: inout [ProvenanceRecord]) async throws {
+    private func appendProvenance(
+        _ record: ProvenanceRecord,
+        to records: inout [ProvenanceRecord]
+    ) async throws {
         records.append(record)
         try await provenance.append(record)
     }
@@ -330,7 +373,10 @@ actor FirstSliceRunner {
             .filter { $0.count >= 4 }
     }
 
-    private func seedDemoRecordIndexIfNeeded(serviceId: UUID, patientUserId: UUID) async throws {
+    private func seedDemoRecordIndexIfNeeded(
+        serviceId: UUID,
+        patientUserId: UUID
+    ) async throws {
         let existing = try await recordIndex.entries(
             serviceId: serviceId,
             patientUserId: patientUserId,

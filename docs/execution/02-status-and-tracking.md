@@ -59,22 +59,25 @@ Current phase: Controlled implementation — first vertical slice started
 - Scribe bridge state now exposes retrieval source/status/match preview for future UI wiring
 - shared HealthOS envelope vocabulary added for first-slice command/result semantics (`HealthOSCommandDisposition`, `HealthOSIssueCode`, `HealthOSFailureKind`, `HealthOSIssue`)
 - Scribe bridge + CLI adapter migrated from ad hoc issue strings to shared typed issue/disposition semantics
+- first-slice runner/adapter wiring extracted into shared Swift support target so CLI and app surfaces consume the same executable slice path
+- minimal macOS SwiftUI Scribe surface added as `HealthOSScribeApp` with a small observable view model over `ScribeFirstSliceFacade`
+- local validation now covers both `swift run HealthOSCLI` and `swift run HealthOSScribeApp --smoke-test`
 
 ## In progress
 
-- first vertical slice implementation continues in Swift/CLI with stronger typed contracts and app-bridge preparation
+- first vertical slice implementation continues with a now-wired minimal Scribe SwiftUI surface, while richer capture and draft-refresh behavior remain deferred
 
 ## Known gaps
 
 - capture is still text-seeded rather than native audio capture
 - transcription remains stubbed
 - bounded retrieval now uses file-backed index, but still lexical/tag-based (no semantic retrieval yet)
-- UI apps are not yet wired to the executable slice
-- Scribe is still not wired to a full UI surface; bridge contracts/facade are now stronger but still CLI-consumed only
+- Scribe now has a minimal validation UI surface, but it is not yet a full/final app shell
+- draft refresh remains preview/degraded until gate resolution runs the full executable spine
 
 ## Open blockers / decisions
 
-- decide whether the next step for the slice is native audio capture or stronger retrieval wiring
+- decide whether the next step for the slice is native audio capture or moving draft/retrieval finalization earlier than gate resolution
 - decide when to convert the AI skills into enforced reusable workflows/templates
 - decide when to replace lexical bounded retrieval with semantic/clinical retrieval while preserving lawful scope and local-first constraints
 

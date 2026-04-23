@@ -8,12 +8,16 @@ let package = Package(
         .library(name: "HealthOSCore", targets: ["HealthOSCore"]),
         .library(name: "HealthOSAACI", targets: ["HealthOSAACI"]),
         .library(name: "HealthOSProviders", targets: ["HealthOSProviders"]),
-        .executable(name: "HealthOSCLI", targets: ["HealthOSCLI"])
+        .library(name: "HealthOSFirstSliceSupport", targets: ["HealthOSFirstSliceSupport"]),
+        .executable(name: "HealthOSCLI", targets: ["HealthOSCLI"]),
+        .executable(name: "HealthOSScribeApp", targets: ["HealthOSScribeApp"])
     ],
     targets: [
         .target(name: "HealthOSCore"),
         .target(name: "HealthOSProviders", dependencies: ["HealthOSCore"]),
         .target(name: "HealthOSAACI", dependencies: ["HealthOSCore", "HealthOSProviders"]),
-        .executableTarget(name: "HealthOSCLI", dependencies: ["HealthOSCore", "HealthOSAACI", "HealthOSProviders"])
+        .target(name: "HealthOSFirstSliceSupport", dependencies: ["HealthOSCore", "HealthOSAACI", "HealthOSProviders"]),
+        .executableTarget(name: "HealthOSCLI", dependencies: ["HealthOSCore", "HealthOSFirstSliceSupport"]),
+        .executableTarget(name: "HealthOSScribeApp", dependencies: ["HealthOSCore", "HealthOSFirstSliceSupport"])
     ]
 )

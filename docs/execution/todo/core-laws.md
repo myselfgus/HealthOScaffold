@@ -21,32 +21,33 @@ Outcome:
 Files touched:
 - `docs/adr/0006-local-swift-ts-seam.md`
 
-## READY
-
 ### CL-004 Define deny/failure semantics for core services
-Objective:
-- specify how core services report denied access, invalid habilitation, expired consent, missing identity linkage, and gate rejection
-Files:
+Outcome:
+- core service document now distinguishes deny/failure outputs from success outputs and states that deny is not a crash
+Files touched:
 - `docs/architecture/06-core-services.md`
-- optionally schemas/contracts if needed
-Dependencies:
-- CL-001, CL-002, CL-003
-Definition of done:
-- each core service exposes lawful deny/failure outputs and these are not left implicit
 
 ### CL-005 Schema sanity pass across governance objects
+Outcome:
+- schema audit recorded naming split, ID conventions, state vocabulary, and non-destructive normalization guidance
+Files touched:
+- `docs/architecture/18-schema-governance-audit.md`
+
+## READY
+
+### CL-006 Add shared error-envelope proposal for local service boundaries
 Objective:
-- verify terminology, field naming, and enum/state alignment across all governance schemas
+- define whether denied/failure outputs should share one transport envelope for loopback HTTP seam
 Files:
-- `schemas/entities/*`
-- `schemas/contracts/*`
+- `docs/architecture/06-core-services.md`
+- optional new contract file under `schemas/contracts/`
 Dependencies:
-- CL-001
+- CL-003, CL-004
 Definition of done:
-- no contradictory field names or state vocabularies remain across governance schemas
+- local service boundary can represent success, deny, and failure outcomes consistently
 
 ## TESTS / VALIDATION
 
-- schema sanity pass
 - cross-check terms against ADRs and overview docs
 - confirm core-services document names no ambiguous overlap
+- confirm schema audit and service semantics do not contradict each other

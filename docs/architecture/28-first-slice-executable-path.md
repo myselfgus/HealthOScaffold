@@ -38,8 +38,9 @@ The current Swift/CLI path exercises these steps:
 - first-slice contracts now use explicit envelopes for session input, transcription, retrieval, draft package, gate outcome, and run summary
 - session events now use typed event kinds/payload envelopes instead of ad hoc string dictionaries
 - a minimal Scribe bridge/facade contract exists so Scribe can consume the executable spine without owning governance law
-- Scribe bridge now uses explicit command/result envelopes for session start, patient selection, capture submission, draft refresh request, and gate resolution
+- Scribe bridge now uses explicit command/result envelopes backed by shared HealthOS envelope vocabulary for session start, patient selection, capture submission, draft refresh request, and gate resolution
 - command results carry explicit disposition semantics (`complete_success`, `partial_success`, `governed_deny`, `degraded`, `operational_failure`) and typed issue payloads
+- first-slice command results now use shared `HealthOSCommandDisposition`, `HealthOSIssueCode`, and `HealthOSFailureKind` vocabulary rather than ad hoc per-file issue strings
 - retrieval bridge state now exposes UI-ready status/source/count/preview fields including explicit degraded mode
 
 ## What remains intentionally stubbed

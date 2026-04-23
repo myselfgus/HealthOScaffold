@@ -57,6 +57,8 @@ Current phase: Controlled implementation — first vertical slice started
 - first-slice bounded retrieval substrate added with typed query/match/result contracts and file-backed service-record index
 - FirstSliceRunner now uses deterministic bounded retrieval + provenance/event wiring instead of hardcoded synthetic context list
 - Scribe bridge state now exposes retrieval source/status/match preview for future UI wiring
+- shared HealthOS envelope vocabulary added for first-slice command/result semantics (`HealthOSCommandDisposition`, `HealthOSIssueCode`, `HealthOSFailureKind`, `HealthOSIssue`)
+- Scribe bridge + CLI adapter migrated from ad hoc issue strings to shared typed issue/disposition semantics
 
 ## In progress
 
@@ -73,7 +75,6 @@ Current phase: Controlled implementation — first vertical slice started
 ## Open blockers / decisions
 
 - decide whether the next step for the slice is native audio capture or stronger retrieval wiring
-- decide whether to consolidate first-slice command-result issue codes into a shared cross-runtime envelope strategy
 - decide when to convert the AI skills into enforced reusable workflows/templates
 - decide when to replace lexical bounded retrieval with semantic/clinical retrieval while preserving lawful scope and local-first constraints
 

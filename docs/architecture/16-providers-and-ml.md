@@ -74,6 +74,10 @@ Every provider decision should consider:
 - failure rate
 - degraded-mode behavior
 
+## Threshold policy
+Detailed threshold guidance by task class lives in:
+- `docs/architecture/27-provider-threshold-policy.md`
+
 ## Benchmark harness artifacts
 Each benchmark run should produce:
 - model/provider identifier
@@ -122,5 +126,4 @@ Python remains the offline ML boundary for:
 - promotion/rollback logic
 
 ## Open tasks
-- define benchmark harness score thresholds by task class
 - define operator review checklist for promotion decisions

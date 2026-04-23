@@ -131,6 +131,15 @@ Minimal lawfulContext example:
 }
 ```
 
+## Integrity strategy
+
+See:
+- `docs/architecture/21-object-integrity-strategy.md`
+
+Baseline:
+- SHA-256 content hash
+- mismatch => `integrity_failure`
+- mismatch must be auditable and never silently repaired in place
+
 ## Open tasks
-- decide first concrete hash strategy implementation for object content verification
 - decide whether lawfulContext should remain a flexible map or become a stricter shared transport envelope

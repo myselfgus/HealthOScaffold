@@ -74,10 +74,29 @@ This scaffold is arranged to support the first end-to-end slice:
 10. provenance is appended
 11. artifacts are persisted
 
+## Start here for execution
+
+If you are continuing the build of this repository, begin with the execution layer:
+
+- `docs/execution/README.md`
+- `docs/execution/00-master-plan.md`
+- `docs/execution/01-agent-operating-protocol.md`
+- `docs/execution/02-status-and-tracking.md`
+- `docs/execution/phases/phase-map.md`
+- `docs/execution/todo/`
+
+These files define:
+- execution order
+- phase dependencies
+- TODOs by domain
+- definition of done
+- how an AI should choose and complete the next task
+
 ## Repository guide
 
 - `docs/architecture`: canonical definitions and system design
 - `docs/adr`: architectural decision records
+- `docs/execution`: execution order, tracking, and AI operating protocol
 - `schemas`: JSON Schemas for core entities and contracts
 - `sql/migrations`: canonical DB migrations
 - `swift`: Swift packages for core/runtime/providers/app contracts
@@ -94,6 +113,7 @@ This scaffold is arranged to support the first end-to-end slice:
 ```
 
 Then inspect:
+- `docs/execution/README.md`
 - `docs/architecture/01-overview.md`
 - `docs/architecture/02-modules.md`
 - `docs/architecture/03-first-slice.md`

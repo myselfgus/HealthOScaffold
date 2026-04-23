@@ -11,6 +11,8 @@ Shared state vocabulary should cover:
 ## Principle
 Apps consume core/runtime contracts. They do not invent separate law models.
 
+Compliance is architecturalized in HealthOS seams; apps render and request through contracts rather than reimplementing governance logic.
+
 ## Cross-app shared state groups
 - AuthenticationContext
 - ServiceContext
@@ -92,7 +94,6 @@ Apps consume core/runtime contracts. They do not invent separate law models.
 - transcription_degraded
 - retrieval_degraded
 - provider_fallback
-- offline_mode
 - partial_results
 
 ## Rule for apps

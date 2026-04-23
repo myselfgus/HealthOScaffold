@@ -29,3 +29,14 @@
 - dataset versioning
 - evaluation harness
 - adapter promotion pipeline
+
+## Strategic regulatory backlog (Brazil-oriented, future waves)
+
+These items are intentionally backlog-only in this wave.
+They are not implemented now.
+
+- break-glass / emergency access policy with explicit audit trails
+- legal retention vs patient visibility/governance reconciliation rules
+- regulatory audit pathways for external supervisory review
+- assinatura digital qualificada integration strategy (e.g., ICP-Brasil-aligned pathways)
+- interoperability roadmap planning (FHIR/TISS/RNDS adapters and conformance mapping)

@@ -2,6 +2,14 @@
 
 ## COMPLETED
 
+### APP-006 Consolidate architecturalized compliance doctrine for app boundaries
+Outcome:
+- interface doctrine now states compliance as architecturalized in HealthOS seams/contracts
+- app-boundary guarantee limits documented with ecosystem governance mitigations (review/licensing/revocation)
+Files touched:
+- `docs/architecture/19-interface-doctrine.md`
+- `docs/adr/0010-health-exclusive-ontology-and-architecturalized-compliance.md`
+
 ### APP-001 Define shared UI state vocabulary
 Outcome:
 - canonical shared state vocabulary defined for session, draft, gate, consent, audit, queue, runtime health, and degraded modes

@@ -2,6 +2,15 @@
 
 ## COMPLETED
 
+### OPS-004 Clarify online-only mesh doctrine and sovereign fabric projection
+Outcome:
+- networking/mesh doctrine now states online-only access posture and rejects offline-mode drift
+- topology vocabulary now distinguishes single-node bootstrap minimum from sovereign fabric production projection
+Files touched:
+- `docs/architecture/04-networking.md`
+- `docs/architecture/15-mesh-provider.md`
+- `docs/adr/0009-single-node-bootstrap-and-sovereign-fabric-topology.md`
+
 ### OPS-001 Define single-node runbook
 Outcome:
 - operations runbook strengthened with bootstrap, daily/weekly checks, incident categories, and operator visibility surfaces

@@ -17,8 +17,8 @@ Abstract private node/device connectivity without tying HealthOS ontology to one
 - not the source of truth for service/user authorization
 
 ## Baseline posture
-- local-first
-- mesh-only remote administration
+- online-only operation through private mesh surfaces
+- no offline mode doctrine
 - no direct public DB/object-store exposure
 
 ## Contract expectations
@@ -34,9 +34,9 @@ A MeshProvider should be able to describe:
 - database and object storage remain private surfaces
 - admin exposure should remain limited to explicit operator endpoints
 - app-facing UX should not depend on mesh semantics for core law
-- loss of mesh connectivity should degrade remote operations, not rewrite local ontology
+- mesh degradation is an operational incident that blocks governed online access until restored
 
 ## Failure posture
 - mesh degradation is an operational condition
-- mesh loss does not imply consent or habilitation failure
-- remote admin work may be blocked while local single-node operation continues
+- mesh loss does not rewrite consent/habilitation law
+- operations should fail closed with explicit operational status, not silently switch to offline behavior

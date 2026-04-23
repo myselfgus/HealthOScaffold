@@ -6,6 +6,9 @@ Current phase: Controlled implementation — first vertical slice started
 
 ## Completed recently
 
+- first-slice Scribe bridge upgraded with explicit command/result envelopes (session start, patient selection, capture submission, draft refresh, gate resolution)
+- command results now carry explicit dispositions for complete/partial/degraded/deny/operational-failure outcomes
+- CLI flow refactored to consume the envelope-based bridge API step-by-step instead of one implicit bridge call
 - scaffold foundation created
 - canonical architecture docs created
 - ADR seed set created
@@ -65,13 +68,12 @@ Current phase: Controlled implementation — first vertical slice started
 - transcription remains stubbed
 - bounded retrieval now uses file-backed index, but still lexical/tag-based (no semantic retrieval yet)
 - UI apps are not yet wired to the executable slice
-- command/result envelopes for UI actions can still be made more explicit
-- Scribe is still not wired to a full UI surface; only bridge contracts/facade are currently implemented
+- Scribe is still not wired to a full UI surface; bridge contracts/facade are now stronger but still CLI-consumed only
 
 ## Open blockers / decisions
 
 - decide whether the next step for the slice is native audio capture or stronger retrieval wiring
-- define shared error-envelope strategy for loopback local services, if needed
+- decide whether to consolidate first-slice command-result issue codes into a shared cross-runtime envelope strategy
 - decide when to convert the AI skills into enforced reusable workflows/templates
 - decide when to replace lexical bounded retrieval with semantic/clinical retrieval while preserving lawful scope and local-first constraints
 

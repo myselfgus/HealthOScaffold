@@ -18,6 +18,73 @@ public enum ScribeGateState: String, Codable, Sendable {
 public enum ScribeRetrievalStatus: String, Codable, Sendable {
     case ready
     case empty
+    case degraded
+}
+
+public enum FirstSliceCommandDisposition: String, Codable, Sendable {
+    case completeSuccess = "complete_success"
+    case partialSuccess = "partial_success"
+    case governedDeny = "governed_deny"
+    case degraded = "degraded"
+    case operationalFailure = "operational_failure"
+}
+
+public struct FirstSliceCommandIssue: Codable, Sendable {
+    public let code: String
+    public let message: String
+
+    public init(code: String, message: String) {
+        self.code = code
+        self.message = message
+    }
+}
+
+public struct StartProfessionalSessionCommand: Codable, Sendable {
+    public let professional: Usuario
+    public let service: Servico
+
+    public init(professional: Usuario, service: Servico) {
+        self.professional = professional
+        self.service = service
+    }
+}
+
+public struct SelectPatientCommand: Codable, Sendable {
+    public let sessionId: UUID
+    public let patient: Usuario
+
+    public init(sessionId: UUID, patient: Usuario) {
+        self.sessionId = sessionId
+        self.patient = patient
+    }
+}
+
+public struct SubmitSessionCaptureCommand: Codable, Sendable {
+    public let sessionId: UUID
+    public let capture: SessionCaptureInput
+
+    public init(sessionId: UUID, capture: SessionCaptureInput) {
+        self.sessionId = sessionId
+        self.capture = capture
+    }
+}
+
+public struct RequestDraftRefreshCommand: Codable, Sendable {
+    public let sessionId: UUID
+
+    public init(sessionId: UUID) {
+        self.sessionId = sessionId
+    }
+}
+
+public struct ResolveGateCommand: Codable, Sendable {
+    public let sessionId: UUID
+    public let approve: Bool
+
+    public init(sessionId: UUID, approve: Bool) {
+        self.sessionId = sessionId
+        self.approve = approve
+    }
 }
 
 public struct ScribeRetrievalBridgeState: Codable, Sendable {
@@ -41,7 +108,7 @@ public struct ScribeSessionBridgeState: Codable, Sendable {
     public let transcriptPreview: String
     public let draftPreview: String
     public let retrieval: ScribeRetrievalBridgeState
-    public let runSummary: SliceRunSummary
+    public let runSummary: SliceRunSummary?
 
     public init(
         sessionId: UUID,
@@ -50,7 +117,7 @@ public struct ScribeSessionBridgeState: Codable, Sendable {
         transcriptPreview: String,
         draftPreview: String,
         retrieval: ScribeRetrievalBridgeState,
-        runSummary: SliceRunSummary
+        runSummary: SliceRunSummary?
     ) {
         self.sessionId = sessionId
         self.draftState = draftState
@@ -62,6 +129,70 @@ public struct ScribeSessionBridgeState: Codable, Sendable {
     }
 }
 
+public struct SessionStartResult: Codable, Sendable {
+    public let disposition: FirstSliceCommandDisposition
+    public let state: ScribeSessionBridgeState?
+    public let issues: [FirstSliceCommandIssue]
+
+    public init(disposition: FirstSliceCommandDisposition, state: ScribeSessionBridgeState?, issues: [FirstSliceCommandIssue] = []) {
+        self.disposition = disposition
+        self.state = state
+        self.issues = issues
+    }
+}
+
+public struct PatientSelectionResult: Codable, Sendable {
+    public let disposition: FirstSliceCommandDisposition
+    public let state: ScribeSessionBridgeState?
+    public let issues: [FirstSliceCommandIssue]
+
+    public init(disposition: FirstSliceCommandDisposition, state: ScribeSessionBridgeState?, issues: [FirstSliceCommandIssue] = []) {
+        self.disposition = disposition
+        self.state = state
+        self.issues = issues
+    }
+}
+
+public struct CaptureSubmissionResult: Codable, Sendable {
+    public let disposition: FirstSliceCommandDisposition
+    public let state: ScribeSessionBridgeState?
+    public let issues: [FirstSliceCommandIssue]
+
+    public init(disposition: FirstSliceCommandDisposition, state: ScribeSessionBridgeState?, issues: [FirstSliceCommandIssue] = []) {
+        self.disposition = disposition
+        self.state = state
+        self.issues = issues
+    }
+}
+
+public struct DraftStateResult: Codable, Sendable {
+    public let disposition: FirstSliceCommandDisposition
+    public let state: ScribeSessionBridgeState?
+    public let issues: [FirstSliceCommandIssue]
+
+    public init(disposition: FirstSliceCommandDisposition, state: ScribeSessionBridgeState?, issues: [FirstSliceCommandIssue] = []) {
+        self.disposition = disposition
+        self.state = state
+        self.issues = issues
+    }
+}
+
+public struct GateResolutionResult: Codable, Sendable {
+    public let disposition: FirstSliceCommandDisposition
+    public let state: ScribeSessionBridgeState?
+    public let issues: [FirstSliceCommandIssue]
+
+    public init(disposition: FirstSliceCommandDisposition, state: ScribeSessionBridgeState?, issues: [FirstSliceCommandIssue] = []) {
+        self.disposition = disposition
+        self.state = state
+        self.issues = issues
+    }
+}
+
 public protocol ScribeFirstSliceFacade: Sendable {
-    func startSession(input: FirstSliceSessionInput) async throws -> ScribeSessionBridgeState
+    func startProfessionalSession(_ command: StartProfessionalSessionCommand) async -> SessionStartResult
+    func selectPatient(_ command: SelectPatientCommand) async -> PatientSelectionResult
+    func submitSessionCapture(_ command: SubmitSessionCaptureCommand) async -> CaptureSubmissionResult
+    func requestDraftRefresh(_ command: RequestDraftRefreshCommand) async -> DraftStateResult
+    func resolveGate(_ command: ResolveGateCommand) async -> GateResolutionResult
 }

@@ -51,8 +51,9 @@ Files touched:
 
 ### APP-005 Define command/result envelopes for UI actions
 Outcome:
-- first-slice contracts now expose explicit envelopes for session input, transcription result, retrieval result, draft package, gate outcome summary, and run summary
-- Scribe-facing facade/state bridge added so UI can consume the executable slice without owning core law
+- Scribe-first-slice bridge now exposes explicit app-action command envelopes and typed action-result envelopes
+- result dispositions now separate complete success, partial success, governed deny, degraded state, and operational failure
+- CLI now consumes the same envelope-based bridge surface step-by-step, reducing implicit coupling before future UI wiring
 Files touched:
 - `swift/Sources/HealthOSCore/FirstSliceContracts.swift`
 - `swift/Sources/HealthOSCore/ScribeFirstSliceBridge.swift`

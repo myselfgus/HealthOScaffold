@@ -27,37 +27,82 @@ struct HealthOSCLI {
             let runner = FirstSliceRunner(root: root, orchestrator: orchestrator)
             let scribeBridge = ScribeFirstSliceAdapter(runner: runner)
 
-            let sessionInput = FirstSliceSessionInput(
-                professional: professional,
-                patient: patient,
-                service: service,
-                capture: SessionCaptureInput(
-                    rawText: "Paciente relata dor de cabeça, insônia e piora do sono há uma semana."
-                ),
-                gateApprove: true
+            let start = await scribeBridge.startProfessionalSession(
+                StartProfessionalSessionCommand(professional: professional, service: service)
             )
-            let bridgeState = try await scribeBridge.startSession(input: sessionInput)
+            guard let startedState = start.state else {
+                throw CLIError.invalidState("Session start failed: \(describeIssues(start.issues))")
+            }
+
+            let selection = await scribeBridge.selectPatient(
+                SelectPatientCommand(sessionId: startedState.sessionId, patient: patient)
+            )
+            guard selection.state != nil else {
+                throw CLIError.invalidState("Patient selection failed: \(describeIssues(selection.issues))")
+            }
+
+            let capture = await scribeBridge.submitSessionCapture(
+                SubmitSessionCaptureCommand(
+                    sessionId: startedState.sessionId,
+                    capture: SessionCaptureInput(
+                        rawText: "Paciente relata dor de cabeça, insônia e piora do sono há uma semana."
+                    )
+                )
+            )
+            guard capture.state != nil else {
+                throw CLIError.invalidState("Capture submission failed: \(describeIssues(capture.issues))")
+            }
+
+            let draftRefresh = await scribeBridge.requestDraftRefresh(
+                RequestDraftRefreshCommand(sessionId: startedState.sessionId)
+            )
+            if !draftRefresh.issues.isEmpty {
+                print("draft_refresh_disposition=\(draftRefresh.disposition.rawValue)")
+                print("draft_refresh_issues=\(describeIssues(draftRefresh.issues))")
+            }
+
+            let gateResult = await scribeBridge.resolveGate(
+                ResolveGateCommand(sessionId: startedState.sessionId, approve: true)
+            )
+            guard let bridgeState = gateResult.state, let summary = bridgeState.runSummary else {
+                throw CLIError.invalidState("Gate resolution failed: \(describeIssues(gateResult.issues))")
+            }
 
             print("HealthOS first slice complete")
             print("session=\(bridgeState.sessionId.uuidString)")
-            print("transcript=\(bridgeState.runSummary.transcriptObjectPath)")
-            print("draft=\(bridgeState.runSummary.draftObjectPath)")
+            print("transcript=\(summary.transcriptObjectPath)")
+            print("draft=\(summary.draftObjectPath)")
             print("gate=\(bridgeState.gateState.rawValue)")
-            if let finalPath = bridgeState.runSummary.finalArtifactObjectPath {
+            if let finalPath = summary.finalArtifactObjectPath {
                 print("final=\(finalPath)")
             } else {
                 print("final=<not effectuated>")
             }
-            print("retrieval_source=\(bridgeState.runSummary.retrievalSource)")
-            print("retrieval_matches=\(bridgeState.runSummary.retrievalMatchCount)")
-            print("retrieval_fallback_empty=\(bridgeState.runSummary.retrievalFallbackEmpty)")
-            print("provenance_count=\(bridgeState.runSummary.provenanceCount)")
-            print("event_count=\(bridgeState.runSummary.eventCount)")
-            print("scribe_gate_state=\(bridgeState.gateState.rawValue)")
-            print("scribe_retrieval_status=\(bridgeState.retrieval.status.rawValue)")
+            print("retrieval_source=\(bridgeState.retrieval.source)")
+            print("retrieval_matches=\(bridgeState.retrieval.matchCount)")
+            print("retrieval_status=\(bridgeState.retrieval.status.rawValue)")
+            print("retrieval_fallback_empty=\(summary.retrievalFallbackEmpty)")
+            print("provenance_count=\(summary.provenanceCount)")
+            print("event_count=\(summary.eventCount)")
+            print("gate_resolution_disposition=\(gateResult.disposition.rawValue)")
         } catch {
             FileHandle.standardError.write(Data("HealthOSCLI failed: \(error)\n".utf8))
             exit(1)
+        }
+    }
+
+    private static func describeIssues(_ issues: [FirstSliceCommandIssue]) -> String {
+        issues.map { "\($0.code):\($0.message)" }.joined(separator: " | ")
+    }
+}
+
+private enum CLIError: LocalizedError {
+    case invalidState(String)
+
+    var errorDescription: String? {
+        switch self {
+        case .invalidState(let message):
+            return message
         }
     }
 }

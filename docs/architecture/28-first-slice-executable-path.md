@@ -38,12 +38,16 @@ The current Swift/CLI path exercises these steps:
 - first-slice contracts now use explicit envelopes for session input, transcription, retrieval, draft package, gate outcome, and run summary
 - session events now use typed event kinds/payload envelopes instead of ad hoc string dictionaries
 - a minimal Scribe bridge/facade contract exists so Scribe can consume the executable spine without owning governance law
+- Scribe bridge now uses explicit command/result envelopes for session start, patient selection, capture submission, draft refresh request, and gate resolution
+- command results carry explicit disposition semantics (`complete_success`, `partial_success`, `governed_deny`, `degraded`, `operational_failure`) and typed issue payloads
+- retrieval bridge state now exposes UI-ready status/source/count/preview fields including explicit degraded mode
 
 ## What remains intentionally stubbed
 - capture is still text-seeded rather than native audio capture
 - transcription is still stubbed
 - context retrieval now uses a bounded, file-backed patient record index with deterministic matching
 - no UI app is yet wired to this path
+- draft refresh is currently degraded preview only; full draft/retrieval material is still finalized in the same executable step as gate resolution
 - retrieval ranking is lexical/tag/date bounded; no semantic search or embeddings yet
 
 ## Why this is acceptable now

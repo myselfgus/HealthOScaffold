@@ -12,25 +12,40 @@ struct HealthOSCLI {
                 .standardized
             try DirectoryLayout.bootstrap(at: root)
 
+            let professional = Usuario(cpfHash: "prof-cpf-hash", civilToken: "prof-civil-token")
+            let patient = Usuario(cpfHash: "patient-cpf-hash", civilToken: "patient-civil-token")
+            let service = Servico(nome: "CloudClinic Demo Service", tipo: "ambulatory")
+
+            try DirectoryLayout.ensureUserTree(root: root, cpfHash: professional.cpfHash)
+            try DirectoryLayout.ensureUserTree(root: root, cpfHash: patient.cpfHash)
+            try DirectoryLayout.ensureServiceTree(root: root, serviceId: service.id)
+            try DirectoryLayout.ensureAgentTree(root: root, agentId: "aaci.capture")
+
             let router = ProviderRouter()
             await router.register(AppleFoundationProvider())
             let orchestrator = AACIOrchestrator(router: router)
+            let runner = FirstSliceRunner(root: root, orchestrator: orchestrator)
 
-            let session = SessaoTrabalho(
-                kind: .encounter,
-                serviceId: UUID(),
-                professionalUserId: UUID(),
-                patientUserId: UUID()
+            let result = try await runner.run(
+                professional: professional,
+                patient: patient,
+                service: service,
+                captureText: "Paciente relata dor de cabeça, insônia e piora do sono há uma semana.",
+                approve: true
             )
-            let message = await orchestrator.startSession(session)
-            print(message)
 
-            let draft = await orchestrator.composeSOAPDraft(
-                session: session,
-                transcript: "Paciente relata dor de cabeça e insônia.",
-                context: ["Consulta prévia há 10 dias", "Sem alergias registradas"]
-            )
-            print("Draft kind: \(draft.kind) status: \(draft.status.rawValue)")
+            print("HealthOS first slice complete")
+            print("session=\(result.session.id.uuidString)")
+            print("transcript=\(result.transcriptRef.objectPath)")
+            print("draft=\(result.draftRef.objectPath)")
+            print("gate=\(result.gateResolution.resolution.rawValue)")
+            if let finalRef = result.finalArtifactRef {
+                print("final=\(finalRef.objectPath)")
+            } else {
+                print("final=<not effectuated>")
+            }
+            print("provenance_count=\(result.provenanceRecords.count)")
+            print("event_count=\(result.events.count)")
         } catch {
             FileHandle.standardError.write(Data("HealthOSCLI failed: \(error)\n".utf8))
             exit(1)

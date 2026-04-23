@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "healthos/contracts/gate-resolution",
+  "type": "object",
+  "required": ["id", "gateRequestId", "resolverUserId", "resolution"],
+  "properties": {
+    "id": {"type": "string", "format": "uuid"},
+    "gateRequestId": {"type": "string", "format": "uuid"},
+    "resolverUserId": {"type": "string", "format": "uuid"},
+    "resolution": {
+      "type": "string",
+      "enum": ["approved", "rejected", "cancelled"]
+    },
+    "note": {"type": ["string", "null"]},
+    "signatureRef": {"type": ["string", "null"]}
+  }
+}

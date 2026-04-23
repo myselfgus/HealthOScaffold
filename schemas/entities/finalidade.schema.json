@@ -1,0 +1,11 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "healthos/entities/finalidade",
+  "type": "object",
+  "required": ["codigo", "descricao"],
+  "properties": {
+    "codigo": {"type": "string"},
+    "descricao": {"type": "string"},
+    "categoria": {"type": ["string", "null"]}
+  }
+}

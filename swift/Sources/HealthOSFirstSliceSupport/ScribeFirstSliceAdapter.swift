@@ -204,7 +204,10 @@ public actor ScribeFirstSliceAdapter: ScribeFirstSliceFacade {
                 status: .degraded,
                 source: "pending-run",
                 matchCount: 0,
-                previewItems: []
+                summary: "Pacote de contexto final ainda nao foi montado.",
+                highlights: [],
+                sourceItems: [],
+                notice: "O first slice atual ainda produz retrieval e draft finais junto da execucao principal."
             ),
             runSummary: nil
         )
@@ -306,7 +309,10 @@ public actor ScribeFirstSliceAdapter: ScribeFirstSliceFacade {
                 status: .degraded,
                 source: "pending-run",
                 matchCount: 0,
-                previewItems: []
+                summary: "Contexto bounded ainda nao executado.",
+                highlights: [],
+                sourceItems: [],
+                notice: "A montagem de contexto estruturado aparece quando o spine executa retrieval local."
             ),
             runSummary: nil
         )
@@ -327,14 +333,20 @@ public actor ScribeFirstSliceAdapter: ScribeFirstSliceFacade {
         .joined(separator: " | ")
 
         let retrievalStatus: ScribeRetrievalStatus
-        if result.transcription.status != .ready && result.retrieval.boundedResult.isFallbackEmpty {
-            retrievalStatus = .degraded
-        } else if result.retrieval.boundedResult.isFallbackEmpty {
-            retrievalStatus = .empty
-        } else {
+        switch result.retrieval.status {
+        case .ready:
             retrievalStatus = .ready
+        case .partial:
+            retrievalStatus = .partial
+        case .empty:
+            retrievalStatus = .empty
+        case .degraded:
+            retrievalStatus = .degraded
         }
-        let retrievalPreview = Array(result.retrieval.contextItems.prefix(3))
+        let retrievalHighlights = result.retrieval.highlights.map {
+            "\($0.headline): \($0.summary)"
+        }
+        let retrievalSources = Array(Set(result.retrieval.highlights.map(\.sourceRef))).sorted()
 
         return ScribeSessionBridgeState(
             sessionId: sessionId,
@@ -347,8 +359,11 @@ public actor ScribeFirstSliceAdapter: ScribeFirstSliceFacade {
             retrieval: ScribeRetrievalBridgeState(
                 status: retrievalStatus,
                 source: result.retrieval.boundedResult.source,
-                matchCount: result.retrieval.boundedResult.matches.count,
-                previewItems: retrievalPreview
+                matchCount: result.retrieval.supportingMatches.count,
+                summary: result.retrieval.summary,
+                highlights: retrievalHighlights,
+                sourceItems: retrievalSources,
+                notice: result.retrieval.notice
             ),
             runSummary: result.summary
         )
@@ -389,35 +404,74 @@ public actor ScribeFirstSliceAdapter: ScribeFirstSliceFacade {
             return .governedDeny
         }
 
-        switch result.transcription.status {
+        if result.transcription.status == .degraded || result.transcription.status == .unavailable || result.retrieval.status == .degraded {
+            return .degraded
+        }
+
+        switch result.retrieval.status {
         case .ready:
             return .completeSuccess
-        case .pending, .degraded, .unavailable:
+        case .partial, .empty:
+            return .partialSuccess
+        case .degraded:
             return .degraded
         }
     }
 
     private func completionIssues(from result: FirstSliceRunResult) -> [HealthOSIssue] {
+        var issues: [HealthOSIssue] = []
+
         switch result.transcription.status {
         case .degraded:
-            return [
+            issues.append(
                 .init(
                     code: .transcriptionDegraded,
                     message: result.transcription.issueMessage
                         ?? "Transcription completed in degraded mode for the current capture."
                 )
-            ]
+            )
         case .unavailable:
-            return [
+            issues.append(
                 .init(
                     code: .transcriptionUnavailable,
                     message: result.transcription.issueMessage
                         ?? "Transcription was unavailable for the current capture."
                 )
-            ]
+            )
         case .pending, .ready:
-            return []
+            break
         }
+
+        switch result.retrieval.status {
+        case .degraded:
+            issues.append(
+                .init(
+                    code: .retrievalDegraded,
+                    message: result.retrieval.notice
+                        ?? "Bounded retrieval was degraded and did not yield a clinically reliable context package."
+                )
+            )
+        case .partial:
+            issues.append(
+                .init(
+                    code: .retrievalPartial,
+                    message: result.retrieval.notice
+                        ?? "Bounded retrieval returned only a partial local context package."
+                )
+            )
+        case .empty:
+            issues.append(
+                .init(
+                    code: .retrievalEmpty,
+                    message: result.retrieval.notice
+                        ?? "No bounded context matches were found for the current capture."
+                )
+            )
+        case .ready:
+            break
+        }
+
+        return issues
     }
 
     private func issues(for error: Error) -> [HealthOSIssue] {

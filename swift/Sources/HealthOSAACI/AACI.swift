@@ -63,14 +63,31 @@ public actor AACIOrchestrator {
     public func composeSOAPDraft(
         session: SessaoTrabalho,
         transcription: TranscriptionOutput,
-        context: [String]
+        context: RetrievalContextPackage
     ) async -> ArtifactDraft {
-        let objective = context.isEmpty
-            ? "No bounded context matched the current capture."
-            : context.joined(separator: "\n")
-        let assessment = transcription.status == .ready
-            ? "TODO"
-            : "Draft assembled with explicit transcription degradation; professional review remains required."
+        let objective: String
+        if context.highlights.isEmpty {
+            objective = context.summary
+        } else {
+            let highlightLines = context.highlights.map { highlight in
+                "\(highlight.headline): \(highlight.summary)"
+            }
+            objective = ([context.summary] + highlightLines).joined(separator: "\n")
+        }
+
+        let assessment: String
+        switch (transcription.status, context.status) {
+        case (.ready, .ready):
+            assessment = "Draft assembled with bounded local context; professional review remains required."
+        case (_, .degraded):
+            assessment = "Draft assembled with degraded bounded context; confirm history directly before any clinical effect."
+        case (_, .empty):
+            assessment = "Draft assembled without supporting bounded context matches; confirm history directly before any clinical effect."
+        case (_, .partial):
+            assessment = "Draft assembled with partial bounded context; additional chart review may still be needed."
+        case (.degraded, _), (.unavailable, _), (.pending, _):
+            assessment = "Draft assembled with explicit transcription degradation; professional review remains required."
+        }
         let payload = [
             "subjective": transcription.workflowText,
             "objective": objective,

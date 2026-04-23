@@ -16,13 +16,14 @@ The current Swift executable path (CLI plus minimal Scribe SwiftUI surface) exer
 7. process transcription as `ready`, `degraded`, or `unavailable`
 8. persist a transcript artifact when transcript text exists
 9. run bounded file-backed retrieval from service record index
-10. record retrieval-context event
-11. compose a SOAP draft
-12. create a gate request
-13. resolve the gate as approved/rejected
-14. persist final artifact when approved
-15. append provenance records
-16. persist gate and event artifacts
+10. assemble a structured clinical-operational context package
+11. record retrieval-context event
+12. compose a SOAP draft
+13. create a gate request
+14. resolve the gate as approved/rejected
+15. persist final artifact when approved
+16. append provenance records
+17. persist gate and event artifacts
 
 ## Files involved
 - `swift/Sources/HealthOSCore/FirstSliceServices.swift`
@@ -48,17 +49,19 @@ The current Swift executable path (CLI plus minimal Scribe SwiftUI surface) exer
 - first-slice command results now use shared `HealthOSCommandDisposition`, `HealthOSIssueCode`, and `HealthOSFailureKind` vocabulary rather than ad hoc per-file issue strings
 - the executable spine now supports a minimal local-first audio path by persisting audio files into the service record area and then attempting transcription through a local provider stub
 - transcription state is now explicit (`ready`, `degraded`, `unavailable`) rather than inferred from the mere existence of capture input
-- retrieval bridge state now exposes UI-ready status/source/count/preview fields including explicit degraded mode
+- retrieval scoring now combines normalized lexical/tag matching with deterministic recency/category/intent boosts, while remaining fully local and bounded
+- a structured local context package now sits between raw retrieval matches and AACI draft composition, exposing summary, highlights, supporting snippets, provenance hints, and explicit `ready` / `partial` / `empty` / `degraded` truth
+- retrieval bridge state now exposes UI-ready status/source/count/summary/highlight fields including explicit degraded and partial modes
 - a minimal macOS SwiftUI Scribe surface now consumes the same bridge through a small view model instead of touching core/runtime services directly
 - the same `HealthOSFirstSliceSupport` target now backs both CLI and SwiftUI validation paths, reducing duplicated first-slice wiring
 
 ## What remains intentionally stubbed
 - microphone recording is not implemented yet; the current audio path is local file selection/import
 - local-audio transcription is still stubbed, so the honest default outcome for audio capture is degraded transcription unless a real provider is introduced later
-- context retrieval now uses a bounded, file-backed patient record index with deterministic matching
+- context retrieval still uses a bounded, file-backed patient record index; it is stronger now, but still deterministic/local rather than semantic/vector-based
 - the SwiftUI surface is validation-only and not yet the full Scribe product UI
 - draft refresh is currently degraded preview only; full draft/retrieval material is still finalized in the same executable step as gate resolution
-- retrieval ranking is lexical/tag/date bounded; no semantic search or embeddings yet
+- retrieval ranking is still local-first lexical/tag/recency/category/intent bounded; no semantic search, embeddings, or vector DB are in this wave
 
 ## Why this is acceptable now
 The objective of this wave is to establish a lawful end-to-end executable spine and a minimal app-facing validation surface without prematurely coupling to a full UI architecture or production providers.

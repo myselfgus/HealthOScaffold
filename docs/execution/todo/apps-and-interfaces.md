@@ -87,6 +87,22 @@ Files touched:
 - `docs/architecture/23-scribe-screen-contracts.md`
 - `docs/architecture/28-first-slice-executable-path.md`
 
+### SCRIBE-004 Surface structured bounded context on the minimal Scribe UI
+Outcome:
+- Scribe now shows retrieval summary, top highlights, source hints, and explicit `partial` / `empty` / `degraded` context truth instead of a flat preview list
+- the app continues to consume bridge state from `ScribeFirstSliceFacade`; no consent, habilitation, gate, or governance law moved into SwiftUI
+- partial context and degraded retrieval remain visible as runtime truth without being confused with authorization decisions
+Files touched:
+- `swift/Sources/HealthOSCore/ScribeFirstSliceBridge.swift`
+- `swift/Sources/HealthOSCore/SharedEnvelopeVocabulary.swift`
+- `swift/Sources/HealthOSFirstSliceSupport/ScribeFirstSliceAdapter.swift`
+- `swift/Sources/HealthOSScribeApp/Models/ScribeFirstSliceViewModel.swift`
+- `swift/Sources/HealthOSScribeApp/Views/ScribeFirstSliceView.swift`
+- `swift/Sources/HealthOSCLI/CLIEntrypoint.swift`
+- `docs/architecture/11-scribe.md`
+- `docs/architecture/23-scribe-screen-contracts.md`
+- `docs/architecture/28-first-slice-executable-path.md`
+
 ## READY
 
 ## TESTS / VALIDATION

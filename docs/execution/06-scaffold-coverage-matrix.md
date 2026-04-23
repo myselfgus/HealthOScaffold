@@ -63,6 +63,7 @@ Legend:
 - [x] shared issue/disposition/failure vocabulary now backs first-slice command/result envelopes across core/adapter/CLI
 - [x] minimal macOS SwiftUI Scribe validation surface now consumes the first-slice bridge without taking ownership of governance logic
 - [x] minimal Scribe surface now exposes seeded-text and local-audio capture modes with explicit transcription state
+- [x] minimal Scribe surface now exposes structured retrieval summary/highlights/source hints with explicit partial/empty/degraded context truth
 
 ## 7. Networking / operations
 - [x] local-first stance established
@@ -98,9 +99,10 @@ Legend:
 - [x] CLI consumes explicit bridge command/result envelopes instead of implicit single-call coupling
 - [x] minimal SwiftUI Scribe surface consumes the same executable slice via shared support wiring
 - [x] bounded file-backed retrieval substrate integrated into first slice executable spine
+- [x] bounded retrieval now assembles a structured local clinical-operational context package before AACI draft composition
 - [x] local-first audio file capture path is integrated into the first slice with persisted audio artifacts and explicit degraded transcription behavior
 - [~] local-audio transcription remains stubbed; a real Apple-first local provider is still deferred
-- [~] retrieval quality is still lexical/tag bounded; semantic retrieval is intentionally deferred
+- [~] retrieval quality is now deterministic lexical/tag/recency/category/intent bounded; semantic retrieval is intentionally deferred
 - [~] a few procedural/operator details still remain optional hardening before heavy implementation
 
 ## Practical reading

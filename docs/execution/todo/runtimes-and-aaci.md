@@ -76,6 +76,19 @@ Files touched:
 - `docs/architecture/09-aaci.md`
 - `docs/architecture/28-first-slice-executable-path.md`
 
+### AACI-006 Strengthen local clinical-operational retrieval assembly for the first slice
+Outcome:
+- bounded retrieval remains local/file-backed but now uses deterministic lexical/tag/recency/category/intent scoring with explicit score breakdown
+- AACI consumes a structured context package with summary, highlights, supporting snippets, provenance hints, and explicit `ready` / `partial` / `empty` / `degraded` truth
+- degraded retrieval remains honest when transcription is weak or absent, without widening scope or inventing context
+Files touched:
+- `swift/Sources/HealthOSCore/FirstSliceContracts.swift`
+- `swift/Sources/HealthOSCore/FirstSliceServices.swift`
+- `swift/Sources/HealthOSAACI/AACI.swift`
+- `swift/Sources/HealthOSFirstSliceSupport/FirstSliceRunner.swift`
+- `docs/architecture/09-aaci.md`
+- `docs/architecture/28-first-slice-executable-path.md`
+
 ## READY
 
 ## TESTS / VALIDATION

@@ -53,6 +53,10 @@ Professional-facing interface for session work with AACI support.
 - draft ready / awaiting_gate / rejected / approved
 - gate pending / reviewing / approved / rejected
 
+## Related detailed contract
+See:
+- `docs/architecture/23-scribe-screen-contracts.md`
+
 ## Boundaries
 - Scribe may request actions through core/runtime contracts
 - Scribe may display degraded or denied states

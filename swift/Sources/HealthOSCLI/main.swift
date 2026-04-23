@@ -25,27 +25,32 @@ struct HealthOSCLI {
             await router.register(AppleFoundationProvider())
             let orchestrator = AACIOrchestrator(router: router)
             let runner = FirstSliceRunner(root: root, orchestrator: orchestrator)
+            let scribeBridge = ScribeFirstSliceAdapter(runner: runner)
 
-            let result = try await runner.run(
+            let sessionInput = FirstSliceSessionInput(
                 professional: professional,
                 patient: patient,
                 service: service,
-                captureText: "Paciente relata dor de cabeça, insônia e piora do sono há uma semana.",
-                approve: true
+                capture: SessionCaptureInput(
+                    rawText: "Paciente relata dor de cabeça, insônia e piora do sono há uma semana."
+                ),
+                gateApprove: true
             )
+            let bridgeState = try await scribeBridge.startSession(input: sessionInput)
 
             print("HealthOS first slice complete")
-            print("session=\(result.session.id.uuidString)")
-            print("transcript=\(result.transcriptRef.objectPath)")
-            print("draft=\(result.draftRef.objectPath)")
-            print("gate=\(result.gateResolution.resolution.rawValue)")
-            if let finalRef = result.finalArtifactRef {
-                print("final=\(finalRef.objectPath)")
+            print("session=\(bridgeState.sessionId.uuidString)")
+            print("transcript=\(bridgeState.runSummary.transcriptObjectPath)")
+            print("draft=\(bridgeState.runSummary.draftObjectPath)")
+            print("gate=\(bridgeState.gateState.rawValue)")
+            if let finalPath = bridgeState.runSummary.finalArtifactObjectPath {
+                print("final=\(finalPath)")
             } else {
                 print("final=<not effectuated>")
             }
-            print("provenance_count=\(result.provenanceRecords.count)")
-            print("event_count=\(result.events.count)")
+            print("provenance_count=\(bridgeState.runSummary.provenanceCount)")
+            print("event_count=\(bridgeState.runSummary.eventCount)")
+            print("scribe_gate_state=\(bridgeState.gateState.rawValue)")
         } catch {
             FileHandle.standardError.write(Data("HealthOSCLI failed: \(error)\n".utf8))
             exit(1)

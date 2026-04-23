@@ -52,18 +52,16 @@ Outcome:
 Files touched:
 - `docs/architecture/16-providers-and-ml.md`
 
-## READY
-
 ### RT-004 Define runtime status surfaces for apps/interfaces
-Objective:
-- specify which runtime states and degraded modes must surface into Scribe, Sortio, and CloudClinic
-Files:
+Outcome:
+- runtime/app state doctrine is now consumable by executable first-slice contracts via typed run summary and Scribe bridge state surface
+Files touched:
 - `docs/architecture/10-app-state-model.md`
-- app architecture docs as needed
-Dependencies:
-- RT-003, AACI-004
-Definition of done:
-- runtime state visibility is consistent across apps and does not invent governance meaning
+- `docs/architecture/22-runtime-state-surfaces.md`
+- `swift/Sources/HealthOSCore/ScribeFirstSliceBridge.swift`
+- `swift/Sources/HealthOSCore/FirstSliceContracts.swift`
+
+## READY
 
 ## TESTS / VALIDATION
 

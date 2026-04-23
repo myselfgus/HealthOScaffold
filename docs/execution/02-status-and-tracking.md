@@ -47,11 +47,14 @@ Current phase: Controlled implementation — first vertical slice started
 - provider/ML governance made more procedural
 - first vertical slice executable path documented
 - first vertical slice core services, file-backed persistence, and CLI runner added
+- first-slice executable spine refactored with typed envelopes/contracts for capture, transcription, retrieval, draft, gate outcome, and run summary
+- first-slice session events upgraded to typed event model with explicit event kind and payload envelopes
+- first-slice provenance recording made more consistent across transcription, retrieval, draft compose, gate resolve, and final artifact effectuation
+- minimal Scribe bridge contract + adapter added to consume the first-slice spine without moving law into the app layer
 
 ## In progress
 
-- first vertical slice implementation is underway in Swift/CLI
-- shifting from scaffold hardening into executable spine construction
+- first vertical slice implementation continues in Swift/CLI with stronger typed contracts and app-bridge preparation
 
 ## Known gaps
 
@@ -60,13 +63,14 @@ Current phase: Controlled implementation — first vertical slice started
 - context retrieval remains synthetic/bounded rather than connected to a real record index
 - UI apps are not yet wired to the executable slice
 - command/result envelopes for UI actions can still be made more explicit
+- Scribe is still not wired to a full UI surface; only bridge contracts/facade are currently implemented
 
 ## Open blockers / decisions
 
 - decide whether the next step for the slice is native audio capture or stronger retrieval wiring
-- decide when to wire Scribe to the same executable spine
 - define shared error-envelope strategy for loopback local services, if needed
 - decide when to convert the AI skills into enforced reusable workflows/templates
+- decide whether the next closure step is native capture input or replacing synthetic retrieval with real bounded index retrieval
 
 ## Tracking rules
 

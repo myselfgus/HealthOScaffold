@@ -22,7 +22,10 @@ The current Swift/CLI path exercises these steps:
 
 ## Files involved
 - `swift/Sources/HealthOSCore/FirstSliceServices.swift`
+- `swift/Sources/HealthOSCore/FirstSliceContracts.swift`
+- `swift/Sources/HealthOSCore/ScribeFirstSliceBridge.swift`
 - `swift/Sources/HealthOSCLI/FirstSliceRunner.swift`
+- `swift/Sources/HealthOSCLI/ScribeFirstSliceAdapter.swift`
 - `swift/Sources/HealthOSCLI/main.swift`
 
 ## What is real now
@@ -30,6 +33,9 @@ The current Swift/CLI path exercises these steps:
 - file-backed persistence exists for artifacts/audit/provenance baseline
 - gate resolution changes whether a final artifact is persisted
 - the CLI path prints concrete outputs for session, draft, gate, and provenance counts
+- first-slice contracts now use explicit envelopes for session input, transcription, retrieval, draft package, gate outcome, and run summary
+- session events now use typed event kinds/payload envelopes instead of ad hoc string dictionaries
+- a minimal Scribe bridge/facade contract exists so Scribe can consume the executable spine without owning governance law
 
 ## What remains intentionally stubbed
 - capture is still text-seeded rather than native audio capture

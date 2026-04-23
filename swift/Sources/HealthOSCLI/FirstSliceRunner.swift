@@ -22,13 +22,11 @@ actor FirstSliceRunner {
         self.orchestrator = orchestrator
     }
 
-    func run(
-        professional: Usuario,
-        patient: Usuario,
-        service: Servico,
-        captureText: String,
-        approve: Bool
-    ) async throws -> FirstSliceRunResult {
+    func run(input: FirstSliceSessionInput) async throws -> FirstSliceRunResult {
+        let professional = input.professional
+        let patient = input.patient
+        let service = input.service
+
         let habilitation = try await habilitationService.validate(professional: professional, service: service)
         let consent = try await consentService.validate(patient: patient, finalidade: "care-context-retrieval")
 
@@ -43,19 +41,39 @@ actor FirstSliceRunner {
         var events: [SessionEventRecord] = []
         var provenanceRecords: [ProvenanceRecord] = []
 
-        let sessionStartRecord = ProvenanceRecord(
-            actorId: "first-slice",
-            operation: "session.start",
-            promptVersion: "v1",
-            timestamp: .now
+        try await appendProvenance(
+            .init(
+                actorId: "first-slice",
+                operation: "session.start",
+                promptVersion: "v1",
+                timestamp: .now
+            ),
+            to: &provenanceRecords
         )
-        provenanceRecords.append(sessionStartRecord)
-        try await provenance.append(sessionStartRecord)
 
         let _ = await orchestrator.startSession(session)
-        events.append(SessionEventRecord(sessionId: session.id, kind: "session.started", payload: ["serviceId": service.id.uuidString]))
+        events.append(
+            SessionEventRecord(
+                sessionId: session.id,
+                kind: .sessionStarted,
+                payload: FirstSliceSessionEventPayload(
+                    summary: "Session opened for first slice flow.",
+                    attributes: ["serviceId": service.id.uuidString]
+                )
+            )
+        )
+        events.append(
+            SessionEventRecord(
+                sessionId: session.id,
+                kind: .captureReceived,
+                payload: FirstSliceSessionEventPayload(
+                    summary: "Capture input accepted.",
+                    attributes: ["captureKind": input.capture.kind.rawValue]
+                )
+            )
+        )
 
-        let transcriptText = "[transcribed] \(captureText)"
+        let transcriptText = "[transcribed] \(input.capture.rawText)"
         let transcriptData = Data(transcriptText.utf8)
         let lawfulContext: [String: String] = [
             "actorRole": "professional-agent",
@@ -76,83 +94,140 @@ actor FirstSliceRunner {
             )
         )
         try await storage.audit(objectRef: transcriptRef, action: "write-transcript", actorId: professional.id.uuidString, metadata: lawfulContext)
-        events.append(SessionEventRecord(sessionId: session.id, kind: "transcript.generated", payload: ["objectPath": transcriptRef.objectPath]))
-        let transcriptionRecord = ProvenanceRecord(
-            actorId: "aaci.transcription",
-            operation: "transcript.generate",
-            providerName: "native-speech-stub",
-            modelName: "stub",
-            modelVersion: "v1",
-            outputHash: transcriptRef.contentHash,
-            timestamp: .now
+        let transcription = TranscriptionResult(transcriptText: transcriptText, transcriptRef: transcriptRef)
+        events.append(
+            SessionEventRecord(
+                sessionId: session.id,
+                kind: .transcriptGenerated,
+                payload: FirstSliceSessionEventPayload(
+                    summary: "Transcript persisted.",
+                    attributes: ["objectPath": transcription.transcriptRef.objectPath]
+                )
+            )
         )
-        provenanceRecords.append(transcriptionRecord)
-        try await provenance.append(transcriptionRecord)
+        try await appendProvenance(
+            .init(
+                actorId: "aaci.transcription",
+                operation: "transcript.generate",
+                providerName: "native-speech-stub",
+                modelName: "stub",
+                modelVersion: "v1",
+                outputHash: transcription.transcriptRef.contentHash,
+                timestamp: .now
+            ),
+            to: &provenanceRecords
+        )
 
         let contextItems = [
             "Consulta prévia há 10 dias por cefaleia persistente.",
             "Sem alergias registradas.",
             "Paciente relata piora do sono na última semana."
         ]
-        events.append(SessionEventRecord(sessionId: session.id, kind: "context.retrieved", payload: ["count": String(contextItems.count)]))
-        let retrievalRecord = ProvenanceRecord(
-            actorId: "aaci.context",
-            operation: "context.retrieve",
-            promptVersion: "care-context-retrieval-v1",
-            timestamp: .now
+        let retrieval = RetrievalContextPackage(finalidade: consent.finalidade, contextItems: contextItems)
+        events.append(
+            SessionEventRecord(
+                sessionId: session.id,
+                kind: .contextRetrieved,
+                payload: FirstSliceSessionEventPayload(
+                    summary: "Bounded context retrieved.",
+                    attributes: ["count": String(retrieval.contextItems.count)]
+                )
+            )
         )
-        provenanceRecords.append(retrievalRecord)
-        try await provenance.append(retrievalRecord)
+        try await appendProvenance(
+            .init(
+                actorId: "aaci.context",
+                operation: "context.retrieve",
+                promptVersion: "care-context-retrieval-v1",
+                timestamp: .now
+            ),
+            to: &provenanceRecords
+        )
 
-        let draft = await orchestrator.composeSOAPDraft(session: session, transcript: transcriptText, context: contextItems)
-        let draftData = try JSONEncoder.healthOS.encode(draft)
+        let draftModel = await orchestrator.composeSOAPDraft(session: session, transcript: transcription.transcriptText, context: retrieval.contextItems)
+        let draftData = try JSONEncoder.healthOS.encode(draftModel)
         let draftRef = try await storage.put(
             StoragePutRequest(
                 owner: .servico(serviceId: service.id),
                 kind: "drafts-soap",
                 layer: .derivedArtifacts,
                 content: draftData,
-                metadata: ["sessionId": session.id.uuidString, "draftId": draft.id.uuidString]
+                metadata: ["sessionId": session.id.uuidString, "draftId": draftModel.id.uuidString]
             )
         )
         try await storage.audit(objectRef: draftRef, action: "write-draft", actorId: professional.id.uuidString, metadata: lawfulContext)
-        events.append(SessionEventRecord(sessionId: session.id, kind: "draft.created", payload: ["draftId": draft.id.uuidString]))
-        let draftRecord = ProvenanceRecord(
-            actorId: "aaci.draft-composer",
-            operation: "draft.compose.soap",
-            providerName: "apple-foundation",
-            modelName: "stub",
-            modelVersion: "v1",
-            promptVersion: "soap-v1",
-            outputHash: draftRef.contentHash,
-            timestamp: .now
+        let draft = DraftPackage(draft: draftModel, draftRef: draftRef)
+        events.append(
+            SessionEventRecord(
+                sessionId: session.id,
+                kind: .draftComposed,
+                payload: FirstSliceSessionEventPayload(
+                    summary: "SOAP draft composed and persisted.",
+                    attributes: ["draftId": draft.draft.id.uuidString]
+                )
+            )
         )
-        provenanceRecords.append(draftRecord)
-        try await provenance.append(draftRecord)
+        try await appendProvenance(
+            .init(
+                actorId: "aaci.draft-composer",
+                operation: "draft.compose.soap",
+                providerName: "apple-foundation",
+                modelName: "stub",
+                modelVersion: "v1",
+                promptVersion: "soap-v1",
+                outputHash: draft.draftRef.contentHash,
+                timestamp: .now
+            ),
+            to: &provenanceRecords
+        )
 
-        let gateRequest = await gateService.createRequest(for: draft)
-        events.append(SessionEventRecord(sessionId: session.id, kind: "gate.requested", payload: ["gateRequestId": gateRequest.id.uuidString]))
-        let gateResolution = await gateService.resolve(gateRequest, resolverUserId: professional.id, approve: approve)
-        events.append(SessionEventRecord(sessionId: session.id, kind: "gate.resolved", payload: ["resolution": gateResolution.resolution.rawValue]))
-        let gateRecord = ProvenanceRecord(
-            actorId: professional.id.uuidString,
-            operation: "gate.resolve",
-            timestamp: .now
+        let gateRequest = await gateService.createRequest(for: draft.draft)
+        events.append(
+            SessionEventRecord(
+                sessionId: session.id,
+                kind: .gateRequested,
+                payload: FirstSliceSessionEventPayload(
+                    summary: "Gate requested for draft.",
+                    attributes: ["gateRequestId": gateRequest.id.uuidString]
+                )
+            )
         )
-        provenanceRecords.append(gateRecord)
-        try await provenance.append(gateRecord)
+        let gateResolution = await gateService.resolve(gateRequest, resolverUserId: professional.id, approve: input.gateApprove)
+        let gate = GateOutcomeSummary(
+            request: gateRequest,
+            resolution: gateResolution,
+            approved: gateResolution.resolution == .approved
+        )
+        events.append(
+            SessionEventRecord(
+                sessionId: session.id,
+                kind: .gateResolved,
+                payload: FirstSliceSessionEventPayload(
+                    summary: "Gate resolved by professional.",
+                    attributes: ["resolution": gate.resolution.resolution.rawValue]
+                )
+            )
+        )
+        try await appendProvenance(
+            .init(
+                actorId: professional.id.uuidString,
+                operation: "gate.resolve",
+                timestamp: .now
+            ),
+            to: &provenanceRecords
+        )
 
         let finalArtifactRef: StorageObjectRef?
-        if gateResolution.resolution == .approved {
-            let finalPayload = [
-                "sessionId": session.id.uuidString,
-                "soapDraftId": draft.id.uuidString,
-                "status": "effective",
-                "subjective": draft.payload["subjective"] ?? "",
-                "objective": draft.payload["objective"] ?? "",
-                "assessment": draft.payload["assessment"] ?? "",
-                "plan": draft.payload["plan"] ?? ""
-            ]
+        if gate.approved {
+            let finalPayload = FinalArtifactPayload(
+                sessionId: session.id,
+                sourceDraftId: draft.draft.id,
+                status: .effective,
+                subjective: draft.draft.payload["subjective"] ?? "",
+                objective: draft.draft.payload["objective"] ?? "",
+                assessment: draft.draft.payload["assessment"] ?? "",
+                plan: draft.draft.payload["plan"] ?? ""
+            )
             let finalData = try JSONEncoder.healthOS.encode(finalPayload)
             finalArtifactRef = try await storage.put(
                 StoragePutRequest(
@@ -160,26 +235,37 @@ actor FirstSliceRunner {
                     kind: "soap-final",
                     layer: .operationalContent,
                     content: finalData,
-                    metadata: ["sessionId": session.id.uuidString, "sourceDraftId": draft.id.uuidString]
+                    metadata: ["sessionId": session.id.uuidString, "sourceDraftId": draft.draft.id.uuidString]
                 )
             )
             if let finalArtifactRef {
                 try await storage.audit(objectRef: finalArtifactRef, action: "write-final-artifact", actorId: professional.id.uuidString, metadata: lawfulContext)
-                let finalRecord = ProvenanceRecord(
-                    actorId: professional.id.uuidString,
-                    operation: "artifact.effectuate.soap",
-                    outputHash: finalArtifactRef.contentHash,
-                    timestamp: .now
+                events.append(
+                    SessionEventRecord(
+                        sessionId: session.id,
+                        kind: .finalArtifactPersisted,
+                        payload: FirstSliceSessionEventPayload(
+                            summary: "Final artifact persisted after gate approval.",
+                            attributes: ["objectPath": finalArtifactRef.objectPath]
+                        )
+                    )
                 )
-                provenanceRecords.append(finalRecord)
-                try await provenance.append(finalRecord)
+                try await appendProvenance(
+                    .init(
+                        actorId: professional.id.uuidString,
+                        operation: "artifact.effectuate.soap",
+                        outputHash: finalArtifactRef.contentHash,
+                        timestamp: .now
+                    ),
+                    to: &provenanceRecords
+                )
             }
         } else {
             finalArtifactRef = nil
         }
 
-        let gateRequestData = try JSONEncoder.healthOS.encode(gateRequest)
-        let gateResolutionData = try JSONEncoder.healthOS.encode(gateResolution)
+        let gateRequestData = try JSONEncoder.healthOS.encode(gate.request)
+        let gateResolutionData = try JSONEncoder.healthOS.encode(gate.resolution)
         _ = try await storage.put(StoragePutRequest(owner: .servico(serviceId: service.id), kind: "gate-requests", layer: .governanceMetadata, content: gateRequestData, metadata: ["sessionId": session.id.uuidString]))
         _ = try await storage.put(StoragePutRequest(owner: .servico(serviceId: service.id), kind: "gate-resolutions", layer: .governanceMetadata, content: gateResolutionData, metadata: ["sessionId": session.id.uuidString]))
 
@@ -188,14 +274,28 @@ actor FirstSliceRunner {
 
         return FirstSliceRunResult(
             session: session,
-            transcriptRef: transcriptRef,
-            draftRef: draftRef,
+            transcription: transcription,
+            retrieval: retrieval,
+            draft: draft,
+            gate: gate,
             finalArtifactRef: finalArtifactRef,
-            gateRequest: gateRequest,
-            gateResolution: gateResolution,
+            summary: SliceRunSummary(
+                sessionId: session.id,
+                gateApproved: gate.approved,
+                transcriptObjectPath: transcription.transcriptRef.objectPath,
+                draftObjectPath: draft.draftRef.objectPath,
+                finalArtifactObjectPath: finalArtifactRef?.objectPath,
+                eventCount: events.count,
+                provenanceCount: provenanceRecords.count
+            ),
             provenanceRecords: provenanceRecords,
             events: events
         )
+    }
+
+    private func appendProvenance(_ record: ProvenanceRecord, to records: inout [ProvenanceRecord]) async throws {
+        records.append(record)
+        try await provenance.append(record)
     }
 }
 

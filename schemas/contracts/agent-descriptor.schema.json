@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "healthos/contracts/agent-descriptor",
+  "type": "object",
+  "required": ["actorId", "runtimeKind", "semanticRole", "permissions", "boundaryDescription", "boundary", "allowedInputKinds", "emittedOutputKinds"],
+  "properties": {
+    "actorId": {"type": "string"},
+    "runtimeKind": {"type": "string", "enum": ["aaci", "async", "user-agent"]},
+    "semanticRole": {"type": "string"},
+    "permissions": {"type": "array", "items": {"type": "string"}},
+    "boundaryDescription": {"type": "string"},
+    "boundary": {"$ref": "healthos/contracts/agent-boundary"},
+    "allowedInputKinds": {"type": "array", "items": {"type": "string"}},
+    "emittedOutputKinds": {"type": "array", "items": {"type": "string"}}
+  }
+}

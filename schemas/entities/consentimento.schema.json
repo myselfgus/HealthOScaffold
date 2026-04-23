@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "healthos/entities/consentimento",
+  "type": "object",
+  "required": ["id", "titularUsuarioId", "finalidade", "escopo", "validadeInicio", "revogado"],
+  "properties": {
+    "id": {"type": "string", "format": "uuid"},
+    "titularUsuarioId": {"type": "string", "format": "uuid"},
+    "finalidade": {"type": "string"},
+    "escopo": {"type": "object"},
+    "validadeInicio": {"type": "string", "format": "date-time"},
+    "validadeFim": {"type": ["string", "null"], "format": "date-time"},
+    "revogado": {"type": "boolean"},
+    "revogadoEm": {"type": ["string", "null"], "format": "date-time"},
+    "provaCriptograficaRef": {"type": ["string", "null"]}
+  }
+}

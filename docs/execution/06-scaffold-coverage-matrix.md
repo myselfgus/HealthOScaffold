@@ -49,17 +49,21 @@ Legend:
 - [x] architecture document established for GOS purpose, primitive families, compiler posture, and runtime posture
 - [x] authoring/compiler architecture document established
 - [x] runtime-binding architecture document established
+- [x] lifecycle/storage architecture document established
 - [x] canonical JSON schema established for compiled GOS form
+- [x] lightweight authoring schema established for YAML source documents
+- [x] bundle-manifest schema established for compiled-bundle lifecycle representation
 - [x] primitive families explicitly declared: signal, slot, derivation, task, tool binding, draft output, guard, deadline, evidence hook, human gate requirement, escalation, scope requirement
 - [x] app-boundary doctrine clarified so apps do not interpret GOS as sovereign law
 - [x] authoring conventions for declarative YAML source form established
 - [x] blank generic YAML authoring template added
 - [x] TypeScript tooling package scaffold added for parse/canonicalize/validate/CLI flows
 - [x] cross-reference validation scaffold added
+- [x] lifecycle state set and canonical bundle identity posture documented
 - [~] schema-workflow validation is not yet implemented
 - [~] provenance-preserving compile output remains minimal and should be strengthened
-- [~] runtime loader/binding contracts from AACI/other runtimes into GOS remain to be built
-- [~] activation/deprecation lifecycle for compiled GOS bundles remains to be built
+- [~] runtime loader/binding contracts from AACI/other runtimes remain to be built
+- [~] activation/deprecation mechanics and bundle registry/storage implementation remain to be built
 
 ## 6. AACI
 - [x] purpose and boundaries established
@@ -149,9 +153,9 @@ What remains is mostly optional hardening and procedural refinement, not identit
 - [x] topology vocabulary refined beyond ambiguous local-first framing
 - [x] strategic regulatory backlog registered as future architecture expansion (not current implementation)
 
-## 13. GOS doctrinal introduction wave
+## 13. GOS doctrinal and tooling wave
 - [x] HealthOS now has a named, native intermediate operational spec layer
 - [x] that layer is explicitly subordinated to core law rather than competing with it
 - [x] all declared GOS primitive families now exist in canonical schema form
-- [x] GOS now also has authoring docs, runtime-binding docs, a generic YAML template, and TypeScript tooling scaffold
+- [x] GOS now also has authoring docs, runtime-binding docs, lifecycle docs, a generic YAML template, an authoring schema, a bundle-manifest schema, and TypeScript tooling scaffold
 - [~] GOS still needs stronger validator/lifecycle/runtime-loader implementation before heavy runtime adoption

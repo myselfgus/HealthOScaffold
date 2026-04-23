@@ -70,3 +70,6 @@
 - backup freshness indicator
 - restore-test status
 - integrity-check status
+
+Detailed visibility doctrine lives in:
+- `docs/architecture/26-operator-observability-contract.md`

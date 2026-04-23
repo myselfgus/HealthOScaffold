@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "healthos/contracts/agent-boundary",
+  "type": "object",
+  "required": ["reads", "writes", "invokes", "governanceChecks", "forbiddenFinalizations"],
+  "properties": {
+    "reads": {"type": "array", "items": {"type": "string"}},
+    "writes": {"type": "array", "items": {"type": "string"}},
+    "invokes": {"type": "array", "items": {"type": "string"}},
+    "governanceChecks": {"type": "array", "items": {"type": "string"}},
+    "forbiddenFinalizations": {"type": "array", "items": {"type": "string"}}
+  }
+}

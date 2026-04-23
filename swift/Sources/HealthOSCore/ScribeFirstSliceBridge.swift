@@ -83,29 +83,54 @@ public struct ScribeRetrievalBridgeState: Codable, Sendable {
     }
 }
 
+public struct ScribeTranscriptionBridgeState: Codable, Sendable {
+    public let status: TranscriptionStatus
+    public let source: String
+    public let audioDisplayName: String?
+    public let issueMessage: String?
+
+    public init(
+        status: TranscriptionStatus,
+        source: String,
+        audioDisplayName: String? = nil,
+        issueMessage: String? = nil
+    ) {
+        self.status = status
+        self.source = source
+        self.audioDisplayName = audioDisplayName
+        self.issueMessage = issueMessage
+    }
+}
+
 public struct ScribeSessionBridgeState: Codable, Sendable {
     public let sessionId: UUID
+    public let captureMode: CaptureMode?
     public let draftState: ScribeDraftState
     public let gateState: ScribeGateState
     public let transcriptPreview: String
     public let draftPreview: String
+    public let transcription: ScribeTranscriptionBridgeState
     public let retrieval: ScribeRetrievalBridgeState
     public let runSummary: SliceRunSummary?
 
     public init(
         sessionId: UUID,
+        captureMode: CaptureMode?,
         draftState: ScribeDraftState,
         gateState: ScribeGateState,
         transcriptPreview: String,
         draftPreview: String,
+        transcription: ScribeTranscriptionBridgeState,
         retrieval: ScribeRetrievalBridgeState,
         runSummary: SliceRunSummary?
     ) {
         self.sessionId = sessionId
+        self.captureMode = captureMode
         self.draftState = draftState
         self.gateState = gateState
         self.transcriptPreview = transcriptPreview
         self.draftPreview = draftPreview
+        self.transcription = transcription
         self.retrieval = retrieval
         self.runSummary = runSummary
     }

@@ -48,7 +48,8 @@ Professional-facing interface for session work with AACI support.
 
 ## Key UI states
 - session opening / active / degraded / closing
-- transcription healthy / degraded
+- capture mode seeded_text / local_audio_file
+- transcription pending / ready / degraded / unavailable
 - context available / missing / denied
 - draft ready / awaiting_gate / rejected / approved
 - gate pending / reviewing / approved / rejected
@@ -68,13 +69,15 @@ The scaffold now includes a minimal macOS SwiftUI validation surface in:
 - `swift/Sources/HealthOSScribeApp/`
 
 This surface is intentionally narrow:
-- one window with session start, patient selection, seeded capture, draft preview, gate actions, and result sections
+- one window with session start, patient selection, capture-mode choice (seeded text or local audio file), draft preview, gate actions, and result sections
 - state is consumed through a small UI view model that talks to `ScribeFirstSliceFacade`
 - executable slice orchestration remains outside the app in `HealthOSFirstSliceSupport`
+- transcription status/source and degraded retrieval state are shown explicitly instead of being implied from other UI state
 
 This surface is intentionally not the final Scribe UI:
 - no design system or navigation architecture has been introduced
 - no core law has been moved into the app
+- local audio currently uses file selection/import rather than a full microphone-recording pipeline
 - draft refresh remains preview-only/degraded until the existing executable spine reaches gate resolution
 
 ## First-slice command/result envelopes backed by shared HealthOS envelope vocabulary

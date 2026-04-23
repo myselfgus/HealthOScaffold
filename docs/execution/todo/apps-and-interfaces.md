@@ -73,6 +73,20 @@ Files touched:
 - `docs/architecture/23-scribe-screen-contracts.md`
 - `docs/architecture/28-first-slice-executable-path.md`
 
+### SCRIBE-003 Add minimal local-audio capture path to the Scribe validation surface
+Outcome:
+- Scribe now allows choosing between seeded text and a local audio file for first-slice capture
+- the UI exposes explicit transcription and degraded-state surfaces instead of assuming capture always yields transcript text
+- the app still consumes bridge state from `ScribeFirstSliceFacade` rather than taking ownership of capture/transcription law
+Files touched:
+- `swift/Sources/HealthOSScribeApp/`
+- `swift/Sources/HealthOSCore/FirstSliceContracts.swift`
+- `swift/Sources/HealthOSCore/ScribeFirstSliceBridge.swift`
+- `swift/Sources/HealthOSFirstSliceSupport/ScribeFirstSliceAdapter.swift`
+- `docs/architecture/11-scribe.md`
+- `docs/architecture/23-scribe-screen-contracts.md`
+- `docs/architecture/28-first-slice-executable-path.md`
+
 ## READY
 
 ## TESTS / VALIDATION
@@ -82,4 +96,6 @@ Files touched:
 - app boundaries match user role and service context
 - `swift build`
 - `swift run HealthOSCLI`
+- `swift run HealthOSCLI --audio-file /System/Library/Sounds/Glass.aiff`
 - `swift run HealthOSScribeApp --smoke-test`
+- `swift run HealthOSScribeApp --smoke-test-audio`

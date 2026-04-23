@@ -79,6 +79,7 @@ public enum ScribeFirstSliceDemoBootstrap {
 
         let router = ProviderRouter()
         await router.register(AppleFoundationProvider())
+        await router.register(NativeSpeechProvider())
         let orchestrator = AACIOrchestrator(router: router)
         let runner = FirstSliceRunner(root: root, orchestrator: orchestrator)
         let facade = ScribeFirstSliceAdapter(runner: runner)

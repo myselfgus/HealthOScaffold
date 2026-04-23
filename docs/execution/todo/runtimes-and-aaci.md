@@ -61,6 +61,21 @@ Files touched:
 - `swift/Sources/HealthOSCore/ScribeFirstSliceBridge.swift`
 - `swift/Sources/HealthOSCore/FirstSliceContracts.swift`
 
+### AACI-005 Add minimal local-first audio capture/transcription path to the executable slice
+Outcome:
+- AACI/first-slice execution now accepts seeded text or a local audio file reference
+- local audio is persisted before transcription so provenance and storage evidence remain explicit even when transcription is degraded
+- retrieval and draft composition now degrade honestly when transcription yields no searchable text
+Files touched:
+- `swift/Sources/HealthOSAACI/AACI.swift`
+- `swift/Sources/HealthOSProviders/ProviderProtocols.swift`
+- `swift/Sources/HealthOSProviders/StubProviders.swift`
+- `swift/Sources/HealthOSFirstSliceSupport/FirstSliceRunner.swift`
+- `swift/Sources/HealthOSFirstSliceSupport/ScribeFirstSliceDemoBootstrap.swift`
+- `swift/Sources/HealthOSCore/FirstSliceContracts.swift`
+- `docs/architecture/09-aaci.md`
+- `docs/architecture/28-first-slice-executable-path.md`
+
 ## READY
 
 ## TESTS / VALIDATION

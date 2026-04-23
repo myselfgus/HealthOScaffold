@@ -6,6 +6,7 @@ import HealthOSFirstSliceSupport
 struct HealthOSCLI {
     static func main() async {
         do {
+            let arguments = Array(ProcessInfo.processInfo.arguments.dropFirst())
             let environment = try await ScribeFirstSliceDemoBootstrap.makeEnvironment()
             guard let patient = environment.patients.first else {
                 throw CLIError.invalidState("Demo bootstrap did not provide a patient.")
@@ -31,9 +32,7 @@ struct HealthOSCLI {
             let capture = await environment.facade.submitSessionCapture(
                 SubmitSessionCaptureCommand(
                     sessionId: startedState.sessionId,
-                    capture: SessionCaptureInput(
-                        rawText: "Paciente relata dor de cabeça, insônia e piora do sono há uma semana."
-                    )
+                    capture: makeCaptureInput(from: arguments)
                 )
             )
             guard capture.state != nil else {
@@ -57,7 +56,13 @@ struct HealthOSCLI {
 
             print("HealthOS first slice complete")
             print("session=\(bridgeState.sessionId.uuidString)")
-            print("transcript=\(summary.transcriptObjectPath)")
+            print("capture_mode=\(summary.captureMode.rawValue)")
+            if let audioPath = summary.audioCaptureObjectPath {
+                print("audio_capture=\(audioPath)")
+            }
+            print("transcription_status=\(summary.transcriptionStatus.rawValue)")
+            print("transcription_source=\(summary.transcriptionSource)")
+            print("transcript=\(summary.transcriptObjectPath ?? "<not available>")")
             print("draft=\(summary.draftObjectPath)")
             print("gate=\(bridgeState.gateState.rawValue)")
             if let finalPath = summary.finalArtifactObjectPath {
@@ -83,6 +88,28 @@ struct HealthOSCLI {
             let failure = issue.failureKind.map { " [failure=\($0.rawValue)]" } ?? ""
             return "\(issue.code.rawValue):\(issue.message)\(failure)"
         }.joined(separator: " | ")
+    }
+
+    private static func makeCaptureInput(from arguments: [String]) -> SessionCaptureInput {
+        if let audioPath = value(for: "--audio-file", in: arguments) {
+            return SessionCaptureInput(
+                audioReference: AudioCaptureReference(
+                    filePath: audioPath,
+                    displayName: URL(fileURLWithPath: audioPath).lastPathComponent
+                )
+            )
+        }
+
+        return SessionCaptureInput(
+            rawText: "Paciente relata dor de cabeça, insônia e piora do sono há uma semana."
+        )
+    }
+
+    private static func value(for flag: String, in arguments: [String]) -> String? {
+        guard let index = arguments.firstIndex(of: flag) else { return nil }
+        let valueIndex = arguments.index(after: index)
+        guard valueIndex < arguments.endIndex else { return nil }
+        return arguments[valueIndex]
     }
 }
 

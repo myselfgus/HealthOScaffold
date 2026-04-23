@@ -1,18 +1,92 @@
 import Foundation
 
-public enum CaptureInputKind: String, Codable, Sendable {
+public enum CaptureMode: String, Codable, Sendable, CaseIterable {
     case seededText = "seeded_text"
+    case localAudioFile = "local_audio_file"
+}
+
+public struct AudioCaptureReference: Codable, Sendable {
+    public let filePath: String
+    public let displayName: String
+    public let importedAt: Date
+
+    public init(filePath: String, displayName: String, importedAt: Date = .now) {
+        self.filePath = filePath
+        self.displayName = displayName
+        self.importedAt = importedAt
+    }
+
+    public init(fileURL: URL, importedAt: Date = .now) {
+        self.init(
+            filePath: fileURL.path,
+            displayName: fileURL.lastPathComponent,
+            importedAt: importedAt
+        )
+    }
+
+    public var fileURL: URL {
+        URL(fileURLWithPath: filePath)
+    }
+}
+
+public struct AudioCaptureArtifact: Codable, Sendable {
+    public let reference: AudioCaptureReference
+    public let storedRef: StorageObjectRef
+
+    public init(reference: AudioCaptureReference, storedRef: StorageObjectRef) {
+        self.reference = reference
+        self.storedRef = storedRef
+    }
 }
 
 public struct SessionCaptureInput: Codable, Sendable {
-    public let kind: CaptureInputKind
-    public let rawText: String
+    public let mode: CaptureMode
+    public let rawText: String?
+    public let audioReference: AudioCaptureReference?
     public let capturedAt: Date
 
-    public init(kind: CaptureInputKind = .seededText, rawText: String, capturedAt: Date = .now) {
-        self.kind = kind
+    public init(
+        mode: CaptureMode,
+        rawText: String? = nil,
+        audioReference: AudioCaptureReference? = nil,
+        capturedAt: Date = .now
+    ) {
+        self.mode = mode
         self.rawText = rawText
+        self.audioReference = audioReference
         self.capturedAt = capturedAt
+    }
+
+    public init(rawText: String, capturedAt: Date = .now) {
+        self.init(mode: .seededText, rawText: rawText, capturedAt: capturedAt)
+    }
+
+    public init(audioReference: AudioCaptureReference, capturedAt: Date = .now) {
+        self.init(mode: .localAudioFile, audioReference: audioReference, capturedAt: capturedAt)
+    }
+
+    public var normalizedText: String? {
+        rawText?
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+            .nilIfEmpty
+    }
+
+    public var previewText: String {
+        switch mode {
+        case .seededText:
+            return normalizedText ?? ""
+        case .localAudioFile:
+            return audioReference.map { "Local audio selected: \($0.displayName)" } ?? ""
+        }
+    }
+
+    public var isUsable: Bool {
+        switch mode {
+        case .seededText:
+            return normalizedText != nil
+        case .localAudioFile:
+            return audioReference != nil
+        }
     }
 }
 
@@ -38,13 +112,80 @@ public struct FirstSliceSessionInput: Codable, Sendable {
     }
 }
 
-public struct TranscriptionResult: Codable, Sendable {
-    public let transcriptText: String
-    public let transcriptRef: StorageObjectRef
+public enum TranscriptionStatus: String, Codable, Sendable {
+    case pending
+    case ready
+    case degraded
+    case unavailable
+}
 
-    public init(transcriptText: String, transcriptRef: StorageObjectRef) {
+public struct TranscriptionInput: Codable, Sendable {
+    public let captureMode: CaptureMode
+    public let seededText: String?
+    public let audioCapture: AudioCaptureArtifact?
+    public let requestedAt: Date
+
+    public init(
+        captureMode: CaptureMode,
+        seededText: String? = nil,
+        audioCapture: AudioCaptureArtifact? = nil,
+        requestedAt: Date = .now
+    ) {
+        self.captureMode = captureMode
+        self.seededText = seededText
+        self.audioCapture = audioCapture
+        self.requestedAt = requestedAt
+    }
+}
+
+public struct TranscriptionOutput: Codable, Sendable {
+    public let status: TranscriptionStatus
+    public let source: String
+    public let transcriptText: String?
+    public let transcriptRef: StorageObjectRef?
+    public let audioCapture: AudioCaptureArtifact?
+    public let issueMessage: String?
+
+    public init(
+        status: TranscriptionStatus,
+        source: String,
+        transcriptText: String? = nil,
+        transcriptRef: StorageObjectRef? = nil,
+        audioCapture: AudioCaptureArtifact? = nil,
+        issueMessage: String? = nil
+    ) {
+        self.status = status
+        self.source = source
         self.transcriptText = transcriptText
         self.transcriptRef = transcriptRef
+        self.audioCapture = audioCapture
+        self.issueMessage = issueMessage
+    }
+
+    public var workflowText: String {
+        if let transcriptText = transcriptText?.trimmingCharacters(in: .whitespacesAndNewlines),
+           !transcriptText.isEmpty {
+            return transcriptText
+        }
+
+        switch status {
+        case .pending:
+            return "Local audio capture is pending transcription."
+        case .ready:
+            return ""
+        case .degraded:
+            return "Local audio capture stored; transcription degraded." + detailSuffix
+        case .unavailable:
+            return "Local audio capture stored; transcription unavailable." + detailSuffix
+        }
+    }
+
+    private var detailSuffix: String {
+        guard let issueMessage = issueMessage?.trimmingCharacters(in: .whitespacesAndNewlines),
+              !issueMessage.isEmpty else {
+            return ""
+        }
+        return " \(issueMessage)"
     }
 }
 
@@ -230,8 +371,12 @@ public struct GateOutcomeSummary: Codable, Sendable {
 
 public struct SliceRunSummary: Codable, Sendable {
     public let sessionId: UUID
+    public let captureMode: CaptureMode
     public let gateApproved: Bool
-    public let transcriptObjectPath: String
+    public let audioCaptureObjectPath: String?
+    public let transcriptObjectPath: String?
+    public let transcriptionStatus: TranscriptionStatus
+    public let transcriptionSource: String
     public let draftObjectPath: String
     public let finalArtifactObjectPath: String?
     public let retrievalMatchCount: Int
@@ -242,8 +387,12 @@ public struct SliceRunSummary: Codable, Sendable {
 
     public init(
         sessionId: UUID,
+        captureMode: CaptureMode,
         gateApproved: Bool,
-        transcriptObjectPath: String,
+        audioCaptureObjectPath: String?,
+        transcriptObjectPath: String?,
+        transcriptionStatus: TranscriptionStatus,
+        transcriptionSource: String,
         draftObjectPath: String,
         finalArtifactObjectPath: String?,
         retrievalMatchCount: Int,
@@ -253,8 +402,12 @@ public struct SliceRunSummary: Codable, Sendable {
         provenanceCount: Int
     ) {
         self.sessionId = sessionId
+        self.captureMode = captureMode
         self.gateApproved = gateApproved
+        self.audioCaptureObjectPath = audioCaptureObjectPath
         self.transcriptObjectPath = transcriptObjectPath
+        self.transcriptionStatus = transcriptionStatus
+        self.transcriptionSource = transcriptionSource
         self.draftObjectPath = draftObjectPath
         self.finalArtifactObjectPath = finalArtifactObjectPath
         self.retrievalMatchCount = retrievalMatchCount
@@ -268,7 +421,8 @@ public struct SliceRunSummary: Codable, Sendable {
 public enum FirstSliceSessionEventKind: String, Codable, Sendable {
     case sessionStarted = "session.started"
     case captureReceived = "capture.received"
-    case transcriptGenerated = "transcript.generated"
+    case audioCapturePersisted = "audio.capture.persisted"
+    case transcriptionProcessed = "transcription.processed"
     case contextRetrieved = "context.retrieved"
     case draftComposed = "draft.composed"
     case gateRequested = "gate.requested"
@@ -310,7 +464,7 @@ public struct SessionEventRecord: Codable, Sendable, Identifiable {
 
 public struct FirstSliceRunResult: Codable, Sendable {
     public let session: SessaoTrabalho
-    public let transcription: TranscriptionResult
+    public let transcription: TranscriptionOutput
     public let retrieval: RetrievalContextPackage
     public let draft: DraftPackage
     public let gate: GateOutcomeSummary
@@ -321,7 +475,7 @@ public struct FirstSliceRunResult: Codable, Sendable {
 
     public init(
         session: SessaoTrabalho,
-        transcription: TranscriptionResult,
+        transcription: TranscriptionOutput,
         retrieval: RetrievalContextPackage,
         draft: DraftPackage,
         gate: GateOutcomeSummary,
@@ -339,5 +493,11 @@ public struct FirstSliceRunResult: Codable, Sendable {
         self.summary = summary
         self.provenanceRecords = provenanceRecords
         self.events = events
+    }
+}
+
+private extension String {
+    var nilIfEmpty: String? {
+        isEmpty ? nil : self
     }
 }

@@ -27,6 +27,7 @@ Actual sensitive access still depends on consent, habilitation, finality, and se
 ## Path allocation baseline
 ### hot path
 - capture event ingestion
+- local audio file capture reference intake
 - partial transcription
 - bounded context lookups needed during active work
 
@@ -58,7 +59,7 @@ Actual sensitive access still depends on consent, habilitation, finality, and se
 Role:
 - receives session input and normalizes it into capture events
 Input boundary:
-- active session input only
+- active session input only, including seeded text and local audio file references
 Output:
 - capture events, audio refs, raw session items
 Permissions:
@@ -70,17 +71,29 @@ Never does:
 
 ### TranscriptionAgent
 Role:
-- converts audio references into transcript material
+- converts audio references into transcript material or explicit degraded/unavailable transcription state
 Input boundary:
 - audio refs or capture events only
 Output:
-- transcript fragments / transcript artifact refs
+- transcript fragments / transcript artifact refs / degraded transcription state
 Permissions:
 - `capture:read`, `transcript:write`
 Governance hooks:
 - service/session scoping
 Never does:
 - diagnosis or final artifact approval
+
+## Current first-slice local audio path
+
+The current executable slice now supports two lawful capture modes:
+- seeded text, which remains the compatibility path
+- local audio file reference, which is persisted into the service record area before transcription is attempted
+
+For the current wave:
+- audio capture is local-first and file-backed
+- transcription may complete as `ready`, `degraded`, or `unavailable`
+- degraded or unavailable transcription must remain visible to Scribe as runtime truth
+- if transcription yields no searchable text, bounded retrieval must degrade honestly instead of widening scope or inventing context
 
 ### IntentionAgent
 Role:

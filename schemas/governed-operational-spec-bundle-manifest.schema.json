@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://healthos.dev/schemas/governed-operational-spec-bundle-manifest.schema.json",
+  "title": "Governed Operational Spec Bundle Manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "bundle_id",
+    "spec_id",
+    "spec_version",
+    "bundle_version",
+    "compiler_version",
+    "lifecycle_state"
+  ],
+  "properties": {
+    "bundle_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "spec_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "spec_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "bundle_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "compiler_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "compiled_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "lifecycle_state": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "reviewed",
+        "active",
+        "deprecated",
+        "superseded",
+        "revoked"
+      ]
+    },
+    "replaces_bundle_id": {
+      "type": "string"
+    },
+    "compiler_report_path": {
+      "type": "string"
+    },
+    "spec_path": {
+      "type": "string"
+    },
+    "source_provenance_path": {
+      "type": "string"
+    },
+    "notes": {
+      "type": "string"
+    }
+  }
+}

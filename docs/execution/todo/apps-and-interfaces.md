@@ -26,20 +26,26 @@ Outcome:
 Files touched:
 - `docs/architecture/13-cloudclinic.md`
 
+### APP-002 Define runtime-state surfaces per app
+Outcome:
+- runtime-state surface doctrine created and linked to the shared app state model so apps can distinguish operational degradation from governance decisions
+Files touched:
+- `docs/architecture/22-runtime-state-surfaces.md`
+- `docs/architecture/10-app-state-model.md`
+
 ## READY
 
-### APP-002 Define runtime-state surfaces per app
+### APP-003 Deepen screen-level interaction contracts
 Objective:
-- specify exactly how healthy/degraded/failed runtime conditions surface in Scribe, Sortio, and CloudClinic
+- specify per-screen commands, primary actions, and result/error states for first implementation wave
 Files:
-- `docs/architecture/10-app-state-model.md`
 - `docs/architecture/11-scribe.md`
 - `docs/architecture/12-sortio.md`
 - `docs/architecture/13-cloudclinic.md`
 Dependencies:
-- APP-001, RT-003
+- APP-001, APP-002
 Definition of done:
-- apps expose runtime truth consistently without inventing governance meaning
+- first implementation wave can map UI actions directly to core/runtime contracts without guessing
 
 ## TESTS / VALIDATION
 

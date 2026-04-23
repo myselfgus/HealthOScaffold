@@ -579,7 +579,7 @@ public actor FirstSliceRunner {
             .folding(options: [.diacriticInsensitive, .caseInsensitive], locale: .current)
             .lowercased()
             .components(separatedBy: separators)
-            .filter { $0.count >= 4 && !stopwords.contains($0) }))
+.filter { $0.count >= 3 && !stopwords.contains($0) }))
             .sorted()
     }
 

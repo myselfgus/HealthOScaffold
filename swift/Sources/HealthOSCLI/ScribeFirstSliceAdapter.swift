@@ -90,13 +90,13 @@ actor ScribeFirstSliceAdapter: ScribeFirstSliceFacade {
             )
         }
 
-        var draftReadyState = makePendingState(sessionId: command.sessionId, workspace: workspace)
-        draftReadyState = ScribeSessionBridgeState(
-            sessionId: draftReadyState.sessionId,
+        let baseState = makePendingState(sessionId: command.sessionId, workspace: workspace)
+        let draftReadyState = ScribeSessionBridgeState(
+            sessionId: baseState.sessionId,
             draftState: .awaitingGate,
             gateState: .pending,
-            transcriptPreview: draftReadyState.transcriptPreview,
-            draftPreview: draftReadyState.draftPreview,
+            transcriptPreview: baseState.transcriptPreview,
+            draftPreview: baseState.draftPreview,
             retrieval: ScribeRetrievalBridgeState(status: .degraded, source: "pending-run", matchCount: 0, previewItems: []),
             runSummary: nil
         )
@@ -146,9 +146,9 @@ actor ScribeFirstSliceAdapter: ScribeFirstSliceFacade {
             )
             let runResult = try await runner.run(input: runInput)
             workspace.runResult = runResult
-            workspaces[command.sessionId] = workspace
 
             let bridgeState = makeCompletedState(from: runResult, sessionId: command.sessionId)
+            workspaces.removeValue(forKey: command.sessionId)
             let disposition: FirstSliceCommandDisposition = runResult.gate.approved ? .completeSuccess : .governedDeny
             return GateResolutionResult(disposition: disposition, state: bridgeState)
         } catch {

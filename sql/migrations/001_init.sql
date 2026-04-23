@@ -1,5 +1,21 @@
 -- HealthOS initial canonical schema
+--
+-- This migration establishes the single-node canonical metadata layer for HealthOS.
+-- It is intentionally broad because the scaffold needs one coherent, inspectable foundation.
+--
+-- Design notes:
+-- 1. PostgreSQL stores metadata, governance state, and operational lineage.
+-- 2. Filesystem/object paths hold large payloads and artifact bodies.
+-- 3. Direct identifiers remain separated from operational content.
+-- 4. Provenance is append-only by rule.
+
 CREATE EXTENSION IF NOT EXISTS pgcrypto;
+
+-- ============================================================================
+-- SECTION 01: IDENTITY AND CIVIL LINKAGE
+-- ============================================================================
+-- usuarios: pseudonymous system-level user anchor.
+-- identidades_civis: protected direct-identifier layer.
 
 CREATE TABLE usuarios (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -18,6 +34,14 @@ CREATE TABLE identidades_civis (
   contato_cifrado BYTEA,
   created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
+
+-- ============================================================================
+-- SECTION 02: PROFESSIONAL IDENTITY, SERVICE, AND HABILITATION
+-- ============================================================================
+-- registros_profissionais: validated professional identity.
+-- servicos: tenant-like service boundary.
+-- membros_servico: membership relation between professional record and service.
+-- habilitacoes: bounded active window for acting professionally inside a service.
 
 CREATE TABLE registros_profissionais (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -58,6 +82,11 @@ CREATE TABLE habilitacoes (
   contexto JSONB NOT NULL DEFAULT '{}'::jsonb
 );
 
+-- ============================================================================
+-- SECTION 03: CONSENT AND ACCESS GOVERNANCE
+-- ============================================================================
+-- consentimentos: first-class consent object with scope and time.
+
 CREATE TABLE consentimentos (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   titular_usuario_id UUID NOT NULL REFERENCES usuarios(id),
@@ -70,6 +99,12 @@ CREATE TABLE consentimentos (
   prova_criptografica BYTEA,
   created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
+
+-- ============================================================================
+-- SECTION 04: CANONICAL DATA OBJECT METADATA
+-- ============================================================================
+-- dados maps a stored object reference to owner, layer, governance metadata, and time axes.
+-- Invariant: an object belongs either to one user or to one service, never both at once.
 
 CREATE TABLE dados (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -88,6 +123,12 @@ CREATE TABLE dados (
     (titular_usuario_id IS NULL AND titular_servico_id IS NOT NULL)
   )
 );
+
+-- ============================================================================
+-- SECTION 05: WORK SESSIONS AND SESSION EVENTS
+-- ============================================================================
+-- sessoes_trabalho: runtime session anchor.
+-- eventos_sessao: event trail within a session.
 
 CREATE TABLE sessoes_trabalho (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -112,6 +153,13 @@ CREATE TABLE eventos_sessao (
   tempo_usuario TIMESTAMPTZ,
   tempo_sistema TIMESTAMPTZ NOT NULL DEFAULT now()
 );
+
+-- ============================================================================
+-- SECTION 06: ARTIFACTS, DRAFTS, AND GATES
+-- ============================================================================
+-- artefatos: persisted structured outputs and references.
+-- drafts: pre-effective forms awaiting further action.
+-- gate_requests / gate_resolutions: human-approval mechanism.
 
 CREATE TABLE artefatos (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -161,6 +209,12 @@ CREATE TABLE gate_resolutions (
   created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
+-- ============================================================================
+-- SECTION 07: VERSIONING AND MODEL/PROVIDER REGISTRIES
+-- ============================================================================
+-- versoes tracks versioned artifacts such as prompts, models, adapters, or scripts.
+-- provider_configs and model_registry_entries define available inference/tuning surface.
+
 CREATE TABLE versoes (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   artifact_name TEXT NOT NULL,
@@ -203,6 +257,13 @@ CREATE TABLE fine_tuning_jobs (
   created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
+-- ============================================================================
+-- SECTION 08: DE-IDENTIFICATION AND MESSAGE/TOOL LOGGING
+-- ============================================================================
+-- deidentification_maps protects the mapping between tokenized identity references and encrypted values.
+-- agent_messages captures mailbox/message traffic.
+-- tool_definitions and tool_invocations record tool surface and usage.
+
 CREATE TABLE deidentification_maps (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   usuario_id UUID NOT NULL REFERENCES usuarios(id),
@@ -241,6 +302,12 @@ CREATE TABLE tool_invocations (
   created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
+-- ============================================================================
+-- SECTION 09: AUDIT AND PROVENANCE
+-- ============================================================================
+-- audit_entries records important audited actions.
+-- proveniencia is append-only lineage for operational/model/runtime actions.
+
 CREATE TABLE audit_entries (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   actor_id TEXT,
@@ -266,8 +333,14 @@ CREATE TABLE proveniencia (
   metadata JSONB NOT NULL DEFAULT '{}'::jsonb
 );
 
+-- Provenance must remain append-only at the DB rule layer.
 CREATE RULE proveniencia_no_update AS ON UPDATE TO proveniencia DO INSTEAD NOTHING;
 CREATE RULE proveniencia_no_delete AS ON DELETE TO proveniencia DO INSTEAD NOTHING;
+
+-- ============================================================================
+-- SECTION 10: INDEXES
+-- ============================================================================
+-- Indexes favor owner-centric lookup, session-centric traversal, consent lookup, and provenance review.
 
 CREATE INDEX idx_dados_usuario ON dados(titular_usuario_id, kind);
 CREATE INDEX idx_dados_servico ON dados(titular_servico_id, kind);

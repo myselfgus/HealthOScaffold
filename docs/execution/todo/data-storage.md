@@ -27,18 +27,25 @@ Outcome:
 Files touched:
 - `docs/architecture/07-storage-and-sql.md`
 
+### DS-005 Decide hash strategy and integrity-verification implementation notes
+Outcome:
+- initial object-integrity strategy defined with SHA-256 baseline, verification points, and integrity-failure handling
+Files touched:
+- `docs/architecture/21-object-integrity-strategy.md`
+- `docs/architecture/07-storage-and-sql.md`
+
 ## READY
 
-### DS-005 Decide hash strategy and integrity-verification implementation notes
+### DS-006 Decide whether lawfulContext becomes a shared strict envelope
 Objective:
-- document the initial content-hash strategy and how integrity mismatches should surface
+- determine whether lawfulContext remains flexible map-based or evolves into a stricter transport contract
 Files:
 - `docs/architecture/07-storage-and-sql.md`
-- optional code/docs additions
+- optional schema/contract files
 Dependencies:
-- DS-002, DS-003
+- DS-003, DS-004
 Definition of done:
-- object content verification strategy is explicit enough for implementation
+- runtime implementers know whether lawful access context is flexible or strongly typed at the transport seam
 
 ## TESTS / VALIDATION
 

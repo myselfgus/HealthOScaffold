@@ -11,6 +11,8 @@ actor FirstSliceRunner {
     private let storage: FileBackedStorageService
     private let provenance: FileBackedProvenanceLedger
     private let orchestrator: AACIOrchestrator
+    private let retrieval: BoundedContextRetrievalService
+    private let recordIndex: FileBackedRecordIndex
 
     init(root: URL, orchestrator: AACIOrchestrator) {
         self.root = root
@@ -20,6 +22,8 @@ actor FirstSliceRunner {
         self.storage = FileBackedStorageService(root: root)
         self.provenance = FileBackedProvenanceLedger(root: root)
         self.orchestrator = orchestrator
+        self.recordIndex = FileBackedRecordIndex(root: root)
+        self.retrieval = BoundedContextRetrievalService(index: self.recordIndex)
     }
 
     func run(input: FirstSliceSessionInput) async throws -> FirstSliceRunResult {
@@ -118,19 +122,35 @@ actor FirstSliceRunner {
             to: &provenanceRecords
         )
 
-        let contextItems = [
-            "Consulta prévia há 10 dias por cefaleia persistente.",
-            "Sem alergias registradas.",
-            "Paciente relata piora do sono na última semana."
-        ]
-        let retrieval = RetrievalContextPackage(finalidade: consent.finalidade, contextItems: contextItems)
+        try await seedDemoRecordIndexIfNeeded(serviceId: service.id, patientUserId: patient.id)
+
+        let retrievalQuery = RetrievalQuery(
+            serviceId: service.id,
+            patientUserId: patient.id,
+            finalidade: consent.finalidade,
+            terms: retrievalTerms(from: transcriptText),
+            allowedKinds: [.encounterSummary, .allergy, .observation],
+            maxMatches: 4,
+            recencyDays: 365
+        )
+        let boundedResult = try await retrieval.retrieve(query: retrievalQuery, lawfulContext: lawfulContext)
+        let contextItems = boundedResult.matches.map(\.summary)
+        let retrieval = RetrievalContextPackage(
+            finalidade: consent.finalidade,
+            contextItems: contextItems,
+            boundedResult: boundedResult
+        )
         events.append(
             SessionEventRecord(
                 sessionId: session.id,
                 kind: .contextRetrieved,
                 payload: FirstSliceSessionEventPayload(
-                    summary: "Bounded context retrieved.",
-                    attributes: ["count": String(retrieval.contextItems.count)]
+                    summary: boundedResult.isFallbackEmpty ? "No bounded context matches found." : "Bounded context retrieved.",
+                    attributes: [
+                        "count": String(retrieval.contextItems.count),
+                        "source": boundedResult.source,
+                        "fallbackEmpty": String(boundedResult.isFallbackEmpty)
+                    ]
                 )
             )
         )
@@ -138,7 +158,8 @@ actor FirstSliceRunner {
             .init(
                 actorId: "aaci.context",
                 operation: "context.retrieve",
-                promptVersion: "care-context-retrieval-v1",
+                providerName: boundedResult.source,
+                promptVersion: "care-context-retrieval-v2",
                 timestamp: .now
             ),
             to: &provenanceRecords
@@ -285,6 +306,9 @@ actor FirstSliceRunner {
                 transcriptObjectPath: transcription.transcriptRef.objectPath,
                 draftObjectPath: draft.draftRef.objectPath,
                 finalArtifactObjectPath: finalArtifactRef?.objectPath,
+                retrievalMatchCount: retrieval.boundedResult.matches.count,
+                retrievalSource: retrieval.boundedResult.source,
+                retrievalFallbackEmpty: retrieval.boundedResult.isFallbackEmpty,
                 eventCount: events.count,
                 provenanceCount: provenanceRecords.count
             ),
@@ -296,6 +320,71 @@ actor FirstSliceRunner {
     private func appendProvenance(_ record: ProvenanceRecord, to records: inout [ProvenanceRecord]) async throws {
         records.append(record)
         try await provenance.append(record)
+    }
+
+    private func retrievalTerms(from text: String) -> [String] {
+        let separators = CharacterSet.alphanumerics.inverted
+        return text
+            .lowercased()
+            .components(separatedBy: separators)
+            .filter { $0.count >= 4 }
+    }
+
+    private func seedDemoRecordIndexIfNeeded(serviceId: UUID, patientUserId: UUID) async throws {
+        let existing = try await recordIndex.entries(
+            serviceId: serviceId,
+            patientUserId: patientUserId,
+            lawfulContext: [
+                "actorRole": "system-seed",
+                "scope": "care-context",
+                "finalidade": "care-context-retrieval",
+                "habilitationId": "seed",
+                "patientUserId": patientUserId.uuidString
+            ]
+        )
+        guard existing.isEmpty else { return }
+
+        let iso = ISO8601DateFormatter()
+        let baseDate = iso.date(from: "2026-04-10T09:00:00Z") ?? .now
+        let entries = [
+            RecordIndexEntry(
+                id: UUID(uuidString: "10000000-0000-0000-0000-000000000001")!,
+                serviceId: serviceId,
+                patientUserId: patientUserId,
+                snippetKind: .encounterSummary,
+                snippet: PatientRecordSnippet(
+                    summary: "Consulta prévia por cefaleia persistente, com melhora parcial após hidratação e ajuste do sono.",
+                    tags: ["cefaleia", "sono", "ambulatorial"],
+                    occurredAt: baseDate
+                ),
+                sourceRef: "service-records/encounters/e1"
+            ),
+            RecordIndexEntry(
+                id: UUID(uuidString: "10000000-0000-0000-0000-000000000002")!,
+                serviceId: serviceId,
+                patientUserId: patientUserId,
+                snippetKind: .allergy,
+                snippet: PatientRecordSnippet(
+                    summary: "Sem alergias medicamentosas registradas no serviço.",
+                    tags: ["alergia", "seguranca"],
+                    occurredAt: baseDate.addingTimeInterval(3600)
+                ),
+                sourceRef: "service-records/allergies/a1"
+            ),
+            RecordIndexEntry(
+                id: UUID(uuidString: "10000000-0000-0000-0000-000000000003")!,
+                serviceId: serviceId,
+                patientUserId: patientUserId,
+                snippetKind: .observation,
+                snippet: PatientRecordSnippet(
+                    summary: "Paciente relata piora de insônia na última semana, com despertares frequentes.",
+                    tags: ["insonia", "sono", "sintoma"],
+                    occurredAt: baseDate.addingTimeInterval(7200)
+                ),
+                sourceRef: "service-records/observations/o1"
+            )
+        ]
+        try await recordIndex.replaceEntries(serviceId: serviceId, entries: entries)
     }
 }
 

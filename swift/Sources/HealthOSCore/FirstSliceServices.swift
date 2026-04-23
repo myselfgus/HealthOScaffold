@@ -6,6 +6,7 @@ public enum FirstSliceError: Error, LocalizedError, Sendable {
     case invalidService
     case missingLawfulContext(String)
     case storageIntegrityFailure(String)
+    case retrievalScopeViolation
 
     public var errorDescription: String? {
         switch self {
@@ -19,6 +20,8 @@ public enum FirstSliceError: Error, LocalizedError, Sendable {
             return "Missing lawful context key: \(key)."
         case .storageIntegrityFailure(let path):
             return "Stored object failed integrity verification at path: \(path)."
+        case .retrievalScopeViolation:
+            return "Retrieval query exceeds lawful session scope."
         }
     }
 }
@@ -258,5 +261,139 @@ public actor FileBackedProvenanceLedger {
         } else {
             try (data + Data("\n".utf8)).write(to: url)
         }
+    }
+}
+
+public actor FileBackedRecordIndex {
+    private let root: URL
+    private let encoder: JSONEncoder
+    private let decoder: JSONDecoder
+
+    public init(root: URL) {
+        self.root = root
+        self.encoder = JSONEncoder()
+        self.encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
+        self.encoder.dateEncodingStrategy = .iso8601
+        self.decoder = JSONDecoder()
+        self.decoder.dateDecodingStrategy = .iso8601
+    }
+
+    public func replaceEntries(serviceId: UUID, entries: [RecordIndexEntry]) throws {
+        let fileURL = indexFileURL(serviceId: serviceId)
+        var existing: [RecordIndexEntry] = []
+        if FileManager.default.fileExists(atPath: fileURL.path) {
+            let data = try Data(contentsOf: fileURL)
+            existing = (try? decoder.decode([RecordIndexEntry].self, from: data)) ?? []
+        }
+
+        let replacementKeys = Set(entries.map { CompositeKey(serviceId: $0.serviceId, patientUserId: $0.patientUserId, id: $0.id) })
+        existing.removeAll { replacementKeys.contains(CompositeKey(serviceId: $0.serviceId, patientUserId: $0.patientUserId, id: $0.id)) }
+        existing.append(contentsOf: entries)
+        existing.sort {
+            if $0.serviceId != $1.serviceId { return $0.serviceId.uuidString < $1.serviceId.uuidString }
+            if $0.patientUserId != $1.patientUserId { return $0.patientUserId.uuidString < $1.patientUserId.uuidString }
+            if $0.snippet.occurredAt != $1.snippet.occurredAt { return $0.snippet.occurredAt > $1.snippet.occurredAt }
+            return $0.id.uuidString < $1.id.uuidString
+        }
+
+        try FileManager.default.createDirectory(at: fileURL.deletingLastPathComponent(), withIntermediateDirectories: true)
+        try encoder.encode(existing).write(to: fileURL)
+    }
+
+    public func entries(
+        serviceId: UUID,
+        patientUserId: UUID,
+        lawfulContext: [String: String]
+    ) throws -> [RecordIndexEntry] {
+        try requireLawfulContext(lawfulContext, patientUserId: patientUserId)
+        let fileURL = indexFileURL(serviceId: serviceId)
+        guard FileManager.default.fileExists(atPath: fileURL.path) else { return [] }
+        let data = try Data(contentsOf: fileURL)
+        let all = try decoder.decode([RecordIndexEntry].self, from: data)
+        return all
+            .filter { $0.serviceId == serviceId && $0.patientUserId == patientUserId }
+            .sorted {
+                if $0.snippet.occurredAt != $1.snippet.occurredAt {
+                    return $0.snippet.occurredAt > $1.snippet.occurredAt
+                }
+                return $0.id.uuidString < $1.id.uuidString
+            }
+    }
+
+    private func indexFileURL(serviceId: UUID) -> URL {
+        DirectoryLayout.serviceRoot(root: root, serviceId: serviceId)
+            .appending(path: "records")
+            .appending(path: "patient-record-index.json")
+    }
+
+    private func requireLawfulContext(_ lawfulContext: [String: String], patientUserId: UUID) throws {
+        for key in ["actorRole", "scope", "finalidade", "habilitationId", "patientUserId"] {
+            guard lawfulContext[key] != nil else { throw FirstSliceError.missingLawfulContext(key) }
+        }
+        guard lawfulContext["patientUserId"] == patientUserId.uuidString else {
+            throw FirstSliceError.retrievalScopeViolation
+        }
+    }
+
+    private struct CompositeKey: Hashable {
+        let serviceId: UUID
+        let patientUserId: UUID
+        let id: UUID
+    }
+}
+
+public actor BoundedContextRetrievalService {
+    private let index: FileBackedRecordIndex
+
+    public init(index: FileBackedRecordIndex) {
+        self.index = index
+    }
+
+    public func retrieve(query: RetrievalQuery, lawfulContext: [String: String]) async throws -> BoundedRetrievalResult {
+        let entries = try await index.entries(serviceId: query.serviceId, patientUserId: query.patientUserId, lawfulContext: lawfulContext)
+        let now = Date()
+        let normalizedTerms = Set(query.terms.map { $0.trimmingCharacters(in: .whitespacesAndNewlines).lowercased() }.filter { $0.count >= 3 })
+        let recencyFloor: Date? = query.recencyDays.map { Calendar.current.date(byAdding: .day, value: -$0, to: now) ?? .distantPast }
+
+        let scored: [RetrievalMatch] = entries.compactMap { entry in
+            guard query.allowedKinds.contains(entry.snippetKind) else { return nil }
+            if let recencyFloor, entry.snippet.occurredAt < recencyFloor { return nil }
+
+            let haystackSet = Set(tokenize(entry.snippet.summary) + entry.snippet.tags.map { $0.lowercased() })
+            let matchedTerms = normalizedTerms.filter { haystackSet.contains($0) }.sorted()
+            let score = matchedTerms.count * 3 + entry.snippet.tags.count
+            if !normalizedTerms.isEmpty && matchedTerms.isEmpty { return nil }
+
+            return RetrievalMatch(
+                id: entry.id,
+                snippetKind: entry.snippetKind,
+                summary: entry.snippet.summary,
+                sourceRef: entry.sourceRef,
+                score: score,
+                matchedTerms: matchedTerms,
+                occurredAt: entry.snippet.occurredAt
+            )
+        }
+        .sorted {
+            if $0.score != $1.score { return $0.score > $1.score }
+            if $0.occurredAt != $1.occurredAt { return $0.occurredAt > $1.occurredAt }
+            return $0.id.uuidString < $1.id.uuidString
+        }
+
+        let matches = Array(scored.prefix(max(query.maxMatches, 0)))
+        return BoundedRetrievalResult(
+            query: query,
+            matches: matches,
+            source: "file-backed-record-index",
+            isFallbackEmpty: matches.isEmpty
+        )
+    }
+
+    private func tokenize(_ text: String) -> [String] {
+        let separators = CharacterSet.alphanumerics.inverted
+        return text
+            .lowercased()
+            .components(separatedBy: separators)
+            .filter { $0.count >= 3 }
     }
 }

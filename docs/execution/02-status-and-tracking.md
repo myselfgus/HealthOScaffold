@@ -51,6 +51,9 @@ Current phase: Controlled implementation — first vertical slice started
 - first-slice session events upgraded to typed event model with explicit event kind and payload envelopes
 - first-slice provenance recording made more consistent across transcription, retrieval, draft compose, gate resolve, and final artifact effectuation
 - minimal Scribe bridge contract + adapter added to consume the first-slice spine without moving law into the app layer
+- first-slice bounded retrieval substrate added with typed query/match/result contracts and file-backed service-record index
+- FirstSliceRunner now uses deterministic bounded retrieval + provenance/event wiring instead of hardcoded synthetic context list
+- Scribe bridge state now exposes retrieval source/status/match preview for future UI wiring
 
 ## In progress
 
@@ -60,7 +63,7 @@ Current phase: Controlled implementation — first vertical slice started
 
 - capture is still text-seeded rather than native audio capture
 - transcription remains stubbed
-- context retrieval remains synthetic/bounded rather than connected to a real record index
+- bounded retrieval now uses file-backed index, but still lexical/tag-based (no semantic retrieval yet)
 - UI apps are not yet wired to the executable slice
 - command/result envelopes for UI actions can still be made more explicit
 - Scribe is still not wired to a full UI surface; only bridge contracts/facade are currently implemented
@@ -70,7 +73,7 @@ Current phase: Controlled implementation — first vertical slice started
 - decide whether the next step for the slice is native audio capture or stronger retrieval wiring
 - define shared error-envelope strategy for loopback local services, if needed
 - decide when to convert the AI skills into enforced reusable workflows/templates
-- decide whether the next closure step is native capture input or replacing synthetic retrieval with real bounded index retrieval
+- decide when to replace lexical bounded retrieval with semantic/clinical retrieval while preserving lawful scope and local-first constraints
 
 ## Tracking rules
 

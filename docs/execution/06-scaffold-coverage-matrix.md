@@ -91,6 +91,8 @@ Legend:
 - [x] storage and runtime baselines are strong enough for controlled implementation
 - [x] app-state and interaction baselines are strong enough for controlled implementation
 - [x] first-slice executable contracts are typed enough for app/runtime integration without ad hoc payload coupling
+- [x] bounded file-backed retrieval substrate integrated into first slice executable spine
+- [~] retrieval quality is still lexical/tag bounded; semantic retrieval is intentionally deferred
 - [~] a few procedural/operator details still remain optional hardening before heavy implementation
 
 ## Practical reading

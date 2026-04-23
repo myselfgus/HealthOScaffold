@@ -28,7 +28,8 @@ Legend:
 - [x] de-identification / re-identification concept exists
 - [x] canonical directory implementation in Swift exists
 - [x] storage API contract exists explicitly
-- [~] hash/integrity strategy still needs final closure
+- [x] initial hash/integrity strategy is established
+- [~] lawfulContext transport strictness still needs final decision
 
 ## 4. Runtime / actor / agent model
 - [x] actor/agent distinction documented and typed
@@ -36,7 +37,8 @@ Legend:
 - [x] message/mailbox concept exists
 - [x] lifecycle states formalized across docs, schema, Swift, and TypeScript
 - [x] permission/boundary model established at scaffold level
-- [~] retry/backpressure policy still needs fuller operational closure
+- [x] retry/backpressure baseline exists
+- [~] runtime-state surface policy across apps still needs one more closure pass
 
 ## 5. AACI
 - [x] purpose and boundaries established
@@ -44,14 +46,17 @@ Legend:
 - [x] hot/warm/cold path concept established
 - [x] initial subagents established
 - [x] subagent contracts substantially defined
-- [~] provider routing needs fuller operational policy
+- [x] provider-routing baseline exists by task class
+- [~] provider-routing policy still needs threshold/benchmark detail for stronger operational closure
 
 ## 6. Apps / interfaces
 - [x] Scribe defined
 - [x] Sortio defined
 - [x] CloudClinic defined
 - [x] app/core separation established
-- [~] detailed state maps and full flow contracts still need closure
+- [x] shared state vocabulary exists
+- [x] primary flow maps exist for all three apps
+- [~] runtime-state surfaces and some deeper screen/interaction contracts still need closure
 
 ## 7. Networking / operations
 - [x] local-first stance established
@@ -64,8 +69,8 @@ Legend:
 - [x] provider abstraction established
 - [x] offline ML boundary established
 - [x] fine-tuning/adapters concept scaffolded
-- [~] benchmark policy still needs closure
-- [~] dataset governance and promotion/rollback need fuller detail
+- [x] provider benchmark dimensions and routing outcomes exist
+- [~] dataset governance and promotion/rollback need fuller procedural detail
 
 ## 9. AI execution layer
 - [x] master plan created
@@ -79,16 +84,17 @@ Legend:
 - [x] slice target defined
 - [x] slice dependency order defined
 - [x] core-law failure semantics no longer block honest closure
-- [~] app-flow precision, provider-routing policy, retry/backpressure detail, and hash/integrity strategy still need tightening before heavy implementation
+- [x] storage and runtime baselines are strong enough for controlled implementation
+- [~] app runtime-state surfacing and provider-threshold details still need tightening before heavy implementation
 
 ## Practical reading
 
 The scaffold is already real and structured.
 What remains is not identity of the system, but closure work on:
-- runtime operational policy
-- app flow precision
+- runtime-state surfacing into apps
 - ops detail
 - provider/ML governance detail
-- hash/integrity strategy
+- lawfulContext transport strictness
+- stronger reusable AI skills
 
-That means the project is in a strong pre-coding hardening phase with most foundational identity, contract, and boundary questions already anchored.
+That means the project is in a late pre-coding hardening phase with most foundational identity, contract, boundary, and flow questions already anchored.

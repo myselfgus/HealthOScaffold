@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "healthos/contracts/runtime-lifecycle",
+  "type": "object",
+  "required": ["runtimeKind", "state"],
+  "properties": {
+    "runtimeKind": {
+      "type": "string",
+      "enum": ["aaci", "async", "user-agent"]
+    },
+    "state": {
+      "type": "string",
+      "enum": ["booting", "ready", "active", "paused", "terminating", "terminated", "failed"]
+    },
+    "failureKind": {
+      "type": ["string", "null"],
+      "enum": ["configuration_failure", "dependency_failure", "authorization_failure", "integrity_failure", "transport_failure", "timeout_failure", "internal_failure", null]
+    },
+    "message": {
+      "type": ["string", "null"]
+    }
+  }
+}

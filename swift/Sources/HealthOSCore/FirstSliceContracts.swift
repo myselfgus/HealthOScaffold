@@ -68,10 +68,14 @@ public struct DraftPackage: Codable, Sendable {
     }
 }
 
+public enum FinalArtifactStatus: String, Codable, Sendable {
+    case effective
+}
+
 public struct FinalArtifactPayload: Codable, Sendable {
     public let sessionId: UUID
     public let sourceDraftId: UUID
-    public let status: String
+    public let status: FinalArtifactStatus
     public let subjective: String
     public let objective: String
     public let assessment: String
@@ -80,7 +84,7 @@ public struct FinalArtifactPayload: Codable, Sendable {
     public init(
         sessionId: UUID,
         sourceDraftId: UUID,
-        status: String,
+        status: FinalArtifactStatus,
         subjective: String,
         objective: String,
         assessment: String,
@@ -144,7 +148,7 @@ public enum FirstSliceSessionEventKind: String, Codable, Sendable {
     case draftComposed = "draft.composed"
     case gateRequested = "gate.requested"
     case gateResolved = "gate.resolved"
-    case finalArtifactPersisted = "final-artifact.persisted"
+    case finalArtifactPersisted = "final.artifact.persisted"
 }
 
 public struct FirstSliceSessionEventPayload: Codable, Sendable {

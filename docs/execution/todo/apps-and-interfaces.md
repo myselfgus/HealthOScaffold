@@ -33,19 +33,27 @@ Files touched:
 - `docs/architecture/22-runtime-state-surfaces.md`
 - `docs/architecture/10-app-state-model.md`
 
+### APP-003 Deepen screen-level interaction contracts
+Outcome:
+- per-screen commands, contract calls, and result/error states documented for Scribe, Sortio, and CloudClinic
+Files touched:
+- `docs/architecture/23-scribe-screen-contracts.md`
+- `docs/architecture/24-sortio-screen-contracts.md`
+- `docs/architecture/25-cloudclinic-screen-contracts.md`
+
 ## READY
 
-### APP-003 Deepen screen-level interaction contracts
+### APP-004 Link screen contracts back into main app architecture docs
 Objective:
-- specify per-screen commands, primary actions, and result/error states for first implementation wave
+- add explicit references from Scribe, Sortio, and CloudClinic docs to the new screen-contract documents
 Files:
 - `docs/architecture/11-scribe.md`
 - `docs/architecture/12-sortio.md`
 - `docs/architecture/13-cloudclinic.md`
 Dependencies:
-- APP-001, APP-002
+- APP-003
 Definition of done:
-- first implementation wave can map UI actions directly to core/runtime contracts without guessing
+- app overview docs and screen-contract docs form one navigable set
 
 ## TESTS / VALIDATION
 

@@ -11,7 +11,7 @@ Legend:
 - [x] AACI defined as runtime inside HealthOS
 - [x] app/interface distinction established
 - [x] architecturalized-compliance doctrine established (apps consume seams, do not reimplement law)
-- [x] substrate/core/runtime/agent/app hierarchy established
+- [x] substrate/core/spec/runtime/agent/app hierarchy established
 - [x] glossary added
 - [x] interface doctrine established: HealthOS is not end-user UX; apps/interfaces are end-user UX
 
@@ -43,7 +43,19 @@ Legend:
 - [x] retry/backpressure baseline exists
 - [x] runtime-state surfacing doctrine exists
 
-## 5. AACI
+## 5. GOS (Governed Operational Spec)
+- [x] GOS formally introduced as subordinate layer between HealthOS Core and runtimes
+- [x] ADR established for GOS constitutional boundary and placement
+- [x] architecture document established for GOS purpose, primitive families, compiler posture, and runtime posture
+- [x] canonical JSON schema established for compiled GOS form
+- [x] primitive families explicitly declared: signal, slot, derivation, task, tool binding, draft output, guard, deadline, evidence hook, human gate requirement, escalation, scope requirement
+- [x] app-boundary doctrine clarified so apps do not interpret GOS as sovereign law
+- [~] authoring conventions for declarative source form still need closure
+- [~] compiler pipeline is not yet implemented
+- [~] validator/cross-reference checks are not yet implemented
+- [~] runtime binding contracts from AACI/other runtimes into GOS remain to be built
+
+## 6. AACI
 - [x] purpose and boundaries established
 - [x] session modes established with bounded meaning
 - [x] hot/warm/cold path concept established
@@ -51,8 +63,9 @@ Legend:
 - [x] subagent contracts substantially defined
 - [x] provider-routing baseline exists by task class
 - [x] provider-threshold policy exists by task class
+- [x] AACI now explicitly described as primary early consumer of GOS
 
-## 6. Apps / interfaces
+## 7. Apps / interfaces
 - [x] Scribe defined
 - [x] Sortio defined
 - [x] CloudClinic defined
@@ -68,7 +81,7 @@ Legend:
 - [x] minimal Scribe surface now exposes seeded-text and local-audio capture modes with explicit transcription state
 - [x] minimal Scribe surface now exposes structured retrieval summary/highlights/source hints with explicit partial/empty/degraded context truth
 
-## 7. Networking / operations
+## 8. Networking / operations
 - [x] topology doctrine refined: single-node as canonical bootstrap minimum, not system identity
 - [x] production projection clarified as operator-owned Apple Silicon sovereign health fabric (physically distributed, logically one)
 - [x] online-only mesh access posture made explicit
@@ -78,7 +91,7 @@ Legend:
 - [x] MeshProvider abstraction has meaningful contract form
 - [~] operator incident-command vocabulary can still be made more explicit
 
-## 8. Providers / ML
+## 9. Providers / ML
 - [x] provider abstraction established
 - [x] offline ML boundary established
 - [x] fine-tuning/adapters concept scaffolded
@@ -86,15 +99,16 @@ Legend:
 - [x] dataset governance and promotion/rollback baseline exists
 - [~] operator review checklist for promotions can still be added
 
-## 9. AI execution layer
+## 10. AI execution layer
 - [x] master plan created
 - [x] AI operating protocol created
 - [x] status tracking created
 - [x] definition of done created
 - [x] skills index exists and multiple domain skills exist
+- [x] GOS backlog file added for compiler/runtime binding work
 - [~] skills can still be hardened into even more prescriptive reusable packs
 
-## 10. First vertical slice readiness
+## 11. First vertical slice readiness
 - [x] slice target defined
 - [x] slice dependency order defined
 - [x] core-law failure semantics no longer block honest closure
@@ -121,8 +135,14 @@ The scaffold is no longer merely an outline.
 It is a strong pre-implementation foundation.
 What remains is mostly optional hardening and procedural refinement, not identity or architecture rescue work.
 
-## 11. Doctrinal precision wave (sovereignty/compliance/topology)
+## 12. Doctrinal precision wave (sovereignty/compliance/topology)
 - [x] patient sovereignty language refined to governance/control (without claiming full physical custody of bits)
 - [x] privacy posture clarified as layered + pseudonymous + lawfulContext-mediated + core-visible operational data
 - [x] topology vocabulary refined beyond ambiguous local-first framing
 - [x] strategic regulatory backlog registered as future architecture expansion (not current implementation)
+
+## 13. GOS doctrinal introduction wave
+- [x] HealthOS now has a named, native intermediate operational spec layer
+- [x] that layer is explicitly subordinated to core law rather than competing with it
+- [x] all declared GOS primitive families now exist in canonical schema form
+- [~] GOS remains doctrinal/schema-level for now; compiler and runtime adoption still require dedicated implementation waves

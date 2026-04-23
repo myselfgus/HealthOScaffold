@@ -21,24 +21,6 @@ public enum ScribeRetrievalStatus: String, Codable, Sendable {
     case degraded
 }
 
-public enum FirstSliceCommandDisposition: String, Codable, Sendable {
-    case completeSuccess = "complete_success"
-    case partialSuccess = "partial_success"
-    case governedDeny = "governed_deny"
-    case degraded = "degraded"
-    case operationalFailure = "operational_failure"
-}
-
-public struct FirstSliceCommandIssue: Codable, Sendable {
-    public let code: String
-    public let message: String
-
-    public init(code: String, message: String) {
-        self.code = code
-        self.message = message
-    }
-}
-
 public struct StartProfessionalSessionCommand: Codable, Sendable {
     public let professional: Usuario
     public let service: Servico
@@ -130,11 +112,11 @@ public struct ScribeSessionBridgeState: Codable, Sendable {
 }
 
 public struct SessionStartResult: Codable, Sendable {
-    public let disposition: FirstSliceCommandDisposition
+    public let disposition: HealthOSCommandDisposition
     public let state: ScribeSessionBridgeState?
-    public let issues: [FirstSliceCommandIssue]
+    public let issues: [HealthOSIssue]
 
-    public init(disposition: FirstSliceCommandDisposition, state: ScribeSessionBridgeState?, issues: [FirstSliceCommandIssue] = []) {
+    public init(disposition: HealthOSCommandDisposition, state: ScribeSessionBridgeState?, issues: [HealthOSIssue] = []) {
         self.disposition = disposition
         self.state = state
         self.issues = issues
@@ -142,11 +124,11 @@ public struct SessionStartResult: Codable, Sendable {
 }
 
 public struct PatientSelectionResult: Codable, Sendable {
-    public let disposition: FirstSliceCommandDisposition
+    public let disposition: HealthOSCommandDisposition
     public let state: ScribeSessionBridgeState?
-    public let issues: [FirstSliceCommandIssue]
+    public let issues: [HealthOSIssue]
 
-    public init(disposition: FirstSliceCommandDisposition, state: ScribeSessionBridgeState?, issues: [FirstSliceCommandIssue] = []) {
+    public init(disposition: HealthOSCommandDisposition, state: ScribeSessionBridgeState?, issues: [HealthOSIssue] = []) {
         self.disposition = disposition
         self.state = state
         self.issues = issues
@@ -154,11 +136,11 @@ public struct PatientSelectionResult: Codable, Sendable {
 }
 
 public struct CaptureSubmissionResult: Codable, Sendable {
-    public let disposition: FirstSliceCommandDisposition
+    public let disposition: HealthOSCommandDisposition
     public let state: ScribeSessionBridgeState?
-    public let issues: [FirstSliceCommandIssue]
+    public let issues: [HealthOSIssue]
 
-    public init(disposition: FirstSliceCommandDisposition, state: ScribeSessionBridgeState?, issues: [FirstSliceCommandIssue] = []) {
+    public init(disposition: HealthOSCommandDisposition, state: ScribeSessionBridgeState?, issues: [HealthOSIssue] = []) {
         self.disposition = disposition
         self.state = state
         self.issues = issues
@@ -166,11 +148,11 @@ public struct CaptureSubmissionResult: Codable, Sendable {
 }
 
 public struct DraftStateResult: Codable, Sendable {
-    public let disposition: FirstSliceCommandDisposition
+    public let disposition: HealthOSCommandDisposition
     public let state: ScribeSessionBridgeState?
-    public let issues: [FirstSliceCommandIssue]
+    public let issues: [HealthOSIssue]
 
-    public init(disposition: FirstSliceCommandDisposition, state: ScribeSessionBridgeState?, issues: [FirstSliceCommandIssue] = []) {
+    public init(disposition: HealthOSCommandDisposition, state: ScribeSessionBridgeState?, issues: [HealthOSIssue] = []) {
         self.disposition = disposition
         self.state = state
         self.issues = issues
@@ -178,11 +160,11 @@ public struct DraftStateResult: Codable, Sendable {
 }
 
 public struct GateResolutionResult: Codable, Sendable {
-    public let disposition: FirstSliceCommandDisposition
+    public let disposition: HealthOSCommandDisposition
     public let state: ScribeSessionBridgeState?
-    public let issues: [FirstSliceCommandIssue]
+    public let issues: [HealthOSIssue]
 
-    public init(disposition: FirstSliceCommandDisposition, state: ScribeSessionBridgeState?, issues: [FirstSliceCommandIssue] = []) {
+    public init(disposition: HealthOSCommandDisposition, state: ScribeSessionBridgeState?, issues: [HealthOSIssue] = []) {
         self.disposition = disposition
         self.state = state
         self.issues = issues

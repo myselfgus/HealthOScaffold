@@ -22,14 +22,14 @@ actor ScribeFirstSliceAdapter: ScribeFirstSliceFacade {
             return SessionStartResult(
                 disposition: .governedDeny,
                 state: nil,
-                issues: [.init(code: "habilitation.inactive_professional", message: "Professional user is inactive and cannot open a session.")]
+                issues: [.init(code: .professionalInactive, message: "Professional user is inactive and cannot open a session.", failureKind: .authorization)]
             )
         }
         guard !command.service.nome.isEmpty else {
             return SessionStartResult(
                 disposition: .operationalFailure,
                 state: nil,
-                issues: [.init(code: "service.invalid", message: "Service name is required to open a session.")]
+                issues: [.init(code: .serviceInvalid, message: "Service name is required to open a session.", failureKind: .validation)]
             )
         }
 
@@ -43,14 +43,14 @@ actor ScribeFirstSliceAdapter: ScribeFirstSliceFacade {
             return PatientSelectionResult(
                 disposition: .operationalFailure,
                 state: nil,
-                issues: [.init(code: "session.not_found", message: "Session was not started before patient selection.")]
+                issues: [.init(code: .sessionNotFound, message: "Session was not started before patient selection.", failureKind: .state)]
             )
         }
         guard command.patient.active else {
             return PatientSelectionResult(
                 disposition: .governedDeny,
                 state: makePendingState(sessionId: command.sessionId),
-                issues: [.init(code: "consent.inactive_patient", message: "Patient is inactive and cannot be selected.")]
+                issues: [.init(code: .patientInactive, message: "Patient is inactive and cannot be selected.", failureKind: .authorization)]
             )
         }
 
@@ -64,7 +64,7 @@ actor ScribeFirstSliceAdapter: ScribeFirstSliceFacade {
             return CaptureSubmissionResult(
                 disposition: .operationalFailure,
                 state: nil,
-                issues: [.init(code: "session.not_found", message: "Session was not started before capture submission.")]
+                issues: [.init(code: .sessionNotFound, message: "Session was not started before capture submission.", failureKind: .state)]
             )
         }
 
@@ -79,14 +79,14 @@ actor ScribeFirstSliceAdapter: ScribeFirstSliceFacade {
             return DraftStateResult(
                 disposition: .operationalFailure,
                 state: nil,
-                issues: [.init(code: "session.not_found", message: "Session was not started before draft refresh.")]
+                issues: [.init(code: .sessionNotFound, message: "Session was not started before draft refresh.", failureKind: .state)]
             )
         }
         guard workspace.patient != nil, workspace.capture != nil else {
             return DraftStateResult(
                 disposition: .partialSuccess,
                 state: makePendingState(sessionId: command.sessionId, workspace: workspace),
-                issues: [.init(code: "capture.incomplete", message: "Patient selection and capture are required before draft refresh.")]
+                issues: [.init(code: .captureIncomplete, message: "Patient selection and capture are required before draft refresh.", failureKind: .state)]
             )
         }
 
@@ -106,7 +106,7 @@ actor ScribeFirstSliceAdapter: ScribeFirstSliceFacade {
             state: draftReadyState,
             issues: [
                 .init(
-                    code: "draft.refresh.degraded",
+                    code: .draftRefreshDegraded,
                     message: "Current executable slice computes retrieval/draft finalization together with gate resolution; draft refresh remains a degraded preview state until gate resolution command runs."
                 )
             ]
@@ -118,21 +118,21 @@ actor ScribeFirstSliceAdapter: ScribeFirstSliceFacade {
             return GateResolutionResult(
                 disposition: .operationalFailure,
                 state: nil,
-                issues: [.init(code: "session.not_found", message: "Session was not started before gate resolution.")]
+                issues: [.init(code: .sessionNotFound, message: "Session was not started before gate resolution.", failureKind: .state)]
             )
         }
         guard let patient = workspace.patient else {
             return GateResolutionResult(
                 disposition: .partialSuccess,
                 state: makePendingState(sessionId: command.sessionId, workspace: workspace),
-                issues: [.init(code: "patient.missing", message: "Patient selection is required before gate resolution.")]
+                issues: [.init(code: .patientMissing, message: "Patient selection is required before gate resolution.", failureKind: .state)]
             )
         }
         guard let capture = workspace.capture else {
             return GateResolutionResult(
                 disposition: .partialSuccess,
                 state: makePendingState(sessionId: command.sessionId, workspace: workspace),
-                issues: [.init(code: "capture.missing", message: "Capture submission is required before gate resolution.")]
+                issues: [.init(code: .captureMissing, message: "Capture submission is required before gate resolution.", failureKind: .state)]
             )
         }
 
@@ -149,13 +149,13 @@ actor ScribeFirstSliceAdapter: ScribeFirstSliceFacade {
 
             let bridgeState = makeCompletedState(from: runResult, sessionId: command.sessionId)
             workspaces.removeValue(forKey: command.sessionId)
-            let disposition: FirstSliceCommandDisposition = runResult.gate.approved ? .completeSuccess : .governedDeny
+            let disposition: HealthOSCommandDisposition = runResult.gate.approved ? .completeSuccess : .governedDeny
             return GateResolutionResult(disposition: disposition, state: bridgeState)
         } catch {
             return GateResolutionResult(
                 disposition: .operationalFailure,
                 state: makePendingState(sessionId: command.sessionId, workspace: workspace),
-                issues: [.init(code: "spine.execution_failed", message: "First slice execution failed: \(error.localizedDescription)")]
+                issues: [.init(code: .spineExecutionFailed, message: "First slice execution failed: \(error.localizedDescription)", failureKind: .internalFailure)]
             )
         }
     }

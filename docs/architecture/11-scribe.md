@@ -62,9 +62,9 @@ See:
 - Scribe may display degraded or denied states
 - Scribe may not invent authorization success or finalize artifacts without gate resolution
 
-## First-slice command/result envelopes
+## First-slice command/result envelopes backed by shared HealthOS envelope vocabulary
 
-Scribe now consumes explicit first-slice command/result envelopes via the bridge contract, instead of a single implicit run call.
+Scribe now consumes explicit first-slice command/result envelopes backed by shared HealthOS envelope vocabulary via the bridge contract, instead of a single implicit run call.
 
 Commands currently formalized:
 - `StartProfessionalSessionCommand`
@@ -80,7 +80,7 @@ Result envelopes currently formalized:
 - `DraftStateResult`
 - `GateResolutionResult`
 
-Every result carries a `disposition` that keeps distinctions explicit between:
+Every result carries a `disposition` (`HealthOSCommandDisposition`) that keeps distinctions explicit between:
 - complete success
 - partial success
 - governed deny

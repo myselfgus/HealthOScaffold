@@ -60,6 +60,7 @@ Legend:
 - [x] screen-level interaction contracts exist
 - [x] first-slice-to-Scribe bridge contract exists (facade/state surface, no UI law ownership)
 - [x] first-slice command/result envelopes are explicit for Scribe bridge actions
+- [x] shared issue/disposition/failure vocabulary now backs first-slice command/result envelopes across core/adapter/CLI
 
 ## 7. Networking / operations
 - [x] local-first stance established

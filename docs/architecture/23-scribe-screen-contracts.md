@@ -95,7 +95,7 @@ Result states:
 
 ## Bridge command/result contract (first executable slice)
 
-The first executable bridge now uses explicit command/result envelopes to reduce ambiguity between app intent and core/runtime execution.
+The first executable bridge now uses explicit command/result envelopes backed by shared HealthOS envelope vocabulary to reduce ambiguity between app intent and core/runtime execution.
 
 Commands:
 - `startProfessionalSession(StartProfessionalSessionCommand)`
@@ -105,9 +105,9 @@ Commands:
 - `resolveGate(ResolveGateCommand)`
 
 Every result returns:
-- `disposition`: `complete_success`, `partial_success`, `governed_deny`, `degraded`, or `operational_failure`
+- `disposition`: `complete_success`, `partial_success`, `governed_deny`, `degraded`, or `operational_failure` via shared `HealthOSCommandDisposition`
 - `state`: `ScribeSessionBridgeState?` snapshot for UI consumption
-- `issues`: typed issues (`code`, `message`)
+- `issues`: typed issues (`HealthOSIssueCode`, `message`, optional `HealthOSFailureKind`)
 
 `ScribeSessionBridgeState` exposes retrieval state in UI-ready form:
 - retrieval status (`ready`, `empty`, `degraded`)

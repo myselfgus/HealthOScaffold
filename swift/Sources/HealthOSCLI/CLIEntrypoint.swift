@@ -91,8 +91,11 @@ struct HealthOSCLI {
         }
     }
 
-    private static func describeIssues(_ issues: [FirstSliceCommandIssue]) -> String {
-        issues.map { "\($0.code):\($0.message)" }.joined(separator: " | ")
+    private static func describeIssues(_ issues: [HealthOSIssue]) -> String {
+        issues.map { issue in
+            let failure = issue.failureKind.map { " [failure=\($0.rawValue)]" } ?? ""
+            return "\(issue.code.rawValue):\(issue.message)\(failure)"
+        }.joined(separator: " | ")
     }
 }
 

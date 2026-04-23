@@ -21,6 +21,7 @@ Owns:
 - provenance
 - gate mechanics
 - storage and data model
+- GOS as subordinate operational spec layer
 - runtimes
 - actors and agents
 - operational/engineering surfaces
@@ -42,6 +43,7 @@ Therefore apps:
 - do not define independent access policy engines
 - do not own habilitation rules
 - do not own gate/effectuation law
+- do not interpret GOS as a sovereign source of law
 - must call HealthOS contracts for governed operations
 
 This is a platform virtue: new apps can be added without cloning regulatory logic.
@@ -77,3 +79,4 @@ This boundary does not weaken the central rule that app-layer compliance logic s
 
 No app should be treated as the definition of the platform.
 No platform law should depend on an app-specific UI assumption.
+No app should become an independent interpreter of operational policy outside the contracts surfaced by HealthOS runtimes.

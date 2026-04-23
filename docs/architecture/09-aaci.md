@@ -5,6 +5,9 @@ AACI = Ambient-Agentic Clinical Intelligence.
 ## Purpose
 Run alongside health work to reduce bureaucratic and operational burden without taking clinical authority.
 
+AACI is the primary early consumer of Governed Operational Spec (GOS).
+That means AACI should increasingly consume explicit operational structure compiled from human-authored rules, rather than depending on ad hoc prompt conventions alone.
+
 ## Session modes and bounded meaning
 - encounter: live work session around patient/professional interaction
 - chart review: pre/post review of records and context
@@ -41,6 +44,25 @@ Actual sensitive access still depends on consent, habilitation, finality, and se
 - summarization across many artifacts
 - reprocessing and cleanup
 - future briefings and retrospective organization
+
+## Role of GOS inside AACI
+
+GOS should describe:
+- what signals matter
+- what slots should be filled or derived
+- what tasks may be prepared or run
+- what guards and deadlines should exist
+- what evidence/provenance hooks should attach
+- what drafts may be prepared
+- where explicit human gate is required
+
+AACI should execute within that structure.
+HealthOS Core should still determine whether access and effectuation are lawful.
+
+This preserves the correct split:
+- GOS structures the work
+- AACI executes the work
+- HealthOS Core governs the work
 
 ## Initial subagents
 - CaptureAgent
@@ -224,6 +246,7 @@ Never does:
 - AACI produces drafts, retrieval outputs, and structured assistance
 - AACI may now derive SOAP, referral, and prescription drafts from the same bounded first-slice spine, but only SOAP finalization is effectable in the current wave
 - AACI may rank and assemble bounded context locally, but it must surface weak or empty context honestly
+- AACI should increasingly consume GOS instead of burying operational structure in prompt conventions
 - every meaningful step should be provenance-capable
 - access remains bounded by consent/habilitation/context
 - provider choice must not alter these invariants

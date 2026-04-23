@@ -6,6 +6,12 @@ Current phase: Controlled implementation — first vertical slice started
 
 ## Completed recently
 
+- Governed Operational Spec (GOS) introduced as a formal subordinate layer between HealthOS Core and runtimes
+- ADR 0011 added to establish GOS as HealthOS-native intermediate operational spec, explicitly subordinate to core law
+- GOS architecture document added with canonical placement, constitutional boundary, primitive families, compiler posture, and runtime posture
+- canonical JSON schema added for GOS compiled form, with explicit primitive families: signal, slot, derivation, task, tool binding, draft output, guard, deadline, evidence hook, human gate requirement, escalation, and scope requirement specs
+- README, AACI runtime doc, and interface doctrine updated so GOS now appears in canonical hierarchy and app-boundary doctrine without moving law away from core
+- GOS backlog added for compiler, validator, runtime-binding, lifecycle, and app-boundary follow-up work
 - doctrinal consolidation wave completed: HealthOS reinforced as health-exclusive sovereign environment (not generic cloud)
 - interface doctrine refined to make compliance architecturalized in core seams/contracts, with explicit app-boundary guarantee limits
 - privacy/sovereignty language refined: patient sovereignty framed as governance/access control, while HealthOS remains infrastructure custodian
@@ -85,6 +91,7 @@ Current phase: Controlled implementation — first vertical slice started
 
 - first vertical slice implementation continues with seeded-text compatibility, a structured local retrieval/context package, richer gate/document semantics, draft-only referral/prescription derivatives, and a now-wired local-audio path, while real local transcription and earlier draft-refresh finalization remain deferred
 - doctrinal language hardening completed for sovereignty/privacy/compliance/topology without introducing infrastructure expansion
+- GOS now exists as doctrine + schema + backlog, but compiler/validator/runtime binding work remains open
 
 ## Known gaps
 
@@ -94,6 +101,7 @@ Current phase: Controlled implementation — first vertical slice started
 - Scribe now has a minimal validation UI surface, but it is not yet a full/final app shell
 - draft refresh remains preview/degraded until gate resolution runs the full executable spine
 - referral/prescription drafts now exist, but their regulatory effectuation/issuance remains intentionally deferred
+- GOS does not yet have authoring conventions, compiler pipeline, cross-reference validator, or runtime binding contracts beyond doctrine/schema placement
 
 ## Open blockers / decisions
 
@@ -101,6 +109,7 @@ Current phase: Controlled implementation — first vertical slice started
 - decide whether the next first-slice step after this wave is microphone capture, moving draft/retrieval finalization earlier than gate resolution, or introducing lawful effectuation paths for referral/prescription
 - decide when to convert the AI skills into enforced reusable workflows/templates
 - decide when to replace the current deterministic local retrieval/context package with semantic/clinical retrieval while preserving lawful scope and topology-invariant governance constraints
+- decide the final human-facing authoring conventions for GOS and when to introduce compiler + validator + AACI runtime bindings
 
 ## Tracking rules
 

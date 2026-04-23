@@ -32,6 +32,9 @@ public enum HealthOSIssueCode: String, Codable, Sendable {
     case serviceInvalid = "service.invalid"
     case transcriptionDegraded = "transcription.degraded"
     case transcriptionUnavailable = "transcription.unavailable"
+    case retrievalDegraded = "retrieval.degraded"
+    case retrievalPartial = "retrieval.partial_context"
+    case retrievalEmpty = "retrieval.empty_context"
     case draftRefreshDegraded = "draft.refresh.degraded"
     case spineExecutionFailed = "spine.execution_failed"
 }

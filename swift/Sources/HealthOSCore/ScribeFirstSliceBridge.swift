@@ -17,6 +17,7 @@ public enum ScribeGateState: String, Codable, Sendable {
 
 public enum ScribeRetrievalStatus: String, Codable, Sendable {
     case ready
+    case partial
     case empty
     case degraded
 }
@@ -73,13 +74,27 @@ public struct ScribeRetrievalBridgeState: Codable, Sendable {
     public let status: ScribeRetrievalStatus
     public let source: String
     public let matchCount: Int
-    public let previewItems: [String]
+    public let summary: String
+    public let highlights: [String]
+    public let sourceItems: [String]
+    public let notice: String?
 
-    public init(status: ScribeRetrievalStatus, source: String, matchCount: Int, previewItems: [String]) {
+    public init(
+        status: ScribeRetrievalStatus,
+        source: String,
+        matchCount: Int,
+        summary: String,
+        highlights: [String],
+        sourceItems: [String],
+        notice: String? = nil
+    ) {
         self.status = status
         self.source = source
         self.matchCount = matchCount
-        self.previewItems = previewItems
+        self.summary = summary
+        self.highlights = highlights
+        self.sourceItems = sourceItems
+        self.notice = notice
     }
 }
 

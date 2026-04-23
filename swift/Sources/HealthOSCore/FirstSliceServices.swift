@@ -361,7 +361,7 @@ public actor BoundedContextRetrievalService {
     public func retrieve(query: RetrievalQuery, lawfulContext: [String: String]) async throws -> BoundedRetrievalResult {
         let entries = try await index.entries(serviceId: query.serviceId, patientUserId: query.patientUserId, lawfulContext: lawfulContext)
         let now = Date()
-        let normalizedTerms = Set(query.terms.map { $0.trimmingCharacters(in: .whitespacesAndNewlines).lowercased() }.filter { $0.count >= 3 })
+        let normalizedTerms = Array(Set(query.terms.flatMap(tokenize))).sorted()
         let recencyFloor: Date? = query.recencyDays.map { Calendar.current.date(byAdding: .day, value: -$0, to: now) ?? .distantPast }
 
         guard !normalizedTerms.isEmpty else {
@@ -369,27 +369,19 @@ public actor BoundedContextRetrievalService {
                 query: query,
                 matches: [],
                 source: "file-backed-record-index:no-query-terms",
+                quality: .degraded,
+                notice: "Current bounded retrieval query had no searchable terms after local normalization.",
                 isFallbackEmpty: true
             )
         }
 
         let scored: [RetrievalMatch] = entries.compactMap { entry in
-            guard query.allowedKinds.contains(entry.snippetKind) else { return nil }
-            if let recencyFloor, entry.snippet.occurredAt < recencyFloor { return nil }
-
-            let haystackSet = Set(tokenize(entry.snippet.summary) + entry.snippet.tags.map { $0.lowercased() })
-            let matchedTerms = normalizedTerms.filter { haystackSet.contains($0) }.sorted()
-            let score = matchedTerms.count * 3 + entry.snippet.tags.count
-            if !normalizedTerms.isEmpty && matchedTerms.isEmpty { return nil }
-
-            return RetrievalMatch(
-                id: entry.id,
-                snippetKind: entry.snippetKind,
-                summary: entry.snippet.summary,
-                sourceRef: entry.sourceRef,
-                score: score,
-                matchedTerms: matchedTerms,
-                occurredAt: entry.snippet.occurredAt
+            scoreMatch(
+                entry,
+                query: query,
+                normalizedTerms: normalizedTerms,
+                recencyFloor: recencyFloor,
+                now: now
             )
         }
         .sorted {
@@ -403,15 +395,349 @@ public actor BoundedContextRetrievalService {
             query: query,
             matches: matches,
             source: "file-backed-record-index",
+            quality: retrievalQuality(for: matches),
+            notice: retrievalNotice(for: matches),
             isFallbackEmpty: matches.isEmpty
         )
+    }
+
+    private func scoreMatch(
+        _ entry: RecordIndexEntry,
+        query: RetrievalQuery,
+        normalizedTerms: [String],
+        recencyFloor: Date?,
+        now: Date
+    ) -> RetrievalMatch? {
+        guard query.allowedKinds.contains(entry.snippetKind) else { return nil }
+        if let recencyFloor, entry.snippet.occurredAt < recencyFloor { return nil }
+
+        let summaryTokens = Set(tokenize(entry.snippet.summary))
+        let tagTokens = Set(entry.snippet.tags.flatMap(tokenize))
+        let matchedTerms = normalizedTerms.filter { summaryTokens.contains($0) }.sorted()
+        let matchedTags = normalizedTerms.filter { tagTokens.contains($0) }.sorted()
+
+        let lexicalScore = matchedTerms.count * 4
+        let tagScore = matchedTags.count * 3
+        let recencyScore = recencyBoost(for: entry.snippet.occurredAt, now: now)
+        let categoryBoost = categoryBoost(for: entry.snippet.category, intent: query.intent)
+        let intentBoost = intentBoost(for: entry, intent: query.intent)
+        let relevanceHintBoost = relevanceHintBoost(for: entry.snippet.relevanceHint)
+        let totalScore = lexicalScore
+            + tagScore
+            + recencyScore
+            + categoryBoost
+            + intentBoost
+            + relevanceHintBoost
+
+        let hasDirectMatch = !matchedTerms.isEmpty || !matchedTags.isEmpty
+        let hasIntentSupport = query.intent != .generalContext && (categoryBoost + intentBoost + relevanceHintBoost + recencyScore) >= 5
+        guard hasDirectMatch || hasIntentSupport else { return nil }
+
+        let scoreBreakdown = RetrievalScoreBreakdown(
+            lexicalScore: lexicalScore,
+            tagScore: tagScore,
+            recencyScore: recencyScore,
+            categoryBoost: categoryBoost,
+            intentBoost: intentBoost,
+            relevanceHintBoost: relevanceHintBoost,
+            totalScore: totalScore
+        )
+
+        return RetrievalMatch(
+            id: entry.id,
+            snippetKind: entry.snippetKind,
+            category: entry.snippet.category,
+            sourceKind: entry.sourceKind,
+            relevanceHint: entry.snippet.relevanceHint,
+            flags: entry.snippet.flags,
+            summary: entry.snippet.summary,
+            sourceRef: entry.sourceRef,
+            score: totalScore,
+            matchedTerms: matchedTerms,
+            matchedTags: matchedTags,
+            occurredAt: entry.snippet.occurredAt,
+            scoreBreakdown: scoreBreakdown
+        )
+    }
+
+    private func recencyBoost(for occurredAt: Date, now: Date) -> Int {
+        let ageDays = Calendar.current.dateComponents([.day], from: occurredAt, to: now).day ?? .max
+        switch ageDays {
+        case ...7:
+            return 3
+        case ...30:
+            return 2
+        case ...120:
+            return 1
+        default:
+            return 0
+        }
+    }
+
+    private func categoryBoost(for category: RecordClinicalCategory, intent: RetrievalIntent) -> Int {
+        switch (intent, category) {
+        case (.sleepReview, .sleep):
+            return 4
+        case (.symptomReview, .symptom):
+            return 4
+        case (.medicationReview, .medication):
+            return 4
+        case (.allergySafety, .allergy):
+            return 5
+        case (.generalContext, .encounterContext):
+            return 2
+        case (.generalContext, .symptom), (.generalContext, .sleep):
+            return 1
+        default:
+            return 0
+        }
+    }
+
+    private func intentBoost(for entry: RecordIndexEntry, intent: RetrievalIntent) -> Int {
+        switch intent {
+        case .generalContext:
+            var boost = entry.snippet.flags.contains(.recent) ? 1 : 0
+            if entry.snippetKind == .encounterSummary {
+                boost += 1
+            }
+            return boost
+        case .symptomReview:
+            var boost = entry.snippet.flags.contains(.symptomRelated) ? 2 : 0
+            if entry.snippetKind == .observation || entry.snippetKind == .encounterSummary {
+                boost += 1
+            }
+            return boost
+        case .sleepReview:
+            var boost = entry.snippet.flags.contains(.sleepRelated) ? 3 : 0
+            if entry.snippetKind == .observation {
+                boost += 1
+            }
+            return boost
+        case .medicationReview:
+            var boost = entry.snippet.flags.contains(.medicationRelated) ? 2 : 0
+            if entry.snippetKind == .medication {
+                boost += 2
+            }
+            return boost
+        case .allergySafety:
+            var boost = entry.snippet.flags.contains(.allergyRelated) ? 2 : 0
+            if entry.snippetKind == .allergy {
+                boost += 3
+            }
+            return boost
+        }
+    }
+
+    private func relevanceHintBoost(for hint: RetrievalRelevanceHint) -> Int {
+        switch hint {
+        case .background:
+            return 0
+        case .recentPriority:
+            return 2
+        case .safetyCritical:
+            return 3
+        }
+    }
+
+    private func retrievalQuality(for matches: [RetrievalMatch]) -> RetrievalResultQuality {
+        guard let topMatch = matches.first else { return .empty }
+        if matches.count == 1 || topMatch.score < 8 || topMatch.scoreBreakdown.lexicalScore == 0 {
+            return .limited
+        }
+        return .strong
+    }
+
+    private func retrievalNotice(for matches: [RetrievalMatch]) -> String? {
+        guard let topMatch = matches.first else {
+            return "No bounded records matched the current local query."
+        }
+        if matches.count == 1 || topMatch.scoreBreakdown.lexicalScore == 0 {
+            return "Bounded context is available, but support is clinically narrow for the current query."
+        }
+        return nil
     }
 
     private func tokenize(_ text: String) -> [String] {
         let separators = CharacterSet.alphanumerics.inverted
         return text
+            .folding(options: [.diacriticInsensitive, .caseInsensitive], locale: .current)
             .lowercased()
             .components(separatedBy: separators)
             .filter { $0.count >= 3 }
+    }
+}
+
+public struct ClinicalContextAssembler: Sendable {
+    public init() {}
+
+    public func assemble(
+        finalidade: String,
+        transcription: TranscriptionOutput,
+        boundedResult: BoundedRetrievalResult
+    ) -> RetrievalContextPackage {
+        let status = contextStatus(for: boundedResult)
+        let supportingMatches = boundedResult.matches
+        let highlights = Array(supportingMatches.prefix(3)).map { highlight(for: $0, intent: boundedResult.query.intent) }
+        let provenanceHints = [
+            RetrievalProvenanceHint(label: "retrieval-source", value: boundedResult.source),
+            RetrievalProvenanceHint(label: "finalidade", value: finalidade),
+            RetrievalProvenanceHint(label: "intent", value: boundedResult.query.intent.rawValue)
+        ]
+
+        return RetrievalContextPackage(
+            finalidade: finalidade,
+            status: status,
+            summary: summary(
+                status: status,
+                matches: supportingMatches,
+                intent: boundedResult.query.intent
+            ),
+            highlights: highlights,
+            supportingMatches: supportingMatches,
+            provenanceHints: provenanceHints,
+            notice: contextNotice(
+                status: status,
+                transcription: transcription,
+                boundedResult: boundedResult
+            ),
+            boundedResult: boundedResult
+        )
+    }
+
+    private func contextStatus(for boundedResult: BoundedRetrievalResult) -> RetrievalContextStatus {
+        switch boundedResult.quality {
+        case .strong:
+            return .ready
+        case .limited:
+            return .partial
+        case .empty:
+            return .empty
+        case .degraded:
+            return .degraded
+        }
+    }
+
+    private func summary(
+        status: RetrievalContextStatus,
+        matches: [RetrievalMatch],
+        intent: RetrievalIntent
+    ) -> String {
+        switch status {
+        case .degraded:
+            return "Contexto bounded degradado: a captura atual nao gerou termos suficientes para montar contexto clinico-operacional confiavel."
+        case .empty:
+            return "Nenhum contexto clinico-operacional bounded foi localizado para a finalidade atual."
+        case .partial:
+            return "Contexto local parcial: \(matches.count) registro(s) bounded com foco em \(focusSummary(from: matches, intent: intent))."
+        case .ready:
+            let recentSuffix = matches.contains { $0.flags.contains(.recent) }
+                ? " Ha suporte recente entre os itens priorizados."
+                : ""
+            return "Contexto local destacou \(matches.count) registro(s) de suporte com foco em \(focusSummary(from: matches, intent: intent)).\(recentSuffix)"
+        }
+    }
+
+    private func contextNotice(
+        status: RetrievalContextStatus,
+        transcription: TranscriptionOutput,
+        boundedResult: BoundedRetrievalResult
+    ) -> String? {
+        if status == .degraded, transcription.status != .ready {
+            return "Retrieval permaneceu bounded e nao expandiu escopo apesar da degradacao de transcription."
+        }
+        return boundedResult.notice
+    }
+
+    private func highlight(for match: RetrievalMatch, intent: RetrievalIntent) -> RetrievalContextHighlight {
+        RetrievalContextHighlight(
+            id: match.id,
+            headline: headline(for: match),
+            summary: match.summary,
+            sourceRef: match.sourceRef,
+            category: match.category,
+            whyRelevant: whyRelevant(for: match, intent: intent)
+        )
+    }
+
+    private func headline(for match: RetrievalMatch) -> String {
+        let category = categoryLabel(match.category)
+        if match.flags.contains(.recent) {
+            return "\(category) recente"
+        }
+        return category
+    }
+
+    private func whyRelevant(for match: RetrievalMatch, intent: RetrievalIntent) -> String {
+        var reasons: [String] = []
+        if !match.matchedTerms.isEmpty {
+            reasons.append("termos: \(match.matchedTerms.joined(separator: ", "))")
+        }
+        if !match.matchedTags.isEmpty {
+            reasons.append("tags: \(match.matchedTags.joined(separator: ", "))")
+        }
+        if match.flags.contains(.recent) {
+            reasons.append("recencia local")
+        }
+        if match.categoryBoostRelevant(to: intent) {
+            reasons.append("alinhado ao intent \(intent.rawValue)")
+        }
+        return reasons.isEmpty ? "match bounded pelo indice local" : reasons.joined(separator: " | ")
+    }
+
+    private func focusSummary(from matches: [RetrievalMatch], intent: RetrievalIntent) -> String {
+        let categories = Array(Set(matches.map(\.category))).sorted { $0.rawValue < $1.rawValue }
+        if categories.isEmpty {
+            return focusLabel(for: intent)
+        }
+        let labels = categories.prefix(2).map(categoryLabel)
+        return labels.joined(separator: " e ")
+    }
+
+    private func focusLabel(for intent: RetrievalIntent) -> String {
+        switch intent {
+        case .generalContext:
+            return "historico clinico-operacional"
+        case .symptomReview:
+            return "sintomas e observacoes"
+        case .sleepReview:
+            return "sono e sintomas associados"
+        case .medicationReview:
+            return "medicacao em uso"
+        case .allergySafety:
+            return "alergias e seguranca"
+        }
+    }
+
+    private func categoryLabel(_ category: RecordClinicalCategory) -> String {
+        switch category {
+        case .encounterContext:
+            return "Historico de encontro"
+        case .symptom:
+            return "Sintoma"
+        case .sleep:
+            return "Sono"
+        case .medication:
+            return "Medicacao"
+        case .allergy:
+            return "Alergia"
+        case .operational:
+            return "Operacional"
+        }
+    }
+}
+
+private extension RetrievalMatch {
+    func categoryBoostRelevant(to intent: RetrievalIntent) -> Bool {
+        switch (intent, category) {
+        case (.generalContext, _):
+            return true
+        case (.symptomReview, .symptom),
+             (.sleepReview, .sleep),
+             (.medicationReview, .medication),
+             (.allergySafety, .allergy):
+            return true
+        default:
+            return false
+        }
     }
 }

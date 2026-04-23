@@ -320,6 +320,7 @@ final class ScribeFirstSliceViewModel {
         print("gate_state=\(state.gateState.rawValue)")
         print("retrieval_status=\(state.retrieval.status.rawValue)")
         print("retrieval_matches=\(state.retrieval.matchCount)")
+        print("retrieval_summary=\(state.retrieval.summary)")
         print("final=\(summary.finalArtifactObjectPath ?? "<not effectuated>")")
         print("issues=\(displayIssues)")
         return true
@@ -413,6 +414,9 @@ final class ScribeFirstSliceViewModel {
         } else if state?.retrieval.status == .degraded || disposition == .degraded {
             runtimeHealth = .degraded
             degradedMode = .retrievalDegraded
+        } else if state?.retrieval.status == .partial || state?.retrieval.status == .empty || disposition == .partialSuccess {
+            runtimeHealth = .healthy
+            degradedMode = .partialResults
         } else {
             runtimeHealth = .healthy
             degradedMode = .none

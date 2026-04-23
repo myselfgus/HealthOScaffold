@@ -73,6 +73,7 @@ struct HealthOSCLI {
             print("retrieval_source=\(bridgeState.retrieval.source)")
             print("retrieval_matches=\(bridgeState.retrieval.matchCount)")
             print("retrieval_status=\(bridgeState.retrieval.status.rawValue)")
+            print("retrieval_summary=\(bridgeState.retrieval.summary)")
             print("retrieval_fallback_empty=\(summary.retrievalFallbackEmpty)")
             print("provenance_count=\(summary.provenanceCount)")
             print("event_count=\(summary.eventCount)")

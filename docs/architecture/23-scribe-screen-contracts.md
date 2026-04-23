@@ -42,6 +42,7 @@ Result states:
 - transcription pending
 - degraded transcription
 - transcription unavailable
+- partial context
 - degraded retrieval
 - paused
 - failed
@@ -54,6 +55,7 @@ Contract calls:
 - ContextRetrievalAgent via lawful session context
 Result states:
 - available
+- partial
 - empty
 - denied
 - degraded
@@ -116,10 +118,11 @@ Every result returns:
 `ScribeSessionBridgeState` exposes UI-ready operational state including:
 - capture mode (`seeded_text` or `local_audio_file`)
 - transcription status/source/audio display name
-- retrieval status (`ready`, `empty`, `degraded`)
+- retrieval status (`ready`, `partial`, `empty`, `degraded`)
 - retrieval source
 - match count
-- preview items
+- retrieval summary
+- top highlights / source items / optional notice
 
 In the current executable spine, `requestDraftRefresh` intentionally returns degraded when only preview state is available; full retrieval/draft-final snapshots still become complete at gate resolution execution. This preserves current law-bearing core flow while keeping state transport explicit for future UI wiring.
 
@@ -133,7 +136,7 @@ The current macOS validation surface in `HealthOSScribeApp` maps these contracts
 - approve/reject buttons -> `resolveGate(ResolveGateCommand)`
 
 The UI consumes:
-- `ScribeSessionBridgeState` for capture mode, transcription preview/status, retrieval summary, draft preview, gate state, and final summary/path
+- `ScribeSessionBridgeState` for capture mode, transcription preview/status, retrieval summary/highlights/source hints, draft preview, gate state, and final summary/path
 - `HealthOSCommandDisposition` + typed `HealthOSIssue` for degraded, deny, and operational-failure rendering
 
 The UI does not own:

@@ -64,16 +64,19 @@ Current phase: Controlled implementation — first vertical slice started
 - local validation now covers both `swift run HealthOSCLI` and `swift run HealthOSScribeApp --smoke-test`
 - first slice now accepts seeded text or local audio file capture, persists local audio artifacts, and surfaces explicit transcription state (`ready` / `degraded` / `unavailable`)
 - local validation now also covers `swift run HealthOSCLI --audio-file /System/Library/Sounds/Glass.aiff` and `swift run HealthOSScribeApp --smoke-test-audio`
+- bounded retrieval now carries richer snippet/index/match metadata, deterministic score breakdown, and a structured `RetrievalContextPackage` between raw matches and AACI draft composition
+- first-slice local context assembly now produces explicit `ready` / `partial` / `empty` / `degraded` states with summary/highlights/source hints for both CLI and Scribe
+- local validation now confirms the strengthened retrieval/context path across CLI and Scribe seeded-text and local-audio smoke flows
 
 ## In progress
 
-- first vertical slice implementation continues with seeded-text compatibility and a now-wired local-audio path, while real local transcription and earlier draft-refresh finalization remain deferred
+- first vertical slice implementation continues with seeded-text compatibility, a structured local retrieval/context package, and a now-wired local-audio path, while real local transcription and earlier draft-refresh finalization remain deferred
 
 ## Known gaps
 
 - microphone capture is not implemented yet; the current local-first audio path uses file selection/import
 - local transcription remains stubbed, so audio capture degrades honestly instead of yielding fabricated transcript text
-- bounded retrieval now uses file-backed index, but still lexical/tag-based (no semantic retrieval yet)
+- bounded retrieval now uses a stronger local score (lexical/tag/recency/category/intent), but still stops well short of semantic retrieval or embeddings
 - Scribe now has a minimal validation UI surface, but it is not yet a full/final app shell
 - draft refresh remains preview/degraded until gate resolution runs the full executable spine
 
@@ -82,7 +85,7 @@ Current phase: Controlled implementation — first vertical slice started
 - decide when to replace the current stubbed local transcription path with a real local Apple-first transcription provider
 - decide whether the next first-slice step after this wave is microphone capture, or moving draft/retrieval finalization earlier than gate resolution
 - decide when to convert the AI skills into enforced reusable workflows/templates
-- decide when to replace lexical bounded retrieval with semantic/clinical retrieval while preserving lawful scope and local-first constraints
+- decide when to replace the current deterministic local retrieval/context package with semantic/clinical retrieval while preserving lawful scope and local-first constraints
 
 ## Tracking rules
 

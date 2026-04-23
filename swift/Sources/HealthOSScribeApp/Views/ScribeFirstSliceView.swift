@@ -205,14 +205,22 @@ private struct SliceOutputsCard: View {
             return "Nenhum retrieval executado ainda."
         }
 
-        let preview = retrieval.previewItems.isEmpty
-            ? "sem itens ainda"
-            : retrieval.previewItems.joined(separator: "\n")
+        let highlights = retrieval.highlights.isEmpty
+            ? "sem highlights ainda"
+            : retrieval.highlights.joined(separator: "\n")
+        let sources = retrieval.sourceItems.isEmpty
+            ? "sem fontes destacadas"
+            : retrieval.sourceItems.joined(separator: "\n")
         return [
             "status: \(retrieval.status.rawValue)",
             "source: \(retrieval.source)",
             "matches: \(retrieval.matchCount)",
-            preview
+            "summary: \(retrieval.summary)",
+            "highlights:",
+            highlights,
+            "sources:",
+            sources,
+            retrieval.notice ?? "sem notice explicita"
         ]
         .joined(separator: "\n")
     }

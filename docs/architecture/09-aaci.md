@@ -94,6 +94,8 @@ For the current wave:
 - transcription may complete as `ready`, `degraded`, or `unavailable`
 - degraded or unavailable transcription must remain visible to Scribe as runtime truth
 - if transcription yields no searchable text, bounded retrieval must degrade honestly instead of widening scope or inventing context
+- if transcription yields searchable text, bounded retrieval should stay deterministic/local while using simple clinical-operational metadata, recency, and intent-aware scoring
+- the output consumed by downstream draft composition should be a structured context package rather than a raw string list
 
 ### IntentionAgent
 Role:
@@ -115,7 +117,7 @@ Role:
 Input boundary:
 - retrieval request, patient/service identifiers, lawful session context
 Output:
-- retrieval summaries or object references
+- structured context packages, retrieval summaries, or object references
 Permissions:
 - `patient:context:read`, `consent:check`, `habilitation:check`
 Governance hooks:
@@ -210,6 +212,7 @@ Never does:
 ## Invariants
 - AACI never finalizes a health act
 - AACI produces drafts, retrieval outputs, and structured assistance
+- AACI may rank and assemble bounded context locally, but it must surface weak or empty context honestly
 - every meaningful step should be provenance-capable
 - access remains bounded by consent/habilitation/context
 - provider choice must not alter these invariants

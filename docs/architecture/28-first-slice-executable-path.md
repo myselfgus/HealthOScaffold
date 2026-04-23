@@ -6,7 +6,7 @@ Describe the first implemented executable path now present in the scaffold.
 
 ## Current implementation path
 
-The current Swift/CLI path exercises these steps:
+The current Swift executable path (CLI plus minimal Scribe SwiftUI surface) exercises these steps:
 1. bootstrap canonical directories
 2. validate professional habilitation
 3. validate patient consent basis for context retrieval
@@ -25,10 +25,12 @@ The current Swift/CLI path exercises these steps:
 - `swift/Sources/HealthOSCore/FirstSliceServices.swift`
 - `swift/Sources/HealthOSCore/FirstSliceContracts.swift`
 - `swift/Sources/HealthOSCore/ScribeFirstSliceBridge.swift`
+- `swift/Sources/HealthOSFirstSliceSupport/FirstSliceRunner.swift`
+- `swift/Sources/HealthOSFirstSliceSupport/ScribeFirstSliceAdapter.swift`
+- `swift/Sources/HealthOSFirstSliceSupport/ScribeFirstSliceDemoBootstrap.swift`
 - `services/<service-id>/records/patient-record-index.json` (runtime-data, seeded when missing for demo execution)
-- `swift/Sources/HealthOSCLI/FirstSliceRunner.swift`
-- `swift/Sources/HealthOSCLI/ScribeFirstSliceAdapter.swift`
 - `swift/Sources/HealthOSCLI/CLIEntrypoint.swift`
+- `swift/Sources/HealthOSScribeApp/`
 
 ## What is real now
 - first-slice flow is no longer only conceptual
@@ -42,14 +44,16 @@ The current Swift/CLI path exercises these steps:
 - command results carry explicit disposition semantics (`complete_success`, `partial_success`, `governed_deny`, `degraded`, `operational_failure`) and typed issue payloads
 - first-slice command results now use shared `HealthOSCommandDisposition`, `HealthOSIssueCode`, and `HealthOSFailureKind` vocabulary rather than ad hoc per-file issue strings
 - retrieval bridge state now exposes UI-ready status/source/count/preview fields including explicit degraded mode
+- a minimal macOS SwiftUI Scribe surface now consumes the same bridge through a small view model instead of touching core/runtime services directly
+- the same `HealthOSFirstSliceSupport` target now backs both CLI and SwiftUI validation paths, reducing duplicated first-slice wiring
 
 ## What remains intentionally stubbed
 - capture is still text-seeded rather than native audio capture
 - transcription is still stubbed
 - context retrieval now uses a bounded, file-backed patient record index with deterministic matching
-- no UI app is yet wired to this path
+- the SwiftUI surface is validation-only and not yet the full Scribe product UI
 - draft refresh is currently degraded preview only; full draft/retrieval material is still finalized in the same executable step as gate resolution
 - retrieval ranking is lexical/tag/date bounded; no semantic search or embeddings yet
 
 ## Why this is acceptable now
-The objective of this wave is to establish a lawful end-to-end executable spine without prematurely coupling to UI or production providers.
+The objective of this wave is to establish a lawful end-to-end executable spine and a minimal app-facing validation surface without prematurely coupling to a full UI architecture or production providers.

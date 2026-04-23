@@ -62,6 +62,21 @@ See:
 - Scribe may display degraded or denied states
 - Scribe may not invent authorization success or finalize artifacts without gate resolution
 
+## Current minimal SwiftUI surface
+
+The scaffold now includes a minimal macOS SwiftUI validation surface in:
+- `swift/Sources/HealthOSScribeApp/`
+
+This surface is intentionally narrow:
+- one window with session start, patient selection, seeded capture, draft preview, gate actions, and result sections
+- state is consumed through a small UI view model that talks to `ScribeFirstSliceFacade`
+- executable slice orchestration remains outside the app in `HealthOSFirstSliceSupport`
+
+This surface is intentionally not the final Scribe UI:
+- no design system or navigation architecture has been introduced
+- no core law has been moved into the app
+- draft refresh remains preview-only/degraded until the existing executable spine reaches gate resolution
+
 ## First-slice command/result envelopes backed by shared HealthOS envelope vocabulary
 
 Scribe now consumes explicit first-slice command/result envelopes backed by shared HealthOS envelope vocabulary via the bridge contract, instead of a single implicit run call.

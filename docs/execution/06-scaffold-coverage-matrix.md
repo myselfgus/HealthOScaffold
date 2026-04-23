@@ -61,6 +61,7 @@ Legend:
 - [x] first-slice-to-Scribe bridge contract exists (facade/state surface, no UI law ownership)
 - [x] first-slice command/result envelopes are explicit for Scribe bridge actions
 - [x] shared issue/disposition/failure vocabulary now backs first-slice command/result envelopes across core/adapter/CLI
+- [x] minimal macOS SwiftUI Scribe validation surface now consumes the first-slice bridge without taking ownership of governance logic
 
 ## 7. Networking / operations
 - [x] local-first stance established
@@ -94,6 +95,7 @@ Legend:
 - [x] app-state and interaction baselines are strong enough for controlled implementation
 - [x] first-slice executable contracts are typed enough for app/runtime integration without ad hoc payload coupling
 - [x] CLI consumes explicit bridge command/result envelopes instead of implicit single-call coupling
+- [x] minimal SwiftUI Scribe surface consumes the same executable slice via shared support wiring
 - [x] bounded file-backed retrieval substrate integrated into first slice executable spine
 - [~] retrieval quality is still lexical/tag bounded; semantic retrieval is intentionally deferred
 - [~] a few procedural/operator details still remain optional hardening before heavy implementation

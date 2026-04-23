@@ -57,7 +57,21 @@ Outcome:
 Files touched:
 - `swift/Sources/HealthOSCore/FirstSliceContracts.swift`
 - `swift/Sources/HealthOSCore/ScribeFirstSliceBridge.swift`
-- `swift/Sources/HealthOSCLI/ScribeFirstSliceAdapter.swift`
+- `swift/Sources/HealthOSFirstSliceSupport/ScribeFirstSliceAdapter.swift`
+
+### SCRIBE-002 Add minimal SwiftUI first-slice surface
+Outcome:
+- Scribe now has a minimal macOS SwiftUI validation surface for the first slice
+- the UI consumes a small observable view model over `ScribeFirstSliceFacade` instead of reimplementing governance/runtime law
+- first-slice executable wiring is shared between CLI and app through `HealthOSFirstSliceSupport`
+Files touched:
+- `swift/Package.swift`
+- `swift/Sources/HealthOSFirstSliceSupport/`
+- `swift/Sources/HealthOSScribeApp/`
+- `swift/Sources/HealthOSCLI/CLIEntrypoint.swift`
+- `docs/architecture/11-scribe.md`
+- `docs/architecture/23-scribe-screen-contracts.md`
+- `docs/architecture/28-first-slice-executable-path.md`
 
 ## READY
 
@@ -66,3 +80,6 @@ Files touched:
 - no app owns core law logic
 - every app consumes core/runtime contracts instead of reimplementing them
 - app boundaries match user role and service context
+- `swift build`
+- `swift run HealthOSCLI`
+- `swift run HealthOSScribeApp --smoke-test`

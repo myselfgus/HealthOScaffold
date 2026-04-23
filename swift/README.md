@@ -1,4 +1,11 @@
 # Swift modules
 
-Swift hosts the native-side domain, runtime, provider abstraction, and CLI/debug entry points.
-Apps can later be implemented as Xcode projects that consume these packages.
+Swift now hosts:
+- native-side domain and governance contracts
+- runtime/provider abstractions
+- shared first-slice executable support wiring
+- CLI validation entry point
+- a minimal macOS SwiftUI Scribe validation app (`HealthOSScribeApp`)
+
+The current app surface still lives inside SwiftPM for minimal wiring discipline.
+Future fuller app packaging may still move to a dedicated Xcode project when that becomes necessary.

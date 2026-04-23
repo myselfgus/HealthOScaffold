@@ -8,6 +8,10 @@ Consumes:
 - patient context retrieval
 - draft workflows
 
+Current scaffold implementation note:
+- a minimal macOS SwiftUI validation surface now lives in `swift/Sources/HealthOSScribeApp/`
+- it consumes `ScribeFirstSliceFacade` via a small view model and does not own governance law
+
 Primary screens:
 - login / service selection
 - active session

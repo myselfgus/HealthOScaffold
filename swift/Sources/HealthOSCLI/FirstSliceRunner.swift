@@ -50,7 +50,7 @@ actor FirstSliceRunner {
             timestamp: .now
         )
         provenanceRecords.append(sessionStartRecord)
-        try provenance.append(sessionStartRecord)
+        try await provenance.append(sessionStartRecord)
 
         let _ = await orchestrator.startSession(session)
         events.append(SessionEventRecord(sessionId: session.id, kind: "session.started", payload: ["serviceId": service.id.uuidString]))
@@ -87,7 +87,7 @@ actor FirstSliceRunner {
             timestamp: .now
         )
         provenanceRecords.append(transcriptionRecord)
-        try provenance.append(transcriptionRecord)
+        try await provenance.append(transcriptionRecord)
 
         let contextItems = [
             "Consulta prévia há 10 dias por cefaleia persistente.",
@@ -102,7 +102,7 @@ actor FirstSliceRunner {
             timestamp: .now
         )
         provenanceRecords.append(retrievalRecord)
-        try provenance.append(retrievalRecord)
+        try await provenance.append(retrievalRecord)
 
         let draft = await orchestrator.composeSOAPDraft(session: session, transcript: transcriptText, context: contextItems)
         let draftData = try JSONEncoder.healthOS.encode(draft)
@@ -128,7 +128,7 @@ actor FirstSliceRunner {
             timestamp: .now
         )
         provenanceRecords.append(draftRecord)
-        try provenance.append(draftRecord)
+        try await provenance.append(draftRecord)
 
         let gateRequest = await gateService.createRequest(for: draft)
         events.append(SessionEventRecord(sessionId: session.id, kind: "gate.requested", payload: ["gateRequestId": gateRequest.id.uuidString]))
@@ -140,7 +140,7 @@ actor FirstSliceRunner {
             timestamp: .now
         )
         provenanceRecords.append(gateRecord)
-        try provenance.append(gateRecord)
+        try await provenance.append(gateRecord)
 
         let finalArtifactRef: StorageObjectRef?
         if gateResolution.resolution == .approved {
@@ -172,7 +172,7 @@ actor FirstSliceRunner {
                     timestamp: .now
                 )
                 provenanceRecords.append(finalRecord)
-                try provenance.append(finalRecord)
+                try await provenance.append(finalRecord)
             }
         } else {
             finalArtifactRef = nil

@@ -42,7 +42,7 @@ Artifacts / Effects
 ## Stack
 
 - Swift: core domain libraries, local runtime integration, providers, app-facing contracts
-- TypeScript: async/runtime services, orchestration, local HTTP APIs, MCP adapters
+- TypeScript: async/runtime services, orchestration, local HTTP APIs, MCP adapters, GOS tooling
 - Python: offline ML/fine-tuning pipelines only
 - PostgreSQL: canonical metadata and governance store
 - Filesystem: canonical encrypted/pseudonymized object/document store
@@ -101,9 +101,10 @@ These files define:
 - `docs/adr`: architectural decision records
 - `docs/execution`: execution order, tracking, and AI operating protocol
 - `schemas`: JSON Schemas for core entities and contracts
+- `gos`: GOS authoring workspace and generic templates
 - `sql/migrations`: canonical DB migrations
 - `swift`: Swift packages for core/runtime/providers/app contracts
-- `ts`: TypeScript workspace for async and user-agent services
+- `ts`: TypeScript workspace for async, user-agent, and GOS tooling packages
 - `python`: ML/fine-tuning scaffolds
 - `apps`: interface app scaffolds
 - `scripts`: local bootstrap and dev scripts
@@ -120,3 +121,5 @@ Then inspect:
 - `docs/architecture/01-overview.md`
 - `docs/architecture/02-modules.md`
 - `docs/architecture/03-first-slice.md`
+- `docs/architecture/29-governed-operational-spec.md`
+- `docs/architecture/30-gos-authoring-and-compiler.md`

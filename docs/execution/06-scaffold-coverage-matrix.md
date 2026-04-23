@@ -47,13 +47,19 @@ Legend:
 - [x] GOS formally introduced as subordinate layer between HealthOS Core and runtimes
 - [x] ADR established for GOS constitutional boundary and placement
 - [x] architecture document established for GOS purpose, primitive families, compiler posture, and runtime posture
+- [x] authoring/compiler architecture document established
+- [x] runtime-binding architecture document established
 - [x] canonical JSON schema established for compiled GOS form
 - [x] primitive families explicitly declared: signal, slot, derivation, task, tool binding, draft output, guard, deadline, evidence hook, human gate requirement, escalation, scope requirement
 - [x] app-boundary doctrine clarified so apps do not interpret GOS as sovereign law
-- [~] authoring conventions for declarative source form still need closure
-- [~] compiler pipeline is not yet implemented
-- [~] validator/cross-reference checks are not yet implemented
-- [~] runtime binding contracts from AACI/other runtimes into GOS remain to be built
+- [x] authoring conventions for declarative YAML source form established
+- [x] blank generic YAML authoring template added
+- [x] TypeScript tooling package scaffold added for parse/canonicalize/validate/CLI flows
+- [x] cross-reference validation scaffold added
+- [~] schema-workflow validation is not yet implemented
+- [~] provenance-preserving compile output remains minimal and should be strengthened
+- [~] runtime loader/binding contracts from AACI/other runtimes into GOS remain to be built
+- [~] activation/deprecation lifecycle for compiled GOS bundles remains to be built
 
 ## 6. AACI
 - [x] purpose and boundaries established
@@ -106,6 +112,8 @@ Legend:
 - [x] definition of done created
 - [x] skills index exists and multiple domain skills exist
 - [x] GOS backlog file added for compiler/runtime binding work
+- [x] GOS authoring workspace added
+- [x] GOS tooling package added to TypeScript workspace
 - [~] skills can still be hardened into even more prescriptive reusable packs
 
 ## 11. First vertical slice readiness
@@ -145,4 +153,5 @@ What remains is mostly optional hardening and procedural refinement, not identit
 - [x] HealthOS now has a named, native intermediate operational spec layer
 - [x] that layer is explicitly subordinated to core law rather than competing with it
 - [x] all declared GOS primitive families now exist in canonical schema form
-- [~] GOS remains doctrinal/schema-level for now; compiler and runtime adoption still require dedicated implementation waves
+- [x] GOS now also has authoring docs, runtime-binding docs, a generic YAML template, and TypeScript tooling scaffold
+- [~] GOS still needs stronger validator/lifecycle/runtime-loader implementation before heavy runtime adoption

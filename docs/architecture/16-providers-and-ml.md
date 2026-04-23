@@ -74,6 +74,17 @@ Every provider decision should consider:
 - failure rate
 - degraded-mode behavior
 
+## Benchmark harness artifacts
+Each benchmark run should produce:
+- model/provider identifier
+- task class
+- dataset/eval set reference
+- latency summary
+- failure summary
+- qualitative note or rubric output
+- privacy mode used
+- decision recommendation
+
 ## Model registry lifecycle
 - candidate
 - evaluated
@@ -81,6 +92,27 @@ Every provider decision should consider:
 - active
 - deprecated
 - retired
+
+## Adapter promotion path
+1. candidate adapter created
+2. offline evaluation run recorded
+3. governance review of dataset lineage and de-identification posture
+4. approval decision recorded
+5. adapter promoted to active for bounded task class
+6. rollback path recorded before widespread use
+
+## Dataset governance
+- dataset source must be recorded
+- de-identification posture must be recorded
+- purpose of dataset must be recorded
+- sensitive live-session data must not enter tuning flow without explicit governed pathway
+- evaluation sets should be separated from training sets
+
+## Rollback rule
+A promoted adapter/model must have:
+- previous known-good fallback
+- rollback trigger conditions
+- provenance-visible demotion when retired from active use
 
 ## Offline ML boundary
 Python remains the offline ML boundary for:
@@ -90,6 +122,5 @@ Python remains the offline ML boundary for:
 - promotion/rollback logic
 
 ## Open tasks
-- define adapter promotion path in more procedural detail
-- define dataset governance and de-identification policy for training
-- define benchmark harness artifacts and score thresholds
+- define benchmark harness score thresholds by task class
+- define operator review checklist for promotion decisions

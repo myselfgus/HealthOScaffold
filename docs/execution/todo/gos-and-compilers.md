@@ -42,15 +42,17 @@ It is intentionally not about scenario-specific implementations.
 - [x] AACI-to-GOS binding doctrine documented
 - [x] GOS-to-agent routing doctrine documented
 - [x] draft/gate/scope discipline documented for runtime use
-- [ ] executable runtime loader/binding contracts still need implementation
+- [x] Swift contracts added for GOS bundle loading, registry, bundle manifest, compiled bundle, and runtime binding plan
+- [x] default AACI runtime binding plan scaffold added in Swift
+- [~] file-backed runtime loader/registry scaffold exists, but operational implementation remains incomplete
 
 ## 5. Storage / lifecycle
 - [x] canonical storage/location posture documented
 - [x] lifecycle states documented
 - [x] rollback posture documented
 - [x] bundle-manifest schema added
-- [ ] activation/deprecation mechanics still need implementation
-- [ ] bundle registry/storage implementation still needs implementation
+- [~] activation/deprecation mechanics still need stronger implementation
+- [~] bundle registry/storage implementation remains scaffold-level only
 
 ## 6. App boundary discipline
 - [x] app-boundary doctrine clarified: apps do not interpret GOS as sovereign law
@@ -69,3 +71,5 @@ Any future work on GOS should begin from:
 - `schemas/governed-operational-spec-bundle-manifest.schema.json`
 - `gos/templates/blank.gos.yaml`
 - `ts/packages/healthos-gos-tooling/`
+- `swift/Sources/HealthOSCore/GovernedOperationalSpec.swift`
+- `swift/Sources/HealthOSAACI/GOSBindings.swift`

@@ -34,6 +34,10 @@ public actor FileBackedGOSBundleRegistry: GOSBundleRegistry, GOSBundleLoader {
 
     public func activate(bundleId: String, specId: String) async throws {
         let manifest = try readManifest(bundleId: bundleId)
+        guard manifest.lifecycleState == .reviewed || manifest.lifecycleState == .active else {
+            throw NSError(domain: GOSLoaderFailure.bundleInactive.rawValue, code: 10)
+        }
+
         let updatedManifest = GOSBundleManifest(
             bundleId: manifest.bundleId,
             specId: manifest.specId,
@@ -57,11 +61,11 @@ public actor FileBackedGOSBundleRegistry: GOSBundleRegistry, GOSBundleLoader {
     }
 
     public func deprecate(bundleId: String, note: String?) async throws {
-        try updateLifecycle(bundleId: bundleId, state: .deprecated, note: note)
+        try updateLifecycle(bundleId: bundleId, state: .deprecated, note: note, clearActiveRegistryPointer: true)
     }
 
     public func revoke(bundleId: String, note: String?) async throws {
-        try updateLifecycle(bundleId: bundleId, state: .revoked, note: note)
+        try updateLifecycle(bundleId: bundleId, state: .revoked, note: note, clearActiveRegistryPointer: true)
     }
 
     public func loadBundle(_ request: GOSLoadRequest) async throws -> GOSCompiledBundle {
@@ -124,7 +128,12 @@ public actor FileBackedGOSBundleRegistry: GOSBundleRegistry, GOSBundleLoader {
         return try decoder.decode(GOSBundleManifest.self, from: data)
     }
 
-    private func updateLifecycle(bundleId: String, state: GOSLifecycleState, note: String?) throws {
+    private func updateLifecycle(
+        bundleId: String,
+        state: GOSLifecycleState,
+        note: String?,
+        clearActiveRegistryPointer: Bool
+    ) throws {
         let manifest = try readManifest(bundleId: bundleId)
         let updated = GOSBundleManifest(
             bundleId: manifest.bundleId,
@@ -141,6 +150,19 @@ public actor FileBackedGOSBundleRegistry: GOSBundleRegistry, GOSBundleLoader {
             notes: note ?? manifest.notes
         )
         try encoder.encode(updated).write(to: manifestURL(bundleId: bundleId))
+
+        guard clearActiveRegistryPointer else { return }
+        let registryURL = registryFileURL(specId: manifest.specId)
+        guard FileManager.default.fileExists(atPath: registryURL.path) else { return }
+        let registryData = try Data(contentsOf: registryURL)
+        let registry = try decoder.decode(GOSRegistryEntry.self, from: registryData)
+        guard registry.activeBundleId == bundleId else { return }
+        let updatedRegistry = GOSRegistryEntry(
+            specId: registry.specId,
+            activeBundleId: nil,
+            knownBundleIds: registry.knownBundleIds
+        )
+        try encoder.encode(updatedRegistry).write(to: registryURL)
     }
 
     private func extractMetadata(from compiledSpecJSON: Data) throws -> GOSMetadata {

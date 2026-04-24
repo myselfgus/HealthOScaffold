@@ -35,7 +35,7 @@ public extension AACIOrchestrator {
         let bindingPlan = bundle.runtimeBindingPlan ?? AACIGOSBindings.defaultBindingPlan(specId: specId)
         let usedDefaultBindingPlan = bundle.runtimeBindingPlan == nil
 
-        return AACIGOSActivationSummary(
+        let summary = AACIGOSActivationSummary(
             specId: bundle.manifest.specId,
             bundleId: bundle.manifest.bundleId,
             lifecycleState: bundle.manifest.lifecycleState,
@@ -44,5 +44,16 @@ public extension AACIOrchestrator {
             usedDefaultBindingPlan: usedDefaultBindingPlan,
             compilerWarningCount: bundle.compilerReport.warnings.count
         )
+
+        installActiveGOSRuntime(
+            AACIActiveGOSRuntime(
+                summary: summary,
+                metadataTitle: bundle.metadata.title,
+                metadataDescription: bundle.metadata.description,
+                bindingPlan: bindingPlan
+            )
+        )
+
+        return summary
     }
 }

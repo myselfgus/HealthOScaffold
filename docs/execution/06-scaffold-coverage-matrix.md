@@ -66,6 +66,7 @@ Legend:
 - [x] AACI default runtime binding plan scaffold established in Swift
 - [x] minimal-functional file-backed runtime loader/registry established
 - [x] AACI activation/load seam established
+- [x] first-slice runner now consumes optional active GOS bundles to mediate persisted draft content, metadata, events, and provenance
 - [~] provenance-preserving compile output can still be enriched beyond the current source-hash/report baseline
 - [~] activation/deprecation hardening and registry hardening remain to be completed
 - [~] deep execution-time adoption inside AACI subagent paths remains to be completed
@@ -81,6 +82,7 @@ Legend:
 - [x] AACI now explicitly described as primary early consumer of GOS
 - [x] AACI now has a default GOS primitive-family binding map scaffold in Swift
 - [x] AACI now has an activation seam for loading active GOS bundles
+- [x] AACI now influences a real executable draft path through first-slice mediation when a bundle is active
 
 ## 7. Apps / interfaces
 - [x] Scribe defined
@@ -142,6 +144,7 @@ Legend:
 - [x] local audio file capture path is integrated into the first slice with persisted audio artifacts and explicit degraded transcription behavior
 - [x] first slice now distinguishes draft SOAP snapshots from finalized SOAP documents with explicit source-draft and gate linkage
 - [x] first slice now derives referral and prescription drafts as explicit draft-only artifacts linked to the same session/SOAP/context spine
+- [x] first slice now also mediates those draft artifacts through an optional active GOS bundle when present
 - [x] minimal Scribe surface now reflects draft review, gate review, and finalized-document state separately
 - [x] minimal Scribe surface now reflects referral/prescription draft-only previews separately from SOAP draft and finalized SOAP document state
 - [~] local-audio transcription remains stubbed; a real Apple-first local provider is still deferred

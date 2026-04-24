@@ -37,7 +37,7 @@ It is intentionally not about scenario-specific implementations.
 - [x] cross-reference validation scaffold added
 - [x] schema validation workflow added inside TypeScript tooling via Ajv-based validation helpers
 - [x] simple invariant validation added (for example gate-required draft outputs without matching human gate requirements)
-- [ ] evidence-hook completeness validation still needs implementation
+- [x] evidence-hook completeness validation added at minimal level
 
 ## 4. Runtime binding
 - [x] AACI-to-GOS binding doctrine documented
@@ -59,7 +59,7 @@ It is intentionally not about scenario-specific implementations.
 
 ## 6. App boundary discipline
 - [x] app-boundary doctrine clarified: apps do not interpret GOS as sovereign law
-- [ ] examples of allowed Scribe/Sortio/CloudClinic consumption patterns
+- [x] examples of allowed Scribe/Sortio/CloudClinic consumption patterns documented
 
 ## Reading rule
 
@@ -69,6 +69,7 @@ Any future work on GOS should begin from:
 - `docs/architecture/30-gos-authoring-and-compiler.md`
 - `docs/architecture/31-gos-runtime-binding.md`
 - `docs/architecture/32-gos-bundles-and-lifecycle.md`
+- `docs/architecture/33-gos-app-consumption-patterns.md`
 - `schemas/governed-operational-spec.schema.json`
 - `schemas/governed-operational-spec-authoring.schema.json`
 - `schemas/governed-operational-spec-bundle-manifest.schema.json`

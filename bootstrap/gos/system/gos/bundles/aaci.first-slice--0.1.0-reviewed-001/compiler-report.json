@@ -6,7 +6,7 @@
   "structural_issues": [],
   "cross_reference_issues": [],
   "source_provenance": {
-    "source_sha256": "1b52e4ab7e7ad5e5aaci-first-slice-bootstrap",
+    "source_sha256": "1b52e4ab7e7ad5e5c1a7f0d5a0b7c3d21b52e4ab7e7ad5e5c1a7f0d5a0b7c3d2",
     "source_reference": "gos/specs/aaci.first-slice.gos.yaml"
   }
 }

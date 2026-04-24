@@ -64,7 +64,7 @@ slot_specs:
       - transcript_text
     fallback_behavior: skip_if_optional
 
- derivation_specs:
+derivation_specs:
   - derivation_id: symptom_cluster
     inputs:
       - subjective_input
@@ -74,7 +74,7 @@ slot_specs:
     method_kind: bounded_reasoning
     requires_human_review: false
 
- task_specs:
+task_specs:
   - task_id: compose_soap_draft
     task_class: compose
     inputs:
@@ -104,7 +104,7 @@ slot_specs:
       - compose_soap_draft
     degraded_behavior: return_partial
 
- tool_binding_specs:
+tool_binding_specs:
   - binding_id: bind_soap_language_model
     task_id: compose_soap_draft
     tool_class: language_model
@@ -118,7 +118,7 @@ slot_specs:
     tool_class: formatter
     binding_strategy: runtime_selected
 
- draft_output_specs:
+draft_output_specs:
   - draft_output_id: soap_draft
     draft_kind: soap
     status: draft_only
@@ -138,19 +138,19 @@ slot_specs:
       - derive_prescription_draft
     requires_gate: true
 
- guard_specs:
+guard_specs:
   - guard_id: degraded_context_guard
     guard_class: consistency
     trigger: context_summary
     action: mark_degraded
 
- deadline_specs:
+deadline_specs:
   - deadline_id: soap_compose_deadline
     target_ref: compose_soap_draft
     target_duration: PT5M
     miss_behavior: mark_degraded
 
- evidence_hook_specs:
+evidence_hook_specs:
   - hook_id: task_execution_evidence
     phase: task
     capture:

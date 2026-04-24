@@ -1,37 +1,172 @@
 import Foundation
 
-public enum GOSRuntimeScaffoldError: Error, Sendable {
-    case notImplemented
-}
-
 public actor FileBackedGOSBundleRegistry: GOSBundleRegistry, GOSBundleLoader {
     public let root: URL
+    private let encoder: JSONEncoder
+    private let decoder: JSONDecoder
 
     public init(root: URL) {
         self.root = root
+        self.encoder = JSONEncoder()
+        self.encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
+        self.encoder.dateEncodingStrategy = .iso8601
+        self.decoder = JSONDecoder()
+        self.decoder.dateDecodingStrategy = .iso8601
     }
 
     public func lookup(specId: String) async throws -> GOSRegistryEntry? {
-        throw GOSRuntimeScaffoldError.notImplemented
+        let url = registryFileURL(specId: specId)
+        guard FileManager.default.fileExists(atPath: url.path) else { return nil }
+        let data = try Data(contentsOf: url)
+        return try decoder.decode(GOSRegistryEntry.self, from: data)
     }
 
     public func register(_ manifest: GOSBundleManifest) async throws {
-        throw GOSRuntimeScaffoldError.notImplemented
+        try ensureDirectories(for: manifest.bundleId)
+        try encoder.encode(manifest).write(to: manifestURL(bundleId: manifest.bundleId))
+
+        let existing = try await lookup(specId: manifest.specId) ?? GOSRegistryEntry(specId: manifest.specId)
+        let known = Array(Set(existing.knownBundleIds + [manifest.bundleId])).sorted()
+        let updated = GOSRegistryEntry(specId: manifest.specId, activeBundleId: existing.activeBundleId, knownBundleIds: known)
+        try encoder.encode(updated).write(to: registryFileURL(specId: manifest.specId))
     }
 
     public func activate(bundleId: String, specId: String) async throws {
-        throw GOSRuntimeScaffoldError.notImplemented
+        let manifest = try readManifest(bundleId: bundleId)
+        let updatedManifest = GOSBundleManifest(
+            bundleId: manifest.bundleId,
+            specId: manifest.specId,
+            specVersion: manifest.specVersion,
+            bundleVersion: manifest.bundleVersion,
+            compilerVersion: manifest.compilerVersion,
+            compiledAt: manifest.compiledAt,
+            lifecycleState: .active,
+            replacesBundleId: manifest.replacesBundleId,
+            compilerReportPath: manifest.compilerReportPath,
+            specPath: manifest.specPath,
+            sourceProvenancePath: manifest.sourceProvenancePath,
+            notes: manifest.notes
+        )
+        try encoder.encode(updatedManifest).write(to: manifestURL(bundleId: bundleId))
+
+        let existing = try await lookup(specId: specId) ?? GOSRegistryEntry(specId: specId)
+        let known = Array(Set(existing.knownBundleIds + [bundleId])).sorted()
+        let updated = GOSRegistryEntry(specId: specId, activeBundleId: bundleId, knownBundleIds: known)
+        try encoder.encode(updated).write(to: registryFileURL(specId: specId))
     }
 
     public func deprecate(bundleId: String, note: String?) async throws {
-        throw GOSRuntimeScaffoldError.notImplemented
+        try updateLifecycle(bundleId: bundleId, state: .deprecated, note: note)
     }
 
     public func revoke(bundleId: String, note: String?) async throws {
-        throw GOSRuntimeScaffoldError.notImplemented
+        try updateLifecycle(bundleId: bundleId, state: .revoked, note: note)
     }
 
     public func loadBundle(_ request: GOSLoadRequest) async throws -> GOSCompiledBundle {
-        throw GOSRuntimeScaffoldError.notImplemented
+        guard let registry = try await lookup(specId: request.specId), let activeBundleId = registry.activeBundleId else {
+            throw NSError(domain: GOSLoaderFailure.bundleNotFound.rawValue, code: 1)
+        }
+
+        let manifest = try readManifest(bundleId: activeBundleId)
+        guard manifest.lifecycleState != .revoked else {
+            throw NSError(domain: GOSLoaderFailure.bundleRevoked.rawValue, code: 2)
+        }
+        guard request.acceptedLifecycleStates.contains(manifest.lifecycleState) else {
+            throw NSError(domain: GOSLoaderFailure.bundleInactive.rawValue, code: 3)
+        }
+
+        let specData = try Data(contentsOf: bundleDirectoryURL(bundleId: activeBundleId).appending(path: manifest.specPath ?? "spec.json"))
+        let reportData = try Data(contentsOf: bundleDirectoryURL(bundleId: activeBundleId).appending(path: manifest.compilerReportPath ?? "compiler-report.json"))
+        let compilerReport = try decoder.decode(GOSCompilerReportRecord.self, from: reportData)
+        let metadata = try extractMetadata(from: specData)
+        let bindingPlanURL = bundleDirectoryURL(bundleId: activeBundleId).appending(path: "runtime-binding-plan.json")
+        let bindingPlan: GOSRuntimeBindingPlan?
+        if FileManager.default.fileExists(atPath: bindingPlanURL.path) {
+            bindingPlan = try decoder.decode(GOSRuntimeBindingPlan.self, from: Data(contentsOf: bindingPlanURL))
+        } else {
+            bindingPlan = nil
+        }
+
+        return GOSCompiledBundle(
+            manifest: manifest,
+            metadata: metadata,
+            compilerReport: compilerReport,
+            runtimeBindingPlan: bindingPlan,
+            compiledSpecJSON: specData
+        )
+    }
+
+    private func ensureDirectories(for bundleId: String) throws {
+        try FileManager.default.createDirectory(at: registryDirectoryURL(), withIntermediateDirectories: true)
+        try FileManager.default.createDirectory(at: bundleDirectoryURL(bundleId: bundleId), withIntermediateDirectories: true)
+    }
+
+    private func registryDirectoryURL() -> URL {
+        root.appending(path: "system").appending(path: "gos").appending(path: "registry")
+    }
+
+    private func registryFileURL(specId: String) -> URL {
+        registryDirectoryURL().appending(path: "\(specId).json")
+    }
+
+    private func bundleDirectoryURL(bundleId: String) -> URL {
+        root.appending(path: "system").appending(path: "gos").appending(path: "bundles").appending(path: bundleId)
+    }
+
+    private func manifestURL(bundleId: String) -> URL {
+        bundleDirectoryURL(bundleId: bundleId).appending(path: "manifest.json")
+    }
+
+    private func readManifest(bundleId: String) throws -> GOSBundleManifest {
+        let data = try Data(contentsOf: manifestURL(bundleId: bundleId))
+        return try decoder.decode(GOSBundleManifest.self, from: data)
+    }
+
+    private func updateLifecycle(bundleId: String, state: GOSLifecycleState, note: String?) throws {
+        let manifest = try readManifest(bundleId: bundleId)
+        let updated = GOSBundleManifest(
+            bundleId: manifest.bundleId,
+            specId: manifest.specId,
+            specVersion: manifest.specVersion,
+            bundleVersion: manifest.bundleVersion,
+            compilerVersion: manifest.compilerVersion,
+            compiledAt: manifest.compiledAt,
+            lifecycleState: state,
+            replacesBundleId: manifest.replacesBundleId,
+            compilerReportPath: manifest.compilerReportPath,
+            specPath: manifest.specPath,
+            sourceProvenancePath: manifest.sourceProvenancePath,
+            notes: note ?? manifest.notes
+        )
+        try encoder.encode(updated).write(to: manifestURL(bundleId: bundleId))
+    }
+
+    private func extractMetadata(from compiledSpecJSON: Data) throws -> GOSMetadata {
+        let raw = try JSONSerialization.jsonObject(with: compiledSpecJSON)
+        guard let root = raw as? [String: Any], let metadata = root["metadata"] as? [String: Any] else {
+            throw NSError(domain: GOSLoaderFailure.bundleValidationFailure.rawValue, code: 4)
+        }
+
+        let title = metadata["title"] as? String ?? "Untitled GOS Bundle"
+        let description = metadata["description"] as? String
+        let status = GOSLifecycleState(rawValue: metadata["status"] as? String ?? GOSLifecycleState.draft.rawValue) ?? .draft
+        let authoringForm = metadata["authoring_form"] as? String ?? "yaml"
+        let compiledForm = metadata["compiled_form"] as? String
+        let tags = metadata["tags"] as? [String] ?? []
+        let sourceReferences = (metadata["source_references"] as? [[String: Any]] ?? []).compactMap { item -> GOSSourceReference? in
+            guard let kind = item["kind"] as? String, let reference = item["reference"] as? String else { return nil }
+            return GOSSourceReference(kind: kind, reference: reference, version: item["version"] as? String)
+        }
+
+        return GOSMetadata(
+            title: title,
+            description: description,
+            status: status,
+            authoringForm: authoringForm,
+            compiledForm: compiledForm,
+            sourceReferences: sourceReferences,
+            tags: tags
+        )
     }
 }

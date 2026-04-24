@@ -6,6 +6,11 @@ Current phase: Controlled implementation — first vertical slice started
 
 ## Completed recently
 
+- AACI now exposes a public, small resolved GOS runtime view (`bundle + workflow title + bound actors/families`) so runtime consumers do not need raw spec JSON or ad hoc dictionary access
+- first-slice storage metadata and event attributes now derive directly from the AACI resolved GOS runtime view, carrying actor-specific primitive-family and reasoning-boundary context for SOAP/referral/prescription draft paths
+- first-slice provenance now records GOS draft-path usage under the concrete composing actor ids (`aaci.draft-composer`, `aaci.referral-draft`, `aaci.prescription-draft`) instead of a generic `aaci.gos` actor marker
+- TypeScript GOS tooling now has executable bundle-CLI coverage for canonical lifecycle artifacts (`manifest.json`, `spec.json`, `compiler-report.json`, `source-provenance.json`)
+- local validation in this round explicitly confirmed the active-bundle path with `bash ./scripts/bootstrap-local.sh`, `npm run --workspace @healthos/gos-tooling test`, `swift test`, and `swift run HealthOSCLI --reject-gate`, including persisted GOS metadata and `gos.use.compose.*` provenance in `runtime-data/Users/Shared/HealthOS`
 - full local GOS closure validation is now executed end-to-end (`bootstrap-local`, TypeScript build, GOS validate/bundle, Swift build, HealthOSCLI smoke, HealthOSScribeApp `--smoke-test`)
 - TypeScript GOS tooling was stabilized so schema resolution and strict typing now build cleanly, and canonical compiled metadata now conforms to compiled-schema constraints
 - GOS file-backed registry/loader hardening now validates registry-pointer consistency, manifest/spec/compiler-report/source-provenance presence, compiler report pass/fail status, and runtime-binding-plan compatibility before activation
@@ -124,7 +129,7 @@ Current phase: Controlled implementation — first vertical slice started
 - AACI now consumes an explicit resolved GOS runtime view in-draft composition (SOAP/referral/prescription), with actor/family-aware metadata and bounded runtime reasoning summaries rather than opaque active-bundle flags
 - first-slice provenance now distinguishes bundle activation from bundle usage in each draft path (`gos.use.compose.soap`, `gos.use.compose.referral`, `gos.use.compose.prescription`)
 - smoke-level lifecycle ergonomics now include a reviewed→active promotion command path (`swift run HealthOSCLI --gos-promote-bundle <bundle-id> --gos-spec-id <spec-id>`)
-- scaffold validation coverage now includes Swift XCTest for AACI/registry/first-slice GOS paths and Node tests for TS GOS tooling compile/cross-reference contracts
+- scaffold validation coverage now includes in-repo Swift XCTest cases for AACI/registry/first-slice GOS paths plus executable Node tests for TS GOS tooling compile/cross-reference/bundle contracts
 
 ## Known gaps
 
@@ -135,6 +140,7 @@ Current phase: Controlled implementation — first vertical slice started
 - draft refresh remains preview/degraded until gate resolution runs the full executable spine
 - referral/prescription drafts now exist, but their regulatory effectuation/issuance remains intentionally deferred
 - GOS still needs stronger approval/audit policy depth and deeper execution-time adoption across AACI paths beyond the current draft-focused runtime mediation
+- the current local Swift toolchain on this machine does not expose `XCTest`, so `swift test` presently verifies package buildability while runtime-path truth is validated via executable CLI smoke
 
 ## Open blockers / decisions
 

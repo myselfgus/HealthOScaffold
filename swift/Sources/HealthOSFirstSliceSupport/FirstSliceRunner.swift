@@ -188,7 +188,7 @@ public actor FirstSliceRunner {
             to: &provenanceRecords
         )
 
-        let gosActivation = try await activateGOSIfAvailable(to: &provenanceRecords)
+        let gosRuntimeView = try await activateGOSIfAvailable(to: &provenanceRecords)
 
         try await seedDemoRecordIndexIfNeeded(serviceId: service.id, patientUserId: patient.id)
 
@@ -233,7 +233,7 @@ public actor FirstSliceRunner {
                 actorId: "aaci.context",
                 operation: "context.retrieve",
                 providerName: boundedResult.source,
-                promptVersion: gosActivation == nil ? "care-context-retrieval-v3" : "care-context-retrieval-v3+gos",
+                promptVersion: gosRuntimeView == nil ? "care-context-retrieval-v3" : "care-context-retrieval-v3+gos",
                 timestamp: .now
             ),
             to: &provenanceRecords
@@ -246,10 +246,11 @@ public actor FirstSliceRunner {
         )
         try await appendGOSUsageProvenanceIfActive(
             operation: "gos.use.compose.soap",
-            activation: gosActivation,
+            actorId: "aaci.draft-composer",
+            runtimeView: gosRuntimeView,
             to: &provenanceRecords
         )
-        let draftDocument = mediateSOAPDraftIfNeeded(composedSOAPDraft, activation: gosActivation)
+        let draftDocument = composedSOAPDraft
         let draftData = try JSONEncoder.healthOS.encode(draftDocument)
         let draftRef = try await storage.put(
             StoragePutRequest(
@@ -261,7 +262,7 @@ public actor FirstSliceRunner {
                     sessionId: session.id,
                     draftId: draftDocument.draft.id,
                     draftStatus: draftDocument.draft.status,
-                    activation: gosActivation
+                    runtimeView: gosRuntimeView
                 )
             )
         )
@@ -273,7 +274,7 @@ public actor FirstSliceRunner {
                 kind: .draftComposed,
                 payload: FirstSliceSessionEventPayload(
                     summary: "SOAP draft composed and persisted.",
-                    attributes: soapDraftEventAttributes(draft: draft, activation: gosActivation)
+                    attributes: soapDraftEventAttributes(draft: draft, runtimeView: gosRuntimeView)
                 )
             )
         )
@@ -284,7 +285,7 @@ public actor FirstSliceRunner {
                 providerName: "apple-foundation",
                 modelName: "stub",
                 modelVersion: "v1",
-                promptVersion: gosPromptVersion(prefix: "soap-v2", activation: gosActivation),
+                promptVersion: gosPromptVersion(prefix: "soap-v2", runtimeView: gosRuntimeView),
                 outputHash: draft.draftRef.contentHash,
                 timestamp: .now
             ),
@@ -300,10 +301,11 @@ public actor FirstSliceRunner {
         )
         try await appendGOSUsageProvenanceIfActive(
             operation: "gos.use.compose.referral",
-            activation: gosActivation,
+            actorId: "aaci.referral-draft",
+            runtimeView: gosRuntimeView,
             to: &provenanceRecords
         )
-        let referralDraftDocument = mediateReferralDraftIfNeeded(composedReferralDraft, activation: gosActivation)
+        let referralDraftDocument = composedReferralDraft
         let referralDraftData = try JSONEncoder.healthOS.encode(referralDraftDocument)
         let referralDraftRef = try await storage.put(
             StoragePutRequest(
@@ -317,7 +319,8 @@ public actor FirstSliceRunner {
                     sourceSOAPDraftId: draft.draft.id,
                     draftStatus: referralDraftDocument.draft.status,
                     readyForFutureGate: referralDraftDocument.readyForFutureGate,
-                    activation: gosActivation
+                    runtimeView: gosRuntimeView,
+                    actorId: "aaci.referral-draft"
                 )
             )
         )
@@ -337,7 +340,11 @@ public actor FirstSliceRunner {
                 kind: .referralDraftComposed,
                 payload: FirstSliceSessionEventPayload(
                     summary: "Referral draft composed and persisted as a draft-only derivative.",
-                    attributes: referralDraftEventAttributes(referralDraft: referralDraft, sourceSOAPDraftId: draft.draft.id, activation: gosActivation)
+                    attributes: referralDraftEventAttributes(
+                        referralDraft: referralDraft,
+                        sourceSOAPDraftId: draft.draft.id,
+                        runtimeView: gosRuntimeView
+                    )
                 )
             )
         )
@@ -348,7 +355,7 @@ public actor FirstSliceRunner {
                 providerName: "apple-foundation",
                 modelName: "stub",
                 modelVersion: "v1",
-                promptVersion: gosPromptVersion(prefix: "referral-draft-v1", activation: gosActivation),
+                promptVersion: gosPromptVersion(prefix: "referral-draft-v1", runtimeView: gosRuntimeView),
                 outputHash: referralDraftRef.contentHash,
                 timestamp: .now
             ),
@@ -364,10 +371,11 @@ public actor FirstSliceRunner {
         )
         try await appendGOSUsageProvenanceIfActive(
             operation: "gos.use.compose.prescription",
-            activation: gosActivation,
+            actorId: "aaci.prescription-draft",
+            runtimeView: gosRuntimeView,
             to: &provenanceRecords
         )
-        let prescriptionDraftDocument = mediatePrescriptionDraftIfNeeded(composedPrescriptionDraft, activation: gosActivation)
+        let prescriptionDraftDocument = composedPrescriptionDraft
         let prescriptionDraftData = try JSONEncoder.healthOS.encode(prescriptionDraftDocument)
         let prescriptionDraftRef = try await storage.put(
             StoragePutRequest(
@@ -381,7 +389,8 @@ public actor FirstSliceRunner {
                     sourceSOAPDraftId: draft.draft.id,
                     draftStatus: prescriptionDraftDocument.draft.status,
                     readyForFutureGate: prescriptionDraftDocument.readyForFutureGate,
-                    activation: gosActivation
+                    runtimeView: gosRuntimeView,
+                    actorId: "aaci.prescription-draft"
                 )
             )
         )
@@ -401,7 +410,11 @@ public actor FirstSliceRunner {
                 kind: .prescriptionDraftComposed,
                 payload: FirstSliceSessionEventPayload(
                     summary: "Prescription draft composed and persisted as a draft-only derivative.",
-                    attributes: prescriptionDraftEventAttributes(prescriptionDraft: prescriptionDraft, sourceSOAPDraftId: draft.draft.id, activation: gosActivation)
+                    attributes: prescriptionDraftEventAttributes(
+                        prescriptionDraft: prescriptionDraft,
+                        sourceSOAPDraftId: draft.draft.id,
+                        runtimeView: gosRuntimeView
+                    )
                 )
             )
         )
@@ -412,7 +425,7 @@ public actor FirstSliceRunner {
                 providerName: "apple-foundation",
                 modelName: "stub",
                 modelVersion: "v1",
-                promptVersion: gosPromptVersion(prefix: "prescription-draft-v1", activation: gosActivation),
+                promptVersion: gosPromptVersion(prefix: "prescription-draft-v1", runtimeView: gosRuntimeView),
                 outputHash: prescriptionDraftRef.contentHash,
                 timestamp: .now
             ),
@@ -646,22 +659,30 @@ public actor FirstSliceRunner {
 
     private func activateGOSIfAvailable(
         to records: inout [ProvenanceRecord]
-    ) async throws -> AACIGOSActivationSummary? {
+    ) async throws -> AACIResolvedGOSRuntimeView? {
         do {
             let activation = try await orchestrator.activateGOS(specId: "aaci.first-slice", loader: gosLoader)
+            guard let runtimeView = await orchestrator.activeGOSRuntimeView() else {
+                throw NSError(
+                    domain: "aaci.gos",
+                    code: 1,
+                    userInfo: [NSLocalizedDescriptionKey: "AACI reported GOS activation without a resolved runtime view."]
+                )
+            }
             try await appendProvenance(
                 .init(
                     actorId: "aaci.gos",
                     operation: "gos.activate",
                     providerName: "file-backed-registry",
-                    modelName: activation.specId,
-                    modelVersion: activation.bundleId,
-                    promptVersion: activation.usedDefaultBindingPlan ? "default-binding-plan" : "bundle-binding-plan",
+                    modelName: runtimeView.specId,
+                    modelVersion: runtimeView.bundleId,
+                    promptVersion: runtimeView.usedDefaultBindingPlan ? "default-binding-plan" : "bundle-binding-plan",
                     timestamp: .now
                 ),
                 to: &records
             )
-            return activation
+            _ = activation
+            return runtimeView
         } catch {
             try await appendProvenance(
                 .init(
@@ -680,70 +701,45 @@ public actor FirstSliceRunner {
 
     private func appendGOSUsageProvenanceIfActive(
         operation: String,
-        activation: AACIGOSActivationSummary?,
+        actorId: String,
+        runtimeView: AACIResolvedGOSRuntimeView?,
         to records: inout [ProvenanceRecord]
     ) async throws {
-        guard let activation else { return }
+        guard let runtimeView else { return }
         try await appendProvenance(
             .init(
-                actorId: "aaci.gos",
+                actorId: actorId,
                 operation: operation,
                 providerName: "aaci-runtime",
-                modelName: activation.specId,
-                modelVersion: activation.bundleId,
-                promptVersion: activation.usedDefaultBindingPlan ? "default-binding-plan" : "bundle-binding-plan",
+                modelName: runtimeView.specId,
+                modelVersion: runtimeView.bundleId,
+                promptVersion: runtimeView.usedDefaultBindingPlan ? "default-binding-plan" : "bundle-binding-plan",
                 timestamp: .now
             ),
             to: &records
         )
     }
 
-    private func mediateSOAPDraftIfNeeded(
-        _ document: SOAPDraftDocument,
-        activation: AACIGOSActivationSummary?
-    ) -> SOAPDraftDocument {
-        _ = activation
-        return document
-    }
-
-    private func mediateReferralDraftIfNeeded(
-        _ document: ReferralDraftDocument,
-        activation: AACIGOSActivationSummary?
-    ) -> ReferralDraftDocument {
-        _ = activation
-        return document
-    }
-
-    private func mediatePrescriptionDraftIfNeeded(
-        _ document: PrescriptionDraftDocument,
-        activation: AACIGOSActivationSummary?
-    ) -> PrescriptionDraftDocument {
-        _ = activation
-        return document
-    }
-
-    private func gosPromptVersion(prefix: String, activation: AACIGOSActivationSummary?) -> String {
-        guard let activation else { return prefix }
-        return prefix + "+gos:" + activation.specId
+    private func gosPromptVersion(prefix: String, runtimeView: AACIResolvedGOSRuntimeView?) -> String {
+        guard let runtimeView else { return prefix }
+        return prefix + "+gos:" + runtimeView.specId
     }
 
     private func soapDraftMetadata(
         sessionId: UUID,
         draftId: UUID,
         draftStatus: DraftStatus,
-        activation: AACIGOSActivationSummary?
+        runtimeView: AACIResolvedGOSRuntimeView?
     ) -> [String: String] {
-        var metadata: [String: String] = [
+        gosRuntimeMetadata(
+            base: [
             "sessionId": sessionId.uuidString,
             "draftId": draftId.uuidString,
             "draftStatus": draftStatus.rawValue
-        ]
-        if let activation {
-            metadata["gosSpecId"] = activation.specId
-            metadata["gosBundleId"] = activation.bundleId
-            metadata["gosUsedDefaultBindingPlan"] = String(activation.usedDefaultBindingPlan)
-        }
-        return metadata
+            ],
+            actorId: "aaci.draft-composer",
+            runtimeView: runtimeView
+        )
     }
 
     private func derivedDraftMetadata(
@@ -752,73 +748,78 @@ public actor FirstSliceRunner {
         sourceSOAPDraftId: UUID,
         draftStatus: DraftStatus,
         readyForFutureGate: Bool,
-        activation: AACIGOSActivationSummary?
+        runtimeView: AACIResolvedGOSRuntimeView?,
+        actorId: String
     ) -> [String: String] {
-        var metadata: [String: String] = [
+        gosRuntimeMetadata(
+            base: [
             "sessionId": sessionId.uuidString,
             "draftId": draftId.uuidString,
             "sourceSOAPDraftId": sourceSOAPDraftId.uuidString,
             "draftStatus": draftStatus.rawValue,
             "readyForFutureGate": String(readyForFutureGate)
-        ]
-        if let activation {
-            metadata["gosSpecId"] = activation.specId
-            metadata["gosBundleId"] = activation.bundleId
-            metadata["gosUsedDefaultBindingPlan"] = String(activation.usedDefaultBindingPlan)
-        }
-        return metadata
+            ],
+            actorId: actorId,
+            runtimeView: runtimeView
+        )
     }
 
     private func soapDraftEventAttributes(
         draft: DraftPackage,
-        activation: AACIGOSActivationSummary?
+        runtimeView: AACIResolvedGOSRuntimeView?
     ) -> [String: String] {
-        var attributes: [String: String] = [
+        gosRuntimeMetadata(
+            base: [
             "draftId": draft.draft.id.uuidString,
             "draftStatus": draft.draft.status.rawValue,
             "contextStatus": draft.soapDraft.contextStatus.rawValue
-        ]
-        if let activation {
-            attributes["gosSpecId"] = activation.specId
-            attributes["gosBundleId"] = activation.bundleId
-        }
-        return attributes
+            ],
+            actorId: "aaci.draft-composer",
+            runtimeView: runtimeView
+        )
     }
 
     private func referralDraftEventAttributes(
         referralDraft: ReferralDraftPackage,
         sourceSOAPDraftId: UUID,
-        activation: AACIGOSActivationSummary?
+        runtimeView: AACIResolvedGOSRuntimeView?
     ) -> [String: String] {
-        var attributes: [String: String] = [
+        gosRuntimeMetadata(
+            base: [
             "draftId": referralDraft.draft.id.uuidString,
             "draftStatus": referralDraft.draft.status.rawValue,
             "specialtyTarget": referralDraft.document.specialtyTarget,
             "sourceSOAPDraftId": sourceSOAPDraftId.uuidString
-        ]
-        if let activation {
-            attributes["gosSpecId"] = activation.specId
-            attributes["gosBundleId"] = activation.bundleId
-        }
-        return attributes
+            ],
+            actorId: "aaci.referral-draft",
+            runtimeView: runtimeView
+        )
     }
 
     private func prescriptionDraftEventAttributes(
         prescriptionDraft: PrescriptionDraftPackage,
         sourceSOAPDraftId: UUID,
-        activation: AACIGOSActivationSummary?
+        runtimeView: AACIResolvedGOSRuntimeView?
     ) -> [String: String] {
-        var attributes: [String: String] = [
+        gosRuntimeMetadata(
+            base: [
             "draftId": prescriptionDraft.draft.id.uuidString,
             "draftStatus": prescriptionDraft.draft.status.rawValue,
             "medicationSuggestion": prescriptionDraft.document.medicationSuggestion,
             "sourceSOAPDraftId": sourceSOAPDraftId.uuidString
-        ]
-        if let activation {
-            attributes["gosSpecId"] = activation.specId
-            attributes["gosBundleId"] = activation.bundleId
-        }
-        return attributes
+            ],
+            actorId: "aaci.prescription-draft",
+            runtimeView: runtimeView
+        )
+    }
+
+    private func gosRuntimeMetadata(
+        base: [String: String],
+        actorId: String,
+        runtimeView: AACIResolvedGOSRuntimeView?
+    ) -> [String: String] {
+        guard let runtimeView else { return base }
+        return base.merging(runtimeView.metadataForDraftPath(actorId: actorId)) { current, _ in current }
     }
 
     private func persistAudioCaptureIfNeeded(

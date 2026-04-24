@@ -69,10 +69,10 @@ Legend:
 - [x] AACI activation/load seam established
 - [x] first-slice runner now consumes optional active GOS bundles to mediate persisted draft content, metadata, events, and provenance
 - [x] AACI runtime draft composition/referral/prescription now consume active GOS mediation directly inside orchestrator execution paths
-- [x] AACI now derives a small resolved runtime GOS view (bundle + bound actors + primitive families) and uses it directly in draft metadata and bounded runtime reasoning summaries
-- [x] first-slice provenance now records distinct GOS activation vs per-draft-path usage events for SOAP/referral/prescription composition
+- [x] AACI now derives a small resolved runtime GOS view (bundle + bound actors + primitive families) and uses it directly in draft metadata, event attributes, and bounded runtime reasoning summaries
+- [x] first-slice provenance now records distinct GOS activation vs per-draft-path usage events for SOAP/referral/prescription composition, with actor-specific usage provenance on each draft path
 - [x] minimal reviewed→active promotion helper is now available in file-backed registry and CLI command path
-- [x] baseline automated tests now cover TS GOS tooling compile/cross-reference behavior and Swift GOS activation/runtime-usage paths
+- [x] baseline automated tests now cover TS GOS tooling compile/cross-reference/bundle behavior, while Swift GOS activation/runtime-usage assertions are present in-repo and local runtime truth is additionally smoke-validated through `HealthOSCLI`
 - [~] provenance-preserving compile output can still be enriched beyond the current source-hash/report baseline
 - [~] activation/deprecation policy controls can still be deepened beyond current minimum hardening
 - [~] deep execution-time adoption across additional AACI subagent paths remains to be completed
@@ -152,6 +152,7 @@ Legend:
 - [x] first slice now derives referral and prescription drafts as explicit draft-only artifacts linked to the same session/SOAP/context spine
 - [x] first slice now also mediates those draft artifacts through an optional active GOS bundle when present
 - [x] first slice now distinguishes and records GOS bundle activation separately from concrete draft-path usage in provenance
+- [x] first slice now persists runtime-mediated GOS actor/family/reasoning-boundary metadata on SOAP/referral/prescription draft records when an active bundle exists
 - [x] minimal Scribe surface now reflects draft review, gate review, and finalized-document state separately
 - [x] minimal Scribe surface now reflects referral/prescription draft-only previews separately from SOAP draft and finalized SOAP document state
 - [~] local-audio transcription remains stubbed; a real Apple-first local provider is still deferred

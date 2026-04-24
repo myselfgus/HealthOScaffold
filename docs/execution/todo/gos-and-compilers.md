@@ -21,6 +21,7 @@ It is intentionally not about scenario-specific implementations.
 - [x] primitive families declared explicitly
 - [x] authoring conventions for YAML source form documented
 - [x] generic blank YAML authoring template added
+- [x] canonical `aaci.first-slice` authoring spec added
 - [ ] glossary entries added for GOS vocabulary if not already present
 
 ## 2. Compiler pipeline
@@ -38,6 +39,7 @@ It is intentionally not about scenario-specific implementations.
 - [x] schema validation workflow added inside TypeScript tooling via Ajv-based validation helpers
 - [x] simple invariant validation added (for example gate-required draft outputs without matching human gate requirements)
 - [x] evidence-hook completeness validation added at minimal level
+- [x] local validation checklist documented, but execution is still pending
 
 ## 4. Runtime binding
 - [x] AACI-to-GOS binding doctrine documented
@@ -55,7 +57,8 @@ It is intentionally not about scenario-specific implementations.
 - [x] rollback posture documented
 - [x] bundle-manifest schema added
 - [x] minimal file-backed bundle registry/loader implementation added in Swift
-- [~] activation/deprecation mechanics still need stronger implementation
+- [x] minimal activation hardening added: only reviewed/active bundles may be promoted, and deprecate/revoke clear active registry pointers
+- [x] bootstrap exemplar bundle, registry entry, and copy script added for `aaci.first-slice`
 - [~] registry/storage implementation is now minimal-functional, but not yet hardened
 
 ## 6. App boundary discipline
@@ -71,13 +74,17 @@ Any future work on GOS should begin from:
 - `docs/architecture/31-gos-runtime-binding.md`
 - `docs/architecture/32-gos-bundles-and-lifecycle.md`
 - `docs/architecture/33-gos-app-consumption-patterns.md`
+- `docs/architecture/34-gos-review-and-activation-policy.md`
+- `docs/execution/08-gos-stabilization-handoff.md`
+- `docs/execution/09-local-validation-checklist.md`
 - `schemas/governed-operational-spec.schema.json`
 - `schemas/governed-operational-spec-authoring.schema.json`
 - `schemas/governed-operational-spec-bundle-manifest.schema.json`
-- `gos/templates/blank.gos.yaml`
+- `gos/specs/aaci.first-slice.gos.yaml`
 - `ts/packages/healthos-gos-tooling/`
 - `swift/Sources/HealthOSCore/GovernedOperationalSpec.swift`
 - `swift/Sources/HealthOSCore/GOSFileBackedRegistry.swift`
 - `swift/Sources/HealthOSAACI/GOSBindings.swift`
 - `swift/Sources/HealthOSAACI/GOSRuntimeActivation.swift`
 - `swift/Sources/HealthOSFirstSliceSupport/FirstSliceRunner.swift`
+- `bootstrap/gos/system/gos/`

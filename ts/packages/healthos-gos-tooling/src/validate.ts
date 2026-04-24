@@ -23,6 +23,7 @@ export function validateGOS(spec: GOSCanonicalSpec): GOSValidationResult {
   const refs = collectDeclaredRefs(spec);
   const taskIds = new Set(spec.task_specs.map((task) => task.task_id));
   const gateTargetRefs = new Set(spec.human_gate_requirement_specs.map((item) => item.target_ref));
+  const evidencePhases = new Set(spec.evidence_hook_specs.map((item) => item.phase));
 
   for (const slot of spec.slot_specs) {
     for (const signalId of slot.source_signal_ids ?? []) {
@@ -126,6 +127,22 @@ export function validateGOS(spec: GOSCanonicalSpec): GOSValidationResult {
         path: `/escalation_specs/${escalation.escalation_id}`,
       });
     }
+  }
+
+  if (spec.task_specs.length > 0 && !evidencePhases.has('task')) {
+    problems.push({
+      code: 'gos.evidence.task_phase_missing',
+      message: 'At least one task spec exists, but no evidence hook captures task-phase execution.',
+      path: '/evidence_hook_specs',
+    });
+  }
+
+  if (spec.draft_output_specs.length > 0 && !evidencePhases.has('draft_output')) {
+    problems.push({
+      code: 'gos.evidence.draft_output_phase_missing',
+      message: 'At least one draft output spec exists, but no evidence hook captures draft-output phase execution.',
+      path: '/evidence_hook_specs',
+    });
   }
 
   return {

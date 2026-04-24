@@ -12,7 +12,7 @@ function normalizeStringArray(values?: string[]): string[] | undefined {
   return normalized.length > 0 ? normalized : undefined;
 }
 
-function sortById<T extends Record<string, unknown>>(items: T[], key: keyof T): T[] {
+function sortById<T>(items: T[], key: keyof T): T[] {
   return [...items].sort((left, right) => String(left[key]).localeCompare(String(right[key])));
 }
 
@@ -31,10 +31,10 @@ export function canonicalizeGOS(authoring: GOSAuthoringDocument): { spec: GOSCan
   const spec: GOSCanonicalSpec = {
     ...authoring,
     metadata: {
-      ...authoring.metadata,
       title: authoring.metadata.title.trim(),
       description: authoring.metadata.description?.trim(),
-      notes: authoring.metadata.notes?.trim(),
+      status: authoring.metadata.status,
+      authoring_form: authoring.metadata.authoring_form,
       compiled_form: 'json',
       tags: normalizeStringArray(authoring.metadata.tags),
       jurisdictions: normalizeStringArray(authoring.metadata.jurisdictions),

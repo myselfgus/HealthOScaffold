@@ -1,5 +1,6 @@
-import Ajv from 'ajv';
-import addFormats from 'ajv-formats';
+import * as Ajv2020Module from 'ajv/dist/2020.js';
+import * as addFormatsModule from 'ajv-formats/dist/index.js';
+import type { ErrorObject } from 'ajv';
 import { readFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -7,7 +8,7 @@ import type { GOSValidationResult } from './types.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-const repoRoot = resolve(__dirname, '../../../../..');
+const repoRoot = resolve(__dirname, '../../../..');
 
 async function loadSchema(schemaFileName: string): Promise<unknown> {
   const schemaPath = resolve(repoRoot, 'schemas', schemaFileName);
@@ -15,13 +16,26 @@ async function loadSchema(schemaFileName: string): Promise<unknown> {
   return JSON.parse(contents);
 }
 
-function buildAjv(): Ajv {
-  const ajv = new Ajv({ allErrors: true, strict: false });
+type AjvLike = {
+  compile: (schema: unknown) => {
+    (data: unknown): boolean;
+    errors?: ErrorObject[] | null;
+  };
+};
+
+function buildAjv() {
+  const AjvCtor = ((Ajv2020Module as unknown) as { default?: new (options?: Record<string, unknown>) => AjvLike }).default;
+  const addFormats = ((addFormatsModule as unknown) as { default?: (instance: AjvLike) => void }).default;
+  if (!AjvCtor || !addFormats) {
+    throw new Error('Failed to resolve Ajv modules for schema validation.');
+  }
+
+  const ajv = new AjvCtor({ allErrors: true, strict: false });
   addFormats(ajv);
-  return ajv;
+  return ajv as AjvLike;
 }
 
-function normalizeErrors(errors: Ajv['errors']): GOSValidationResult {
+function normalizeErrors(errors: ErrorObject[] | null | undefined): GOSValidationResult {
   return {
     ok: !errors || errors.length === 0,
     issues: (errors ?? []).map((error) => ({

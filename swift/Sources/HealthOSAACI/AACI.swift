@@ -4,9 +4,14 @@ import HealthOSProviders
 
 public actor AACIOrchestrator {
     private let router: ProviderRouter
+    private var activeGOSRuntime: AACIActiveGOSRuntime?
 
     public init(router: ProviderRouter) {
         self.router = router
+    }
+
+    func installActiveGOSRuntime(_ runtime: AACIActiveGOSRuntime) {
+        self.activeGOSRuntime = runtime
     }
 
     public func startSession(_ session: SessaoTrabalho) async -> String {
@@ -88,10 +93,11 @@ public actor AACIOrchestrator {
         case (.degraded, _), (.unavailable, _), (.pending, _):
             assessment = "Draft assembled with explicit transcription degradation; professional review remains required."
         }
+        let mediatedAssessment = mediatedSOAPAssessment(assessment)
         let sections = SOAPNoteSections(
             subjective: transcription.workflowText,
             objective: objective,
-            assessment: assessment,
+            assessment: mediatedAssessment,
             plan: "TODO"
         )
         let draft = ArtifactDraft(
@@ -109,7 +115,7 @@ public actor AACIOrchestrator {
             sections: sections,
             contextStatus: context.status,
             contextSummary: context.summary,
-            noteSummary: assessment
+            noteSummary: mediatedAssessment
         )
     }
 
@@ -146,23 +152,25 @@ public actor AACIOrchestrator {
                 actorId: "aaci.referral-draft",
                 semanticRole: "referral-draft-composer"
             ),
-            payload: [
+            payload: attachActiveGOSMetadata(
+                to: [
                 "specialtyTarget": specialtyTarget,
                 "reason": reason,
                 "contextSummary": context.summary,
-                "noteSummary": noteSummary,
-                "draftOnlyNote": draftOnlyNote,
+                "noteSummary": mediatedDerivedDraftText(noteSummary),
+                "draftOnlyNote": mediatedDerivedDraftText(draftOnlyNote),
                 "sourceSOAPDraftId": sourceSOAPDraft.draft.id.uuidString
-            ]
+                ]
+            )
         )
         return ReferralDraftDocument(
             draft: draft,
             specialtyTarget: specialtyTarget,
             reason: reason,
             contextSummary: context.summary,
-            noteSummary: noteSummary,
+            noteSummary: mediatedDerivedDraftText(noteSummary),
             readyForFutureGate: true,
-            draftOnlyNote: draftOnlyNote,
+            draftOnlyNote: mediatedDerivedDraftText(draftOnlyNote),
             spineLink: spineLink
         )
     }
@@ -201,15 +209,17 @@ public actor AACIOrchestrator {
                 actorId: "aaci.prescription-draft",
                 semanticRole: "prescription-draft-composer"
             ),
-            payload: [
+            payload: attachActiveGOSMetadata(
+                to: [
                 "medicationSuggestion": medicationSuggestion,
                 "instructionsDraft": instructionsDraft,
                 "rationale": rationale,
                 "contextSummary": context.summary,
-                "noteSummary": noteSummary,
-                "draftOnlyNote": draftOnlyNote,
+                "noteSummary": mediatedDerivedDraftText(noteSummary),
+                "draftOnlyNote": mediatedDerivedDraftText(draftOnlyNote),
                 "sourceSOAPDraftId": sourceSOAPDraft.draft.id.uuidString
-            ]
+                ]
+            )
         )
         return PrescriptionDraftDocument(
             draft: draft,
@@ -217,11 +227,26 @@ public actor AACIOrchestrator {
             instructionsDraft: instructionsDraft,
             rationale: rationale,
             contextSummary: context.summary,
-            noteSummary: noteSummary,
+            noteSummary: mediatedDerivedDraftText(noteSummary),
             readyForFutureGate: true,
-            draftOnlyNote: draftOnlyNote,
+            draftOnlyNote: mediatedDerivedDraftText(draftOnlyNote),
             spineLink: spineLink
         )
+    }
+
+    private func mediatedSOAPAssessment(_ base: String) -> String {
+        guard let runtime = activeGOSRuntime else { return base }
+        return base + " Governed operational workflow " + runtime.summary.specId + " bundle " + runtime.summary.bundleId + " is active for this draft path."
+    }
+
+    private func mediatedDerivedDraftText(_ base: String) -> String {
+        guard let runtime = activeGOSRuntime else { return base }
+        return base + " Governed operational workflow " + runtime.summary.specId + " bundle " + runtime.summary.bundleId + " remains subordinate to human gate."
+    }
+
+    private func attachActiveGOSMetadata(to payload: [String: String]) -> [String: String] {
+        guard let runtime = activeGOSRuntime else { return payload }
+        return payload.merging(runtime.payloadMetadata) { current, _ in current }
     }
 
     private func makeDerivedDraftHeuristics(

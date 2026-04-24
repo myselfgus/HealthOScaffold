@@ -1,3 +1,4 @@
+#if canImport(SwiftUI)
 import SwiftUI
 import UniformTypeIdentifiers
 import HealthOSCore
@@ -290,3 +291,4 @@ private struct OutputBlock: View {
         }
     }
 }
+#endif

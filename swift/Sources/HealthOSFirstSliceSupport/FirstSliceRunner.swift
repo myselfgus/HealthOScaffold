@@ -648,6 +648,17 @@ public actor FirstSliceRunner {
             )
             return activation
         } catch {
+            try await appendProvenance(
+                .init(
+                    actorId: "aaci.gos",
+                    operation: "gos.activate.failed",
+                    providerName: "file-backed-registry",
+                    modelName: "aaci.first-slice",
+                    promptVersion: String(describing: error),
+                    timestamp: .now
+                ),
+                to: &records
+            )
             return nil
         }
     }
@@ -656,96 +667,24 @@ public actor FirstSliceRunner {
         _ document: SOAPDraftDocument,
         activation: AACIGOSActivationSummary?
     ) -> SOAPDraftDocument {
-        guard let activation else { return document }
-        let mediation = "Governed operational workflow \(activation.specId) bundle \(activation.bundleId) is active for this draft path."
-        let sections = SOAPNoteSections(
-            subjective: document.sections.subjective,
-            objective: document.sections.objective,
-            assessment: document.sections.assessment + " " + mediation,
-            plan: document.sections.plan
-        )
-        let draft = ArtifactDraft(
-            id: document.draft.id,
-            sessionId: document.draft.sessionId,
-            kind: document.draft.kind,
-            status: document.draft.status,
-            createdAt: document.draft.createdAt,
-            author: document.draft.author,
-            payload: sections.payload,
-            sourceEventIds: document.draft.sourceEventIds
-        )
-        return SOAPDraftDocument(
-            draft: draft,
-            sections: sections,
-            contextStatus: document.contextStatus,
-            contextSummary: document.contextSummary,
-            noteSummary: document.noteSummary + " " + mediation
-        )
+        _ = activation
+        return document
     }
 
     private func mediateReferralDraftIfNeeded(
         _ document: ReferralDraftDocument,
         activation: AACIGOSActivationSummary?
     ) -> ReferralDraftDocument {
-        guard let activation else { return document }
-        let draft = ArtifactDraft(
-            id: document.draft.id,
-            sessionId: document.draft.sessionId,
-            kind: document.draft.kind,
-            status: document.draft.status,
-            createdAt: document.draft.createdAt,
-            author: document.draft.author,
-            payload: document.draft.payload.merging([
-                "gosSpecId": activation.specId,
-                "gosBundleId": activation.bundleId,
-                "gosUsedDefaultBindingPlan": String(activation.usedDefaultBindingPlan)
-            ]) { current, _ in current },
-            sourceEventIds: document.draft.sourceEventIds
-        )
-        let mediation = "Governed operational workflow \(activation.specId) bundle \(activation.bundleId) remains subordinate to human gate."
-        return ReferralDraftDocument(
-            draft: draft,
-            specialtyTarget: document.specialtyTarget,
-            reason: document.reason,
-            contextSummary: document.contextSummary,
-            noteSummary: document.noteSummary + " " + mediation,
-            readyForFutureGate: document.readyForFutureGate,
-            draftOnlyNote: document.draftOnlyNote + " " + mediation,
-            spineLink: document.spineLink
-        )
+        _ = activation
+        return document
     }
 
     private func mediatePrescriptionDraftIfNeeded(
         _ document: PrescriptionDraftDocument,
         activation: AACIGOSActivationSummary?
     ) -> PrescriptionDraftDocument {
-        guard let activation else { return document }
-        let draft = ArtifactDraft(
-            id: document.draft.id,
-            sessionId: document.draft.sessionId,
-            kind: document.draft.kind,
-            status: document.draft.status,
-            createdAt: document.draft.createdAt,
-            author: document.draft.author,
-            payload: document.draft.payload.merging([
-                "gosSpecId": activation.specId,
-                "gosBundleId": activation.bundleId,
-                "gosUsedDefaultBindingPlan": String(activation.usedDefaultBindingPlan)
-            ]) { current, _ in current },
-            sourceEventIds: document.draft.sourceEventIds
-        )
-        let mediation = "Governed operational workflow \(activation.specId) bundle \(activation.bundleId) remains subordinate to human gate."
-        return PrescriptionDraftDocument(
-            draft: draft,
-            medicationSuggestion: document.medicationSuggestion,
-            instructionsDraft: document.instructionsDraft,
-            rationale: document.rationale,
-            contextSummary: document.contextSummary,
-            noteSummary: document.noteSummary + " " + mediation,
-            readyForFutureGate: document.readyForFutureGate,
-            draftOnlyNote: document.draftOnlyNote + " " + mediation,
-            spineLink: document.spineLink
-        )
+        _ = activation
+        return document
     }
 
     private func gosPromptVersion(prefix: String, activation: AACIGOSActivationSummary?) -> String {

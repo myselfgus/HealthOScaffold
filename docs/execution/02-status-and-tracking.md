@@ -6,9 +6,16 @@ Current phase: Controlled implementation — first vertical slice started
 
 ## Completed recently
 
+- GOS TypeScript tooling now performs authoring-schema validation, compiled-schema validation, cross-reference validation, and simple invariant checks
+- GOS compiler output now includes source provenance hashing/reporting
+- GOS CLI now supports `validate`, `compile`, and `bundle`
+- GOS bundle generation now emits manifest, compiled spec, compiler report, and source provenance files
+- Swift file-backed GOS registry/loader scaffold was upgraded into a minimal functional implementation that can register manifests, activate bundles, and load active bundles
+- AACI now has an executable GOS activation seam through `AACIOrchestrator.activateGOS(specId:loader:)`
+- GOS runtime-binding architecture doc updated to reflect executable Swift seams, default AACI binding map, and activation behavior
 - Swift contracts added for GOS bundle loading, registry entries, runtime binding plans, compiled bundles, compiler reports, and lifecycle states
 - default AACI GOS runtime binding plan scaffold added in Swift
-- minimal file-backed GOS registry/loader scaffold added in Swift so bundle loading now has a typed runtime seam, even though the implementation remains intentionally incomplete
+- minimal file-backed GOS registry/loader scaffold added in Swift so bundle loading now has a typed runtime seam, even though the implementation remains intentionally minimal
 - GOS lifecycle/storage architecture document added with bundle identity, lifecycle states, activation posture, rollback posture, and canonical storage recommendation
 - lightweight authoring schema added for YAML-form GOS source documents
 - GOS bundle-manifest schema added for compiled-bundle lifecycle representation
@@ -104,7 +111,7 @@ Current phase: Controlled implementation — first vertical slice started
 
 - first vertical slice implementation continues with seeded-text compatibility, a structured local retrieval/context package, richer gate/document semantics, draft-only referral/prescription derivatives, and a now-wired local-audio path, while real local transcription and earlier draft-refresh finalization remain deferred
 - doctrinal language hardening completed for sovereignty/privacy/compliance/topology without introducing infrastructure expansion
-- GOS now exists as doctrine + schema + authoring workspace + compiler/validator/CLI scaffolds + lifecycle/bundle posture + Swift runtime contracts, while schema-workflow validation, stronger registry mechanics, and full executable runtime loading remain open
+- GOS now exists as doctrine + schema + authoring workspace + schema-aware compiler/validator/CLI + lifecycle/bundle posture + Swift runtime contracts + minimal AACI activation/load seams, while deeper runtime adoption and hardening still remain open
 
 ## Known gaps
 
@@ -114,7 +121,7 @@ Current phase: Controlled implementation — first vertical slice started
 - Scribe now has a minimal validation UI surface, but it is not yet a full/final app shell
 - draft refresh remains preview/degraded until gate resolution runs the full executable spine
 - referral/prescription drafts now exist, but their regulatory effectuation/issuance remains intentionally deferred
-- GOS still needs schema-workflow validation, stronger provenance-preserving compile output, stronger bundle storage/registry mechanics, and full executable runtime loader/binding implementation
+- GOS still needs evidence-hook completeness validation, stronger human review/activation mechanics, stronger registry hardening, and deeper execution-time adoption inside AACI subagent paths
 
 ## Open blockers / decisions
 
@@ -122,7 +129,7 @@ Current phase: Controlled implementation — first vertical slice started
 - decide whether the next first-slice step after this wave is microphone capture, moving draft/retrieval finalization earlier than gate resolution, or introducing lawful effectuation paths for referral/prescription
 - decide when to convert the AI skills into enforced reusable workflows/templates
 - decide when to replace the current deterministic local retrieval/context package with semantic/clinical retrieval while preserving lawful scope and topology-invariant governance constraints
-- decide the final human-facing review/activation policy for compiled GOS bundles and when to introduce stronger validator + runtime loader + lifecycle mechanics
+- decide the final human-facing review/activation policy for compiled GOS bundles and when to harden GOS activation beyond the current minimal runtime seams
 
 ## Tracking rules
 

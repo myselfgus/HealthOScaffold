@@ -18,6 +18,8 @@ public struct AACIResolvedGOSRuntimeView: Codable, Sendable {
     public let bundleId: String
     public let workflowTitle: String
     public let usedDefaultBindingPlan: Bool
+    public let bindingCount: Int
+    public let compilerWarningCount: Int
     public let boundActors: [AACIResolvedGOSActorView]
     private let bindingsByActorId: [String: AACIResolvedGOSActorView]
 
@@ -32,6 +34,8 @@ public struct AACIResolvedGOSRuntimeView: Codable, Sendable {
         self.bundleId = summary.bundleId
         self.workflowTitle = metadataTitle
         self.usedDefaultBindingPlan = summary.usedDefaultBindingPlan
+        self.bindingCount = summary.bindingCount
+        self.compilerWarningCount = summary.compilerWarningCount
         self.boundActors = boundActors
         self.bindingsByActorId = Dictionary(uniqueKeysWithValues: boundActors.map { ($0.actorId, $0) })
     }
@@ -50,6 +54,8 @@ public struct AACIResolvedGOSRuntimeView: Codable, Sendable {
             "gosBundleId": bundleId,
             "gosWorkflowTitle": workflowTitle,
             "gosUsedDefaultBindingPlan": String(usedDefaultBindingPlan),
+            "gosBindingCount": String(bindingCount),
+            "gosCompilerWarningCount": String(compilerWarningCount),
             "gosBoundActors": boundActorIds.joined(separator: ",")
         ]
     }

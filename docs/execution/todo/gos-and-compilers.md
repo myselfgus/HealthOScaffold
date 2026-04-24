@@ -86,9 +86,14 @@ It is intentionally not about scenario-specific implementations.
   - load denial for revoked bundles
   - active pointer cleanup on revoke of active bundle
   - known-bundle preservation when deprecating non-active bundles
+  - active pointer cleanup on deprecate of active bundles
+  - manifest-missing activation failure
+  - load failures for missing spec/compiler-report/source-provenance artifacts
+  - load failure when registry active pointer references an unknown bundle id
   - runtime-binding-plan mismatch rejection
 - [x] TypeScript tests added for `@healthos/gos-tooling` compile + cross-reference failure paths
 - [x] TypeScript tests now also cover bundle CLI lifecycle artifact emission
+- [x] TypeScript tests now also cover CLI `validate` and `compile` success paths plus validation/bundle failure exits for evidence-hook and cross-reference defects
 
 ## Reading rule
 

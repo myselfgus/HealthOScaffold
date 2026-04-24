@@ -29,6 +29,17 @@ Responsibilities:
 - load compiler report and source provenance hints
 - fail closed if the bundle is invalid or inactive
 
+The scaffold now includes typed Swift seams for this layer:
+- `GOSBundleLoader`
+- `GOSBundleRegistry`
+- `GOSLoadRequest`
+- `GOSCompiledBundle`
+- `GOSRuntimeBindingPlan`
+- `GOSPrimitiveBinding`
+
+A minimal file-backed registry/loader also now exists as `FileBackedGOSBundleRegistry`.
+It is intentionally minimal, but it is no longer only doctrinal.
+
 ### 2. runtime precheck
 Before using GOS, runtime performs prechecks.
 
@@ -36,6 +47,16 @@ Prechecks should confirm:
 - bundle is structurally valid
 - bundle status is active/reviewed as required by local policy
 - required primitive families are present for the intended runtime path
+
+The scaffold now includes an executable AACI-side activation seam:
+- `AACIOrchestrator.activateGOS(specId:loader:)`
+
+That activation step:
+- loads the active bundle for a spec id
+- reads bundle lifecycle state
+- selects bundle-provided runtime binding plan when present
+- falls back to the AACI default binding plan when bundle-local binding is absent
+- returns an activation summary instead of silently hiding binding state
 
 ### 3. lawful-context boundary
 Before any GOS-driven work touches sensitive state, the runtime must still satisfy core lawful access checks.
@@ -75,6 +96,8 @@ Apps should not become direct interpreters of compiled GOS bundles as the source
 
 ## Initial AACI binding map
 
+The scaffold now contains this map both doctrinally and in Swift form through `AACIGOSBindings.defaultBindingPlan(specId:)`.
+
 ### CaptureAgent
 Consumes:
 - signal specs
@@ -87,6 +110,12 @@ Consumes:
 - task specs
 - guard specs
 - evidence hook specs
+
+### IntentionAgent
+Consumes:
+- slot specs
+- derivation specs
+- task specs
 
 ### ContextRetrievalAgent
 Consumes:
@@ -123,6 +152,18 @@ Consumes:
 - human gate requirement specs
 - evidence hook specs
 
+### NoteOrganizerAgent
+Consumes:
+- slot specs
+- task specs
+- draft output specs
+
+### RecordLocatorAgent
+Consumes:
+- task specs
+- scope requirement specs
+- evidence hook specs
+
 ## Runtime binding non-goals
 
 Runtime binding does not mean:
@@ -131,12 +172,11 @@ Runtime binding does not mean:
 - GOS can produce effective clinical acts without gate and core law
 - runtime-specific vendor bindings become part of the GOS constitution
 
-## Future work
+## Remaining work
 
-Still needed after this binding doctrine:
-- explicit loader contracts
-- activation/deprecation lifecycle
+Still needed after this binding wave:
+- stronger registry mechanics
+- explicit activation policy controls beyond minimal lifecycle checks
 - version pinning rules
-- compiled-bundle storage/versioning rules
-- runtime validation hooks
+- richer runtime validation hooks
 - app-surface policy for which GOS-derived facts may be exposed

@@ -19,9 +19,10 @@ function collectDeclaredRefs(spec: GOSCanonicalSpec): Set<string> {
 }
 
 export function validateGOS(spec: GOSCanonicalSpec): GOSValidationResult {
-  const problems: Array<{ code: string; message: string }> = [];
+  const problems: Array<{ code: string; message: string; path?: string }> = [];
   const refs = collectDeclaredRefs(spec);
   const taskIds = new Set(spec.task_specs.map((task) => task.task_id));
+  const gateTargetRefs = new Set(spec.human_gate_requirement_specs.map((item) => item.target_ref));
 
   for (const slot of spec.slot_specs) {
     for (const signalId of slot.source_signal_ids ?? []) {
@@ -29,6 +30,7 @@ export function validateGOS(spec: GOSCanonicalSpec): GOSValidationResult {
         problems.push({
           code: 'gos.ref.slot_source_missing',
           message: `Slot ${slot.slot_id} references missing signal/source id ${signalId}.`,
+          path: `/slot_specs/${slot.slot_id}`,
         });
       }
     }
@@ -40,6 +42,7 @@ export function validateGOS(spec: GOSCanonicalSpec): GOSValidationResult {
         problems.push({
           code: 'gos.ref.derivation_input_missing',
           message: `Derivation ${derivation.derivation_id} references missing input ${input}.`,
+          path: `/derivation_specs/${derivation.derivation_id}`,
         });
       }
     }
@@ -51,6 +54,16 @@ export function validateGOS(spec: GOSCanonicalSpec): GOSValidationResult {
         problems.push({
           code: 'gos.ref.task_input_missing',
           message: `Task ${task.task_id} references missing input ${input}.`,
+          path: `/task_specs/${task.task_id}`,
+        });
+      }
+    }
+    for (const precondition of task.preconditions ?? []) {
+      if (!refs.has(precondition)) {
+        problems.push({
+          code: 'gos.ref.task_precondition_missing',
+          message: `Task ${task.task_id} references missing precondition ${precondition}.`,
+          path: `/task_specs/${task.task_id}`,
         });
       }
     }
@@ -61,6 +74,26 @@ export function validateGOS(spec: GOSCanonicalSpec): GOSValidationResult {
       problems.push({
         code: 'gos.ref.tool_binding_task_missing',
         message: `Tool binding ${binding.binding_id} references missing task ${binding.task_id}.`,
+        path: `/tool_binding_specs/${binding.binding_id}`,
+      });
+    }
+  }
+
+  for (const draft of spec.draft_output_specs) {
+    for (const sourceTaskId of draft.source_task_ids ?? []) {
+      if (!taskIds.has(sourceTaskId)) {
+        problems.push({
+          code: 'gos.ref.draft_source_task_missing',
+          message: `Draft output ${draft.draft_output_id} references missing source task ${sourceTaskId}.`,
+          path: `/draft_output_specs/${draft.draft_output_id}`,
+        });
+      }
+    }
+    if (draft.requires_gate && !gateTargetRefs.has(draft.draft_output_id)) {
+      problems.push({
+        code: 'gos.invariant.missing_gate_requirement',
+        message: `Draft output ${draft.draft_output_id} requires gate but no matching human gate requirement target was declared.`,
+        path: `/draft_output_specs/${draft.draft_output_id}`,
       });
     }
   }
@@ -70,6 +103,7 @@ export function validateGOS(spec: GOSCanonicalSpec): GOSValidationResult {
       problems.push({
         code: 'gos.ref.deadline_target_missing',
         message: `Deadline ${deadline.deadline_id} references missing target ${deadline.target_ref}.`,
+        path: `/deadline_specs/${deadline.deadline_id}`,
       });
     }
   }
@@ -79,6 +113,7 @@ export function validateGOS(spec: GOSCanonicalSpec): GOSValidationResult {
       problems.push({
         code: 'gos.ref.gate_target_missing',
         message: `Human gate requirement ${gate.gate_requirement_id} references missing target ${gate.target_ref}.`,
+        path: `/human_gate_requirement_specs/${gate.gate_requirement_id}`,
       });
     }
   }
@@ -88,6 +123,7 @@ export function validateGOS(spec: GOSCanonicalSpec): GOSValidationResult {
       problems.push({
         code: 'gos.ref.escalation_trigger_missing',
         message: `Escalation ${escalation.escalation_id} references missing trigger ${escalation.trigger_ref}.`,
+        path: `/escalation_specs/${escalation.escalation_id}`,
       });
     }
   }

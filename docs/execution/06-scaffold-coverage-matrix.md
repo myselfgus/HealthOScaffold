@@ -77,7 +77,10 @@ Legend:
 - [x] minimal reviewed→active promotion helper is now available in file-backed registry and CLI command path
 - [x] minimal draft→reviewed review helper is now available in file-backed registry and CLI command path
 - [x] baseline automated tests now cover TS GOS tooling compile/cross-reference/bundle behavior, and Swift XCTest now also covers lifecycle hardening paths (register/review/promote/activate, draft activation denial, revoked-load denial, revoke-pointer cleanup, non-active deprecate preservation)
+- [x] TS GOS tooling automated tests now also cover CLI `validate`/`compile` success paths and explicit failure exits for evidence-hook completeness + cross-reference defects
+- [x] Swift XCTest lifecycle hardening now also covers missing manifest/spec/compiler-report/source-provenance failures, unknown active-pointer bundle failures, and active-pointer cleanup on deprecating active bundles
 - [x] file-backed loader/registry now use typed lifecycle/registry/integrity failures for missing artifacts and invalid lifecycle transitions instead of generic NSError throws
+- [x] AACI resolved GOS runtime metadata now exposes bounded diagnostics (`gosBindingCount`, `gosCompilerWarningCount`) alongside actor/family context without moving sovereign law into GOS/runtime
 - [~] provenance-preserving compile output can still be enriched beyond the current source-hash/report baseline
 - [~] activation/deprecation policy controls can still be deepened beyond current minimum hardening (multi-review, separation-of-duties, version pinning)
 - [~] deep execution-time adoption across AACI paths beyond the current first-slice internal runtime paths remains to be completed

@@ -38,6 +38,8 @@ final class GOSRuntimeAdoptionTests: XCTestCase {
         XCTAssertEqual(soap.draft.payload["gosRuntimeActorId"], "aaci.draft-composer")
         XCTAssertEqual(soap.draft.payload["gosPrimitiveFamilies"], "draft_output_spec,task_spec")
         XCTAssertEqual(soap.draft.payload["gosUsedDefaultBindingPlan"], "false")
+        XCTAssertEqual(soap.draft.payload["gosBindingCount"], "3")
+        XCTAssertEqual(soap.draft.payload["gosCompilerWarningCount"], "0")
         XCTAssertTrue(soap.noteSummary.contains("aaci.draft-composer is bound to primitive families [draft_output_spec, task_spec]"))
 
         let sourceRef = StorageObjectRef(
@@ -369,6 +371,150 @@ final class GOSRuntimeAdoptionTests: XCTestCase {
         XCTAssertEqual(entry.activeBundleId, activeBundle.manifest.bundleId)
         XCTAssertTrue(entry.knownBundleIds.contains(activeBundle.manifest.bundleId))
         XCTAssertTrue(entry.knownBundleIds.contains(reviewedBundle.manifest.bundleId))
+    }
+
+    func testLoadFailsWhenActiveRegistryPointerReferencesUnknownBundle() async throws {
+        let root = makeTempRoot()
+        try DirectoryLayout.bootstrap(at: root)
+        let registry = FileBackedGOSBundleRegistry(root: root)
+        let bundle = makeBundle(bindingPlan: AACIGOSBindings.defaultBindingPlan(specId: "aaci.first-slice"), lifecycleState: .active)
+        try await registry.register(bundle.manifest)
+        try installBundleFiles(bundle, at: root)
+
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
+        let forcedEntry = GOSRegistryEntry(
+            specId: bundle.manifest.specId,
+            activeBundleId: "missing-bundle-id",
+            knownBundleIds: [bundle.manifest.bundleId]
+        )
+        try encoder.encode(forcedEntry).write(to: root.appending(path: "system/gos/registry/\(bundle.manifest.specId).json"))
+
+        do {
+            _ = try await registry.loadBundle(
+                GOSLoadRequest(specId: bundle.manifest.specId, runtimeKind: .aaci, acceptedLifecycleStates: [.active])
+            )
+            XCTFail("Expected load to fail for unknown active bundle pointer.")
+        } catch {
+            guard case let GOSRegistryError.registryBundleMissing(specId, bundleId) = error else {
+                XCTFail("Expected registryBundleMissing, got \(error)")
+                return
+            }
+            XCTAssertEqual(specId, bundle.manifest.specId)
+            XCTAssertEqual(bundleId, "missing-bundle-id")
+        }
+    }
+
+    func testActivationFailsWhenManifestIsMissing() async throws {
+        let root = makeTempRoot()
+        try DirectoryLayout.bootstrap(at: root)
+        let registry = FileBackedGOSBundleRegistry(root: root)
+
+        do {
+            try await registry.activate(bundleId: "missing-bundle", specId: "aaci.first-slice")
+            XCTFail("Expected activation to fail when manifest is missing.")
+        } catch {
+            guard case let GOSRegistryError.manifestMissing(bundleId) = error else {
+                XCTFail("Expected manifestMissing, got \(error)")
+                return
+            }
+            XCTAssertEqual(bundleId, "missing-bundle")
+        }
+    }
+
+    func testLoadFailsWhenSpecArtifactIsMissing() async throws {
+        let root = makeTempRoot()
+        try DirectoryLayout.bootstrap(at: root)
+        let registry = FileBackedGOSBundleRegistry(root: root)
+        let bundle = makeBundle(bindingPlan: AACIGOSBindings.defaultBindingPlan(specId: "aaci.first-slice"), lifecycleState: .active)
+        try await registry.register(bundle.manifest)
+        try installBundleFiles(bundle, at: root)
+        try await registry.activate(bundleId: bundle.manifest.bundleId, specId: bundle.manifest.specId)
+        try FileManager.default.removeItem(at: root.appending(path: "system/gos/bundles/\(bundle.manifest.bundleId)/spec.json"))
+
+        do {
+            _ = try await registry.loadBundle(
+                GOSLoadRequest(specId: bundle.manifest.specId, runtimeKind: .aaci, acceptedLifecycleStates: [.active])
+            )
+            XCTFail("Expected load to fail when spec artifact is missing.")
+        } catch {
+            guard case let GOSRegistryError.specMissing(bundleId, path) = error else {
+                XCTFail("Expected specMissing, got \(error)")
+                return
+            }
+            XCTAssertEqual(bundleId, bundle.manifest.bundleId)
+            XCTAssertEqual(path, "spec.json")
+        }
+    }
+
+    func testLoadFailsWhenCompilerReportArtifactIsMissing() async throws {
+        let root = makeTempRoot()
+        try DirectoryLayout.bootstrap(at: root)
+        let registry = FileBackedGOSBundleRegistry(root: root)
+        let bundle = makeBundle(bindingPlan: AACIGOSBindings.defaultBindingPlan(specId: "aaci.first-slice"), lifecycleState: .active)
+        try await registry.register(bundle.manifest)
+        try installBundleFiles(bundle, at: root)
+        try await registry.activate(bundleId: bundle.manifest.bundleId, specId: bundle.manifest.specId)
+        try FileManager.default.removeItem(
+            at: root.appending(path: "system/gos/bundles/\(bundle.manifest.bundleId)/compiler-report.json")
+        )
+
+        do {
+            _ = try await registry.loadBundle(
+                GOSLoadRequest(specId: bundle.manifest.specId, runtimeKind: .aaci, acceptedLifecycleStates: [.active])
+            )
+            XCTFail("Expected load to fail when compiler report artifact is missing.")
+        } catch {
+            guard case let GOSRegistryError.compilerReportMissing(bundleId, path) = error else {
+                XCTFail("Expected compilerReportMissing, got \(error)")
+                return
+            }
+            XCTAssertEqual(bundleId, bundle.manifest.bundleId)
+            XCTAssertEqual(path, "compiler-report.json")
+        }
+    }
+
+    func testLoadFailsWhenSourceProvenanceArtifactIsMissing() async throws {
+        let root = makeTempRoot()
+        try DirectoryLayout.bootstrap(at: root)
+        let registry = FileBackedGOSBundleRegistry(root: root)
+        let bundle = makeBundle(bindingPlan: AACIGOSBindings.defaultBindingPlan(specId: "aaci.first-slice"), lifecycleState: .active)
+        try await registry.register(bundle.manifest)
+        try installBundleFiles(bundle, at: root)
+        try await registry.activate(bundleId: bundle.manifest.bundleId, specId: bundle.manifest.specId)
+        try FileManager.default.removeItem(
+            at: root.appending(path: "system/gos/bundles/\(bundle.manifest.bundleId)/source-provenance.json")
+        )
+
+        do {
+            _ = try await registry.loadBundle(
+                GOSLoadRequest(specId: bundle.manifest.specId, runtimeKind: .aaci, acceptedLifecycleStates: [.active])
+            )
+            XCTFail("Expected load to fail when source provenance artifact is missing.")
+        } catch {
+            guard case let GOSRegistryError.sourceProvenanceMissing(bundleId, path) = error else {
+                XCTFail("Expected sourceProvenanceMissing, got \(error)")
+                return
+            }
+            XCTAssertEqual(bundleId, bundle.manifest.bundleId)
+            XCTAssertEqual(path, "source-provenance.json")
+        }
+    }
+
+    func testDeprecateClearsActivePointerWhenBundleWasActive() async throws {
+        let root = makeTempRoot()
+        try DirectoryLayout.bootstrap(at: root)
+        let registry = FileBackedGOSBundleRegistry(root: root)
+        let bundle = makeBundle(bindingPlan: AACIGOSBindings.defaultBindingPlan(specId: "aaci.first-slice"), lifecycleState: .active)
+        try await registry.register(bundle.manifest)
+        try installBundleFiles(bundle, at: root)
+        try await registry.activate(bundleId: bundle.manifest.bundleId, specId: bundle.manifest.specId)
+
+        try await registry.deprecate(bundleId: bundle.manifest.bundleId, note: "deprecated for replacement")
+        let lookedUpEntry = try await registry.lookup(specId: bundle.manifest.specId)
+        let entry = try XCTUnwrap(lookedUpEntry)
+        XCTAssertNil(entry.activeBundleId)
+        XCTAssertTrue(entry.knownBundleIds.contains(bundle.manifest.bundleId))
     }
 
     private func makeTempRoot() -> URL {

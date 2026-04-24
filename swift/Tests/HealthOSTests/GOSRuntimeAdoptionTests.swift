@@ -17,6 +17,8 @@ final class GOSRuntimeAdoptionTests: XCTestCase {
 
         XCTAssertEqual(runtimeView?.specId, "aaci.first-slice")
         XCTAssertEqual(runtimeView?.bundleId, "aaci-first-slice-test-bundle")
+        XCTAssertEqual(runtimeView?.lifecycle, .active)
+        XCTAssertEqual(runtimeView?.bindingPlanRuntimeKind, .aaci)
         XCTAssertEqual(runtimeView?.actorView(for: "aaci.draft-composer")?.semanticRole, "soap-runtime-composer")
         XCTAssertEqual(
             runtimeView?.primitiveFamilies(for: "aaci.draft-composer") ?? [],
@@ -37,6 +39,12 @@ final class GOSRuntimeAdoptionTests: XCTestCase {
         let soap = await orchestrator.composeSOAPDraft(session: session, transcription: transcription, context: context)
         XCTAssertEqual(soap.draft.payload["gosRuntimeActorId"], "aaci.draft-composer")
         XCTAssertEqual(soap.draft.payload["gosPrimitiveFamilies"], "draft_output_spec,task_spec")
+        XCTAssertEqual(soap.draft.payload["gosLifecycle"], "active")
+        XCTAssertEqual(soap.draft.payload["gosBindingPlanRuntimeKind"], "aaci")
+        XCTAssertEqual(soap.draft.payload["gosActorBound"], "true")
+        XCTAssertEqual(soap.draft.payload["gosDraftOutputBound"], "true")
+        XCTAssertEqual(soap.draft.payload["gosGateRequiredByBinding"], "false")
+        XCTAssertEqual(soap.draft.payload["gosDraftOnly"], "true")
         XCTAssertEqual(soap.draft.payload["gosUsedDefaultBindingPlan"], "false")
         XCTAssertEqual(soap.draft.payload["gosBindingCount"], "3")
         XCTAssertEqual(soap.draft.payload["gosCompilerWarningCount"], "0")
@@ -58,6 +66,8 @@ final class GOSRuntimeAdoptionTests: XCTestCase {
         )
         XCTAssertEqual(referral.draft.payload["gosRuntimeActorId"], "aaci.referral-draft")
         XCTAssertEqual(referral.draft.payload["gosPrimitiveFamilies"], "draft_output_spec,human_gate_requirement_spec")
+        XCTAssertEqual(referral.draft.payload["gosGateRequiredByBinding"], "true")
+        XCTAssertTrue(referral.noteSummary.contains("Human gate remains mandatory"))
         XCTAssertTrue((referral.draft.payload["gosReasoningBoundary"] ?? "").contains("aaci.referral-draft"))
 
         let prescription = await orchestrator.composePrescriptionDraft(
@@ -69,6 +79,26 @@ final class GOSRuntimeAdoptionTests: XCTestCase {
         )
         XCTAssertEqual(prescription.draft.payload["gosRuntimeActorId"], "aaci.prescription-draft")
         XCTAssertEqual(prescription.draft.payload["gosPrimitiveFamilies"], "draft_output_spec,human_gate_requirement_spec,task_spec")
+        XCTAssertEqual(prescription.draft.payload["gosGateRequiredByBinding"], "true")
+        XCTAssertTrue(prescription.noteSummary.contains("Human gate remains mandatory"))
+    }
+
+    func testAACIComposeDraftsWithoutActiveBundleKeepsDraftOnlyAndNoGOSMetadata() async throws {
+        let orchestrator = AACIOrchestrator(router: ProviderRouter())
+        let session = SessaoTrabalho(
+            kind: .encounter,
+            serviceId: UUID(),
+            professionalUserId: UUID(),
+            patientUserId: UUID(),
+            habilitationId: UUID()
+        )
+        let context = makeContext()
+        let transcription = TranscriptionOutput(status: .ready, source: "seeded-text", transcriptText: "cefaleia")
+        let soap = await orchestrator.composeSOAPDraft(session: session, transcription: transcription, context: context)
+        XCTAssertNil(soap.draft.payload["gosSpecId"])
+        XCTAssertNil(soap.draft.payload["gosRuntimeActorId"])
+        XCTAssertEqual(soap.draft.status, .awaitingGate)
+        XCTAssertFalse(soap.noteSummary.contains("Human gate remains mandatory"))
     }
 
     func testFirstSliceRecordsDistinctGOSUsageProvenanceWhenBundleIsActive() async throws {
@@ -98,8 +128,8 @@ final class GOSRuntimeAdoptionTests: XCTestCase {
         let transcriptionUsage = try XCTUnwrap(result.provenanceRecords.first { $0.operation == "gos.use.transcription" })
         let contextUsage = try XCTUnwrap(result.provenanceRecords.first { $0.operation == "gos.use.context.retrieve" })
         let draftUsage = try XCTUnwrap(result.provenanceRecords.first { $0.operation == "gos.use.compose.soap" })
-        let referralUsage = try XCTUnwrap(result.provenanceRecords.first { $0.operation == "gos.use.compose.referral" })
-        let prescriptionUsage = try XCTUnwrap(result.provenanceRecords.first { $0.operation == "gos.use.compose.prescription" })
+        let referralUsage = try XCTUnwrap(result.provenanceRecords.first { $0.operation == "gos.use.derive.referral" })
+        let prescriptionUsage = try XCTUnwrap(result.provenanceRecords.first { $0.operation == "gos.use.derive.prescription" })
         let captureEvent = try XCTUnwrap(result.events.first { $0.kind == .captureReceived })
         let transcriptionEvent = try XCTUnwrap(result.events.first { $0.kind == .transcriptionProcessed })
         let contextEvent = try XCTUnwrap(result.events.first { $0.kind == .contextRetrieved })
@@ -112,8 +142,8 @@ final class GOSRuntimeAdoptionTests: XCTestCase {
         XCTAssertTrue(operations.contains("gos.use.transcription"))
         XCTAssertTrue(operations.contains("gos.use.context.retrieve"))
         XCTAssertTrue(operations.contains("gos.use.compose.soap"))
-        XCTAssertTrue(operations.contains("gos.use.compose.referral"))
-        XCTAssertTrue(operations.contains("gos.use.compose.prescription"))
+        XCTAssertTrue(operations.contains("gos.use.derive.referral"))
+        XCTAssertTrue(operations.contains("gos.use.derive.prescription"))
         XCTAssertEqual(transcriptionUsage.actorId, "aaci.transcription")
         XCTAssertEqual(contextUsage.actorId, "aaci.context")
         XCTAssertEqual(draftUsage.actorId, "aaci.draft-composer")

@@ -75,6 +75,7 @@ public actor AACIOrchestrator {
         context: RetrievalContextPackage
     ) async -> SOAPDraftDocument {
         let gosView = activeGOSRuntimeView()
+        let gosFlags = gosView?.mediationFlags(for: "aaci.draft-composer")
         let objective: String
         if context.highlights.isEmpty {
             objective = context.summary
@@ -99,10 +100,14 @@ public actor AACIOrchestrator {
             assessment = "Draft assembled with explicit transcription degradation; professional review remains required."
         }
         let mediatedAssessment = mediatedSOAPAssessment(assessment, gosView: gosView)
+        let noteSummary = enforceDraftOnlyBoundary(
+            on: mediatedAssessment,
+            mediationFlags: gosFlags
+        )
         let sections = SOAPNoteSections(
             subjective: transcription.workflowText,
             objective: objective,
-            assessment: mediatedAssessment,
+            assessment: noteSummary,
             plan: "TODO"
         )
         let draft = ArtifactDraft(
@@ -124,7 +129,7 @@ public actor AACIOrchestrator {
             sections: sections,
             contextStatus: context.status,
             contextSummary: context.summary,
-            noteSummary: mediatedAssessment
+            noteSummary: noteSummary
         )
     }
 
@@ -136,6 +141,7 @@ public actor AACIOrchestrator {
         sourceSOAPDraftRef: StorageObjectRef
     ) async -> ReferralDraftDocument {
         let gosView = activeGOSRuntimeView()
+        let gosFlags = gosView?.mediationFlags(for: "aaci.referral-draft")
         let heuristics = makeDerivedDraftHeuristics(transcription: transcription, context: context)
         let specialtyTarget = referralSpecialtyTarget(from: heuristics)
         let reason = referralReason(from: heuristics)
@@ -146,6 +152,22 @@ public actor AACIOrchestrator {
             noteSummary = "Referral draft estruturado a partir do mesmo spine documental do SOAP, pronto apenas para futura revisao humana."
         }
         let draftOnlyNote = "Draft only. Este encaminhamento nao foi emitido nem efetivado; permanece apenas como rascunho ligado ao spine da sessao."
+        let mediatedNoteSummary = enforceDraftOnlyBoundary(
+            on: mediatedDerivedDraftText(
+                noteSummary,
+                actorId: "aaci.referral-draft",
+                gosView: gosView
+            ),
+            mediationFlags: gosFlags
+        )
+        let mediatedDraftOnlyNote = enforceDraftOnlyBoundary(
+            on: mediatedDerivedDraftText(
+                draftOnlyNote,
+                actorId: "aaci.referral-draft",
+                gosView: gosView
+            ),
+            mediationFlags: gosFlags
+        )
         let spineLink = DerivedDraftSpineLink(
             sourceSessionId: session.id,
             sourceSOAPDraftId: sourceSOAPDraft.draft.id,
@@ -167,16 +189,8 @@ public actor AACIOrchestrator {
                 "specialtyTarget": specialtyTarget,
                 "reason": reason,
                 "contextSummary": context.summary,
-                "noteSummary": mediatedDerivedDraftText(
-                    noteSummary,
-                    actorId: "aaci.referral-draft",
-                    gosView: gosView
-                ),
-                "draftOnlyNote": mediatedDerivedDraftText(
-                    draftOnlyNote,
-                    actorId: "aaci.referral-draft",
-                    gosView: gosView
-                ),
+                "noteSummary": mediatedNoteSummary,
+                "draftOnlyNote": mediatedDraftOnlyNote,
                 "sourceSOAPDraftId": sourceSOAPDraft.draft.id.uuidString
                 ],
                 actorId: "aaci.referral-draft",
@@ -188,17 +202,9 @@ public actor AACIOrchestrator {
             specialtyTarget: specialtyTarget,
             reason: reason,
             contextSummary: context.summary,
-            noteSummary: mediatedDerivedDraftText(
-                noteSummary,
-                actorId: "aaci.referral-draft",
-                gosView: gosView
-            ),
+            noteSummary: mediatedNoteSummary,
             readyForFutureGate: true,
-            draftOnlyNote: mediatedDerivedDraftText(
-                draftOnlyNote,
-                actorId: "aaci.referral-draft",
-                gosView: gosView
-            ),
+            draftOnlyNote: mediatedDraftOnlyNote,
             spineLink: spineLink
         )
     }
@@ -211,6 +217,7 @@ public actor AACIOrchestrator {
         sourceSOAPDraftRef: StorageObjectRef
     ) async -> PrescriptionDraftDocument {
         let gosView = activeGOSRuntimeView()
+        let gosFlags = gosView?.mediationFlags(for: "aaci.prescription-draft")
         let heuristics = makeDerivedDraftHeuristics(transcription: transcription, context: context)
         let medicationSuggestion = prescriptionMedicationSuggestion(from: heuristics)
         let instructionsDraft = prescriptionInstructions(from: heuristics)
@@ -222,6 +229,22 @@ public actor AACIOrchestrator {
             noteSummary = "Prescription draft em texto livre estruturado a partir do mesmo spine da sessao, sem constituir prescricao efetiva."
         }
         let draftOnlyNote = "Draft only. Esta sugestao medicamentosa nao equivale a prescricao emitida; dose, agente e efetivacao continuam dependentes de revisao humana."
+        let mediatedNoteSummary = enforceDraftOnlyBoundary(
+            on: mediatedDerivedDraftText(
+                noteSummary,
+                actorId: "aaci.prescription-draft",
+                gosView: gosView
+            ),
+            mediationFlags: gosFlags
+        )
+        let mediatedDraftOnlyNote = enforceDraftOnlyBoundary(
+            on: mediatedDerivedDraftText(
+                draftOnlyNote,
+                actorId: "aaci.prescription-draft",
+                gosView: gosView
+            ),
+            mediationFlags: gosFlags
+        )
         let spineLink = DerivedDraftSpineLink(
             sourceSessionId: session.id,
             sourceSOAPDraftId: sourceSOAPDraft.draft.id,
@@ -244,16 +267,8 @@ public actor AACIOrchestrator {
                 "instructionsDraft": instructionsDraft,
                 "rationale": rationale,
                 "contextSummary": context.summary,
-                "noteSummary": mediatedDerivedDraftText(
-                    noteSummary,
-                    actorId: "aaci.prescription-draft",
-                    gosView: gosView
-                ),
-                "draftOnlyNote": mediatedDerivedDraftText(
-                    draftOnlyNote,
-                    actorId: "aaci.prescription-draft",
-                    gosView: gosView
-                ),
+                "noteSummary": mediatedNoteSummary,
+                "draftOnlyNote": mediatedDraftOnlyNote,
                 "sourceSOAPDraftId": sourceSOAPDraft.draft.id.uuidString
                 ],
                 actorId: "aaci.prescription-draft",
@@ -266,17 +281,9 @@ public actor AACIOrchestrator {
             instructionsDraft: instructionsDraft,
             rationale: rationale,
             contextSummary: context.summary,
-            noteSummary: mediatedDerivedDraftText(
-                noteSummary,
-                actorId: "aaci.prescription-draft",
-                gosView: gosView
-            ),
+            noteSummary: mediatedNoteSummary,
             readyForFutureGate: true,
-            draftOnlyNote: mediatedDerivedDraftText(
-                draftOnlyNote,
-                actorId: "aaci.prescription-draft",
-                gosView: gosView
-            ),
+            draftOnlyNote: mediatedDraftOnlyNote,
             spineLink: spineLink
         )
     }
@@ -305,6 +312,14 @@ public actor AACIOrchestrator {
     ) -> [String: String] {
         guard let gosView else { return payload }
         return payload.merging(gosView.metadataForRuntimePath(actorId: actorId)) { current, _ in current }
+    }
+
+    private func enforceDraftOnlyBoundary(
+        on text: String,
+        mediationFlags: AACIGOSMediationFlags?
+    ) -> String {
+        guard let mediationFlags, mediationFlags.requiresHumanGateByBinding else { return text }
+        return text + " Human gate remains mandatory for any regulatory effect."
     }
 
     private func makeDerivedDraftHeuristics(

@@ -71,7 +71,8 @@ Legend:
 - [x] AACI runtime draft composition/referral/prescription now consume active GOS mediation directly inside orchestrator execution paths
 - [x] AACI now derives a small resolved runtime GOS view (bundle + bound actors + primitive families) and uses it directly in draft metadata, event attributes, and bounded runtime reasoning summaries
 - [x] first-slice runtime adoption now also applies that resolved runtime GOS view to capture/transcription/context metadata, event attributes, and explicit non-draft provenance usage
-- [x] first-slice provenance now records distinct GOS activation vs per-draft-path usage events for SOAP/referral/prescription composition, with actor-specific usage provenance on each draft path
+- [x] first-slice provenance now records distinct GOS activation vs SOAP draft composition usage (`gos.use.compose.soap`) vs derived-draft generation usage (`gos.use.derive.referral`, `gos.use.derive.prescription`), with actor-specific usage provenance on each draft path
+- [x] AACI resolved runtime GOS view now carries lifecycle/runtime-binding-plan identity and actor mediation flags used directly by SOAP/referral/prescription internal paths (`gosActorBound`, `gosDraftOutputBound`, `gosGateRequiredByBinding`, `gosDraftOnly`)
 - [x] file-backed lifecycle now persists review approval records and append-only lifecycle audit records for bundle review/activation transitions
 - [x] lifecycle persistence remains schema-aligned in `snake_case` across manifest, registry entry, review record, and audit artifacts
 - [x] minimal reviewed→active promotion helper is now available in file-backed registry and CLI command path

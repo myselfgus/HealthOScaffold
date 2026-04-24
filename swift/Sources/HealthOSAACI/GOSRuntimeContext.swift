@@ -16,7 +16,9 @@ public struct AACIResolvedGOSActorView: Codable, Sendable {
 public struct AACIResolvedGOSRuntimeView: Codable, Sendable {
     public let specId: String
     public let bundleId: String
+    public let lifecycle: GOSLifecycleState
     public let workflowTitle: String
+    public let bindingPlanRuntimeKind: RuntimeKind
     public let usedDefaultBindingPlan: Bool
     public let bindingCount: Int
     public let compilerWarningCount: Int
@@ -32,7 +34,9 @@ public struct AACIResolvedGOSRuntimeView: Codable, Sendable {
 
         self.specId = summary.specId
         self.bundleId = summary.bundleId
+        self.lifecycle = summary.lifecycleState
         self.workflowTitle = metadataTitle
+        self.bindingPlanRuntimeKind = bindingPlan.runtimeKind
         self.usedDefaultBindingPlan = summary.usedDefaultBindingPlan
         self.bindingCount = summary.bindingCount
         self.compilerWarningCount = summary.compilerWarningCount
@@ -52,7 +56,9 @@ public struct AACIResolvedGOSRuntimeView: Codable, Sendable {
         [
             "gosSpecId": specId,
             "gosBundleId": bundleId,
+            "gosLifecycle": lifecycle.rawValue,
             "gosWorkflowTitle": workflowTitle,
+            "gosBindingPlanRuntimeKind": bindingPlanRuntimeKind.rawValue,
             "gosUsedDefaultBindingPlan": String(usedDefaultBindingPlan),
             "gosBindingCount": String(bindingCount),
             "gosCompilerWarningCount": String(compilerWarningCount),
@@ -66,8 +72,13 @@ public struct AACIResolvedGOSRuntimeView: Codable, Sendable {
 
     public func metadataForRuntimePath(actorId: String) -> [String: String] {
         var metadata = payloadMetadata
+        let flags = mediationFlags(for: actorId)
         metadata["gosRuntimeActorId"] = actorId
         metadata["gosPrimitiveFamilies"] = primitiveFamilies(for: actorId).joined(separator: ",")
+        metadata["gosActorBound"] = String(flags.actorBound)
+        metadata["gosDraftOutputBound"] = String(flags.supportsDraftOutput)
+        metadata["gosGateRequiredByBinding"] = String(flags.requiresHumanGateByBinding)
+        metadata["gosDraftOnly"] = String(flags.draftOnly)
         metadata["gosReasoningBoundary"] = runtimeBoundarySummary(for: actorId)
         return metadata
     }
@@ -92,6 +103,26 @@ public struct AACIResolvedGOSRuntimeView: Codable, Sendable {
     public func primitiveFamilies(for actorId: String) -> [String] {
         bindingsByActorId[actorId]?.primitiveFamilies ?? []
     }
+
+    public func mediationFlags(for actorId: String) -> AACIGOSMediationFlags {
+        let families = Set(primitiveFamilies(for: actorId))
+        let actorBound = bindingsByActorId[actorId] != nil
+        let supportsDraftOutput = families.contains(GOSBindingPrimitiveFamily.draftOutputSpec.rawValue)
+        let requiresHumanGateByBinding = families.contains(GOSBindingPrimitiveFamily.humanGateRequirementSpec.rawValue)
+        return AACIGOSMediationFlags(
+            actorBound: actorBound,
+            supportsDraftOutput: supportsDraftOutput,
+            requiresHumanGateByBinding: requiresHumanGateByBinding,
+            draftOnly: true
+        )
+    }
+}
+
+public struct AACIGOSMediationFlags: Codable, Sendable {
+    public let actorBound: Bool
+    public let supportsDraftOutput: Bool
+    public let requiresHumanGateByBinding: Bool
+    public let draftOnly: Bool
 }
 
 struct AACIActiveGOSRuntime: Sendable {

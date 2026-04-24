@@ -60,10 +60,12 @@ Legend:
 - [x] TypeScript tooling package scaffold added for parse/canonicalize/validate/CLI flows
 - [x] cross-reference validation scaffold added
 - [x] lifecycle state set and canonical bundle identity posture documented
+- [x] Swift contracts established for compiled bundles, registry entries, bundle loader, bundle registry, and runtime binding plans
+- [x] AACI default runtime binding plan scaffold established in Swift
+- [~] file-backed runtime loader/registry exists only as scaffold
 - [~] schema-workflow validation is not yet implemented
 - [~] provenance-preserving compile output remains minimal and should be strengthened
-- [~] runtime loader/binding contracts from AACI/other runtimes remain to be built
-- [~] activation/deprecation mechanics and bundle registry/storage implementation remain to be built
+- [~] activation/deprecation mechanics and bundle registry/storage implementation remain to be completed
 
 ## 6. AACI
 - [x] purpose and boundaries established
@@ -74,6 +76,7 @@ Legend:
 - [x] provider-routing baseline exists by task class
 - [x] provider-threshold policy exists by task class
 - [x] AACI now explicitly described as primary early consumer of GOS
+- [x] AACI now has a default GOS primitive-family binding map scaffold in Swift
 
 ## 7. Apps / interfaces
 - [x] Scribe defined
@@ -157,5 +160,5 @@ What remains is mostly optional hardening and procedural refinement, not identit
 - [x] HealthOS now has a named, native intermediate operational spec layer
 - [x] that layer is explicitly subordinated to core law rather than competing with it
 - [x] all declared GOS primitive families now exist in canonical schema form
-- [x] GOS now also has authoring docs, runtime-binding docs, lifecycle docs, a generic YAML template, an authoring schema, a bundle-manifest schema, and TypeScript tooling scaffold
+- [x] GOS now also has authoring docs, runtime-binding docs, lifecycle docs, a generic YAML template, an authoring schema, a bundle-manifest schema, TypeScript tooling scaffold, and Swift runtime contracts
 - [~] GOS still needs stronger validator/lifecycle/runtime-loader implementation before heavy runtime adoption

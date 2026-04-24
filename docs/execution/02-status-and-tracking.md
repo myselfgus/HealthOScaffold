@@ -121,6 +121,10 @@ Current phase: Controlled implementation — first vertical slice started
 - first vertical slice implementation continues with seeded-text compatibility, a structured local retrieval/context package, richer gate/document semantics, draft-only referral/prescription derivatives, and a now-wired local-audio path, while real local transcription and earlier draft-refresh finalization remain deferred
 - doctrinal language hardening completed for sovereignty/privacy/compliance/topology without introducing infrastructure expansion
 - GOS now exists as doctrine + schema + authoring workspace + schema-aware compiler/validator/CLI + lifecycle/bundle posture + Swift runtime contracts + hardened loader seams + runtime-mediated draft adoption, while broader subagent-path adoption and policy depth still remain open
+- AACI now consumes an explicit resolved GOS runtime view in-draft composition (SOAP/referral/prescription), with actor/family-aware metadata and bounded runtime reasoning summaries rather than opaque active-bundle flags
+- first-slice provenance now distinguishes bundle activation from bundle usage in each draft path (`gos.use.compose.soap`, `gos.use.compose.referral`, `gos.use.compose.prescription`)
+- smoke-level lifecycle ergonomics now include a reviewed→active promotion command path (`swift run HealthOSCLI --gos-promote-bundle <bundle-id> --gos-spec-id <spec-id>`)
+- scaffold validation coverage now includes Swift XCTest for AACI/registry/first-slice GOS paths and Node tests for TS GOS tooling compile/cross-reference contracts
 
 ## Known gaps
 
@@ -130,7 +134,7 @@ Current phase: Controlled implementation — first vertical slice started
 - Scribe now has a minimal validation UI surface, but it is not yet a full/final app shell
 - draft refresh remains preview/degraded until gate resolution runs the full executable spine
 - referral/prescription drafts now exist, but their regulatory effectuation/issuance remains intentionally deferred
-- GOS still needs stronger human review/activation mechanics and deeper execution-time adoption across AACI paths beyond the current draft-focused runtime mediation
+- GOS still needs stronger approval/audit policy depth and deeper execution-time adoption across AACI paths beyond the current draft-focused runtime mediation
 
 ## Open blockers / decisions
 

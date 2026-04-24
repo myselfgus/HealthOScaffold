@@ -51,7 +51,9 @@ It is intentionally not about scenario-specific implementations.
 - [x] AACI activation/loading surface added in Swift
 - [x] first-slice runner now attempts optional GOS activation and uses the resulting bundle to mediate persisted SOAP/referral/prescription drafts, events, and provenance when an active bundle exists
 - [x] AACI draft composition/referral/prescription paths now apply active-bundle mediation inside orchestrator runtime execution (runner no longer mutates draft content as the primary mediation point)
-- [~] bundle-provided runtime binding plans are loadable and active in current draft paths, but broader subagent-path adoption still remains open
+- [x] AACI now exposes a small resolved runtime view for active GOS bundles and uses that view directly in SOAP/referral/prescription draft composition metadata and runtime boundary summaries
+- [x] first-slice provenance now explicitly distinguishes bundle activation from per-draft-path usage (`gos.use.compose.soap`, `gos.use.compose.referral`, `gos.use.compose.prescription`)
+- [~] bundle-provided runtime binding plans are loadable and active in current draft paths, but broader non-draft subagent-path adoption still remains open
 
 ## 5. Storage / lifecycle
 - [x] canonical storage/location posture documented
@@ -62,11 +64,19 @@ It is intentionally not about scenario-specific implementations.
 - [x] minimal activation hardening added: only reviewed/active bundles may be promoted, and deprecate/revoke clear active registry pointers
 - [x] bootstrap exemplar bundle, registry entry, and copy script added for `aaci.first-slice`
 - [x] minimum loader hardening added for registry-pointer consistency, manifest/spec/report/source-provenance presence, compiler-report validity checks, and runtime-binding-plan shape checks
+- [x] minimal lifecycle ergonomics helper added for reviewed→active promotion (`FileBackedGOSBundleRegistry.promoteReviewedBundle(...)`, surfaced in CLI as `--gos-promote-bundle`)
 - [~] registry/storage implementation is now stable-minimum, but richer policy controls/version pinning are still open
 
 ## 6. App boundary discipline
 - [x] app-boundary doctrine clarified: apps do not interpret GOS as sovereign law
 - [x] examples of allowed Scribe/Sortio/CloudClinic consumption patterns documented
+
+## 7. Validation hardening
+- [x] Swift XCTest coverage added for:
+  - AACI resolved GOS runtime view influence in SOAP/referral/prescription draft payloads
+  - first-slice provenance distinction between GOS activation and GOS draft-path usage
+  - reviewed→active lifecycle promotion helper behavior in file-backed registry
+- [x] TypeScript tests added for `@healthos/gos-tooling` compile + cross-reference failure paths
 
 ## Reading rule
 

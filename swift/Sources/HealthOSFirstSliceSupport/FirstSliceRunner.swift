@@ -244,6 +244,11 @@ public actor FirstSliceRunner {
             transcription: transcription,
             context: retrieval
         )
+        try await appendGOSUsageProvenanceIfActive(
+            operation: "gos.use.compose.soap",
+            activation: gosActivation,
+            to: &provenanceRecords
+        )
         let draftDocument = mediateSOAPDraftIfNeeded(composedSOAPDraft, activation: gosActivation)
         let draftData = try JSONEncoder.healthOS.encode(draftDocument)
         let draftRef = try await storage.put(
@@ -292,6 +297,11 @@ public actor FirstSliceRunner {
             context: retrieval,
             sourceSOAPDraft: draftDocument,
             sourceSOAPDraftRef: draftRef
+        )
+        try await appendGOSUsageProvenanceIfActive(
+            operation: "gos.use.compose.referral",
+            activation: gosActivation,
+            to: &provenanceRecords
         )
         let referralDraftDocument = mediateReferralDraftIfNeeded(composedReferralDraft, activation: gosActivation)
         let referralDraftData = try JSONEncoder.healthOS.encode(referralDraftDocument)
@@ -351,6 +361,11 @@ public actor FirstSliceRunner {
             context: retrieval,
             sourceSOAPDraft: draftDocument,
             sourceSOAPDraftRef: draftRef
+        )
+        try await appendGOSUsageProvenanceIfActive(
+            operation: "gos.use.compose.prescription",
+            activation: gosActivation,
+            to: &provenanceRecords
         )
         let prescriptionDraftDocument = mediatePrescriptionDraftIfNeeded(composedPrescriptionDraft, activation: gosActivation)
         let prescriptionDraftData = try JSONEncoder.healthOS.encode(prescriptionDraftDocument)
@@ -661,6 +676,26 @@ public actor FirstSliceRunner {
             )
             return nil
         }
+    }
+
+    private func appendGOSUsageProvenanceIfActive(
+        operation: String,
+        activation: AACIGOSActivationSummary?,
+        to records: inout [ProvenanceRecord]
+    ) async throws {
+        guard let activation else { return }
+        try await appendProvenance(
+            .init(
+                actorId: "aaci.gos",
+                operation: operation,
+                providerName: "aaci-runtime",
+                modelName: activation.specId,
+                modelVersion: activation.bundleId,
+                promptVersion: activation.usedDefaultBindingPlan ? "default-binding-plan" : "bundle-binding-plan",
+                timestamp: .now
+            ),
+            to: &records
+        )
     }
 
     private func mediateSOAPDraftIfNeeded(

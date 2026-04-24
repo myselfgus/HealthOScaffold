@@ -7,6 +7,17 @@ struct HealthOSCLI {
     static func main() async {
         do {
             let arguments = Array(ProcessInfo.processInfo.arguments.dropFirst())
+            if let bundleId = value(for: "--gos-promote-bundle", in: arguments) {
+                let specId = value(for: "--gos-spec-id", in: arguments) ?? "aaci.first-slice"
+                let root = try resolveRuntimeRoot()
+                let registry = FileBackedGOSBundleRegistry(root: root)
+                try await registry.promoteReviewedBundle(bundleId: bundleId, specId: specId)
+                print("gos_bundle_promoted=true")
+                print("gos_spec_id=\(specId)")
+                print("gos_bundle_id=\(bundleId)")
+                return
+            }
+
             let approveGate = !arguments.contains("--reject-gate")
             let environment = try await ScribeFirstSliceDemoBootstrap.makeEnvironment()
             guard let patient = environment.patients.first else {
@@ -125,6 +136,19 @@ struct HealthOSCLI {
         let valueIndex = arguments.index(after: index)
         guard valueIndex < arguments.endIndex else { return nil }
         return arguments[valueIndex]
+    }
+
+    private static func resolveRuntimeRoot(fileManager: FileManager = .default) throws -> URL {
+        var candidate = URL(fileURLWithPath: fileManager.currentDirectoryPath, isDirectory: true).standardizedFileURL
+        for _ in 0..<5 {
+            if fileManager.fileExists(atPath: candidate.appending(path: "runtime-data").path) {
+                return candidate.appending(path: "runtime-data/Users/Shared/HealthOS").standardizedFileURL
+            }
+            let parent = candidate.deletingLastPathComponent()
+            guard parent.path != candidate.path else { break }
+            candidate = parent
+        }
+        throw CLIError.invalidState("Could not resolve runtime-data root for GOS promotion command.")
     }
 }
 

@@ -1,0 +1,42 @@
+{
+  "spec_id": "aaci.first-slice",
+  "runtime_kind": "aaci",
+  "bindings": [
+    {
+      "runtime_kind": "aaci",
+      "actor_id": "aaci.capture",
+      "semantic_role": "capture-normalizer",
+      "primitive_families": ["signal_spec", "slot_spec", "evidence_hook_spec"]
+    },
+    {
+      "runtime_kind": "aaci",
+      "actor_id": "aaci.transcription",
+      "semantic_role": "speech-to-text",
+      "primitive_families": ["signal_spec", "task_spec", "guard_spec", "evidence_hook_spec"]
+    },
+    {
+      "runtime_kind": "aaci",
+      "actor_id": "aaci.context",
+      "semantic_role": "bounded-context-retriever",
+      "primitive_families": ["slot_spec", "derivation_spec", "task_spec", "guard_spec", "scope_requirement_spec", "evidence_hook_spec"]
+    },
+    {
+      "runtime_kind": "aaci",
+      "actor_id": "aaci.draft-composer",
+      "semantic_role": "draft-composer",
+      "primitive_families": ["slot_spec", "derivation_spec", "task_spec", "draft_output_spec", "human_gate_requirement_spec", "evidence_hook_spec"]
+    },
+    {
+      "runtime_kind": "aaci",
+      "actor_id": "aaci.referral-draft",
+      "semantic_role": "referral-draft-composer",
+      "primitive_families": ["slot_spec", "derivation_spec", "task_spec", "draft_output_spec", "human_gate_requirement_spec", "evidence_hook_spec"]
+    },
+    {
+      "runtime_kind": "aaci",
+      "actor_id": "aaci.prescription-draft",
+      "semantic_role": "prescription-draft-composer",
+      "primitive_families": ["slot_spec", "derivation_spec", "task_spec", "draft_output_spec", "human_gate_requirement_spec", "evidence_hook_spec"]
+    }
+  ]
+}

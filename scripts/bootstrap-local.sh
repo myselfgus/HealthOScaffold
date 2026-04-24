@@ -10,7 +10,7 @@ mkdir -p "${DATA_ROOT}/runtimes"/{aaci,async,user-agent}
 mkdir -p "${DATA_ROOT}/models"/{registry,adapters,evaluations,datasets,providers}
 mkdir -p "${DATA_ROOT}/network"/{mesh,certs,policies}
 
-"${ROOT_DIR}/scripts/bootstrap-gos-first-slice.sh"
+bash "${ROOT_DIR}/scripts/bootstrap-gos-first-slice.sh"
 
 echo "HealthOS runtime-data scaffold created at: ${DATA_ROOT}"
 echo "Next:"

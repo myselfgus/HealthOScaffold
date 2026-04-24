@@ -29,13 +29,14 @@ It is intentionally not about scenario-specific implementations.
 - [x] compiler output contract documented
 - [x] conservative failure doctrine documented
 - [x] TypeScript compiler/CLI scaffold added
-- [~] source provenance preservation needs stronger implementation
+- [x] source provenance hashing/reporting added to compile output
+- [x] bundle generation command added to CLI
 - [~] human review/correction loop still needs stronger implementation support
 
 ## 3. Validation
 - [x] cross-reference validation scaffold added
-- [ ] schema validation workflow for canonical GOS JSON still needs implementation
-- [ ] invariant validation still needs implementation
+- [x] schema validation workflow added inside TypeScript tooling via Ajv-based validation helpers
+- [x] simple invariant validation added (for example gate-required draft outputs without matching human gate requirements)
 - [ ] evidence-hook completeness validation still needs implementation
 
 ## 4. Runtime binding
@@ -44,15 +45,17 @@ It is intentionally not about scenario-specific implementations.
 - [x] draft/gate/scope discipline documented for runtime use
 - [x] Swift contracts added for GOS bundle loading, registry, bundle manifest, compiled bundle, and runtime binding plan
 - [x] default AACI runtime binding plan scaffold added in Swift
-- [~] file-backed runtime loader/registry scaffold exists, but operational implementation remains incomplete
+- [x] AACI activation/loading surface added in Swift
+- [~] bundle-provided runtime binding plans are loadable in the core loader seam, but deep execution-time adoption inside AACI subagent paths still remains open
 
 ## 5. Storage / lifecycle
 - [x] canonical storage/location posture documented
 - [x] lifecycle states documented
 - [x] rollback posture documented
 - [x] bundle-manifest schema added
+- [x] minimal file-backed bundle registry/loader implementation added in Swift
 - [~] activation/deprecation mechanics still need stronger implementation
-- [~] bundle registry/storage implementation remains scaffold-level only
+- [~] registry/storage implementation is now minimal-functional, but not yet hardened
 
 ## 6. App boundary discipline
 - [x] app-boundary doctrine clarified: apps do not interpret GOS as sovereign law
@@ -72,4 +75,6 @@ Any future work on GOS should begin from:
 - `gos/templates/blank.gos.yaml`
 - `ts/packages/healthos-gos-tooling/`
 - `swift/Sources/HealthOSCore/GovernedOperationalSpec.swift`
+- `swift/Sources/HealthOSCore/GOSFileBackedRegistry.swift`
 - `swift/Sources/HealthOSAACI/GOSBindings.swift`
+- `swift/Sources/HealthOSAACI/GOSRuntimeActivation.swift`

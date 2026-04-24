@@ -46,6 +46,7 @@ It is intentionally not about scenario-specific implementations.
 - [x] Swift contracts added for GOS bundle loading, registry, bundle manifest, compiled bundle, and runtime binding plan
 - [x] default AACI runtime binding plan scaffold added in Swift
 - [x] AACI activation/loading surface added in Swift
+- [x] first-slice runner now attempts optional GOS activation and uses the resulting bundle to mediate persisted SOAP/referral/prescription drafts, events, and provenance when an active bundle exists
 - [~] bundle-provided runtime binding plans are loadable in the core loader seam, but deep execution-time adoption inside AACI subagent paths still remains open
 
 ## 5. Storage / lifecycle
@@ -79,3 +80,4 @@ Any future work on GOS should begin from:
 - `swift/Sources/HealthOSCore/GOSFileBackedRegistry.swift`
 - `swift/Sources/HealthOSAACI/GOSBindings.swift`
 - `swift/Sources/HealthOSAACI/GOSRuntimeActivation.swift`
+- `swift/Sources/HealthOSFirstSliceSupport/FirstSliceRunner.swift`

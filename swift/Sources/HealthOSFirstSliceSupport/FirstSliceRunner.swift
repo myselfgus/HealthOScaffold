@@ -319,7 +319,7 @@ public actor FirstSliceRunner {
             sourceSOAPDraftRef: draftRef
         )
         try await appendGOSUsageProvenanceIfActive(
-            operation: "gos.use.compose.referral",
+            operation: "gos.use.derive.referral",
             actorId: "aaci.referral-draft",
             runtimeView: gosRuntimeView,
             to: &provenanceRecords
@@ -389,7 +389,7 @@ public actor FirstSliceRunner {
             sourceSOAPDraftRef: draftRef
         )
         try await appendGOSUsageProvenanceIfActive(
-            operation: "gos.use.compose.prescription",
+            operation: "gos.use.derive.prescription",
             actorId: "aaci.prescription-draft",
             runtimeView: gosRuntimeView,
             to: &provenanceRecords

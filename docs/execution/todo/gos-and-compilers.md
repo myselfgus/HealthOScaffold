@@ -56,7 +56,7 @@ It is intentionally not about scenario-specific implementations.
 - [x] AACI now exposes a small resolved runtime view for active GOS bundles and uses that view directly in SOAP/referral/prescription draft composition metadata, runtime boundary summaries, and bound-actor/family lookups
 - [x] first-slice runner now derives persisted storage metadata and event attributes from the resolved runtime view instead of only from activation-summary flags
 - [x] first-slice runtime adoption now also uses the resolved runtime view for capture/transcription/context-retrieval metadata, reasoning boundaries, and explicit non-draft usage provenance
-- [x] first-slice provenance now explicitly distinguishes bundle activation from per-draft-path usage (`gos.use.compose.soap`, `gos.use.compose.referral`, `gos.use.compose.prescription`) and records the concrete composing actor for each usage path
+- [x] first-slice provenance now explicitly distinguishes bundle activation from SOAP draft composition usage (`gos.use.compose.soap`) and derived-draft generation usage (`gos.use.derive.referral`, `gos.use.derive.prescription`), recording the concrete composing actor for each path
 - [~] bundle-provided runtime binding plans are now active across current first-slice capture/transcription/context/draft paths, but broader AACI adoption beyond those runtime paths still remains open
 
 ## 5. Storage / lifecycle

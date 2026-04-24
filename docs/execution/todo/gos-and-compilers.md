@@ -32,7 +32,7 @@ It is intentionally not about scenario-specific implementations.
 - [x] TypeScript compiler/CLI scaffold added
 - [x] source provenance hashing/reporting added to compile output
 - [x] bundle generation command added to CLI
-- [~] human review/correction loop still needs stronger implementation support
+- [~] human review/correction loop now has persisted review approval + lifecycle audit support, but still lacks richer multi-review correction flow
 
 ## 3. Validation
 - [x] cross-reference validation scaffold added
@@ -42,6 +42,7 @@ It is intentionally not about scenario-specific implementations.
 - [x] bundle CLI smoke coverage now verifies manifest/spec/compiler-report/source-provenance emission for canonical lifecycle artifacts
 - [x] local validation checklist documented
 - [x] local workspace validation run executed (`bootstrap`, TS build/validate/bundle, Swift build, HealthOSCLI smoke, HealthOSScribeApp smoke)
+- [x] local lifecycle smoke now also confirms `--gos-review-bundle` and `--gos-promote-bundle` with persisted review/audit artifacts
 
 ## 4. Runtime binding
 - [x] AACI-to-GOS binding doctrine documented
@@ -54,8 +55,9 @@ It is intentionally not about scenario-specific implementations.
 - [x] AACI draft composition/referral/prescription paths now apply active-bundle mediation inside orchestrator runtime execution (runner no longer mutates draft content as the primary mediation point)
 - [x] AACI now exposes a small resolved runtime view for active GOS bundles and uses that view directly in SOAP/referral/prescription draft composition metadata, runtime boundary summaries, and bound-actor/family lookups
 - [x] first-slice runner now derives persisted storage metadata and event attributes from the resolved runtime view instead of only from activation-summary flags
+- [x] first-slice runtime adoption now also uses the resolved runtime view for capture/transcription/context-retrieval metadata, reasoning boundaries, and explicit non-draft usage provenance
 - [x] first-slice provenance now explicitly distinguishes bundle activation from per-draft-path usage (`gos.use.compose.soap`, `gos.use.compose.referral`, `gos.use.compose.prescription`) and records the concrete composing actor for each usage path
-- [~] bundle-provided runtime binding plans are loadable and active in current draft paths, but broader non-draft subagent-path adoption still remains open
+- [~] bundle-provided runtime binding plans are now active across current first-slice capture/transcription/context/draft paths, but broader AACI adoption beyond those runtime paths still remains open
 
 ## 5. Storage / lifecycle
 - [x] canonical storage/location posture documented
@@ -67,7 +69,9 @@ It is intentionally not about scenario-specific implementations.
 - [x] bootstrap exemplar bundle, registry entry, and copy script added for `aaci.first-slice`
 - [x] minimum loader hardening added for registry-pointer consistency, manifest/spec/report/source-provenance presence, compiler-report validity checks, and runtime-binding-plan shape checks
 - [x] minimal lifecycle ergonomics helper added for reviewed→active promotion (`FileBackedGOSBundleRegistry.promoteReviewedBundle(...)`, surfaced in CLI as `--gos-promote-bundle`)
-- [~] registry/storage implementation is now stable-minimum, but richer policy controls/version pinning are still open
+- [x] draft→reviewed review records and append-only lifecycle audit records now persist in the file-backed registry/CLI path
+- [x] registry lifecycle persistence now remains schema-aligned in `snake_case` across manifest, registry entry, review record, and audit artifacts
+- [~] registry/storage implementation is now stable-minimum, but richer policy controls, separation of duties, and version pinning are still open
 
 ## 6. App boundary discipline
 - [x] app-boundary doctrine clarified: apps do not interpret GOS as sovereign law
@@ -76,8 +80,8 @@ It is intentionally not about scenario-specific implementations.
 ## 7. Validation hardening
 - [~] Swift XCTest coverage added in-repo for:
   - AACI resolved GOS runtime view influence in SOAP/referral/prescription draft payloads
-  - first-slice provenance distinction between GOS activation and GOS draft-path usage
-  - reviewed→active lifecycle promotion helper behavior in file-backed registry
+  - first-slice provenance distinction between GOS activation, non-draft usage (`gos.use.transcription`, `gos.use.context.retrieve`), and draft-path usage
+  - reviewed→active lifecycle promotion helper behavior in file-backed registry, including persisted review/audit artifacts and snake_case lifecycle files
   note: the current local Swift toolchain on this machine does not expose `XCTest`, so `swift test` currently validates package buildability while executable GOS closure is confirmed through CLI smoke runs
 - [x] TypeScript tests added for `@healthos/gos-tooling` compile + cross-reference failure paths
 - [x] TypeScript tests now also cover bundle CLI lifecycle artifact emission
@@ -97,6 +101,8 @@ Any future work on GOS should begin from:
 - `schemas/governed-operational-spec.schema.json`
 - `schemas/governed-operational-spec-authoring.schema.json`
 - `schemas/governed-operational-spec-bundle-manifest.schema.json`
+- `schemas/governed-operational-spec-review-record.schema.json`
+- `schemas/governed-operational-spec-lifecycle-audit.schema.json`
 - `gos/specs/aaci.first-slice.gos.yaml`
 - `ts/packages/healthos-gos-tooling/`
 - `swift/Sources/HealthOSCore/GovernedOperationalSpec.swift`

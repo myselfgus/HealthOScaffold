@@ -56,6 +56,7 @@ That activation step:
 - reads bundle lifecycle state
 - selects bundle-provided runtime binding plan when present
 - falls back to the AACI default binding plan when bundle-local binding is absent
+- derives a small resolved runtime view from the active bundle and binding plan
 - returns an activation summary instead of silently hiding binding state
 
 ### 3. lawful-context boundary
@@ -81,6 +82,23 @@ Examples:
 - deadline specs guide timers and timing surfaces
 - evidence hook specs guide provenance/audit collection
 - human gate requirement specs guide draft-only vs effectable boundaries
+
+## Current executable AACI posture
+
+The scaffold now uses the resolved runtime view as a small adaptation layer between the active bundle and AACI execution.
+
+That means:
+- AACI does not pass raw compiled GOS JSON through orchestration paths
+- AACI does not interpret GOS as arbitrary executable code
+- the runtime consumes only the bundle identity, workflow title, actor bindings, primitive-family bindings, and bounded reasoning summary needed for the current path
+
+In the current first-slice executable path, that resolved runtime view now mediates:
+- capture event/state metadata
+- transcription metadata and explicit `gos.use.transcription` provenance
+- context retrieval metadata and explicit `gos.use.context.retrieve` provenance
+- SOAP draft composition
+- referral draft derivation
+- prescription draft derivation
 
 ### 5. runtime-state surfacing
 Runtimes should surface GOS-driven state to apps only through runtime-state surfaces.
@@ -175,8 +193,7 @@ Runtime binding does not mean:
 ## Remaining work
 
 Still needed after this binding wave:
-- stronger registry mechanics
-- explicit activation policy controls beyond minimal lifecycle checks
+- broader adoption beyond the current first-slice runtime paths
+- richer runtime validation hooks outside the current binding-plan and bundle-integrity checks
 - version pinning rules
-- richer runtime validation hooks
 - app-surface policy for which GOS-derived facts may be exposed

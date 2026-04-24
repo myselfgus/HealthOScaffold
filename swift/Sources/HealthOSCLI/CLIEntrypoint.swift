@@ -7,14 +7,48 @@ struct HealthOSCLI {
     static func main() async {
         do {
             let arguments = Array(ProcessInfo.processInfo.arguments.dropFirst())
-            if let bundleId = value(for: "--gos-promote-bundle", in: arguments) {
+            if let bundleId = value(for: "--gos-review-bundle", in: arguments) {
                 let specId = value(for: "--gos-spec-id", in: arguments) ?? "aaci.first-slice"
+                let reviewerId = value(for: "--reviewer-id", in: arguments) ?? NSUserName()
+                let reviewerRole = value(for: "--reviewer-role", in: arguments) ?? "operator"
+                let rationale = value(for: "--review-rationale", in: arguments) ?? "bundle reviewed via HealthOSCLI"
                 let root = try resolveRuntimeRoot()
                 let registry = FileBackedGOSBundleRegistry(root: root)
-                try await registry.promoteReviewedBundle(bundleId: bundleId, specId: specId)
+                let reviewRecord = try await registry.review(
+                    bundleId: bundleId,
+                    specId: specId,
+                    reviewerId: reviewerId,
+                    reviewerRole: reviewerRole,
+                    rationale: rationale
+                )
+                print("gos_bundle_reviewed=true")
+                print("gos_spec_id=\(specId)")
+                print("gos_bundle_id=\(bundleId)")
+                print("gos_review_record_id=\(reviewRecord.id.uuidString)")
+                print("gos_reviewer_id=\(reviewRecord.reviewerId)")
+                print("gos_reviewer_role=\(reviewRecord.reviewerRole)")
+                return
+            }
+            if let bundleId = value(for: "--gos-promote-bundle", in: arguments) {
+                let specId = value(for: "--gos-spec-id", in: arguments) ?? "aaci.first-slice"
+                let operatorId = value(for: "--operator-id", in: arguments) ?? NSUserName()
+                let operatorRole = value(for: "--operator-role", in: arguments) ?? "operator"
+                let rationale = value(for: "--activation-rationale", in: arguments) ?? "bundle promoted via HealthOSCLI"
+                let root = try resolveRuntimeRoot()
+                let registry = FileBackedGOSBundleRegistry(root: root)
+                let auditRecord = try await registry.promoteReviewedBundle(
+                    bundleId: bundleId,
+                    specId: specId,
+                    actorId: operatorId,
+                    actorRole: operatorRole,
+                    rationale: rationale
+                )
                 print("gos_bundle_promoted=true")
                 print("gos_spec_id=\(specId)")
                 print("gos_bundle_id=\(bundleId)")
+                print("gos_activation_audit_id=\(auditRecord.id.uuidString)")
+                print("gos_operator_id=\(auditRecord.actorId)")
+                print("gos_operator_role=\(auditRecord.actorRole)")
                 return
             }
 

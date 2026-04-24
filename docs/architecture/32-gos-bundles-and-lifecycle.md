@@ -22,6 +22,11 @@ A GOS bundle contains at least:
 - compiler report
 - source provenance references
 
+The current scaffold also persists:
+- runtime binding plan when bundle-local bindings are present
+- review approval record when a draft bundle is reviewed
+- append-only lifecycle audit records for registry actions
+
 ## Bundle identity
 
 Each bundle should have:
@@ -56,6 +61,7 @@ Meaning:
 Compile success is not activation.
 Review is not activation.
 Only explicit activation policy should make a bundle active.
+In the current scaffold, a reviewed bundle must also carry a recorded review approval before promotion to `active`.
 
 ## Storage posture
 
@@ -63,6 +69,7 @@ Recommended canonical storage posture for compiled GOS bundles:
 
 ```text
 /system/gos/
+  audit.jsonl
   registry/
   bundles/
     <bundle-id>/
@@ -70,10 +77,12 @@ Recommended canonical storage posture for compiled GOS bundles:
       spec.json
       compiler-report.json
       source-provenance.json
+      runtime-binding-plan.json
+      review-approval.json
 ```
 
-This is a storage recommendation for future implementation.
-It does not require immediate runtime adoption.
+This is no longer only a recommendation.
+The current file-backed scaffold now persists bundle lifecycle state in this shape, with `review-approval.json` present when review occurs and `audit.jsonl` recording lifecycle transitions.
 
 ## Runtime loading rule
 
@@ -97,12 +106,14 @@ Preferred rule:
 - change activation status
 - preserve old bundle for provenance
 
+The current file-backed registry follows this posture by updating active pointers and appending lifecycle audit records instead of mutating old audit history away.
+
 ## Non-goals
 
 This doc does not yet implement:
-- runtime bundle loader
-- registry service
 - approval workflow UI
 - distributed replication logic
+- multi-review / multi-approver policy
+- version-pinning and rollout policy beyond one active pointer per spec
 
-It only sets the architectural posture so future implementation does not invent lifecycle rules ad hoc.
+It now sets the posture and the minimum file-backed implementation shape so future hardening does not invent lifecycle rules ad hoc.

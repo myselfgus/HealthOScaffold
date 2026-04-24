@@ -82,13 +82,17 @@ public actor FirstSliceRunner {
                 )
             )
         )
+        let gosRuntimeView = try await activateGOSIfAvailable(to: &provenanceRecords)
         events.append(
             SessionEventRecord(
                 sessionId: session.id,
                 kind: .captureReceived,
                 payload: FirstSliceSessionEventPayload(
                     summary: "Capture input accepted.",
-                    attributes: ["captureMode": input.capture.mode.rawValue]
+                    attributes: captureReceivedEventAttributes(
+                        capture: input.capture,
+                        runtimeView: gosRuntimeView
+                    )
                 )
             )
         )
@@ -99,7 +103,8 @@ public actor FirstSliceRunner {
             serviceId: service.id,
             patientUserId: patient.id,
             actorId: professional.id.uuidString,
-            lawfulContext: lawfulContext
+            lawfulContext: lawfulContext,
+            runtimeView: gosRuntimeView
         )
         if let audioCapture {
             events.append(
@@ -108,10 +113,10 @@ public actor FirstSliceRunner {
                     kind: .audioCapturePersisted,
                     payload: FirstSliceSessionEventPayload(
                         summary: "Local audio capture persisted.",
-                        attributes: [
-                            "objectPath": audioCapture.storedRef.objectPath,
-                            "displayName": audioCapture.reference.displayName
-                        ]
+                        attributes: audioCaptureEventAttributes(
+                            audioCapture: audioCapture,
+                            runtimeView: gosRuntimeView
+                        )
                     )
                 )
             )
@@ -119,6 +124,7 @@ public actor FirstSliceRunner {
                 .init(
                     actorId: "aaci.capture",
                     operation: "capture.audio.persist",
+                    promptVersion: gosPromptVersion(prefix: "capture-audio-v1", runtimeView: gosRuntimeView),
                     outputHash: audioCapture.storedRef.contentHash,
                     timestamp: .now
                 ),
@@ -152,7 +158,8 @@ public actor FirstSliceRunner {
                 serviceId: service.id,
                 patientUserId: patient.id,
                 actorId: professional.id.uuidString,
-                lawfulContext: lawfulContext
+                lawfulContext: lawfulContext,
+                runtimeView: gosRuntimeView
             )
             transcription = TranscriptionOutput(
                 status: transcription.status == .ready ? .ready : .degraded,
@@ -164,13 +171,22 @@ public actor FirstSliceRunner {
             )
         }
 
+        try await appendGOSUsageProvenanceIfActive(
+            operation: "gos.use.transcription",
+            actorId: "aaci.transcription",
+            runtimeView: gosRuntimeView,
+            to: &provenanceRecords
+        )
         events.append(
             SessionEventRecord(
                 sessionId: session.id,
                 kind: .transcriptionProcessed,
                 payload: FirstSliceSessionEventPayload(
                     summary: transcriptionEventSummary(for: transcription),
-                    attributes: transcriptionEventAttributes(for: transcription)
+                    attributes: transcriptionEventAttributes(
+                        for: transcription,
+                        runtimeView: gosRuntimeView
+                    )
                 )
             )
         )
@@ -181,14 +197,13 @@ public actor FirstSliceRunner {
                 providerName: transcription.source,
                 modelName: transcription.source == "seeded-text" ? nil : "stub",
                 modelVersion: "v1",
+                promptVersion: gosPromptVersion(prefix: "transcription-v1", runtimeView: gosRuntimeView),
                 inputHash: transcription.audioCapture?.storedRef.contentHash,
                 outputHash: transcription.transcriptRef?.contentHash,
                 timestamp: .now
             ),
             to: &provenanceRecords
         )
-
-        let gosRuntimeView = try await activateGOSIfAvailable(to: &provenanceRecords)
 
         try await seedDemoRecordIndexIfNeeded(serviceId: service.id, patientUserId: patient.id)
 
@@ -210,21 +225,25 @@ public actor FirstSliceRunner {
             transcription: transcription,
             boundedResult: boundedResult
         )
+        try await appendGOSUsageProvenanceIfActive(
+            operation: "gos.use.context.retrieve",
+            actorId: "aaci.context",
+            runtimeView: gosRuntimeView,
+            to: &provenanceRecords
+        )
         events.append(
             SessionEventRecord(
                 sessionId: session.id,
                 kind: .contextRetrieved,
                 payload: FirstSliceSessionEventPayload(
                     summary: retrievalEventSummary(retrieval),
-                    attributes: [
-                        "count": String(retrieval.supportingMatches.count),
-                        "source": boundedResult.source,
-                        "quality": boundedResult.quality.rawValue,
-                        "contextStatus": retrieval.status.rawValue,
-                        "intent": retrievalIntent.rawValue,
-                        "fallbackEmpty": String(boundedResult.isFallbackEmpty),
-                        "transcriptionStatus": transcription.status.rawValue
-                    ]
+                    attributes: retrievalEventAttributes(
+                        retrieval: retrieval,
+                        boundedResult: boundedResult,
+                        retrievalIntent: retrievalIntent,
+                        transcription: transcription,
+                        runtimeView: gosRuntimeView
+                    )
                 )
             )
         )
@@ -819,7 +838,34 @@ public actor FirstSliceRunner {
         runtimeView: AACIResolvedGOSRuntimeView?
     ) -> [String: String] {
         guard let runtimeView else { return base }
-        return base.merging(runtimeView.metadataForDraftPath(actorId: actorId)) { current, _ in current }
+        return base.merging(runtimeView.metadataForRuntimePath(actorId: actorId)) { current, _ in current }
+    }
+
+    private func captureReceivedEventAttributes(
+        capture: SessionCaptureInput,
+        runtimeView: AACIResolvedGOSRuntimeView?
+    ) -> [String: String] {
+        gosRuntimeMetadata(
+            base: [
+                "captureMode": capture.mode.rawValue
+            ],
+            actorId: "aaci.capture",
+            runtimeView: runtimeView
+        )
+    }
+
+    private func audioCaptureEventAttributes(
+        audioCapture: AudioCaptureArtifact,
+        runtimeView: AACIResolvedGOSRuntimeView?
+    ) -> [String: String] {
+        gosRuntimeMetadata(
+            base: [
+                "objectPath": audioCapture.storedRef.objectPath,
+                "displayName": audioCapture.reference.displayName
+            ],
+            actorId: "aaci.capture",
+            runtimeView: runtimeView
+        )
     }
 
     private func persistAudioCaptureIfNeeded(
@@ -828,7 +874,8 @@ public actor FirstSliceRunner {
         serviceId: UUID,
         patientUserId: UUID,
         actorId: String,
-        lawfulContext: [String: String]
+        lawfulContext: [String: String],
+        runtimeView: AACIResolvedGOSRuntimeView?
     ) async throws -> AudioCaptureArtifact? {
         guard capture.mode == .localAudioFile else { return nil }
         guard let audioReference = capture.audioReference else {
@@ -853,11 +900,15 @@ public actor FirstSliceRunner {
                 kind: "capture-audio",
                 layer: .operationalContent,
                 content: audioData,
-                metadata: [
+                metadata: gosRuntimeMetadata(
+                    base: [
                     "sessionId": sessionId.uuidString,
                     "patientUserId": patientUserId.uuidString,
                     "displayName": audioReference.displayName
-                ]
+                    ],
+                    actorId: "aaci.capture",
+                    runtimeView: runtimeView
+                )
             )
         )
         try await storage.audit(
@@ -875,7 +926,8 @@ public actor FirstSliceRunner {
         serviceId: UUID,
         patientUserId: UUID,
         actorId: String,
-        lawfulContext: [String: String]
+        lawfulContext: [String: String],
+        runtimeView: AACIResolvedGOSRuntimeView?
     ) async throws -> StorageObjectRef {
         let transcriptData = Data(transcriptText.utf8)
         let transcriptRef = try await storage.put(
@@ -884,10 +936,14 @@ public actor FirstSliceRunner {
                 kind: "transcripts",
                 layer: .operationalContent,
                 content: transcriptData,
-                metadata: [
+                metadata: gosRuntimeMetadata(
+                    base: [
                     "sessionId": sessionId.uuidString,
                     "patientUserId": patientUserId.uuidString
-                ]
+                    ],
+                    actorId: "aaci.transcription",
+                    runtimeView: runtimeView
+                )
             )
         )
         try await storage.audit(
@@ -912,11 +968,18 @@ public actor FirstSliceRunner {
         }
     }
 
-    private func transcriptionEventAttributes(for transcription: TranscriptionOutput) -> [String: String] {
-        var attributes: [String: String] = [
+    private func transcriptionEventAttributes(
+        for transcription: TranscriptionOutput,
+        runtimeView: AACIResolvedGOSRuntimeView?
+    ) -> [String: String] {
+        var attributes = gosRuntimeMetadata(
+            base: [
             "status": transcription.status.rawValue,
             "source": transcription.source
-        ]
+            ],
+            actorId: "aaci.transcription",
+            runtimeView: runtimeView
+        )
         if let transcriptRef = transcription.transcriptRef {
             attributes["objectPath"] = transcriptRef.objectPath
         }
@@ -941,6 +1004,28 @@ public actor FirstSliceRunner {
         case .ready:
             return "Bounded context retrieval produced a structured local context package."
         }
+    }
+
+    private func retrievalEventAttributes(
+        retrieval: RetrievalContextPackage,
+        boundedResult: BoundedRetrievalResult,
+        retrievalIntent: RetrievalIntent,
+        transcription: TranscriptionOutput,
+        runtimeView: AACIResolvedGOSRuntimeView?
+    ) -> [String: String] {
+        gosRuntimeMetadata(
+            base: [
+                "count": String(retrieval.supportingMatches.count),
+                "source": boundedResult.source,
+                "quality": boundedResult.quality.rawValue,
+                "contextStatus": retrieval.status.rawValue,
+                "intent": retrievalIntent.rawValue,
+                "fallbackEmpty": String(boundedResult.isFallbackEmpty),
+                "transcriptionStatus": transcription.status.rawValue
+            ],
+            actorId: "aaci.context",
+            runtimeView: runtimeView
+        )
     }
 
     private func retrievalTerms(from text: String?) -> [String] {

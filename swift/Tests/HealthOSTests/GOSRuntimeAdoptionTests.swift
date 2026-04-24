@@ -75,12 +75,7 @@ final class GOSRuntimeAdoptionTests: XCTestCase {
         let registry = FileBackedGOSBundleRegistry(root: root)
         let bundle = makeBundle(bindingPlan: AACIGOSBindings.defaultBindingPlan(specId: "aaci.first-slice"))
         try await registry.register(bundle.manifest)
-        try Data(bundle.compiledSpecJSON).write(to: root.appending(path: "system/gos/bundles/\(bundle.manifest.bundleId)/spec.json"))
-        let encoder = JSONEncoder()
-        encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
-        try encoder.encode(bundle.compilerReport).write(to: root.appending(path: "system/gos/bundles/\(bundle.manifest.bundleId)/compiler-report.json"))
-        try "{\"source_sha256\":\"abc\"}".data(using: .utf8)!.write(to: root.appending(path: "system/gos/bundles/\(bundle.manifest.bundleId)/source-provenance.json"))
-        try encoder.encode(bundle.runtimeBindingPlan).write(to: root.appending(path: "system/gos/bundles/\(bundle.manifest.bundleId)/runtime-binding-plan.json"))
+        try installBundleFiles(bundle, at: root)
         try await registry.activate(bundleId: bundle.manifest.bundleId, specId: bundle.manifest.specId)
 
         let router = ProviderRouter()
@@ -98,27 +93,41 @@ final class GOSRuntimeAdoptionTests: XCTestCase {
 
         let result = try await runner.run(input: input)
         let operations = Set(result.provenanceRecords.map(\.operation))
+        let transcriptionUsage = try XCTUnwrap(result.provenanceRecords.first { $0.operation == "gos.use.transcription" })
+        let contextUsage = try XCTUnwrap(result.provenanceRecords.first { $0.operation == "gos.use.context.retrieve" })
         let draftUsage = try XCTUnwrap(result.provenanceRecords.first { $0.operation == "gos.use.compose.soap" })
         let referralUsage = try XCTUnwrap(result.provenanceRecords.first { $0.operation == "gos.use.compose.referral" })
         let prescriptionUsage = try XCTUnwrap(result.provenanceRecords.first { $0.operation == "gos.use.compose.prescription" })
+        let captureEvent = try XCTUnwrap(result.events.first { $0.kind == .captureReceived })
+        let transcriptionEvent = try XCTUnwrap(result.events.first { $0.kind == .transcriptionProcessed })
+        let contextEvent = try XCTUnwrap(result.events.first { $0.kind == .contextRetrieved })
         let soapEvent = try XCTUnwrap(result.events.first { $0.kind == .draftComposed })
         let referralEvent = try XCTUnwrap(result.events.first { $0.kind == .referralDraftComposed })
         let prescriptionEvent = try XCTUnwrap(result.events.first { $0.kind == .prescriptionDraftComposed })
+        let transcriptMetadata = try readStorageMetadata(for: try XCTUnwrap(result.transcription.transcriptRef).objectPath)
 
         XCTAssertTrue(operations.contains("gos.activate"))
+        XCTAssertTrue(operations.contains("gos.use.transcription"))
+        XCTAssertTrue(operations.contains("gos.use.context.retrieve"))
         XCTAssertTrue(operations.contains("gos.use.compose.soap"))
         XCTAssertTrue(operations.contains("gos.use.compose.referral"))
         XCTAssertTrue(operations.contains("gos.use.compose.prescription"))
+        XCTAssertEqual(transcriptionUsage.actorId, "aaci.transcription")
+        XCTAssertEqual(contextUsage.actorId, "aaci.context")
         XCTAssertEqual(draftUsage.actorId, "aaci.draft-composer")
         XCTAssertEqual(referralUsage.actorId, "aaci.referral-draft")
         XCTAssertEqual(prescriptionUsage.actorId, "aaci.prescription-draft")
+        XCTAssertEqual(captureEvent.payload.attributes["gosRuntimeActorId"], "aaci.capture")
+        XCTAssertEqual(transcriptionEvent.payload.attributes["gosRuntimeActorId"], "aaci.transcription")
+        XCTAssertEqual(contextEvent.payload.attributes["gosRuntimeActorId"], "aaci.context")
+        XCTAssertEqual(transcriptMetadata["gosRuntimeActorId"], "aaci.transcription")
         XCTAssertEqual(soapEvent.payload.attributes["gosRuntimeActorId"], "aaci.draft-composer")
         XCTAssertEqual(referralEvent.payload.attributes["gosRuntimeActorId"], "aaci.referral-draft")
         XCTAssertEqual(prescriptionEvent.payload.attributes["gosRuntimeActorId"], "aaci.prescription-draft")
         XCTAssertTrue((soapEvent.payload.attributes["gosReasoningBoundary"] ?? "").contains("draft-only under human gate"))
     }
 
-    func testRegistryPromotionHelperPromotesReviewedBundleToActive() async throws {
+    func testRegistryReviewAndPromotionRecordApprovalAndAudit() async throws {
         let root = makeTempRoot()
         try DirectoryLayout.bootstrap(at: root)
         let registry = FileBackedGOSBundleRegistry(root: root)
@@ -131,7 +140,7 @@ final class GOSRuntimeAdoptionTests: XCTestCase {
                 bundleVersion: bundle.manifest.bundleVersion,
                 compilerVersion: bundle.manifest.compilerVersion,
                 compiledAt: bundle.manifest.compiledAt,
-                lifecycleState: .reviewed,
+                lifecycleState: .draft,
                 compilerReportPath: bundle.manifest.compilerReportPath,
                 specPath: bundle.manifest.specPath,
                 sourceProvenancePath: bundle.manifest.sourceProvenancePath
@@ -143,15 +152,49 @@ final class GOSRuntimeAdoptionTests: XCTestCase {
         )
 
         try await registry.register(bundle.manifest)
-        try await registry.promoteReviewedBundle(bundleId: bundle.manifest.bundleId, specId: bundle.manifest.specId)
-        try Data(bundle.compiledSpecJSON).write(to: root.appending(path: "system/gos/bundles/\(bundle.manifest.bundleId)/spec.json"))
-        let encoder = JSONEncoder()
-        encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
-        try encoder.encode(bundle.compilerReport).write(to: root.appending(path: "system/gos/bundles/\(bundle.manifest.bundleId)/compiler-report.json"))
-        try "{\"source_sha256\":\"abc\"}".data(using: .utf8)!.write(to: root.appending(path: "system/gos/bundles/\(bundle.manifest.bundleId)/source-provenance.json"))
+        try installBundleFiles(bundle, at: root)
+        let reviewRecord = try await registry.review(
+            bundleId: bundle.manifest.bundleId,
+            specId: bundle.manifest.specId,
+            reviewerId: "reviewer-1",
+            reviewerRole: "operator",
+            rationale: "reviewed for activation"
+        )
+        let activationAudit = try await registry.promoteReviewedBundle(
+            bundleId: bundle.manifest.bundleId,
+            specId: bundle.manifest.specId,
+            actorId: "operator-1",
+            actorRole: "operator",
+            rationale: "activate reviewed bundle"
+        )
 
         let loaded = try await registry.loadBundle(GOSLoadRequest(specId: "aaci.first-slice", runtimeKind: .aaci, acceptedLifecycleStates: [.active]))
+        let persistedReviewRecord = try JSONDecoder().decode(
+            GOSBundleReviewRecord.self,
+            from: Data(contentsOf: root.appending(path: "system/gos/bundles/\(bundle.manifest.bundleId)/review-approval.json"))
+        )
+        let auditRecords = try readAuditRecords(at: root)
+        let manifestJSON = try readJSONObject(at: root.appending(path: "system/gos/bundles/\(bundle.manifest.bundleId)/manifest.json"))
+        let registryJSON = try readJSONObject(at: root.appending(path: "system/gos/registry/\(bundle.manifest.specId).json"))
+        let reviewJSON = try readJSONObject(at: root.appending(path: "system/gos/bundles/\(bundle.manifest.bundleId)/review-approval.json"))
+        let auditJSON = try readFirstJSONObjectLine(at: root.appending(path: "system/gos/audit.jsonl"))
+
+        XCTAssertEqual(reviewRecord.reviewerId, "reviewer-1")
+        XCTAssertEqual(reviewRecord.rationale, "reviewed for activation")
+        XCTAssertEqual(persistedReviewRecord.id, reviewRecord.id)
+        XCTAssertEqual(activationAudit.actorId, "operator-1")
         XCTAssertEqual(loaded.manifest.lifecycleState, .active)
+        XCTAssertTrue(auditRecords.contains { $0.action == .reviewed && $0.bundleId == bundle.manifest.bundleId })
+        XCTAssertTrue(auditRecords.contains { $0.action == .activated && $0.bundleId == bundle.manifest.bundleId && $0.actorId == "operator-1" })
+        XCTAssertNotNil(manifestJSON["bundle_id"])
+        XCTAssertNotNil(manifestJSON["lifecycle_state"])
+        XCTAssertNotNil(registryJSON["active_bundle_id"])
+        XCTAssertNotNil(registryJSON["known_bundle_ids"])
+        XCTAssertNotNil(reviewJSON["reviewer_id"])
+        XCTAssertNotNil(reviewJSON["reviewed_at"])
+        XCTAssertNotNil(auditJSON["actor_id"])
+        XCTAssertNotNil(auditJSON["from_state"])
+        XCTAssertNotNil(auditJSON["to_state"])
     }
 
     func testRegistryLoaderRejectsMismatchedRuntimeBindingPlan() async throws {
@@ -161,11 +204,9 @@ final class GOSRuntimeAdoptionTests: XCTestCase {
         let bundle = makeBundle(bindingPlan: AACIGOSBindings.defaultBindingPlan(specId: "aaci.first-slice"))
 
         try await registry.register(bundle.manifest)
-        try Data(bundle.compiledSpecJSON).write(to: root.appending(path: "system/gos/bundles/\(bundle.manifest.bundleId)/spec.json"))
+        try installBundleFiles(bundle, at: root)
         let encoder = JSONEncoder()
         encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
-        try encoder.encode(bundle.compilerReport).write(to: root.appending(path: "system/gos/bundles/\(bundle.manifest.bundleId)/compiler-report.json"))
-        try "{\"source_sha256\":\"abc\"}".data(using: .utf8)!.write(to: root.appending(path: "system/gos/bundles/\(bundle.manifest.bundleId)/source-provenance.json"))
         try encoder.encode(GOSRuntimeBindingPlan(specId: "wrong.spec", runtimeKind: .aaci, bindings: [])).write(
             to: root.appending(path: "system/gos/bundles/\(bundle.manifest.bundleId)/runtime-binding-plan.json")
         )
@@ -186,6 +227,50 @@ final class GOSRuntimeAdoptionTests: XCTestCase {
         let url = FileManager.default.temporaryDirectory.appending(path: "healthos-tests-\(UUID().uuidString)")
         try? FileManager.default.removeItem(at: url)
         return url
+    }
+
+    private func installBundleFiles(_ bundle: GOSCompiledBundle, at root: URL) throws {
+        try Data(bundle.compiledSpecJSON).write(to: root.appending(path: "system/gos/bundles/\(bundle.manifest.bundleId)/spec.json"))
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
+        try encoder.encode(bundle.compilerReport).write(to: root.appending(path: "system/gos/bundles/\(bundle.manifest.bundleId)/compiler-report.json"))
+        try "{\"source_sha256\":\"abc\"}".data(using: .utf8)!.write(to: root.appending(path: "system/gos/bundles/\(bundle.manifest.bundleId)/source-provenance.json"))
+        if let runtimeBindingPlan = bundle.runtimeBindingPlan {
+            try encoder.encode(runtimeBindingPlan).write(to: root.appending(path: "system/gos/bundles/\(bundle.manifest.bundleId)/runtime-binding-plan.json"))
+        }
+    }
+
+    private func readStorageMetadata(for objectPath: String) throws -> [String: String] {
+        let metadataURL = URL(fileURLWithPath: objectPath + ".meta.json")
+        let object = try JSONSerialization.jsonObject(with: Data(contentsOf: metadataURL))
+        let root = try XCTUnwrap(object as? [String: Any])
+        return try XCTUnwrap(root["metadata"] as? [String: String])
+    }
+
+    private func readAuditRecords(at root: URL) throws -> [GOSLifecycleAuditRecord] {
+        let auditURL = root.appending(path: "system/gos/audit.jsonl")
+        let lines = try String(contentsOf: auditURL, encoding: .utf8)
+            .split(whereSeparator: \.isNewline)
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .iso8601
+        return try lines.map { line in
+            try decoder.decode(GOSLifecycleAuditRecord.self, from: Data(line.utf8))
+        }
+    }
+
+    private func readJSONObject(at url: URL) throws -> [String: Any] {
+        let object = try JSONSerialization.jsonObject(with: Data(contentsOf: url))
+        return try XCTUnwrap(object as? [String: Any])
+    }
+
+    private func readFirstJSONObjectLine(at url: URL) throws -> [String: Any] {
+        let line = try XCTUnwrap(
+            String(contentsOf: url, encoding: .utf8)
+                .split(whereSeparator: \.isNewline)
+                .first
+        )
+        let object = try JSONSerialization.jsonObject(with: Data(line.utf8))
+        return try XCTUnwrap(object as? [String: Any])
     }
 
     private func makeContext() -> RetrievalContextPackage {

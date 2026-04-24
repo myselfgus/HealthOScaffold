@@ -6,6 +6,10 @@ Current phase: Controlled implementation — first vertical slice started
 
 ## Completed recently
 
+- first-slice GOS adoption now reaches beyond draft composition: capture, transcription, and context-retrieval paths consume the resolved AACI runtime view for metadata, reasoning boundaries, and explicit `gos.use.*` provenance
+- file-backed GOS lifecycle now persists explicit review approval records (`review-approval.json`) and append-only lifecycle audit records (`system/gos/audit.jsonl`) for review and activation transitions
+- HealthOSCLI now exposes a minimal lifecycle path for `draft -> reviewed -> active` through `--gos-review-bundle` and `--gos-promote-bundle`, recording operator/reviewer identity and rationale
+- Swift GOS lifecycle persistence is now schema-aligned in `snake_case` across manifest, registry entry, review record, and audit artifacts
 - AACI now exposes a public, small resolved GOS runtime view (`bundle + workflow title + bound actors/families`) so runtime consumers do not need raw spec JSON or ad hoc dictionary access
 - first-slice storage metadata and event attributes now derive directly from the AACI resolved GOS runtime view, carrying actor-specific primitive-family and reasoning-boundary context for SOAP/referral/prescription draft paths
 - first-slice provenance now records GOS draft-path usage under the concrete composing actor ids (`aaci.draft-composer`, `aaci.referral-draft`, `aaci.prescription-draft`) instead of a generic `aaci.gos` actor marker
@@ -125,10 +129,10 @@ Current phase: Controlled implementation — first vertical slice started
 
 - first vertical slice implementation continues with seeded-text compatibility, a structured local retrieval/context package, richer gate/document semantics, draft-only referral/prescription derivatives, and a now-wired local-audio path, while real local transcription and earlier draft-refresh finalization remain deferred
 - doctrinal language hardening completed for sovereignty/privacy/compliance/topology without introducing infrastructure expansion
-- GOS now exists as doctrine + schema + authoring workspace + schema-aware compiler/validator/CLI + lifecycle/bundle posture + Swift runtime contracts + hardened loader seams + runtime-mediated draft adoption, while broader subagent-path adoption and policy depth still remain open
-- AACI now consumes an explicit resolved GOS runtime view in-draft composition (SOAP/referral/prescription), with actor/family-aware metadata and bounded runtime reasoning summaries rather than opaque active-bundle flags
-- first-slice provenance now distinguishes bundle activation from bundle usage in each draft path (`gos.use.compose.soap`, `gos.use.compose.referral`, `gos.use.compose.prescription`)
-- smoke-level lifecycle ergonomics now include a reviewed→active promotion command path (`swift run HealthOSCLI --gos-promote-bundle <bundle-id> --gos-spec-id <spec-id>`)
+- GOS now exists as doctrine + schema + authoring workspace + schema-aware compiler/validator/CLI + lifecycle/bundle posture + Swift runtime contracts + hardened loader seams + runtime-mediated first-slice adoption across capture/transcription/context/draft paths, while broader runtime adoption still remains open
+- AACI now consumes an explicit resolved GOS runtime view across current first-slice execution paths, with actor/family-aware metadata and bounded runtime reasoning summaries rather than opaque active-bundle flags
+- first-slice provenance now distinguishes bundle activation from bundle usage in transcription, context retrieval, and each draft path (`gos.use.transcription`, `gos.use.context.retrieve`, `gos.use.compose.soap`, `gos.use.compose.referral`, `gos.use.compose.prescription`)
+- smoke-level lifecycle ergonomics now include both review and reviewed→active promotion command paths (`swift run HealthOSCLI --gos-review-bundle ...`, `swift run HealthOSCLI --gos-promote-bundle ...`)
 - scaffold validation coverage now includes in-repo Swift XCTest cases for AACI/registry/first-slice GOS paths plus executable Node tests for TS GOS tooling compile/cross-reference/bundle contracts
 
 ## Known gaps
@@ -139,7 +143,8 @@ Current phase: Controlled implementation — first vertical slice started
 - Scribe now has a minimal validation UI surface, but it is not yet a full/final app shell
 - draft refresh remains preview/degraded until gate resolution runs the full executable spine
 - referral/prescription drafts now exist, but their regulatory effectuation/issuance remains intentionally deferred
-- GOS still needs stronger approval/audit policy depth and deeper execution-time adoption across AACI paths beyond the current draft-focused runtime mediation
+- GOS review/activation now has minimum persisted approval + audit coverage, but richer separation-of-duties, multi-review, and version-pinning policy is still open
+- broader GOS adoption outside the current first-slice internal runtime paths still remains open
 - the current local Swift toolchain on this machine does not expose `XCTest`, so `swift test` presently verifies package buildability while runtime-path truth is validated via executable CLI smoke
 
 ## Open blockers / decisions
@@ -148,7 +153,7 @@ Current phase: Controlled implementation — first vertical slice started
 - decide whether the next first-slice step after this wave is microphone capture, moving draft/retrieval finalization earlier than gate resolution, or introducing lawful effectuation paths for referral/prescription
 - decide when to convert the AI skills into enforced reusable workflows/templates
 - decide when to replace the current deterministic local retrieval/context package with semantic/clinical retrieval while preserving lawful scope and topology-invariant governance constraints
-- decide the final human-facing review/activation policy for compiled GOS bundles and when to harden GOS activation beyond the current minimal runtime seams
+- decide the final human-facing review/activation policy for compiled GOS bundles beyond the current minimum persisted approval/audit path
 
 ## Tracking rules
 

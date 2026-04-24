@@ -12,7 +12,6 @@ public actor FileBackedGOSBundleRegistry: GOSBundleRegistry, GOSBundleLoader {
         self.encoder.dateEncodingStrategy = .iso8601
         self.decoder = JSONDecoder()
         self.decoder.dateDecodingStrategy = .iso8601
-        self.decoder.keyDecodingStrategy = .convertFromSnakeCase
     }
 
     public func lookup(specId: String) async throws -> GOSRegistryEntry? {
@@ -30,56 +29,126 @@ public actor FileBackedGOSBundleRegistry: GOSBundleRegistry, GOSBundleLoader {
         let known = Array(Set(existing.knownBundleIds + [manifest.bundleId])).sorted()
         let updated = GOSRegistryEntry(specId: manifest.specId, activeBundleId: existing.activeBundleId, knownBundleIds: known)
         try encoder.encode(updated).write(to: registryFileURL(specId: manifest.specId))
+        try appendAuditRecord(
+            GOSLifecycleAuditRecord(
+                specId: manifest.specId,
+                bundleId: manifest.bundleId,
+                action: .registered,
+                actorId: "system.registry",
+                actorRole: "system",
+                rationale: "bundle registered in file-backed registry",
+                toState: manifest.lifecycleState
+            )
+        )
     }
 
-    public func activate(bundleId: String, specId: String) async throws {
+    public func review(
+        bundleId: String,
+        specId: String,
+        reviewerId: String,
+        reviewerRole: String,
+        rationale: String
+    ) async throws -> GOSBundleReviewRecord {
         let manifest = try readManifest(bundleId: bundleId)
         guard manifest.specId == specId else {
-            throw NSError(domain: GOSLoaderFailure.bundleRegistryFailure.rawValue, code: 9)
+            throw NSError(domain: GOSLoaderFailure.bundleRegistryFailure.rawValue, code: 40)
         }
-        guard manifest.lifecycleState == .reviewed || manifest.lifecycleState == .active else {
-            throw NSError(domain: GOSLoaderFailure.bundleInactive.rawValue, code: 10)
+        guard manifest.lifecycleState == .draft || manifest.lifecycleState == .reviewed else {
+            throw NSError(domain: GOSLoaderFailure.bundleInactive.rawValue, code: 41)
         }
 
-        let updatedManifest = GOSBundleManifest(
+        let reviewRecord = GOSBundleReviewRecord(
+            specId: specId,
+            bundleId: bundleId,
+            reviewerId: reviewerId,
+            reviewerRole: reviewerRole,
+            rationale: rationale
+        )
+        try encoder.encode(reviewRecord).write(to: reviewRecordURL(bundleId: bundleId))
+
+        let reviewedManifest = GOSBundleManifest(
             bundleId: manifest.bundleId,
             specId: manifest.specId,
             specVersion: manifest.specVersion,
             bundleVersion: manifest.bundleVersion,
             compilerVersion: manifest.compilerVersion,
             compiledAt: manifest.compiledAt,
-            lifecycleState: .active,
+            lifecycleState: .reviewed,
             replacesBundleId: manifest.replacesBundleId,
             compilerReportPath: manifest.compilerReportPath,
             specPath: manifest.specPath,
             sourceProvenancePath: manifest.sourceProvenancePath,
             notes: manifest.notes
         )
-        try encoder.encode(updatedManifest).write(to: manifestURL(bundleId: bundleId))
+        try encoder.encode(reviewedManifest).write(to: manifestURL(bundleId: bundleId))
 
         let existing = try await lookup(specId: specId) ?? GOSRegistryEntry(specId: specId)
         let known = Array(Set(existing.knownBundleIds + [bundleId])).sorted()
-        let updated = GOSRegistryEntry(specId: specId, activeBundleId: bundleId, knownBundleIds: known)
+        let updated = GOSRegistryEntry(specId: specId, activeBundleId: existing.activeBundleId, knownBundleIds: known)
         try encoder.encode(updated).write(to: registryFileURL(specId: specId))
+
+        try appendAuditRecord(
+            GOSLifecycleAuditRecord(
+                specId: specId,
+                bundleId: bundleId,
+                action: .reviewed,
+                actorId: reviewerId,
+                actorRole: reviewerRole,
+                rationale: rationale,
+                fromState: manifest.lifecycleState,
+                toState: .reviewed,
+                recordedAt: reviewRecord.reviewedAt
+            )
+        )
+
+        return reviewRecord
     }
 
-    public func promoteReviewedBundle(bundleId: String, specId: String) async throws {
-        let manifest = try readManifest(bundleId: bundleId)
-        guard manifest.specId == specId else {
-            throw NSError(domain: GOSLoaderFailure.bundleRegistryFailure.rawValue, code: 30)
-        }
-        guard manifest.lifecycleState == .reviewed || manifest.lifecycleState == .active else {
-            throw NSError(domain: GOSLoaderFailure.bundleInactive.rawValue, code: 31)
-        }
-        try await activate(bundleId: bundleId, specId: specId)
+    public func activate(bundleId: String, specId: String) async throws {
+        _ = try await activate(
+            bundleId: bundleId,
+            specId: specId,
+            actorId: "system.registry",
+            actorRole: "system",
+            rationale: "bundle activated by registry"
+        )
+    }
+
+    @discardableResult
+    public func promoteReviewedBundle(
+        bundleId: String,
+        specId: String,
+        actorId: String = NSUserName(),
+        actorRole: String = "operator",
+        rationale: String = "bundle promoted via HealthOSCLI"
+    ) async throws -> GOSLifecycleAuditRecord {
+        try await activate(
+            bundleId: bundleId,
+            specId: specId,
+            actorId: actorId,
+            actorRole: actorRole,
+            rationale: rationale
+        )
     }
 
     public func deprecate(bundleId: String, note: String?) async throws {
-        try updateLifecycle(bundleId: bundleId, state: .deprecated, note: note, clearActiveRegistryPointer: true)
+        try updateLifecycle(
+            bundleId: bundleId,
+            state: .deprecated,
+            note: note,
+            clearActiveRegistryPointer: true,
+            auditAction: .deprecated
+        )
     }
 
     public func revoke(bundleId: String, note: String?) async throws {
-        try updateLifecycle(bundleId: bundleId, state: .revoked, note: note, clearActiveRegistryPointer: true)
+        try updateLifecycle(
+            bundleId: bundleId,
+            state: .revoked,
+            note: note,
+            clearActiveRegistryPointer: true,
+            auditAction: .revoked
+        )
     }
 
     public func loadBundle(_ request: GOSLoadRequest) async throws -> GOSCompiledBundle {
@@ -146,6 +215,58 @@ public actor FileBackedGOSBundleRegistry: GOSBundleRegistry, GOSBundleLoader {
         )
     }
 
+    private func activate(
+        bundleId: String,
+        specId: String,
+        actorId: String,
+        actorRole: String,
+        rationale: String
+    ) async throws -> GOSLifecycleAuditRecord {
+        let manifest = try readManifest(bundleId: bundleId)
+        guard manifest.specId == specId else {
+            throw NSError(domain: GOSLoaderFailure.bundleRegistryFailure.rawValue, code: 9)
+        }
+        guard manifest.lifecycleState == .reviewed || manifest.lifecycleState == .active else {
+            throw NSError(domain: GOSLoaderFailure.bundleInactive.rawValue, code: 10)
+        }
+        if manifest.lifecycleState == .reviewed {
+            _ = try readReviewRecord(bundleId: bundleId)
+        }
+
+        let updatedManifest = GOSBundleManifest(
+            bundleId: manifest.bundleId,
+            specId: manifest.specId,
+            specVersion: manifest.specVersion,
+            bundleVersion: manifest.bundleVersion,
+            compilerVersion: manifest.compilerVersion,
+            compiledAt: manifest.compiledAt,
+            lifecycleState: .active,
+            replacesBundleId: manifest.replacesBundleId,
+            compilerReportPath: manifest.compilerReportPath,
+            specPath: manifest.specPath,
+            sourceProvenancePath: manifest.sourceProvenancePath,
+            notes: manifest.notes
+        )
+        try encoder.encode(updatedManifest).write(to: manifestURL(bundleId: bundleId))
+
+        let existing = try await lookup(specId: specId) ?? GOSRegistryEntry(specId: specId)
+        let known = Array(Set(existing.knownBundleIds + [bundleId])).sorted()
+        let updated = GOSRegistryEntry(specId: specId, activeBundleId: bundleId, knownBundleIds: known)
+        try encoder.encode(updated).write(to: registryFileURL(specId: specId))
+        let auditRecord = GOSLifecycleAuditRecord(
+            specId: specId,
+            bundleId: bundleId,
+            action: .activated,
+            actorId: actorId,
+            actorRole: actorRole,
+            rationale: rationale,
+            fromState: manifest.lifecycleState,
+            toState: .active
+        )
+        try appendAuditRecord(auditRecord)
+        return auditRecord
+    }
+
     private func ensureDirectories(for bundleId: String) throws {
         try FileManager.default.createDirectory(at: registryDirectoryURL(), withIntermediateDirectories: true)
         try FileManager.default.createDirectory(at: bundleDirectoryURL(bundleId: bundleId), withIntermediateDirectories: true)
@@ -163,8 +284,16 @@ public actor FileBackedGOSBundleRegistry: GOSBundleRegistry, GOSBundleLoader {
         root.appending(path: "system").appending(path: "gos").appending(path: "bundles").appending(path: bundleId)
     }
 
+    private func reviewRecordURL(bundleId: String) -> URL {
+        bundleDirectoryURL(bundleId: bundleId).appending(path: "review-approval.json")
+    }
+
     private func manifestURL(bundleId: String) -> URL {
         bundleDirectoryURL(bundleId: bundleId).appending(path: "manifest.json")
+    }
+
+    private func auditLogURL() -> URL {
+        root.appending(path: "system").appending(path: "gos").appending(path: "audit.jsonl")
     }
 
     private func readManifest(bundleId: String) throws -> GOSBundleManifest {
@@ -189,6 +318,18 @@ public actor FileBackedGOSBundleRegistry: GOSBundleRegistry, GOSBundleLoader {
         }
     }
 
+    private func readReviewRecord(bundleId: String) throws -> GOSBundleReviewRecord {
+        let url = reviewRecordURL(bundleId: bundleId)
+        guard FileManager.default.fileExists(atPath: url.path) else {
+            throw NSError(domain: GOSLoaderFailure.bundleValidationFailure.rawValue, code: 32)
+        }
+        do {
+            return try decoder.decode(GOSBundleReviewRecord.self, from: Data(contentsOf: url))
+        } catch {
+            throw NSError(domain: GOSLoaderFailure.bundleValidationFailure.rawValue, code: 33)
+        }
+    }
+
     private func loadRequiredJSONFile(
         bundleId: String,
         relativePath: String,
@@ -205,7 +346,8 @@ public actor FileBackedGOSBundleRegistry: GOSBundleRegistry, GOSBundleLoader {
         bundleId: String,
         state: GOSLifecycleState,
         note: String?,
-        clearActiveRegistryPointer: Bool
+        clearActiveRegistryPointer: Bool,
+        auditAction: GOSLifecycleAuditAction
     ) throws {
         let manifest = try readManifest(bundleId: bundleId)
         let updated = GOSBundleManifest(
@@ -224,18 +366,34 @@ public actor FileBackedGOSBundleRegistry: GOSBundleRegistry, GOSBundleLoader {
         )
         try encoder.encode(updated).write(to: manifestURL(bundleId: bundleId))
 
-        guard clearActiveRegistryPointer else { return }
-        let registryURL = registryFileURL(specId: manifest.specId)
-        guard FileManager.default.fileExists(atPath: registryURL.path) else { return }
-        let registryData = try Data(contentsOf: registryURL)
-        let registry = try decoder.decode(GOSRegistryEntry.self, from: registryData)
-        guard registry.activeBundleId == bundleId else { return }
-        let updatedRegistry = GOSRegistryEntry(
-            specId: registry.specId,
-            activeBundleId: nil,
-            knownBundleIds: registry.knownBundleIds
+        if clearActiveRegistryPointer {
+            let registryURL = registryFileURL(specId: manifest.specId)
+            if FileManager.default.fileExists(atPath: registryURL.path) {
+                let registryData = try Data(contentsOf: registryURL)
+                let registry = try decoder.decode(GOSRegistryEntry.self, from: registryData)
+                if registry.activeBundleId == bundleId {
+                    let updatedRegistry = GOSRegistryEntry(
+                        specId: registry.specId,
+                        activeBundleId: nil,
+                        knownBundleIds: registry.knownBundleIds
+                    )
+                    try encoder.encode(updatedRegistry).write(to: registryURL)
+                }
+            }
+        }
+
+        try appendAuditRecord(
+            GOSLifecycleAuditRecord(
+                specId: manifest.specId,
+                bundleId: bundleId,
+                action: auditAction,
+                actorId: "system.registry",
+                actorRole: "system",
+                rationale: note,
+                fromState: manifest.lifecycleState,
+                toState: state
+            )
         )
-        try encoder.encode(updatedRegistry).write(to: registryURL)
     }
 
     private func extractMetadata(from compiledSpecJSON: Data) throws -> GOSMetadata {
@@ -264,5 +422,20 @@ public actor FileBackedGOSBundleRegistry: GOSBundleRegistry, GOSBundleLoader {
             sourceReferences: sourceReferences,
             tags: tags
         )
+    }
+
+    private func appendAuditRecord(_ record: GOSLifecycleAuditRecord) throws {
+        let url = auditLogURL()
+        try FileManager.default.createDirectory(at: url.deletingLastPathComponent(), withIntermediateDirectories: true)
+        let data = try encoder.encode(record)
+        if FileManager.default.fileExists(atPath: url.path) {
+            let handle = try FileHandle(forWritingTo: url)
+            defer { try? handle.close() }
+            try handle.seekToEnd()
+            handle.write(data)
+            handle.write(Data("\n".utf8))
+        } else {
+            try (data + Data("\n".utf8)).write(to: url)
+        }
     }
 }

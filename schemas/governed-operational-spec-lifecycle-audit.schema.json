@@ -1,0 +1,78 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://healthos.dev/schemas/governed-operational-spec-lifecycle-audit.schema.json",
+  "title": "Governed Operational Spec Lifecycle Audit Record",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "spec_id",
+    "bundle_id",
+    "action",
+    "actor_id",
+    "actor_role",
+    "to_state",
+    "recorded_at"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "spec_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "bundle_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "action": {
+      "type": "string",
+      "enum": [
+        "registered",
+        "reviewed",
+        "activated",
+        "deprecated",
+        "revoked"
+      ]
+    },
+    "actor_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "actor_role": {
+      "type": "string",
+      "minLength": 1
+    },
+    "rationale": {
+      "type": "string"
+    },
+    "from_state": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "reviewed",
+        "active",
+        "deprecated",
+        "superseded",
+        "revoked"
+      ]
+    },
+    "to_state": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "reviewed",
+        "active",
+        "deprecated",
+        "superseded",
+        "revoked"
+      ]
+    },
+    "recorded_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  }
+}

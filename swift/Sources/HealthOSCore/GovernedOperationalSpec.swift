@@ -98,6 +98,13 @@ public struct GOSPrimitiveBinding: Codable, Sendable {
         self.semanticRole = semanticRole
         self.primitiveFamilies = primitiveFamilies
     }
+
+    enum CodingKeys: String, CodingKey {
+        case runtimeKind = "runtime_kind"
+        case actorId = "actor_id"
+        case semanticRole = "semantic_role"
+        case primitiveFamilies = "primitive_families"
+    }
 }
 
 public struct GOSRuntimeBindingPlan: Codable, Sendable {
@@ -109,6 +116,12 @@ public struct GOSRuntimeBindingPlan: Codable, Sendable {
         self.specId = specId
         self.runtimeKind = runtimeKind
         self.bindings = bindings
+    }
+
+    enum CodingKeys: String, CodingKey {
+        case specId = "spec_id"
+        case runtimeKind = "runtime_kind"
+        case bindings
     }
 }
 
@@ -152,6 +165,21 @@ public struct GOSBundleManifest: Codable, Sendable {
         self.specPath = specPath
         self.sourceProvenancePath = sourceProvenancePath
         self.notes = notes
+    }
+
+    enum CodingKeys: String, CodingKey {
+        case bundleId = "bundle_id"
+        case specId = "spec_id"
+        case specVersion = "spec_version"
+        case bundleVersion = "bundle_version"
+        case compilerVersion = "compiler_version"
+        case compiledAt = "compiled_at"
+        case lifecycleState = "lifecycle_state"
+        case replacesBundleId = "replaces_bundle_id"
+        case compilerReportPath = "compiler_report_path"
+        case specPath = "spec_path"
+        case sourceProvenancePath = "source_provenance_path"
+        case notes
     }
 }
 
@@ -227,6 +255,12 @@ public struct GOSLoadRequest: Codable, Sendable {
         self.runtimeKind = runtimeKind
         self.acceptedLifecycleStates = acceptedLifecycleStates
     }
+
+    enum CodingKeys: String, CodingKey {
+        case specId = "spec_id"
+        case runtimeKind = "runtime_kind"
+        case acceptedLifecycleStates = "accepted_lifecycle_states"
+    }
 }
 
 public struct GOSRegistryEntry: Codable, Sendable {
@@ -239,6 +273,108 @@ public struct GOSRegistryEntry: Codable, Sendable {
         self.activeBundleId = activeBundleId
         self.knownBundleIds = knownBundleIds
     }
+
+    enum CodingKeys: String, CodingKey {
+        case specId = "spec_id"
+        case activeBundleId = "active_bundle_id"
+        case knownBundleIds = "known_bundle_ids"
+    }
+}
+
+public struct GOSBundleReviewRecord: Codable, Sendable, Identifiable {
+    public let id: UUID
+    public let specId: String
+    public let bundleId: String
+    public let reviewerId: String
+    public let reviewerRole: String
+    public let rationale: String
+    public let reviewedAt: Date
+
+    public init(
+        id: UUID = UUID(),
+        specId: String,
+        bundleId: String,
+        reviewerId: String,
+        reviewerRole: String,
+        rationale: String,
+        reviewedAt: Date = .now
+    ) {
+        self.id = id
+        self.specId = specId
+        self.bundleId = bundleId
+        self.reviewerId = reviewerId
+        self.reviewerRole = reviewerRole
+        self.rationale = rationale
+        self.reviewedAt = reviewedAt
+    }
+
+    enum CodingKeys: String, CodingKey {
+        case id
+        case specId = "spec_id"
+        case bundleId = "bundle_id"
+        case reviewerId = "reviewer_id"
+        case reviewerRole = "reviewer_role"
+        case rationale
+        case reviewedAt = "reviewed_at"
+    }
+}
+
+public enum GOSLifecycleAuditAction: String, Codable, Sendable {
+    case registered
+    case reviewed
+    case activated
+    case deprecated
+    case revoked
+}
+
+public struct GOSLifecycleAuditRecord: Codable, Sendable, Identifiable {
+    public let id: UUID
+    public let specId: String
+    public let bundleId: String
+    public let action: GOSLifecycleAuditAction
+    public let actorId: String
+    public let actorRole: String
+    public let rationale: String?
+    public let fromState: GOSLifecycleState?
+    public let toState: GOSLifecycleState
+    public let recordedAt: Date
+
+    public init(
+        id: UUID = UUID(),
+        specId: String,
+        bundleId: String,
+        action: GOSLifecycleAuditAction,
+        actorId: String,
+        actorRole: String,
+        rationale: String? = nil,
+        fromState: GOSLifecycleState? = nil,
+        toState: GOSLifecycleState,
+        recordedAt: Date = .now
+    ) {
+        self.id = id
+        self.specId = specId
+        self.bundleId = bundleId
+        self.action = action
+        self.actorId = actorId
+        self.actorRole = actorRole
+        self.rationale = rationale
+        self.fromState = fromState
+        self.toState = toState
+        self.recordedAt = recordedAt
+    }
+
+    enum CodingKeys: String, CodingKey {
+        case id
+        case specId = "spec_id"
+        case bundleId = "bundle_id"
+        case action
+        case actorId = "actor_id"
+        case actorRole = "actor_role"
+        case rationale
+        case fromState = "from_state"
+        case toState = "to_state"
+        case recordedAt = "recorded_at"
+    }
 }
 
 public protocol GOSBundleLoader: Sendable {
@@ -248,6 +384,7 @@ public protocol GOSBundleLoader: Sendable {
 public protocol GOSBundleRegistry: Sendable {
     func lookup(specId: String) async throws -> GOSRegistryEntry?
     func register(_ manifest: GOSBundleManifest) async throws
+    func review(bundleId: String, specId: String, reviewerId: String, reviewerRole: String, rationale: String) async throws -> GOSBundleReviewRecord
     func activate(bundleId: String, specId: String) async throws
     func deprecate(bundleId: String, note: String?) async throws
     func revoke(bundleId: String, note: String?) async throws

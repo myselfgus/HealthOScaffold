@@ -58,12 +58,16 @@ public struct AACIResolvedGOSRuntimeView: Codable, Sendable {
         base + " " + runtimeBoundarySummary(for: actorId)
     }
 
-    public func metadataForDraftPath(actorId: String) -> [String: String] {
+    public func metadataForRuntimePath(actorId: String) -> [String: String] {
         var metadata = payloadMetadata
         metadata["gosRuntimeActorId"] = actorId
         metadata["gosPrimitiveFamilies"] = primitiveFamilies(for: actorId).joined(separator: ",")
         metadata["gosReasoningBoundary"] = runtimeBoundarySummary(for: actorId)
         return metadata
+    }
+
+    public func metadataForDraftPath(actorId: String) -> [String: String] {
+        metadataForRuntimePath(actorId: actorId)
     }
 
     public func runtimeBoundarySummary(for actorId: String) -> String {

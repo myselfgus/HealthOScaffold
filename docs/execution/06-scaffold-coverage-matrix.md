@@ -70,12 +70,16 @@ Legend:
 - [x] first-slice runner now consumes optional active GOS bundles to mediate persisted draft content, metadata, events, and provenance
 - [x] AACI runtime draft composition/referral/prescription now consume active GOS mediation directly inside orchestrator execution paths
 - [x] AACI now derives a small resolved runtime GOS view (bundle + bound actors + primitive families) and uses it directly in draft metadata, event attributes, and bounded runtime reasoning summaries
+- [x] first-slice runtime adoption now also applies that resolved runtime GOS view to capture/transcription/context metadata, event attributes, and explicit non-draft provenance usage
 - [x] first-slice provenance now records distinct GOS activation vs per-draft-path usage events for SOAP/referral/prescription composition, with actor-specific usage provenance on each draft path
+- [x] file-backed lifecycle now persists review approval records and append-only lifecycle audit records for bundle review/activation transitions
+- [x] lifecycle persistence remains schema-aligned in `snake_case` across manifest, registry entry, review record, and audit artifacts
 - [x] minimal reviewed→active promotion helper is now available in file-backed registry and CLI command path
+- [x] minimal draft→reviewed review helper is now available in file-backed registry and CLI command path
 - [x] baseline automated tests now cover TS GOS tooling compile/cross-reference/bundle behavior, while Swift GOS activation/runtime-usage assertions are present in-repo and local runtime truth is additionally smoke-validated through `HealthOSCLI`
 - [~] provenance-preserving compile output can still be enriched beyond the current source-hash/report baseline
 - [~] activation/deprecation policy controls can still be deepened beyond current minimum hardening
-- [~] deep execution-time adoption across additional AACI subagent paths remains to be completed
+- [~] deep execution-time adoption across AACI paths beyond the current first-slice internal runtime paths remains to be completed
 
 ## 6. AACI
 - [x] purpose and boundaries established
@@ -153,6 +157,7 @@ Legend:
 - [x] first slice now also mediates those draft artifacts through an optional active GOS bundle when present
 - [x] first slice now distinguishes and records GOS bundle activation separately from concrete draft-path usage in provenance
 - [x] first slice now persists runtime-mediated GOS actor/family/reasoning-boundary metadata on SOAP/referral/prescription draft records when an active bundle exists
+- [x] first slice now persists and records runtime-mediated GOS actor/family/reasoning-boundary context for transcription and context retrieval when an active bundle exists
 - [x] minimal Scribe surface now reflects draft review, gate review, and finalized-document state separately
 - [x] minimal Scribe surface now reflects referral/prescription draft-only previews separately from SOAP draft and finalized SOAP document state
 - [~] local-audio transcription remains stubbed; a real Apple-first local provider is still deferred
@@ -177,4 +182,4 @@ What remains is mostly optional hardening and procedural refinement, not identit
 - [x] that layer is explicitly subordinated to core law rather than competing with it
 - [x] all declared GOS primitive families now exist in canonical schema form
 - [x] GOS now also has authoring docs, runtime-binding docs, lifecycle docs, app-consumption docs, a generic YAML template, an authoring schema, a bundle-manifest schema, TypeScript tooling scaffold, and Swift runtime contracts
-- [~] GOS still needs deeper runtime adoption and operational hardening before heavy production use
+- [~] GOS still needs broader runtime adoption and richer lifecycle policy hardening before heavy production use

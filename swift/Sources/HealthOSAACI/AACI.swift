@@ -304,7 +304,7 @@ public actor AACIOrchestrator {
         gosView: AACIResolvedGOSRuntimeView?
     ) -> [String: String] {
         guard let gosView else { return payload }
-        return payload.merging(gosView.metadataForDraftPath(actorId: actorId)) { current, _ in current }
+        return payload.merging(gosView.metadataForRuntimePath(actorId: actorId)) { current, _ in current }
     }
 
     private func makeDerivedDraftHeuristics(

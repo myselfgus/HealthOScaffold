@@ -154,9 +154,20 @@ export interface GOSCanonicalSpec extends GOSAuthoringDocument {
   metadata: GOSMetadata & { compiled_form: 'json' };
 }
 
+export interface GOSValidationIssue {
+  code: string;
+  message: string;
+  path?: string;
+}
+
 export interface GOSCompilerWarning {
   code: string;
   message: string;
+}
+
+export interface GOSSourceProvenance {
+  source_sha256: string;
+  source_reference?: string;
 }
 
 export interface GOSCompilerReport {
@@ -164,14 +175,34 @@ export interface GOSCompilerReport {
   structural_ok: boolean;
   cross_reference_ok: boolean;
   warnings: GOSCompilerWarning[];
-}
-
-export interface GOSValidationIssue {
-  code: string;
-  message: string;
+  structural_issues?: GOSValidationIssue[];
+  cross_reference_issues?: GOSValidationIssue[];
+  source_provenance?: GOSSourceProvenance;
 }
 
 export interface GOSValidationResult {
   ok: boolean;
   issues: GOSValidationIssue[];
- }
+}
+
+export interface GOSBundleManifest {
+  bundle_id: string;
+  spec_id: string;
+  spec_version: string;
+  bundle_version: string;
+  compiler_version: string;
+  compiled_at: string;
+  lifecycle_state: 'draft' | 'reviewed' | 'active' | 'deprecated' | 'superseded' | 'revoked';
+  replaces_bundle_id?: string;
+  compiler_report_path: string;
+  spec_path: string;
+  source_provenance_path: string;
+  notes?: string;
+}
+
+export interface GOSCompiledBundle {
+  manifest: GOSBundleManifest;
+  spec: GOSCanonicalSpec;
+  compiler_report: GOSCompilerReport;
+  source_provenance: GOSSourceProvenance;
+}

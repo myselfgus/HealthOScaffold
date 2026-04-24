@@ -76,9 +76,10 @@ Legend:
 - [x] lifecycle persistence remains schema-aligned in `snake_case` across manifest, registry entry, review record, and audit artifacts
 - [x] minimal reviewed→active promotion helper is now available in file-backed registry and CLI command path
 - [x] minimal draft→reviewed review helper is now available in file-backed registry and CLI command path
-- [x] baseline automated tests now cover TS GOS tooling compile/cross-reference/bundle behavior, while Swift GOS activation/runtime-usage assertions are present in-repo and local runtime truth is additionally smoke-validated through `HealthOSCLI`
+- [x] baseline automated tests now cover TS GOS tooling compile/cross-reference/bundle behavior, and Swift XCTest now also covers lifecycle hardening paths (register/review/promote/activate, draft activation denial, revoked-load denial, revoke-pointer cleanup, non-active deprecate preservation)
+- [x] file-backed loader/registry now use typed lifecycle/registry/integrity failures for missing artifacts and invalid lifecycle transitions instead of generic NSError throws
 - [~] provenance-preserving compile output can still be enriched beyond the current source-hash/report baseline
-- [~] activation/deprecation policy controls can still be deepened beyond current minimum hardening
+- [~] activation/deprecation policy controls can still be deepened beyond current minimum hardening (multi-review, separation-of-duties, version pinning)
 - [~] deep execution-time adoption across AACI paths beyond the current first-slice internal runtime paths remains to be completed
 
 ## 6. AACI

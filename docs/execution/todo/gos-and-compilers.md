@@ -71,18 +71,22 @@ It is intentionally not about scenario-specific implementations.
 - [x] minimal lifecycle ergonomics helper added for reviewed→active promotion (`FileBackedGOSBundleRegistry.promoteReviewedBundle(...)`, surfaced in CLI as `--gos-promote-bundle`)
 - [x] draft→reviewed review records and append-only lifecycle audit records now persist in the file-backed registry/CLI path
 - [x] registry lifecycle persistence now remains schema-aligned in `snake_case` across manifest, registry entry, review record, and audit artifacts
-- [~] registry/storage implementation is now stable-minimum, but richer policy controls, separation of duties, and version pinning are still open
+- [~] registry/storage implementation is now hardened-minimum with typed lifecycle/load failures, explicit draft→reviewed→active promotion helpers/results, and lifecycle-safe active-pointer cleanup; richer policy controls, separation of duties, and version pinning are still open
 
 ## 6. App boundary discipline
 - [x] app-boundary doctrine clarified: apps do not interpret GOS as sovereign law
 - [x] examples of allowed Scribe/Sortio/CloudClinic consumption patterns documented
 
 ## 7. Validation hardening
-- [~] Swift XCTest coverage added in-repo for:
-  - AACI resolved GOS runtime view influence in SOAP/referral/prescription draft payloads
-  - first-slice provenance distinction between GOS activation, non-draft usage (`gos.use.transcription`, `gos.use.context.retrieve`), and draft-path usage
-  - reviewed→active lifecycle promotion helper behavior in file-backed registry, including persisted review/audit artifacts and snake_case lifecycle files
-  note: the current local Swift toolchain on this machine does not expose `XCTest`, so `swift test` currently validates package buildability while executable GOS closure is confirmed through CLI smoke runs
+- [x] Swift XCTest coverage now verifies file-backed lifecycle/loader behavior for:
+  - bundle register + valid active load path (manifest/spec/compiler-report/source-provenance present)
+  - draft→reviewed review with persisted approval/audit artifacts
+  - reviewed→active promotion/activation path
+  - activation denial for draft bundles
+  - load denial for revoked bundles
+  - active pointer cleanup on revoke of active bundle
+  - known-bundle preservation when deprecating non-active bundles
+  - runtime-binding-plan mismatch rejection
 - [x] TypeScript tests added for `@healthos/gos-tooling` compile + cross-reference failure paths
 - [x] TypeScript tests now also cover bundle CLI lifecycle artifact emission
 

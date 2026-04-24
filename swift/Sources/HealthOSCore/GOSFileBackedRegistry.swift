@@ -12,6 +12,7 @@ public actor FileBackedGOSBundleRegistry: GOSBundleRegistry, GOSBundleLoader {
         self.encoder.dateEncodingStrategy = .iso8601
         self.decoder = JSONDecoder()
         self.decoder.dateDecodingStrategy = .iso8601
+        self.decoder.keyDecodingStrategy = .convertFromSnakeCase
     }
 
     public func lookup(specId: String) async throws -> GOSRegistryEntry? {

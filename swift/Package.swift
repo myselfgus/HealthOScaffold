@@ -18,6 +18,10 @@ let package = Package(
         .target(name: "HealthOSAACI", dependencies: ["HealthOSCore", "HealthOSProviders"]),
         .target(name: "HealthOSFirstSliceSupport", dependencies: ["HealthOSCore", "HealthOSAACI", "HealthOSProviders"]),
         .executableTarget(name: "HealthOSCLI", dependencies: ["HealthOSCore", "HealthOSFirstSliceSupport"]),
-        .executableTarget(name: "HealthOSScribeApp", dependencies: ["HealthOSCore", "HealthOSFirstSliceSupport"])
+        .executableTarget(name: "HealthOSScribeApp", dependencies: ["HealthOSCore", "HealthOSFirstSliceSupport"]),
+        .testTarget(
+            name: "HealthOSTests",
+            dependencies: ["HealthOSCore", "HealthOSAACI", "HealthOSProviders", "HealthOSFirstSliceSupport"]
+        )
     ]
 )

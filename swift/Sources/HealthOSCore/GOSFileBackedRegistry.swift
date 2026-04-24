@@ -63,6 +63,17 @@ public actor FileBackedGOSBundleRegistry: GOSBundleRegistry, GOSBundleLoader {
         try encoder.encode(updated).write(to: registryFileURL(specId: specId))
     }
 
+    public func promoteReviewedBundle(bundleId: String, specId: String) async throws {
+        let manifest = try readManifest(bundleId: bundleId)
+        guard manifest.specId == specId else {
+            throw NSError(domain: GOSLoaderFailure.bundleRegistryFailure.rawValue, code: 30)
+        }
+        guard manifest.lifecycleState == .reviewed || manifest.lifecycleState == .active else {
+            throw NSError(domain: GOSLoaderFailure.bundleInactive.rawValue, code: 31)
+        }
+        try await activate(bundleId: bundleId, specId: specId)
+    }
+
     public func deprecate(bundleId: String, note: String?) async throws {
         try updateLifecycle(bundleId: bundleId, state: .deprecated, note: note, clearActiveRegistryPointer: true)
     }

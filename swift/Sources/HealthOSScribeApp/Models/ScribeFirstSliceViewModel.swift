@@ -1,3 +1,4 @@
+#if canImport(SwiftUI)
 import Foundation
 import Observation
 import HealthOSCore
@@ -548,3 +549,4 @@ final class ScribeFirstSliceViewModel {
         return lines.joined(separator: "\n")
     }
 }
+#endif

@@ -6,6 +6,12 @@ Current phase: Controlled implementation — first vertical slice started
 
 ## Completed recently
 
+- full local GOS closure validation is now executed end-to-end (`bootstrap-local`, TypeScript build, GOS validate/bundle, Swift build, HealthOSCLI smoke, HealthOSScribeApp `--smoke-test`)
+- TypeScript GOS tooling was stabilized so schema resolution and strict typing now build cleanly, and canonical compiled metadata now conforms to compiled-schema constraints
+- GOS file-backed registry/loader hardening now validates registry-pointer consistency, manifest/spec/compiler-report/source-provenance presence, compiler report pass/fail status, and runtime-binding-plan compatibility before activation
+- AACI runtime now applies active GOS bundle mediation inside orchestrator draft composition/referral/prescription paths; runner-level draft mutation is no longer the primary mediation point
+- first-slice now records explicit `gos.activate.failed` provenance when activation cannot be completed, instead of silently dropping runtime diagnosis
+- HealthOSScribeApp now includes a headless smoke fallback for non-SwiftUI environments while keeping SwiftUI/macOS behavior intact
 - first-slice runner now attempts optional GOS activation and uses the resulting active bundle to mediate persisted SOAP/referral/prescription drafts, storage metadata, event attributes, and provenance when an active bundle exists
 - GOS validator now performs minimal evidence-hook completeness checks for task and draft-output phases
 - GOS app consumption patterns document added, clarifying what Scribe, Sortio, and CloudClinic may consume from GOS-driven runtime work
@@ -114,7 +120,7 @@ Current phase: Controlled implementation — first vertical slice started
 
 - first vertical slice implementation continues with seeded-text compatibility, a structured local retrieval/context package, richer gate/document semantics, draft-only referral/prescription derivatives, and a now-wired local-audio path, while real local transcription and earlier draft-refresh finalization remain deferred
 - doctrinal language hardening completed for sovereignty/privacy/compliance/topology without introducing infrastructure expansion
-- GOS now exists as doctrine + schema + authoring workspace + schema-aware compiler/validator/CLI + lifecycle/bundle posture + Swift runtime contracts + minimal AACI activation/load seams + first-slice mediated draft usage, while deeper runtime adoption and hardening still remain open
+- GOS now exists as doctrine + schema + authoring workspace + schema-aware compiler/validator/CLI + lifecycle/bundle posture + Swift runtime contracts + hardened loader seams + runtime-mediated draft adoption, while broader subagent-path adoption and policy depth still remain open
 
 ## Known gaps
 
@@ -124,7 +130,7 @@ Current phase: Controlled implementation — first vertical slice started
 - Scribe now has a minimal validation UI surface, but it is not yet a full/final app shell
 - draft refresh remains preview/degraded until gate resolution runs the full executable spine
 - referral/prescription drafts now exist, but their regulatory effectuation/issuance remains intentionally deferred
-- GOS still needs stronger human review/activation mechanics, stronger registry hardening, and deeper execution-time adoption inside AACI subagent paths
+- GOS still needs stronger human review/activation mechanics and deeper execution-time adoption across AACI paths beyond the current draft-focused runtime mediation
 
 ## Open blockers / decisions
 

@@ -182,6 +182,13 @@ public struct GOSCompilerReportRecord: Codable, Sendable {
         self.crossReferenceOK = crossReferenceOK
         self.warnings = warnings
     }
+
+    enum CodingKeys: String, CodingKey {
+        case parseOK = "parse_ok"
+        case structuralOK = "structural_ok"
+        case crossReferenceOK = "cross_reference_ok"
+        case warnings
+    }
 }
 
 public struct GOSCompiledBundle: Codable, Sendable {

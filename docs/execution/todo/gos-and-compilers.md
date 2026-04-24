@@ -39,7 +39,8 @@ It is intentionally not about scenario-specific implementations.
 - [x] schema validation workflow added inside TypeScript tooling via Ajv-based validation helpers
 - [x] simple invariant validation added (for example gate-required draft outputs without matching human gate requirements)
 - [x] evidence-hook completeness validation added at minimal level
-- [x] local validation checklist documented, but execution is still pending
+- [x] local validation checklist documented
+- [x] local workspace validation run executed (`bootstrap`, TS build/validate/bundle, Swift build, HealthOSCLI smoke, HealthOSScribeApp smoke)
 
 ## 4. Runtime binding
 - [x] AACI-to-GOS binding doctrine documented
@@ -49,7 +50,8 @@ It is intentionally not about scenario-specific implementations.
 - [x] default AACI runtime binding plan scaffold added in Swift
 - [x] AACI activation/loading surface added in Swift
 - [x] first-slice runner now attempts optional GOS activation and uses the resulting bundle to mediate persisted SOAP/referral/prescription drafts, events, and provenance when an active bundle exists
-- [~] bundle-provided runtime binding plans are loadable in the core loader seam, but deep execution-time adoption inside AACI subagent paths still remains open
+- [x] AACI draft composition/referral/prescription paths now apply active-bundle mediation inside orchestrator runtime execution (runner no longer mutates draft content as the primary mediation point)
+- [~] bundle-provided runtime binding plans are loadable and active in current draft paths, but broader subagent-path adoption still remains open
 
 ## 5. Storage / lifecycle
 - [x] canonical storage/location posture documented
@@ -59,7 +61,8 @@ It is intentionally not about scenario-specific implementations.
 - [x] minimal file-backed bundle registry/loader implementation added in Swift
 - [x] minimal activation hardening added: only reviewed/active bundles may be promoted, and deprecate/revoke clear active registry pointers
 - [x] bootstrap exemplar bundle, registry entry, and copy script added for `aaci.first-slice`
-- [~] registry/storage implementation is now minimal-functional, but not yet hardened
+- [x] minimum loader hardening added for registry-pointer consistency, manifest/spec/report/source-provenance presence, compiler-report validity checks, and runtime-binding-plan shape checks
+- [~] registry/storage implementation is now stable-minimum, but richer policy controls/version pinning are still open
 
 ## 6. App boundary discipline
 - [x] app-boundary doctrine clarified: apps do not interpret GOS as sovereign law

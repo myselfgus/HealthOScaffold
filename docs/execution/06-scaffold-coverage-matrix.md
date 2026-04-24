@@ -65,11 +65,13 @@ Legend:
 - [x] Swift contracts established for compiled bundles, registry entries, bundle loader, bundle registry, and runtime binding plans
 - [x] AACI default runtime binding plan scaffold established in Swift
 - [x] minimal-functional file-backed runtime loader/registry established
+- [x] loader/registry minimum hardening now checks active-pointer consistency, required bundle artifacts, compiler-report pass/fail status, and runtime-binding-plan compatibility
 - [x] AACI activation/load seam established
 - [x] first-slice runner now consumes optional active GOS bundles to mediate persisted draft content, metadata, events, and provenance
+- [x] AACI runtime draft composition/referral/prescription now consume active GOS mediation directly inside orchestrator execution paths
 - [~] provenance-preserving compile output can still be enriched beyond the current source-hash/report baseline
-- [~] activation/deprecation hardening and registry hardening remain to be completed
-- [~] deep execution-time adoption inside AACI subagent paths remains to be completed
+- [~] activation/deprecation policy controls can still be deepened beyond current minimum hardening
+- [~] deep execution-time adoption across additional AACI subagent paths remains to be completed
 
 ## 6. AACI
 - [x] purpose and boundaries established

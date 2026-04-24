@@ -6,6 +6,8 @@ Current phase: Controlled implementation — first vertical slice started
 
 ## Completed recently
 
+- GOS validator now performs minimal evidence-hook completeness checks for task and draft-output phases
+- GOS app consumption patterns document added, clarifying what Scribe, Sortio, and CloudClinic may consume from GOS-driven runtime work
 - GOS TypeScript tooling now performs authoring-schema validation, compiled-schema validation, cross-reference validation, and simple invariant checks
 - GOS compiler output now includes source provenance hashing/reporting
 - GOS CLI now supports `validate`, `compile`, and `bundle`
@@ -121,7 +123,7 @@ Current phase: Controlled implementation — first vertical slice started
 - Scribe now has a minimal validation UI surface, but it is not yet a full/final app shell
 - draft refresh remains preview/degraded until gate resolution runs the full executable spine
 - referral/prescription drafts now exist, but their regulatory effectuation/issuance remains intentionally deferred
-- GOS still needs evidence-hook completeness validation, stronger human review/activation mechanics, stronger registry hardening, and deeper execution-time adoption inside AACI subagent paths
+- GOS still needs stronger human review/activation mechanics, stronger registry hardening, and deeper execution-time adoption inside AACI subagent paths
 
 ## Open blockers / decisions
 

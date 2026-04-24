@@ -6,6 +6,9 @@ Current phase: Controlled implementation — first vertical slice started
 
 ## Completed recently
 
+- Swift contracts added for GOS bundle loading, registry entries, runtime binding plans, compiled bundles, compiler reports, and lifecycle states
+- default AACI GOS runtime binding plan scaffold added in Swift
+- minimal file-backed GOS registry/loader scaffold added in Swift so bundle loading now has a typed runtime seam, even though the implementation remains intentionally incomplete
 - GOS lifecycle/storage architecture document added with bundle identity, lifecycle states, activation posture, rollback posture, and canonical storage recommendation
 - lightweight authoring schema added for YAML-form GOS source documents
 - GOS bundle-manifest schema added for compiled-bundle lifecycle representation
@@ -101,7 +104,7 @@ Current phase: Controlled implementation — first vertical slice started
 
 - first vertical slice implementation continues with seeded-text compatibility, a structured local retrieval/context package, richer gate/document semantics, draft-only referral/prescription derivatives, and a now-wired local-audio path, while real local transcription and earlier draft-refresh finalization remain deferred
 - doctrinal language hardening completed for sovereignty/privacy/compliance/topology without introducing infrastructure expansion
-- GOS now exists as doctrine + schema + authoring workspace + compiler/validator/CLI scaffolds + lifecycle/bundle posture, while schema-workflow validation, activation mechanics, and executable runtime loader/binding work remain open
+- GOS now exists as doctrine + schema + authoring workspace + compiler/validator/CLI scaffolds + lifecycle/bundle posture + Swift runtime contracts, while schema-workflow validation, stronger registry mechanics, and full executable runtime loading remain open
 
 ## Known gaps
 
@@ -111,7 +114,7 @@ Current phase: Controlled implementation — first vertical slice started
 - Scribe now has a minimal validation UI surface, but it is not yet a full/final app shell
 - draft refresh remains preview/degraded until gate resolution runs the full executable spine
 - referral/prescription drafts now exist, but their regulatory effectuation/issuance remains intentionally deferred
-- GOS still needs schema-workflow validation, stronger provenance-preserving compile output, activation/deprecation mechanics, bundle storage/registry implementation, and executable runtime loader/binding contracts
+- GOS still needs schema-workflow validation, stronger provenance-preserving compile output, stronger bundle storage/registry mechanics, and full executable runtime loader/binding implementation
 
 ## Open blockers / decisions
 

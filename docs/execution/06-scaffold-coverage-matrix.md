@@ -50,6 +50,7 @@ Legend:
 - [x] authoring/compiler architecture document established
 - [x] runtime-binding architecture document established
 - [x] lifecycle/storage architecture document established
+- [x] app consumption patterns documented for Scribe, Sortio, and CloudClinic
 - [x] canonical JSON schema established for compiled GOS form
 - [x] lightweight authoring schema established for YAML source documents
 - [x] bundle-manifest schema established for compiled-bundle lifecycle representation
@@ -57,15 +58,17 @@ Legend:
 - [x] app-boundary doctrine clarified so apps do not interpret GOS as sovereign law
 - [x] authoring conventions for declarative YAML source form established
 - [x] blank generic YAML authoring template added
-- [x] TypeScript tooling package scaffold added for parse/canonicalize/validate/CLI flows
+- [x] TypeScript tooling package added for parse/canonicalize/schema-validate/cross-validate/CLI flows
 - [x] cross-reference validation scaffold added
+- [x] minimal evidence-hook completeness validation added
 - [x] lifecycle state set and canonical bundle identity posture documented
 - [x] Swift contracts established for compiled bundles, registry entries, bundle loader, bundle registry, and runtime binding plans
 - [x] AACI default runtime binding plan scaffold established in Swift
-- [~] file-backed runtime loader/registry exists only as scaffold
-- [~] schema-workflow validation is not yet implemented
-- [~] provenance-preserving compile output remains minimal and should be strengthened
-- [~] activation/deprecation mechanics and bundle registry/storage implementation remain to be completed
+- [x] minimal-functional file-backed runtime loader/registry established
+- [x] AACI activation/load seam established
+- [~] provenance-preserving compile output can still be enriched beyond the current source-hash/report baseline
+- [~] activation/deprecation hardening and registry hardening remain to be completed
+- [~] deep execution-time adoption inside AACI subagent paths remains to be completed
 
 ## 6. AACI
 - [x] purpose and boundaries established
@@ -77,6 +80,7 @@ Legend:
 - [x] provider-threshold policy exists by task class
 - [x] AACI now explicitly described as primary early consumer of GOS
 - [x] AACI now has a default GOS primitive-family binding map scaffold in Swift
+- [x] AACI now has an activation seam for loading active GOS bundles
 
 ## 7. Apps / interfaces
 - [x] Scribe defined
@@ -93,6 +97,7 @@ Legend:
 - [x] minimal macOS SwiftUI Scribe validation surface now consumes the first-slice bridge without taking ownership of governance logic
 - [x] minimal Scribe surface now exposes seeded-text and local-audio capture modes with explicit transcription state
 - [x] minimal Scribe surface now exposes structured retrieval summary/highlights/source hints with explicit partial/empty/degraded context truth
+- [x] app-boundary consumption patterns for GOS-derived state are now documented
 
 ## 8. Networking / operations
 - [x] topology doctrine refined: single-node as canonical bootstrap minimum, not system identity
@@ -160,5 +165,5 @@ What remains is mostly optional hardening and procedural refinement, not identit
 - [x] HealthOS now has a named, native intermediate operational spec layer
 - [x] that layer is explicitly subordinated to core law rather than competing with it
 - [x] all declared GOS primitive families now exist in canonical schema form
-- [x] GOS now also has authoring docs, runtime-binding docs, lifecycle docs, a generic YAML template, an authoring schema, a bundle-manifest schema, TypeScript tooling scaffold, and Swift runtime contracts
-- [~] GOS still needs stronger validator/lifecycle/runtime-loader implementation before heavy runtime adoption
+- [x] GOS now also has authoring docs, runtime-binding docs, lifecycle docs, app-consumption docs, a generic YAML template, an authoring schema, a bundle-manifest schema, TypeScript tooling scaffold, and Swift runtime contracts
+- [~] GOS still needs deeper runtime adoption and operational hardening before heavy production use

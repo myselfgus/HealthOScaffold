@@ -1,0 +1,12 @@
+{
+  "parse_ok": true,
+  "structural_ok": true,
+  "cross_reference_ok": true,
+  "warnings": [],
+  "structural_issues": [],
+  "cross_reference_issues": [],
+  "source_provenance": {
+    "source_sha256": "1b52e4ab7e7ad5e5aaci-first-slice-bootstrap",
+    "source_reference": "gos/specs/aaci.first-slice.gos.yaml"
+  }
+}

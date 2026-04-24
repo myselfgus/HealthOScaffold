@@ -1,0 +1,247 @@
+{
+  "spec_id": "aaci.first-slice",
+  "spec_family": "workflow",
+  "version": "0.1.0",
+  "metadata": {
+    "title": "AACI First Slice Governed Workflow",
+    "description": "Governs the first executable AACI slice for bounded session capture, context retrieval, SOAP draft composition, and draft-only referral and prescription derivation under explicit human gate requirements.",
+    "status": "active",
+    "authoring_form": "yaml",
+    "compiled_form": "json",
+    "source_references": [
+      {
+        "kind": "service_rule",
+        "reference": "HealthOS first slice canonical workflow",
+        "version": "0.1.0"
+      }
+    ],
+    "tags": [
+      "aaci",
+      "first-slice",
+      "soap",
+      "governed-workflow"
+    ]
+  },
+  "signal_specs": [
+    {
+      "signal_id": "capture_seeded_text",
+      "kind": "session-capture",
+      "source_class": "user_input",
+      "required": false,
+      "notes": "Seeded text capture accepted by the first slice."
+    },
+    {
+      "signal_id": "capture_audio_ref",
+      "kind": "session-audio-reference",
+      "source_class": "audio_ref",
+      "required": false,
+      "notes": "Local audio reference captured for bounded transcription."
+    },
+    {
+      "signal_id": "local_context_package",
+      "kind": "bounded-context-package",
+      "source_class": "record_ref",
+      "required": true,
+      "notes": "Structured bounded context package assembled under lawful context."
+    },
+    {
+      "signal_id": "transcript_text",
+      "kind": "transcript-output",
+      "source_class": "transcript",
+      "required": true,
+      "notes": "Normalized transcript text used for bounded retrieval and draft composition."
+    }
+  ],
+  "slot_specs": [
+    {
+      "slot_id": "context_summary",
+      "data_type": "text",
+      "required": true,
+      "source_signal_ids": ["local_context_package"],
+      "fallback_behavior": "degrade_honestly"
+    },
+    {
+      "slot_id": "follow_up_draft_intent",
+      "data_type": "text",
+      "required": false,
+      "source_signal_ids": ["transcript_text"],
+      "fallback_behavior": "skip_if_optional"
+    },
+    {
+      "slot_id": "subjective_input",
+      "data_type": "text",
+      "required": true,
+      "source_signal_ids": ["transcript_text"],
+      "fallback_behavior": "degrade_honestly"
+    }
+  ],
+  "derivation_specs": [
+    {
+      "derivation_id": "symptom_cluster",
+      "inputs": ["subjective_input", "context_summary"],
+      "outputs": ["symptom_cluster_summary"],
+      "method_kind": "bounded_reasoning",
+      "requires_human_review": false
+    }
+  ],
+  "task_specs": [
+    {
+      "task_id": "compose_soap_draft",
+      "task_class": "compose",
+      "inputs": ["subjective_input", "context_summary"],
+      "outputs": ["soap_draft_payload"],
+      "degraded_behavior": "return_partial"
+    },
+    {
+      "task_id": "derive_prescription_draft",
+      "task_class": "prepare_draft",
+      "inputs": ["symptom_cluster_summary", "context_summary"],
+      "outputs": ["prescription_draft_payload"],
+      "preconditions": ["compose_soap_draft"],
+      "degraded_behavior": "return_partial"
+    },
+    {
+      "task_id": "derive_referral_draft",
+      "task_class": "prepare_draft",
+      "inputs": ["symptom_cluster_summary", "context_summary"],
+      "outputs": ["referral_draft_payload"],
+      "preconditions": ["compose_soap_draft"],
+      "degraded_behavior": "return_partial"
+    }
+  ],
+  "tool_binding_specs": [
+    {
+      "binding_id": "bind_prescription_formatter",
+      "task_id": "derive_prescription_draft",
+      "tool_class": "formatter",
+      "binding_strategy": "runtime_selected"
+    },
+    {
+      "binding_id": "bind_referral_formatter",
+      "task_id": "derive_referral_draft",
+      "tool_class": "formatter",
+      "binding_strategy": "runtime_selected"
+    },
+    {
+      "binding_id": "bind_soap_language_model",
+      "task_id": "compose_soap_draft",
+      "tool_class": "language_model",
+      "binding_strategy": "runtime_selected"
+    }
+  ],
+  "draft_output_specs": [
+    {
+      "draft_output_id": "prescription_draft",
+      "draft_kind": "prescription",
+      "status": "draft_only",
+      "source_task_ids": ["derive_prescription_draft"],
+      "requires_gate": true
+    },
+    {
+      "draft_output_id": "referral_draft",
+      "draft_kind": "referral",
+      "status": "draft_only",
+      "source_task_ids": ["derive_referral_draft"],
+      "requires_gate": true
+    },
+    {
+      "draft_output_id": "soap_draft",
+      "draft_kind": "soap",
+      "status": "draft_only",
+      "source_task_ids": ["compose_soap_draft"],
+      "requires_gate": true
+    }
+  ],
+  "guard_specs": [
+    {
+      "guard_id": "degraded_context_guard",
+      "guard_class": "consistency",
+      "trigger": "context_summary",
+      "action": "mark_degraded"
+    }
+  ],
+  "deadline_specs": [
+    {
+      "deadline_id": "soap_compose_deadline",
+      "target_ref": "compose_soap_draft",
+      "target_duration": "PT5M",
+      "miss_behavior": "mark_degraded"
+    }
+  ],
+  "evidence_hook_specs": [
+    {
+      "hook_id": "draft_output_evidence",
+      "phase": "draft_output",
+      "capture": ["provenance", "output_hash", "summary"]
+    },
+    {
+      "hook_id": "gate_needed_evidence",
+      "phase": "gate_needed",
+      "capture": ["provenance", "audit_entry", "summary"]
+    },
+    {
+      "hook_id": "task_execution_evidence",
+      "phase": "task",
+      "capture": ["provenance", "runtime_state", "summary"]
+    }
+  ],
+  "human_gate_requirement_specs": [
+    {
+      "gate_requirement_id": "gate_prescription_draft",
+      "target_ref": "prescription_draft",
+      "review_type": "professional_approval",
+      "required_role": "professional"
+    },
+    {
+      "gate_requirement_id": "gate_referral_draft",
+      "target_ref": "referral_draft",
+      "review_type": "professional_approval",
+      "required_role": "professional"
+    },
+    {
+      "gate_requirement_id": "gate_soap_draft",
+      "target_ref": "soap_draft",
+      "review_type": "professional_approval",
+      "required_role": "professional"
+    }
+  ],
+  "escalation_specs": [
+    {
+      "escalation_id": "degraded_context_escalation",
+      "trigger_ref": "degraded_context_guard",
+      "escalation_action": "notify_human"
+    }
+  ],
+  "scope_requirement_specs": [
+    {
+      "scope_requirement_id": "actor_scope",
+      "scope_kind": "actor_role",
+      "expectation": "runtime actor must remain a bounded AACI professional-support actor",
+      "failure_disposition": "governed_deny"
+    },
+    {
+      "scope_requirement_id": "consent_scope",
+      "scope_kind": "consent",
+      "expectation": "active consent for care-context-retrieval must exist",
+      "failure_disposition": "governed_deny"
+    },
+    {
+      "scope_requirement_id": "habilitation_scope",
+      "scope_kind": "habilitation",
+      "expectation": "active habilitation for professional and service session must exist",
+      "failure_disposition": "governed_deny"
+    },
+    {
+      "scope_requirement_id": "service_scope",
+      "scope_kind": "service_context",
+      "expectation": "session must be anchored to a service context",
+      "failure_disposition": "governed_deny"
+    },
+    {
+      "scope_requirement_id": "session_scope",
+      "scope_kind": "session_context",
+      "expectation": "active working session must exist",
+      "failure_disposition": "operational_failure"
+    }
+  ]
+}

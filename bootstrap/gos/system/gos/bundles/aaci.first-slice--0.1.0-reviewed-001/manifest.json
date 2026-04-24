@@ -1,0 +1,13 @@
+{
+  "bundle_id": "aaci.first-slice--0.1.0-reviewed-001",
+  "spec_id": "aaci.first-slice",
+  "spec_version": "0.1.0",
+  "bundle_version": "1",
+  "compiler_version": "0.1.0",
+  "compiled_at": "2026-01-01T00:00:00Z",
+  "lifecycle_state": "active",
+  "compiler_report_path": "compiler-report.json",
+  "spec_path": "spec.json",
+  "source_provenance_path": "source-provenance.json",
+  "notes": "Bootstrap exemplar bundle for the AACI first slice."
+}

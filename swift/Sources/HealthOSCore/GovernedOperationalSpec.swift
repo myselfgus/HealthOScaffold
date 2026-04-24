@@ -41,6 +41,29 @@ public enum GOSLoaderFailure: String, Codable, Sendable {
     case bundleRegistryFailure = "bundle_registry_failure"
 }
 
+public enum GOSRegistryError: Error, Sendable {
+    case bundleNotFound(bundleId: String)
+    case manifestMissing(bundleId: String)
+    case specMissing(bundleId: String, path: String)
+    case compilerReportMissing(bundleId: String, path: String)
+    case sourceProvenanceMissing(bundleId: String, path: String)
+    case registryBundleMissing(specId: String, bundleId: String)
+    case registrySpecMismatch(expectedSpecId: String, actualSpecId: String)
+    case bundleSpecMismatch(expectedSpecId: String, actualSpecId: String, bundleId: String)
+    case activationRequiresReviewedOrActive(bundleId: String, lifecycleState: GOSLifecycleState)
+    case activationRequiresReviewRecord(bundleId: String)
+    case bundleRevoked(bundleId: String)
+    case bundleDeprecated(bundleId: String)
+    case lifecycleStateNotAccepted(bundleId: String, state: GOSLifecycleState, accepted: [GOSLifecycleState])
+    case compilerReportInvalid(bundleId: String)
+    case runtimeBindingPlanInvalid(bundleId: String, expectedSpecId: String, expectedRuntimeKind: RuntimeKind)
+    case metadataMissing(bundleId: String)
+    case manifestDecodeFailure(bundleId: String)
+    case compilerReportDecodeFailure(bundleId: String)
+    case reviewRecordDecodeFailure(bundleId: String)
+    case reviewRejectedForLifecycle(bundleId: String, lifecycleState: GOSLifecycleState)
+}
+
 public struct GOSSourceReference: Codable, Sendable {
     public let kind: String
     public let reference: String
@@ -374,6 +397,38 @@ public struct GOSLifecycleAuditRecord: Codable, Sendable, Identifiable {
         case fromState = "from_state"
         case toState = "to_state"
         case recordedAt = "recorded_at"
+    }
+}
+
+public struct GOSReviewResult: Codable, Sendable {
+    public let reviewRecord: GOSBundleReviewRecord
+    public let lifecycleAuditRecord: GOSLifecycleAuditRecord
+
+    public init(reviewRecord: GOSBundleReviewRecord, lifecycleAuditRecord: GOSLifecycleAuditRecord) {
+        self.reviewRecord = reviewRecord
+        self.lifecycleAuditRecord = lifecycleAuditRecord
+    }
+}
+
+public struct GOSActivationResult: Codable, Sendable {
+    public let specId: String
+    public let bundleId: String
+    public let fromState: GOSLifecycleState
+    public let toState: GOSLifecycleState
+    public let lifecycleAuditRecord: GOSLifecycleAuditRecord
+
+    public init(
+        specId: String,
+        bundleId: String,
+        fromState: GOSLifecycleState,
+        toState: GOSLifecycleState,
+        lifecycleAuditRecord: GOSLifecycleAuditRecord
+    ) {
+        self.specId = specId
+        self.bundleId = bundleId
+        self.fromState = fromState
+        self.toState = toState
+        self.lifecycleAuditRecord = lifecycleAuditRecord
     }
 }
 

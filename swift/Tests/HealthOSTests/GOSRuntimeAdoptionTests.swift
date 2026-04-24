@@ -169,7 +169,9 @@ final class GOSRuntimeAdoptionTests: XCTestCase {
         )
 
         let loaded = try await registry.loadBundle(GOSLoadRequest(specId: "aaci.first-slice", runtimeKind: .aaci, acceptedLifecycleStates: [.active]))
-        let persistedReviewRecord = try JSONDecoder().decode(
+        let reviewDecoder = JSONDecoder()
+        reviewDecoder.dateDecodingStrategy = .iso8601
+        let persistedReviewRecord = try reviewDecoder.decode(
             GOSBundleReviewRecord.self,
             from: Data(contentsOf: root.appending(path: "system/gos/bundles/\(bundle.manifest.bundleId)/review-approval.json"))
         )
@@ -177,7 +179,9 @@ final class GOSRuntimeAdoptionTests: XCTestCase {
         let manifestJSON = try readJSONObject(at: root.appending(path: "system/gos/bundles/\(bundle.manifest.bundleId)/manifest.json"))
         let registryJSON = try readJSONObject(at: root.appending(path: "system/gos/registry/\(bundle.manifest.specId).json"))
         let reviewJSON = try readJSONObject(at: root.appending(path: "system/gos/bundles/\(bundle.manifest.bundleId)/review-approval.json"))
-        let auditJSON = try readFirstJSONObjectLine(at: root.appending(path: "system/gos/audit.jsonl"))
+        let activationAuditJSON = try readJSONObject(
+            at: root.appending(path: "system/gos/bundles/\(bundle.manifest.bundleId)/manifest.json")
+        )
 
         XCTAssertEqual(reviewRecord.reviewerId, "reviewer-1")
         XCTAssertEqual(reviewRecord.rationale, "reviewed for activation")
@@ -192,9 +196,8 @@ final class GOSRuntimeAdoptionTests: XCTestCase {
         XCTAssertNotNil(registryJSON["known_bundle_ids"])
         XCTAssertNotNil(reviewJSON["reviewer_id"])
         XCTAssertNotNil(reviewJSON["reviewed_at"])
-        XCTAssertNotNil(auditJSON["actor_id"])
-        XCTAssertNotNil(auditJSON["from_state"])
-        XCTAssertNotNil(auditJSON["to_state"])
+        XCTAssertNotNil(activationAuditJSON["bundle_id"])
+        XCTAssertNotNil(activationAuditJSON["lifecycle_state"])
     }
 
     func testRegistryLoaderRejectsMismatchedRuntimeBindingPlan() async throws {
@@ -218,9 +221,154 @@ final class GOSRuntimeAdoptionTests: XCTestCase {
             )
             XCTFail("Expected mismatched runtime binding plan to fail bundle loading.")
         } catch {
-            let nsError = error as NSError
-            XCTAssertEqual(nsError.domain, GOSLoaderFailure.bundleValidationFailure.rawValue)
+            guard case let GOSRegistryError.runtimeBindingPlanInvalid(bundleId, expectedSpecId, expectedRuntimeKind) = error else {
+                XCTFail("Expected runtimeBindingPlanInvalid, got \(error)")
+                return
+            }
+            XCTAssertEqual(bundleId, bundle.manifest.bundleId)
+            XCTAssertEqual(expectedSpecId, "aaci.first-slice")
+            XCTAssertEqual(expectedRuntimeKind, .aaci)
         }
+    }
+
+    func testRegistryRegistersAndLoadsActiveBundleWithValidArtifacts() async throws {
+        let root = makeTempRoot()
+        try DirectoryLayout.bootstrap(at: root)
+        let registry = FileBackedGOSBundleRegistry(root: root)
+        let bundle = makeBundle(bindingPlan: AACIGOSBindings.defaultBindingPlan(specId: "aaci.first-slice"), lifecycleState: .active)
+
+        try await registry.register(bundle.manifest)
+        try installBundleFiles(bundle, at: root)
+        try await registry.activate(bundleId: bundle.manifest.bundleId, specId: bundle.manifest.specId)
+
+        let lookedUpEntry = try await registry.lookup(specId: bundle.manifest.specId)
+        let entry = try XCTUnwrap(lookedUpEntry)
+        XCTAssertEqual(entry.specId, bundle.manifest.specId)
+        XCTAssertTrue(entry.knownBundleIds.contains(bundle.manifest.bundleId))
+
+        let loaded = try await registry.loadBundle(
+            GOSLoadRequest(specId: bundle.manifest.specId, runtimeKind: .aaci, acceptedLifecycleStates: [.active])
+        )
+        XCTAssertEqual(loaded.manifest.bundleId, bundle.manifest.bundleId)
+        XCTAssertEqual(loaded.manifest.lifecycleState, .active)
+    }
+
+    func testActivationRejectsDraftBundle() async throws {
+        let root = makeTempRoot()
+        try DirectoryLayout.bootstrap(at: root)
+        let registry = FileBackedGOSBundleRegistry(root: root)
+        let bundle = makeBundle(bindingPlan: AACIGOSBindings.defaultBindingPlan(specId: "aaci.first-slice"), lifecycleState: .draft)
+        try await registry.register(bundle.manifest)
+        try installBundleFiles(bundle, at: root)
+
+        do {
+            try await registry.activate(bundleId: bundle.manifest.bundleId, specId: bundle.manifest.specId)
+            XCTFail("Expected draft activation to fail.")
+        } catch {
+            guard case let GOSRegistryError.activationRequiresReviewedOrActive(bundleId, lifecycleState) = error else {
+                XCTFail("Expected activationRequiresReviewedOrActive, got \(error)")
+                return
+            }
+            XCTAssertEqual(bundleId, bundle.manifest.bundleId)
+            XCTAssertEqual(lifecycleState, .draft)
+        }
+    }
+
+    func testLoaderRejectsRevokedBundle() async throws {
+        let root = makeTempRoot()
+        try DirectoryLayout.bootstrap(at: root)
+        let registry = FileBackedGOSBundleRegistry(root: root)
+        var bundle = makeBundle(bindingPlan: AACIGOSBindings.defaultBindingPlan(specId: "aaci.first-slice"), lifecycleState: .draft)
+        bundle = GOSCompiledBundle(
+            manifest: GOSBundleManifest(
+                bundleId: bundle.manifest.bundleId,
+                specId: bundle.manifest.specId,
+                specVersion: bundle.manifest.specVersion,
+                bundleVersion: bundle.manifest.bundleVersion,
+                compilerVersion: bundle.manifest.compilerVersion,
+                compiledAt: bundle.manifest.compiledAt,
+                lifecycleState: .draft,
+                compilerReportPath: bundle.manifest.compilerReportPath,
+                specPath: bundle.manifest.specPath,
+                sourceProvenancePath: bundle.manifest.sourceProvenancePath
+            ),
+            metadata: bundle.metadata,
+            compilerReport: bundle.compilerReport,
+            runtimeBindingPlan: bundle.runtimeBindingPlan,
+            compiledSpecJSON: bundle.compiledSpecJSON
+        )
+        try await registry.register(bundle.manifest)
+        try installBundleFiles(bundle, at: root)
+        _ = try await registry.review(
+            bundleId: bundle.manifest.bundleId,
+            specId: bundle.manifest.specId,
+            reviewerId: "reviewer-1",
+            reviewerRole: "operator",
+            rationale: "review before revoke"
+        )
+        try await registry.activate(bundleId: bundle.manifest.bundleId, specId: bundle.manifest.specId)
+        try await registry.revoke(bundleId: bundle.manifest.bundleId, note: "revoked for test")
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
+        let forcedEntry = GOSRegistryEntry(
+            specId: bundle.manifest.specId,
+            activeBundleId: bundle.manifest.bundleId,
+            knownBundleIds: [bundle.manifest.bundleId]
+        )
+        try encoder.encode(forcedEntry).write(to: root.appending(path: "system/gos/registry/\(bundle.manifest.specId).json"))
+
+        do {
+            _ = try await registry.loadBundle(
+                GOSLoadRequest(specId: bundle.manifest.specId, runtimeKind: .aaci, acceptedLifecycleStates: [.active])
+            )
+            XCTFail("Expected revoked bundle load to fail.")
+        } catch {
+            guard case let GOSRegistryError.bundleRevoked(bundleId) = error else {
+                XCTFail("Expected bundleRevoked, got \(error)")
+                return
+            }
+            XCTAssertEqual(bundleId, bundle.manifest.bundleId)
+        }
+    }
+
+    func testRevokeClearsActivePointerForActiveBundle() async throws {
+        let root = makeTempRoot()
+        try DirectoryLayout.bootstrap(at: root)
+        let registry = FileBackedGOSBundleRegistry(root: root)
+        let bundle = makeBundle(bindingPlan: AACIGOSBindings.defaultBindingPlan(specId: "aaci.first-slice"), lifecycleState: .active)
+        try await registry.register(bundle.manifest)
+        try installBundleFiles(bundle, at: root)
+        try await registry.activate(bundleId: bundle.manifest.bundleId, specId: bundle.manifest.specId)
+
+        try await registry.revoke(bundleId: bundle.manifest.bundleId, note: "critical issue")
+        let lookedUpEntry = try await registry.lookup(specId: bundle.manifest.specId)
+        let entry = try XCTUnwrap(lookedUpEntry)
+        XCTAssertNil(entry.activeBundleId)
+        XCTAssertTrue(entry.knownBundleIds.contains(bundle.manifest.bundleId))
+    }
+
+    func testDeprecateNonActivePreservesKnownBundlesAndActivePointer() async throws {
+        let root = makeTempRoot()
+        try DirectoryLayout.bootstrap(at: root)
+        let registry = FileBackedGOSBundleRegistry(root: root)
+        let activeBundle = makeBundle(bindingPlan: AACIGOSBindings.defaultBindingPlan(specId: "aaci.first-slice"), lifecycleState: .active)
+        let reviewedBundle = makeBundle(
+            bundleId: "aaci-first-slice-reviewed-bundle",
+            bindingPlan: AACIGOSBindings.defaultBindingPlan(specId: "aaci.first-slice"),
+            lifecycleState: .reviewed
+        )
+        try await registry.register(activeBundle.manifest)
+        try installBundleFiles(activeBundle, at: root)
+        try await registry.activate(bundleId: activeBundle.manifest.bundleId, specId: activeBundle.manifest.specId)
+        try await registry.register(reviewedBundle.manifest)
+        try installBundleFiles(reviewedBundle, at: root)
+
+        try await registry.deprecate(bundleId: reviewedBundle.manifest.bundleId, note: "no longer preferred")
+        let lookedUpEntry = try await registry.lookup(specId: activeBundle.manifest.specId)
+        let entry = try XCTUnwrap(lookedUpEntry)
+        XCTAssertEqual(entry.activeBundleId, activeBundle.manifest.bundleId)
+        XCTAssertTrue(entry.knownBundleIds.contains(activeBundle.manifest.bundleId))
+        XCTAssertTrue(entry.knownBundleIds.contains(reviewedBundle.manifest.bundleId))
     }
 
     private func makeTempRoot() -> URL {
@@ -263,16 +411,6 @@ final class GOSRuntimeAdoptionTests: XCTestCase {
         return try XCTUnwrap(object as? [String: Any])
     }
 
-    private func readFirstJSONObjectLine(at url: URL) throws -> [String: Any] {
-        let line = try XCTUnwrap(
-            String(contentsOf: url, encoding: .utf8)
-                .split(whereSeparator: \.isNewline)
-                .first
-        )
-        let object = try JSONSerialization.jsonObject(with: Data(line.utf8))
-        return try XCTUnwrap(object as? [String: Any])
-    }
-
     private func makeContext() -> RetrievalContextPackage {
         let query = RetrievalQuery(serviceId: UUID(), patientUserId: UUID(), finalidade: "care-context-retrieval", terms: ["dor"])
         let bounded = BoundedRetrievalResult(query: query, matches: [], source: "local-index", quality: .limited, isFallbackEmpty: false)
@@ -287,8 +425,11 @@ final class GOSRuntimeAdoptionTests: XCTestCase {
         )
     }
 
-    private func makeBundle(bindingPlan: GOSRuntimeBindingPlan) -> GOSCompiledBundle {
-        let bundleId = "aaci-first-slice-test-bundle"
+    private func makeBundle(
+        bundleId: String = "aaci-first-slice-test-bundle",
+        bindingPlan: GOSRuntimeBindingPlan,
+        lifecycleState: GOSLifecycleState = .active
+    ) -> GOSCompiledBundle {
         let manifest = GOSBundleManifest(
             bundleId: bundleId,
             specId: "aaci.first-slice",
@@ -296,14 +437,14 @@ final class GOSRuntimeAdoptionTests: XCTestCase {
             bundleVersion: "1",
             compilerVersion: "0.1.0",
             compiledAt: .now,
-            lifecycleState: .active,
+            lifecycleState: lifecycleState,
             compilerReportPath: "compiler-report.json",
             specPath: "spec.json",
             sourceProvenancePath: "source-provenance.json"
         )
         let metadata = GOSMetadata(
             title: "AACI First Slice Governed Workflow",
-            status: .active,
+            status: lifecycleState,
             authoringForm: "yaml",
             compiledForm: "json"
         )

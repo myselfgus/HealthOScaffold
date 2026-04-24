@@ -6,6 +6,7 @@ Current phase: Controlled implementation — first vertical slice started
 
 ## Completed recently
 
+- first-slice runner now attempts optional GOS activation and uses the resulting active bundle to mediate persisted SOAP/referral/prescription drafts, storage metadata, event attributes, and provenance when an active bundle exists
 - GOS validator now performs minimal evidence-hook completeness checks for task and draft-output phases
 - GOS app consumption patterns document added, clarifying what Scribe, Sortio, and CloudClinic may consume from GOS-driven runtime work
 - GOS TypeScript tooling now performs authoring-schema validation, compiled-schema validation, cross-reference validation, and simple invariant checks
@@ -113,7 +114,7 @@ Current phase: Controlled implementation — first vertical slice started
 
 - first vertical slice implementation continues with seeded-text compatibility, a structured local retrieval/context package, richer gate/document semantics, draft-only referral/prescription derivatives, and a now-wired local-audio path, while real local transcription and earlier draft-refresh finalization remain deferred
 - doctrinal language hardening completed for sovereignty/privacy/compliance/topology without introducing infrastructure expansion
-- GOS now exists as doctrine + schema + authoring workspace + schema-aware compiler/validator/CLI + lifecycle/bundle posture + Swift runtime contracts + minimal AACI activation/load seams, while deeper runtime adoption and hardening still remain open
+- GOS now exists as doctrine + schema + authoring workspace + schema-aware compiler/validator/CLI + lifecycle/bundle posture + Swift runtime contracts + minimal AACI activation/load seams + first-slice mediated draft usage, while deeper runtime adoption and hardening still remain open
 
 ## Known gaps
 

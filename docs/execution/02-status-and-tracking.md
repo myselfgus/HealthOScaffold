@@ -195,6 +195,10 @@ Current phase: Controlled implementation — first vertical slice started
 - minimal Scribe surface now shows draft preview, gate review summary, and finalized-document state/path as distinct truths
 - local validation now also confirms explicit approve/reject semantics, including withheld final-document state on CLI rejection runs
 
+- user sovereignty/User-Agent governance scaffold is now formalized in Swift Core + TS contracts with explicit `UserAgentScope`/`UserAgentRequest`/`UserAgentResponse` capability boundaries, fail-closed guards for prohibited clinical/regulatory capabilities, lawfulContext requirements, data-layer denial checks, and informational-only output disposition
+- patient-facing governed surfaces are now typed for consent management, patient access-audit views, export request/status, and visibility-vs-retention summary with app-safe boundary validation (no raw CPF, no reidentification mapping by default, no raw storage-path leakage)
+- Swift XCTest coverage now includes a dedicated `UserSovereigntyGovernanceTests` suite covering User Agent negative capability paths, lawfulContext enforcement, consent revocation governance, patient audit scoping/redaction, export policy denials, visibility-vs-retention separation, and Sortio app-boundary payload constraints
+
 ## In progress
 
 - first vertical slice implementation continues with seeded-text compatibility, a structured local retrieval/context package, richer gate/document semantics, draft-only referral/prescription derivatives, and a now-wired local-audio path, while real local transcription and earlier draft-refresh finalization remain deferred
@@ -216,6 +220,8 @@ Current phase: Controlled implementation — first vertical slice started
 - Swift tests now also assert active-only runtime load denial for deprecated bundles and preservation of known bundle history even when lifecycle transitions are denied.
 
 ## Known gaps
+
+- Sortio and user-agent runtime remain contract-first scaffolds in this wave: no final UI shell, no chatbot behavior, and no clinical act pathways are implemented
 
 - regulatory/interop/signature pathways remain scaffold-only: no RNDS/TISS endpoint delivery, no ICP-Brasil or qualified signature provider integration, and no production compliance claim
 - async runtime remains local scaffold (in-memory executor + SQL contract shape); no distributed queue, worker mesh, or production scheduler is implemented in this wave

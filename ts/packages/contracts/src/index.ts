@@ -587,3 +587,185 @@ export type RegulatoryGovernanceEventKind =
   | "signature.verification_failed"
   | "interoperability.package_prepared"
   | "interoperability.validation_failed";
+
+export type UserAgentCapability =
+  | "explain-own-data"
+  | "summarize-own-data"
+  | "retrieve-own-context"
+  | "list-consents"
+  | "inspect-access-audit"
+  | "prepare-export-request"
+  | "organize-own-artifacts"
+  | "ask-administrative-clarification"
+  | "diagnose"
+  | "prescribe"
+  | "issue-referral"
+  | "finalize-record"
+  | "sign-document"
+  | "grant-professional-habilitation"
+  | "alter-legal-retention"
+  | "access-reidentification-map"
+  | "bypass-consent-audit";
+
+export interface UserAgentScope {
+  userId: string;
+  cpfHashRef: string;
+  actorId: string;
+  runtimeId: string;
+  dataLayersAllowed: ("direct-identifiers" | "operational-content" | "governance-metadata" | "derived-artifacts" | "reidentification-mapping")[];
+  dataLayersDenied: ("direct-identifiers" | "operational-content" | "governance-metadata" | "derived-artifacts" | "reidentification-mapping")[];
+  allowDirectIdentifiersFlowExplicit: boolean;
+  allowReidentificationFlowExplicit: boolean;
+}
+
+export interface UserAgentRequest {
+  requestId: string;
+  scope: UserAgentScope;
+  requestedCapability: UserAgentCapability;
+  lawfulContext: Record<string, string>;
+  sessionRef?: string;
+  contextRef?: string;
+  provenanceRefs: string[];
+  auditRefs: string[];
+}
+
+export type UserAgentDataDisposition = "informational-user-facing" | "clinical-act";
+
+export interface UserAgentResponse {
+  requestId: string;
+  disposition: UserAgentDataDisposition;
+  message: string;
+  provenanceRefs: string[];
+  auditRefs: string[];
+}
+
+export interface PatientConsentView {
+  consentId: string;
+  finalidade: string;
+  scopeSummary: string[];
+  validityStart: string;
+  validityEnd?: string;
+  revoked: boolean;
+  revokedAt?: string;
+  retentionObligationApplies: boolean;
+}
+
+export interface ConsentRevocationRequest {
+  requestId: string;
+  patientUserId: string;
+  consentId: string;
+  finalidade: string;
+  scopeSummary: string[];
+  rationale: string;
+  lawfulContext: Record<string, string>;
+  retentionAcknowledged: boolean;
+  finalDocumentImmutabilityAcknowledged: boolean;
+  provenanceRef?: string;
+  auditRef?: string;
+}
+
+export interface PatientAuditQuery {
+  patientUserId: string;
+  lawfulContext: Record<string, string>;
+  includeEmergencyMarker: boolean;
+  includeRegulatoryMarker: boolean;
+}
+
+export interface AccessAuditEventView {
+  id: string;
+  patientUserId: string;
+  actorRole: string;
+  actorDisplay: string;
+  timestamp: string;
+  finalidade: string;
+  serviceRef?: string;
+  dataLayer: "direct-identifiers" | "operational-content" | "governance-metadata" | "derived-artifacts" | "reidentification-mapping";
+  operation: string;
+  provenanceRef?: string;
+  auditRef?: string;
+  emergencyAccess: boolean;
+  regulatoryAccess: boolean;
+  redactionStatus: string;
+  secretsRedacted: boolean;
+}
+
+export interface PatientAccessAuditView {
+  query: PatientAuditQuery;
+  events: AccessAuditEventView[];
+}
+
+export interface PatientExportRequestSurface {
+  requestId: string;
+  ownerUserId: string;
+  lawfulContext: Record<string, string>;
+  scope: ("direct-identifiers" | "operational-content" | "governance-metadata" | "derived-artifacts" | "reidentification-mapping")[];
+  redactionPolicy: string;
+  includeDirectIdentifiers: boolean;
+  directIdentifierPolicyElevated: boolean;
+  includeReidentificationMapping: boolean;
+}
+
+export interface PatientExportStatusView {
+  requestId: string;
+  status: string;
+  packageManifest?: ExportPackageManifest;
+  appSafeStatusDetail: string;
+  storagePathExposed: boolean;
+}
+
+export interface DataVisibilityRetentionItem {
+  id: string;
+  patientUserId: string;
+  dataLayer: "direct-identifiers" | "operational-content" | "governance-metadata" | "derived-artifacts" | "reidentification-mapping";
+  visibleToPatient: boolean;
+  hiddenByPolicy: boolean;
+  retainedByServiceObligation: boolean;
+  exportEligible: boolean;
+  deletionEligible: boolean;
+  anonymizationEligible: boolean;
+  legalHold: boolean;
+  patientRequestedRestriction: boolean;
+}
+
+export interface SortioDashboardSummary {
+  userId: string;
+  consentSummaryCount: number;
+  auditSummaryCount: number;
+  exportPendingCount: number;
+  userAgentState: string;
+}
+
+export interface SortioConsentSummary {
+  active: number;
+  revoked: number;
+  expiringSoon: number;
+}
+
+export interface SortioAccessAuditSummary {
+  totalEvents: number;
+  emergencyEvents: number;
+  regulatoryEvents: number;
+}
+
+export interface SortioExportSummary {
+  pending: number;
+  completed: number;
+  denied: number;
+}
+
+export interface SortioUserAgentInteractionEnvelope {
+  request: UserAgentRequest;
+  response: UserAgentResponse;
+}
+
+export interface SortioDataVisibilitySummary {
+  visibleItems: number;
+  retainedButHiddenItems: number;
+  legalHoldItems: number;
+}
+
+export interface SortioNotificationObligationsSummary {
+  pendingPatientNotifications: number;
+  pendingPostEmergencyReview: number;
+  pendingExportNotifications: number;
+}

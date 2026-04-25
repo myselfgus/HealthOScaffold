@@ -149,6 +149,9 @@ Legend:
 - [x] Scribe bridge now includes a dedicated runtime-mediated GOS app surface (`gosRuntimeState`) limited to lifecycle/spec-id/bundle-id/binding-source summaries plus provenance-facing/informational-only flags (no raw compiled spec or binding-plan payload exposure)
 - [x] Scribe bridge GOS runtime app surface now carries an explicit non-authorizing flag (`legalAuthorizing = false`) so bundle/spec identifiers remain informational and provenance-facing only
 - [x] Swift XCTest app-boundary coverage now verifies both active-GOS and no-active-GOS Scribe bridge paths return only safe GOS runtime surfaces while preserving gate-required + draft-only app semantics
+- [x] user-agent/patient-sovereignty contracts now exist in Swift Core + TS contracts for capability scope, consent surface, patient audit surface, export request/status surface, visibility-vs-retention summaries, and Sortio interaction envelope boundaries
+- [x] User Agent guard layer now fail-closes prohibited clinical/regulatory capabilities (`diagnose`, `prescribe`, `issue-referral`, `finalize-record`, `sign-document`, retention/habilitation bypass attempts), missing lawfulContext, denied sensitive layers, and non-informational outputs
+- [x] Swift XCTest coverage now includes explicit patient sovereignty negative tests for consent revocation policy acknowledgements, cross-patient audit view denial, reidentification export denial-by-default, direct-identifier policy gates, and Sortio app-safe payload boundaries
 
 ## 8. Networking / operations
 - [x] topology doctrine refined: single-node as canonical bootstrap minimum, not system identity

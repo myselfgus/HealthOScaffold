@@ -1005,6 +1005,86 @@ final class GOSRuntimeAdoptionTests: XCTestCase {
         XCTAssertTrue(entry.knownBundleIds.contains(bundle.manifest.bundleId))
     }
 
+    func testLoadRejectsDeprecatedBundleWhenActiveIsRequired() async throws {
+        let root = makeTempRoot()
+        try DirectoryLayout.bootstrap(at: root)
+        let registry = FileBackedGOSBundleRegistry(root: root)
+        let bundle = makeBundle(
+            bindingPlan: AACIGOSBindings.defaultBindingPlan(specId: "aaci.first-slice"),
+            lifecycleState: .reviewed
+        )
+        try await registry.register(bundle.manifest)
+        try installBundleFiles(bundle, at: root)
+        let reviewRecord = GOSBundleReviewRecord(
+            specId: bundle.manifest.specId,
+            bundleId: bundle.manifest.bundleId,
+            reviewerId: "reviewer-1",
+            reviewerRole: "operator",
+            rationale: "allow activation before deprecate test"
+        )
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
+        encoder.dateEncodingStrategy = .iso8601
+        try encoder.encode(reviewRecord).write(
+            to: root.appending(path: "system/gos/bundles/\(bundle.manifest.bundleId)/review-approval.json")
+        )
+
+        try await registry.activate(bundleId: bundle.manifest.bundleId, specId: bundle.manifest.specId)
+        try await registry.deprecate(bundleId: bundle.manifest.bundleId, note: "deprecated for replacement")
+        let forcedEntry = GOSRegistryEntry(
+            specId: bundle.manifest.specId,
+            activeBundleId: bundle.manifest.bundleId,
+            knownBundleIds: [bundle.manifest.bundleId]
+        )
+        try encoder.encode(forcedEntry).write(to: root.appending(path: "system/gos/registry/\(bundle.manifest.specId).json"))
+
+        do {
+            _ = try await registry.loadBundle(
+                GOSLoadRequest(specId: bundle.manifest.specId, runtimeKind: .aaci, acceptedLifecycleStates: [.active])
+            )
+            XCTFail("Expected deprecated bundle load to fail when active lifecycle is required.")
+        } catch {
+            guard case let GOSRegistryError.bundleDeprecated(bundleId) = error else {
+                XCTFail("Expected bundleDeprecated, got \(error)")
+                return
+            }
+            XCTAssertEqual(bundleId, bundle.manifest.bundleId)
+        }
+    }
+
+    func testDeprecateNonActivePreservesKnownBundlesAndActivePointer() async throws {
+        let root = makeTempRoot()
+        try DirectoryLayout.bootstrap(at: root)
+        let registry = FileBackedGOSBundleRegistry(root: root)
+        let activeBundle = makeBundle(bindingPlan: AACIGOSBindings.defaultBindingPlan(specId: "aaci.first-slice"), lifecycleState: .active)
+        let reviewedBundle = makeBundle(
+            bundleId: "aaci-first-slice-reviewed-to-deprecate",
+            bindingPlan: AACIGOSBindings.defaultBindingPlan(specId: "aaci.first-slice"),
+            lifecycleState: .reviewed
+        )
+        try await registry.register(activeBundle.manifest)
+        try installBundleFiles(activeBundle, at: root)
+        try await registry.activate(bundleId: activeBundle.manifest.bundleId, specId: activeBundle.manifest.specId)
+        try await registry.register(reviewedBundle.manifest)
+        try installBundleFiles(reviewedBundle, at: root)
+
+        do {
+            try await registry.deprecate(bundleId: reviewedBundle.manifest.bundleId, note: "invalid transition should not mutate history")
+            XCTFail("Expected reviewed -> deprecated to be denied.")
+        } catch {
+            guard case GOSRegistryError.invalidLifecycleTransition = error else {
+                XCTFail("Expected invalidLifecycleTransition, got \(error)")
+                return
+            }
+        }
+
+        let lookedUpEntry = try await registry.lookup(specId: activeBundle.manifest.specId)
+        let entry = try XCTUnwrap(lookedUpEntry)
+        XCTAssertEqual(entry.activeBundleId, activeBundle.manifest.bundleId)
+        XCTAssertTrue(entry.knownBundleIds.contains(activeBundle.manifest.bundleId))
+        XCTAssertTrue(entry.knownBundleIds.contains(reviewedBundle.manifest.bundleId))
+    }
+
     func testDeprecateRejectsInvalidTransitionFromReviewed() async throws {
         let root = makeTempRoot()
         try DirectoryLayout.bootstrap(at: root)

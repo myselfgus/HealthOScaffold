@@ -18,6 +18,8 @@ It is intentionally not about scenario-specific implementations.
 - [x] Registry activation now enforces typed invalid-state guards for invalid bundle lifecycle state and registry inconsistency before promoting bundles.
 - [x] AACI runtime mediation now enforces Core gate-required posture for regulatory draft actors (`aaci.draft-composer`, `aaci.referral-draft`, `aaci.prescription-draft`) even when a bundle binding omits explicit gate primitive flags.
 - [x] Swift XCTest coverage now includes explicit invariant regressions for finalization-without-approved-gate and activation with competing active bundles.
+- [x] Swift XCTest lifecycle coverage now includes deprecated-bundle load denial when active lifecycle is required (`bundleDeprecated` fail-closed path).
+- [x] Swift XCTest lifecycle coverage now verifies known-bundle history is preserved after denied invalid lifecycle transitions (no history deletion side effect).
 
 ## 1. Foundational closure
 - [x] GOS named and placed in architecture
@@ -106,6 +108,8 @@ It is intentionally not about scenario-specific implementations.
   - registry-missing and registry-corruption load failures
   - missing active-pointer inconsistency with known active bundle candidates
   - deterministic rejection of competing active bundles for the same spec
+  - explicit deprecated-bundle load denial for active-only runtime loads
+  - known-bundle history preservation after denied lifecycle transition attempts
   - bundle-load success without `runtime-binding-plan.json` plus AACI default-plan activation fallback
 - [x] TypeScript tests added for `@healthos/gos-tooling` compile + cross-reference failure paths
 - [x] TypeScript tests now also cover bundle CLI lifecycle artifact emission

@@ -2,6 +2,18 @@
 
 ## COMPLETED
 
+### RT-007 Harden async policy-denial observability and failure transition guards
+Outcome:
+- async runtime now emits explicit `job.policy_denied` events when lawful-context/policy checks fail closed before handler execution
+- failure progression now enforces state-machine transitions through `failed` before retry/dead-letter routing in the runtime failure path
+- execution record retention now preserves `policy_denied` failures for operator inspection workflows
+- Swift XCTest coverage now asserts policy-denied observability and failure-record retention (`AsyncRuntimeGovernanceTests`)
+Files touched:
+- `swift/Sources/HealthOSCore/AsyncRuntimeJobs.swift`
+- `swift/Tests/HealthOSTests/AsyncRuntimeGovernanceTests.swift`
+- `docs/execution/02-status-and-tracking.md`
+- `docs/execution/todo/runtimes-and-aaci.md`
+
 ### RT-006 Harden async runtime/jobs/queues observability scaffold
 Outcome:
 - async runtime moved from simple stub to typed governance contracts with job taxonomy, lifecycle states, lawful-context requirements, retry/backpressure policy, idempotency rules, and observability event taxonomy

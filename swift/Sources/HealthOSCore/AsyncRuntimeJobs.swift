@@ -462,7 +462,13 @@ public actor InMemoryAsyncJobRuntime {
             try validateLawfulContext(for: descriptor, lawfulContext: lawfulContext)
         } catch {
             let failure = AsyncJobFailure(kind: .policyDenied, message: error.localizedDescription, at: now)
-            descriptor = applyFailure(descriptor: descriptor, failure: failure, retryable: false, now: now)
+            descriptor = applyFailure(
+                descriptor: descriptor,
+                failure: failure,
+                retryable: false,
+                now: now,
+                emitPolicyDenied: true
+            )
             jobs[id] = descriptor
             return descriptor
         }
@@ -483,7 +489,12 @@ public actor InMemoryAsyncJobRuntime {
             return descriptor
 
         case .failed(let failure, let retryable):
-            descriptor = applyFailure(descriptor: descriptor, failure: failure, retryable: retryable, now: now)
+            descriptor = applyFailure(
+                descriptor: descriptor,
+                failure: failure,
+                retryable: retryable,
+                now: now
+            )
             jobs[id] = descriptor
             return descriptor
         }
@@ -583,12 +594,22 @@ public actor InMemoryAsyncJobRuntime {
         }
     }
 
-    private func applyFailure(descriptor: AsyncJobDescriptor, failure: AsyncJobFailure, retryable: Bool, now: Date) -> AsyncJobDescriptor {
+    private func applyFailure(
+        descriptor: AsyncJobDescriptor,
+        failure: AsyncJobFailure,
+        retryable: Bool,
+        now: Date,
+        emitPolicyDenied: Bool = false
+    ) -> AsyncJobDescriptor {
         var mutated = descriptor
-        mutated.retryCount += 1
+        try? ensureTransition(&mutated, to: .failed)
         mutated.failedAt = now
+        mutated.retryCount += 1
         appendAttempt(jobId: mutated.id, failure: failure, provenanceRef: nil, auditRef: nil)
 
+        if emitPolicyDenied {
+            emit(.policyDenied, job: mutated, failure: failure.kind)
+        }
         emit(.failed, job: mutated, failure: failure.kind)
 
         let shouldRetry = retryable &&
@@ -597,7 +618,6 @@ public actor InMemoryAsyncJobRuntime {
             mutated.retryCount <= mutated.retryPolicy.maxRetries
 
         if shouldRetry {
-            mutated.state = .failed
             try? ensureTransition(&mutated, to: .retryScheduled)
             let backoff = mutated.retryPolicy.delaySeconds(forAttempt: mutated.retryCount)
             mutated.scheduledAt = now.addingTimeInterval(Double(backoff))
@@ -606,7 +626,6 @@ public actor InMemoryAsyncJobRuntime {
             return mutated
         }
 
-        mutated.state = .failed
         try? ensureTransition(&mutated, to: .deadLetter)
         emit(.deadLettered, job: mutated, failure: failure.kind)
         jobs[mutated.id] = mutated

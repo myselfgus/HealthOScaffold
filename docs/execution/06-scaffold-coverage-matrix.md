@@ -80,6 +80,7 @@ Legend:
 - [x] baseline automated tests now cover TS GOS tooling compile/cross-reference/bundle behavior, and Swift XCTest now also covers lifecycle hardening paths (register/review/promote/activate, draft activation denial, revoked-load denial, revoke-pointer cleanup, non-active deprecate preservation)
 - [x] TS GOS tooling automated tests now also cover CLI `validate`/`compile` success paths and explicit failure exits for evidence-hook completeness + cross-reference defects
 - [x] Swift XCTest lifecycle hardening now also covers missing manifest/spec/compiler-report/source-provenance failures, unknown active-pointer bundle failures, and active-pointer cleanup on deprecating active bundles
+- [x] Swift XCTest GOS/AACI/first-slice boundary coverage now verifies active-bundle and no-bundle execution, explicit gate.request/gate.resolve/finalize separation, and draft-only persistence under rejected human gate
 - [x] file-backed loader/registry now use typed lifecycle/registry/integrity failures for missing artifacts and invalid lifecycle transitions instead of generic NSError throws
 - [x] AACI resolved GOS runtime metadata now exposes bounded diagnostics (`gosBindingCount`, `gosCompilerWarningCount`) alongside actor/family context without moving sovereign law into GOS/runtime
 - [~] provenance-preserving compile output can still be enriched beyond the current source-hash/report baseline
@@ -115,6 +116,7 @@ Legend:
 - [x] minimal Scribe surface now exposes seeded-text and local-audio capture modes with explicit transcription state
 - [x] minimal Scribe surface now exposes structured retrieval summary/highlights/source hints with explicit partial/empty/degraded context truth
 - [x] app-boundary consumption patterns for GOS-derived state are now documented
+- [x] Scribe bridge runtime-state boundary now has automated coverage confirming app state stays runtime-mediated and does not expose raw compiled GOS spec payloads
 
 ## 8. Networking / operations
 - [x] topology doctrine refined: single-node as canonical bootstrap minimum, not system identity

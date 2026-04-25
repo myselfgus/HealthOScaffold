@@ -159,6 +159,107 @@ final class GOSRuntimeAdoptionTests: XCTestCase {
         XCTAssertTrue((soapEvent.payload.attributes["gosReasoningBoundary"] ?? "").contains("draft-only under human gate"))
     }
 
+    func testFirstSliceWithActiveGOSKeepsDraftOnlyUntilHumanGateApproval() async throws {
+        let root = makeTempRoot()
+        try DirectoryLayout.bootstrap(at: root)
+        let registry = FileBackedGOSBundleRegistry(root: root)
+        let bundle = makeBundle(bindingPlan: AACIGOSBindings.defaultBindingPlan(specId: "aaci.first-slice"))
+        try await registry.register(bundle.manifest)
+        try installBundleFiles(bundle, at: root)
+        try await registry.activate(bundleId: bundle.manifest.bundleId, specId: bundle.manifest.specId)
+
+        let router = ProviderRouter()
+        await router.register(AppleFoundationProvider())
+        await router.register(NativeSpeechProvider())
+        let runner = FirstSliceRunner(root: root, orchestrator: AACIOrchestrator(router: router))
+        let result = try await runner.run(
+            input: makeSessionInput(gateApprove: false, text: "Paciente com insonia e cefaleia.")
+        )
+        let operations = Set(result.provenanceRecords.map(\.operation))
+
+        XCTAssertTrue(operations.contains("gos.activate"))
+        XCTAssertTrue(operations.contains("draft.compose.soap"))
+        XCTAssertTrue(operations.contains("draft.compose.referral"))
+        XCTAssertTrue(operations.contains("draft.compose.prescription"))
+        XCTAssertTrue(operations.contains("gate.request"))
+        XCTAssertTrue(operations.contains("gate.resolve"))
+        XCTAssertFalse(operations.contains("document.finalize.soap"))
+        XCTAssertFalse(result.gate.approved)
+        XCTAssertNil(result.finalDocument)
+        XCTAssertEqual(result.draft.draft.status, .awaitingGate)
+        XCTAssertEqual(result.referralDraft.draft.status, .draft)
+        XCTAssertEqual(result.prescriptionDraft.draft.status, .draft)
+    }
+
+    func testFirstSliceWithActiveGOSFinalizesOnlyAfterApprovedHumanGate() async throws {
+        let root = makeTempRoot()
+        try DirectoryLayout.bootstrap(at: root)
+        let registry = FileBackedGOSBundleRegistry(root: root)
+        let bundle = makeBundle(bindingPlan: AACIGOSBindings.defaultBindingPlan(specId: "aaci.first-slice"))
+        try await registry.register(bundle.manifest)
+        try installBundleFiles(bundle, at: root)
+        try await registry.activate(bundleId: bundle.manifest.bundleId, specId: bundle.manifest.specId)
+
+        let router = ProviderRouter()
+        await router.register(AppleFoundationProvider())
+        await router.register(NativeSpeechProvider())
+        let runner = FirstSliceRunner(root: root, orchestrator: AACIOrchestrator(router: router))
+        let result = try await runner.run(
+            input: makeSessionInput(gateApprove: true, text: "Paciente com insonia e dor.")
+        )
+        let operations = Set(result.provenanceRecords.map(\.operation))
+
+        XCTAssertTrue(result.gate.approved)
+        XCTAssertNotNil(result.finalDocument)
+        XCTAssertTrue(operations.contains("gos.activate"))
+        XCTAssertTrue(operations.contains("gate.request"))
+        XCTAssertTrue(operations.contains("gate.resolve"))
+        XCTAssertTrue(operations.contains("document.finalize.soap"))
+        XCTAssertEqual(result.summary.finalDocumentStatus, .finalized)
+    }
+
+    func testScribeBridgeStateDoesNotExposeRawGOSSpecJSON() async throws {
+        let root = makeTempRoot()
+        try DirectoryLayout.bootstrap(at: root)
+        let registry = FileBackedGOSBundleRegistry(root: root)
+        let bundle = makeBundle(bindingPlan: AACIGOSBindings.defaultBindingPlan(specId: "aaci.first-slice"))
+        try await registry.register(bundle.manifest)
+        try installBundleFiles(bundle, at: root)
+        try await registry.activate(bundleId: bundle.manifest.bundleId, specId: bundle.manifest.specId)
+
+        let router = ProviderRouter()
+        await router.register(AppleFoundationProvider())
+        await router.register(NativeSpeechProvider())
+        let runner = FirstSliceRunner(root: root, orchestrator: AACIOrchestrator(router: router))
+        let adapter = ScribeFirstSliceAdapter(runner: runner)
+        let professional = Usuario(cpfHash: "prof", civilToken: "prof")
+        let service = Servico(nome: "svc", tipo: "ambulatory")
+        let patient = Usuario(cpfHash: "patient", civilToken: "patient")
+
+        let start = await adapter.startProfessionalSession(.init(professional: professional, service: service))
+        let sessionId = try XCTUnwrap(start.state?.sessionId)
+        _ = await adapter.selectPatient(.init(sessionId: sessionId, patient: patient))
+        _ = await adapter.submitSessionCapture(
+            .init(
+                sessionId: sessionId,
+                capture: SessionCaptureInput(rawText: "Paciente relata insonia persistente.")
+            )
+        )
+        let resolved = await adapter.resolveGate(.init(sessionId: sessionId, approve: false))
+        let state = try XCTUnwrap(resolved.state)
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = [.sortedKeys]
+        encoder.dateEncodingStrategy = .iso8601
+        let payload = try encoder.encode(state)
+        let jsonString = String(decoding: payload, as: UTF8.self)
+
+        XCTAssertTrue(jsonString.contains("\"runSummary\""))
+        XCTAssertTrue(jsonString.contains("\"gateState\""))
+        XCTAssertFalse(jsonString.contains("\"gosSpec\""))
+        XCTAssertFalse(jsonString.contains("\"compiledSpec\""))
+        XCTAssertFalse(jsonString.contains("\"runtimeBindingPlan\""))
+    }
+
     func testRegistryReviewAndPromotionRecordApprovalAndAudit() async throws {
         let root = makeTempRoot()
         try DirectoryLayout.bootstrap(at: root)
@@ -551,6 +652,16 @@ final class GOSRuntimeAdoptionTests: XCTestCase {
         let url = FileManager.default.temporaryDirectory.appending(path: "healthos-tests-\(UUID().uuidString)")
         try? FileManager.default.removeItem(at: url)
         return url
+    }
+
+    private func makeSessionInput(gateApprove: Bool, text: String) -> FirstSliceSessionInput {
+        FirstSliceSessionInput(
+            professional: Usuario(cpfHash: "prof", civilToken: "prof"),
+            patient: Usuario(cpfHash: "patient", civilToken: "patient"),
+            service: Servico(nome: "svc", tipo: "ambulatory"),
+            capture: SessionCaptureInput(rawText: text),
+            gateApprove: gateApprove
+        )
     }
 
     private func installBundleFiles(_ bundle: GOSCompiledBundle, at root: URL) throws {

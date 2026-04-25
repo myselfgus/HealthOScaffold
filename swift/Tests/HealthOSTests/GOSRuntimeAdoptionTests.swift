@@ -218,6 +218,91 @@ final class GOSRuntimeAdoptionTests: XCTestCase {
         XCTAssertEqual(result.summary.finalDocumentStatus, .finalized)
     }
 
+    func testFirstSliceApprovedGateMaintainsOrderedGOSGateAndFinalizationProvenance() async throws {
+        let root = makeTempRoot()
+        try DirectoryLayout.bootstrap(at: root)
+        let registry = FileBackedGOSBundleRegistry(root: root)
+        let bundle = makeBundle(bindingPlan: AACIGOSBindings.defaultBindingPlan(specId: "aaci.first-slice"))
+        try await registry.register(bundle.manifest)
+        try installBundleFiles(bundle, at: root)
+        try await registry.activate(bundleId: bundle.manifest.bundleId, specId: bundle.manifest.specId)
+
+        let router = ProviderRouter()
+        await router.register(AppleFoundationProvider())
+        await router.register(NativeSpeechProvider())
+        let runner = FirstSliceRunner(root: root, orchestrator: AACIOrchestrator(router: router))
+        let result = try await runner.run(
+            input: makeSessionInput(gateApprove: true, text: "Paciente com dor e fadiga.")
+        )
+        let operations = result.provenanceRecords.map(\.operation)
+
+        let activationIndex = try XCTUnwrap(operations.firstIndex(of: "gos.activate"))
+        let composeSOAPIndex = try XCTUnwrap(operations.firstIndex(of: "draft.compose.soap"))
+        let composeReferralIndex = try XCTUnwrap(operations.firstIndex(of: "draft.compose.referral"))
+        let composePrescriptionIndex = try XCTUnwrap(operations.firstIndex(of: "draft.compose.prescription"))
+        let gateRequestIndex = try XCTUnwrap(operations.firstIndex(of: "gate.request"))
+        let gateResolveIndex = try XCTUnwrap(operations.firstIndex(of: "gate.resolve"))
+        let finalizeIndex = try XCTUnwrap(operations.firstIndex(of: "document.finalize.soap"))
+
+        XCTAssertLessThan(activationIndex, composeSOAPIndex)
+        XCTAssertLessThan(composeSOAPIndex, gateRequestIndex)
+        XCTAssertLessThan(composeReferralIndex, gateRequestIndex)
+        XCTAssertLessThan(composePrescriptionIndex, gateRequestIndex)
+        XCTAssertLessThan(gateRequestIndex, gateResolveIndex)
+        XCTAssertLessThan(gateResolveIndex, finalizeIndex)
+    }
+
+    func testFirstSliceWithActiveGOSDoesNotBypassCoreConsentOrHabilitationChecks() async throws {
+        let root = makeTempRoot()
+        try DirectoryLayout.bootstrap(at: root)
+        let registry = FileBackedGOSBundleRegistry(root: root)
+        let bundle = makeBundle(bindingPlan: AACIGOSBindings.defaultBindingPlan(specId: "aaci.first-slice"))
+        try await registry.register(bundle.manifest)
+        try installBundleFiles(bundle, at: root)
+        try await registry.activate(bundleId: bundle.manifest.bundleId, specId: bundle.manifest.specId)
+
+        let router = ProviderRouter()
+        await router.register(AppleFoundationProvider())
+        await router.register(NativeSpeechProvider())
+        let runner = FirstSliceRunner(root: root, orchestrator: AACIOrchestrator(router: router))
+
+        do {
+            _ = try await runner.run(
+                input: FirstSliceSessionInput(
+                    professional: Usuario(cpfHash: "prof", civilToken: "prof", active: false),
+                    patient: Usuario(cpfHash: "patient", civilToken: "patient"),
+                    service: Servico(nome: "svc", tipo: "ambulatory"),
+                    capture: SessionCaptureInput(rawText: "Sem bypass de habilitacao."),
+                    gateApprove: true
+                )
+            )
+            XCTFail("Expected inactive professional to fail before GOS-mediated runtime work.")
+        } catch {
+            guard case FirstSliceError.inactiveProfessionalUser = error else {
+                XCTFail("Expected inactiveProfessionalUser, got \(error)")
+                return
+            }
+        }
+
+        do {
+            _ = try await runner.run(
+                input: FirstSliceSessionInput(
+                    professional: Usuario(cpfHash: "prof", civilToken: "prof"),
+                    patient: Usuario(cpfHash: "patient", civilToken: "patient", active: false),
+                    service: Servico(nome: "svc", tipo: "ambulatory"),
+                    capture: SessionCaptureInput(rawText: "Sem bypass de consentimento."),
+                    gateApprove: true
+                )
+            )
+            XCTFail("Expected inactive patient to fail before GOS-mediated runtime work.")
+        } catch {
+            guard case FirstSliceError.inactivePatientUser = error else {
+                XCTFail("Expected inactivePatientUser, got \(error)")
+                return
+            }
+        }
+    }
+
     func testScribeBridgeStateDoesNotExposeRawGOSSpecJSON() async throws {
         let root = makeTempRoot()
         try DirectoryLayout.bootstrap(at: root)
@@ -266,6 +351,7 @@ final class GOSRuntimeAdoptionTests: XCTestCase {
         XCTAssertEqual(state.gosRuntimeState.bindingPlanSource, .bundleProvided)
         XCTAssertEqual(state.gosRuntimeState.gateStillRequired, true)
         XCTAssertEqual(state.gosRuntimeState.draftOnly, true)
+        XCTAssertEqual(state.gosRuntimeState.legalAuthorizing, false)
         XCTAssertEqual(state.gosRuntimeState.provenanceFacingOnly, true)
         XCTAssertEqual(state.gosRuntimeState.informationalOnly, true)
         XCTAssertTrue(state.gosRuntimeState.mediationSummary?.provenanceOperations.contains("gos.use.compose.soap") == true)
@@ -309,6 +395,7 @@ final class GOSRuntimeAdoptionTests: XCTestCase {
         XCTAssertNil(state.gosRuntimeState.mediationSummary)
         XCTAssertEqual(state.gosRuntimeState.gateStillRequired, true)
         XCTAssertEqual(state.gosRuntimeState.draftOnly, true)
+        XCTAssertEqual(state.gosRuntimeState.legalAuthorizing, false)
         XCTAssertEqual(state.gosRuntimeState.provenanceFacingOnly, true)
         XCTAssertEqual(state.gosRuntimeState.informationalOnly, true)
     }

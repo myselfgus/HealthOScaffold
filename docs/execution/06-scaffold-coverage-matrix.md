@@ -81,6 +81,8 @@ Legend:
 - [x] TS GOS tooling automated tests now also cover CLI `validate`/`compile` success paths and explicit failure exits for evidence-hook completeness + cross-reference defects
 - [x] Swift XCTest lifecycle hardening now also covers missing manifest/spec/compiler-report/source-provenance failures, unknown active-pointer bundle failures, and active-pointer cleanup on deprecating active bundles
 - [x] Swift XCTest GOS/AACI/first-slice boundary coverage now verifies active-bundle and no-bundle execution, explicit gate.request/gate.resolve/finalize separation, and draft-only persistence under rejected human gate
+- [x] Swift XCTest GOS/AACI/first-slice boundary coverage now also verifies ordered provenance transitions on approved paths (`gos.activate` → draft compose/derive → `gate.request` → `gate.resolve` → `document.finalize.soap`)
+- [x] Swift XCTest GOS/AACI/first-slice boundary coverage now also verifies active GOS cannot bypass core habilitation/consent checks (inactive professional/patient still fail)
 - [x] file-backed loader/registry now use typed lifecycle/registry/integrity failures for missing artifacts and invalid lifecycle transitions instead of generic NSError throws
 - [x] AACI resolved GOS runtime metadata now exposes bounded diagnostics (`gosBindingCount`, `gosCompilerWarningCount`) alongside actor/family context without moving sovereign law into GOS/runtime
 - [~] provenance-preserving compile output can still be enriched beyond the current source-hash/report baseline
@@ -118,6 +120,7 @@ Legend:
 - [x] app-boundary consumption patterns for GOS-derived state are now documented
 - [x] Scribe bridge runtime-state boundary now has automated coverage confirming app state stays runtime-mediated and does not expose raw compiled GOS spec payloads
 - [x] Scribe bridge now includes a dedicated runtime-mediated GOS app surface (`gosRuntimeState`) limited to lifecycle/spec-id/bundle-id/binding-source summaries plus provenance-facing/informational-only flags (no raw compiled spec or binding-plan payload exposure)
+- [x] Scribe bridge GOS runtime app surface now carries an explicit non-authorizing flag (`legalAuthorizing = false`) so bundle/spec identifiers remain informational and provenance-facing only
 - [x] Swift XCTest app-boundary coverage now verifies both active-GOS and no-active-GOS Scribe bridge paths return only safe GOS runtime surfaces while preserving gate-required + draft-only app semantics
 
 ## 8. Networking / operations

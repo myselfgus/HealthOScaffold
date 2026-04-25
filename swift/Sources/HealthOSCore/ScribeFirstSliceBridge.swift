@@ -68,6 +68,7 @@ public struct GOSRuntimeStateView: Codable, Sendable {
     public let bundleId: String?
     public let bindingPlanSource: GOSBindingPlanSourceView?
     public let mediationSummary: GOSMediationSummaryView?
+    public let legalAuthorizing: Bool
     public let gateStillRequired: Bool
     public let draftOnly: Bool
     public let provenanceFacingOnly: Bool
@@ -79,6 +80,7 @@ public struct GOSRuntimeStateView: Codable, Sendable {
         bundleId: String? = nil,
         bindingPlanSource: GOSBindingPlanSourceView? = nil,
         mediationSummary: GOSMediationSummaryView? = nil,
+        legalAuthorizing: Bool = false,
         gateStillRequired: Bool,
         draftOnly: Bool,
         provenanceFacingOnly: Bool,
@@ -89,6 +91,7 @@ public struct GOSRuntimeStateView: Codable, Sendable {
         self.bundleId = bundleId
         self.bindingPlanSource = bindingPlanSource
         self.mediationSummary = mediationSummary
+        self.legalAuthorizing = legalAuthorizing
         self.gateStillRequired = gateStillRequired
         self.draftOnly = draftOnly
         self.provenanceFacingOnly = provenanceFacingOnly

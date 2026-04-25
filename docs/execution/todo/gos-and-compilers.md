@@ -98,6 +98,9 @@ It is intentionally not about scenario-specific implementations.
 - [x] TypeScript tests now also cover bundle CLI lifecycle artifact emission
 - [x] TypeScript tests now also cover CLI `validate` and `compile` success paths plus validation/bundle failure exits for evidence-hook and cross-reference defects
 - [x] Swift XCTest boundary coverage now verifies active-bundle and no-bundle first-slice execution, explicit gate.request/gate.resolve/document.finalize separation, and draft-only preservation under rejected human gate even when GOS is active
+- [x] Swift XCTest boundary coverage now also verifies ordered provenance separation (`gos.activate` → draft composition/derivation → `gate.request` → `gate.resolve` → `document.finalize.soap`) on approved gate paths
+- [x] Swift XCTest boundary coverage now also verifies that active GOS does not bypass core habilitation/consent checks (inactive professional/patient still fail before runtime mediation)
+- [x] Swift app-boundary contract now marks GOS runtime state as explicitly non-authorizing (`legalAuthorizing = false`) in both active and inactive bridge surfaces
 
 ## Reading rule
 

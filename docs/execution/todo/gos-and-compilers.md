@@ -77,6 +77,8 @@ It is intentionally not about scenario-specific implementations.
 - [x] app-boundary doctrine clarified: apps do not interpret GOS as sovereign law
 - [x] examples of allowed Scribe/Sortio/CloudClinic consumption patterns documented
 - [x] Swift boundary coverage now verifies Scribe bridge state remains runtime-mediated and does not expose raw compiled GOS payload/spec objects as app-law inputs
+- [x] Scribe bridge contract now exposes a dedicated runtime-mediated GOS app surface (`GOSRuntimeStateView`) with provenance-facing/informational-only flags, mediation summaries, and no raw spec/binding payloads
+- [x] Swift boundary tests now verify both active-GOS and no-active-GOS Scribe bridge paths publish only safe/inactive GOS runtime surfaces while preserving gate-required + draft-only app constraints
 
 ## 7. Validation hardening
 - [x] Swift XCTest coverage now verifies file-backed lifecycle/loader behavior for:

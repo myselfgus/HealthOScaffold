@@ -234,6 +234,13 @@ public actor ScribeFirstSliceAdapter: ScribeFirstSliceFacade {
                 state: .awaitingGate,
                 summary: "Documento final ainda nao existe; a efetivacao depende de gate humano explicito."
             ),
+            gosRuntimeState: .init(
+                lifecycle: .inactive,
+                gateStillRequired: true,
+                draftOnly: true,
+                provenanceFacingOnly: true,
+                informationalOnly: true
+            ),
             runSummary: nil
         )
 
@@ -352,6 +359,13 @@ public actor ScribeFirstSliceAdapter: ScribeFirstSliceFacade {
                 state: .none,
                 summary: "Nenhum documento final foi efetivado nesta sessao."
             ),
+            gosRuntimeState: .init(
+                lifecycle: .inactive,
+                gateStillRequired: true,
+                draftOnly: true,
+                provenanceFacingOnly: true,
+                informationalOnly: true
+            ),
             runSummary: nil
         )
     }
@@ -413,7 +427,74 @@ public actor ScribeFirstSliceAdapter: ScribeFirstSliceFacade {
             referralDraft: referralDraft,
             prescriptionDraft: prescriptionDraft,
             finalDocument: finalDocument,
+            gosRuntimeState: gosRuntimeState(from: result),
             runSummary: result.summary
+        )
+    }
+
+    private func gosRuntimeState(from result: FirstSliceRunResult) -> GOSRuntimeStateView {
+        let eventAttributes = result.events.map(\.payload.attributes)
+        let specId = eventAttributes.compactMap { $0["gosSpecId"] }.first
+        let bundleId = eventAttributes.compactMap { $0["gosBundleId"] }.first
+        let actorIds = Array(
+            Set(eventAttributes.compactMap { $0["gosRuntimeActorId"] })
+        )
+        .sorted()
+        let primitiveFamilyCount = eventAttributes
+            .compactMap { $0["gosPrimitiveFamilies"] }
+            .flatMap { value in
+                value.split(separator: ",").map { String($0).trimmingCharacters(in: .whitespacesAndNewlines) }
+            }
+            .filter { !$0.isEmpty }
+            .reduce(into: Set<String>()) { partialResult, family in
+                partialResult.insert(family)
+            }
+            .count
+        let provenanceOperations = Array(
+            Set(
+                result.provenanceRecords
+                    .map(\.operation)
+                    .filter { $0.hasPrefix("gos.") }
+            )
+        )
+        .sorted()
+
+        let usedDefaultBindingPlan = eventAttributes
+            .compactMap { $0["gosUsedDefaultBindingPlan"] }
+            .first
+            .flatMap(Bool.init)
+
+        guard specId != nil || bundleId != nil else {
+            return GOSRuntimeStateView(
+                lifecycle: .inactive,
+                gateStillRequired: true,
+                draftOnly: true,
+                provenanceFacingOnly: true,
+                informationalOnly: true
+            )
+        }
+
+        let bindingPlanSource: GOSBindingPlanSourceView?
+        if let usedDefaultBindingPlan {
+            bindingPlanSource = usedDefaultBindingPlan ? .runtimeDefault : .bundleProvided
+        } else {
+            bindingPlanSource = nil
+        }
+
+        return GOSRuntimeStateView(
+            lifecycle: .active,
+            specId: specId,
+            bundleId: bundleId,
+            bindingPlanSource: bindingPlanSource,
+            mediationSummary: GOSMediationSummaryView(
+                mediatedActorIds: actorIds,
+                mediatedPrimitiveFamilyCount: primitiveFamilyCount,
+                provenanceOperations: provenanceOperations
+            ),
+            gateStillRequired: true,
+            draftOnly: true,
+            provenanceFacingOnly: true,
+            informationalOnly: true
         )
     }
 

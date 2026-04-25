@@ -41,7 +41,7 @@ It is intentionally not about scenario-specific implementations.
 - [x] TypeScript compiler/CLI scaffold added
 - [x] source provenance hashing/reporting added to compile output
 - [x] bundle generation command added to CLI
-- [~] human review/correction loop now has persisted review approval + lifecycle audit support, but still lacks richer multi-review correction flow
+- [x] human review/correction loop now includes policy-gated review submission/denial, append-only multi-review records, and typed policy failures
 
 ## 3. Validation
 - [x] cross-reference validation scaffold added
@@ -82,7 +82,7 @@ It is intentionally not about scenario-specific implementations.
 - [x] minimal lifecycle ergonomics helper added for reviewed→active promotion (`FileBackedGOSBundleRegistry.promoteReviewedBundle(...)`, surfaced in CLI as `--gos-promote-bundle`)
 - [x] draft→reviewed review records and append-only lifecycle audit records now persist in the file-backed registry/CLI path
 - [x] registry lifecycle persistence now remains schema-aligned in `snake_case` across manifest, registry entry, review record, and audit artifacts
-- [~] registry/storage implementation is now hardened-minimum with typed lifecycle/load failures, explicit draft→reviewed→active promotion helpers/results, and lifecycle-safe active-pointer cleanup; richer policy controls, separation of duties, and version pinning are still open
+- [~] registry/storage implementation now includes pragmatic lifecycle policy hardening (multi-review minimum, separation-of-duties, activation pinning, explicit denied/accepted audit), but broader operational policy envelope and runbook depth remain open
 
 ## 6. App boundary discipline
 - [x] app-boundary doctrine clarified: apps do not interpret GOS as sovereign law

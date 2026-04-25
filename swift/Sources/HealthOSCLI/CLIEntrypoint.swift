@@ -31,9 +31,17 @@ struct HealthOSCLI {
             }
             if let bundleId = value(for: "--gos-promote-bundle", in: arguments) {
                 let specId = value(for: "--gos-spec-id", in: arguments) ?? "aaci.first-slice"
-                let operatorId = value(for: "--operator-id", in: arguments) ?? NSUserName()
+                let operatorId = value(for: "--activator-id", in: arguments) ?? value(for: "--operator-id", in: arguments) ?? NSUserName()
                 let operatorRole = value(for: "--operator-role", in: arguments) ?? "operator"
                 let rationale = value(for: "--activation-rationale", in: arguments) ?? "bundle promoted via HealthOSCLI"
+                let expectedPins = GOSActivationPins(
+                    specId: value(for: "--pin-spec-id", in: arguments) ?? specId,
+                    specVersion: value(for: "--pin-spec-version", in: arguments),
+                    bundleVersion: value(for: "--pin-bundle-version", in: arguments),
+                    sourceSHA256: value(for: "--pin-source-sha256", in: arguments),
+                    compilerVersion: value(for: "--pin-compiler-version", in: arguments),
+                    compiledSpecHash: value(for: "--pin-compiled-spec-hash", in: arguments)
+                )
                 let root = try resolveRuntimeRoot()
                 let registry = FileBackedGOSBundleRegistry(root: root)
                 let auditRecord = try await registry.promoteReviewedBundle(
@@ -41,7 +49,8 @@ struct HealthOSCLI {
                     specId: specId,
                     actorId: operatorId,
                     actorRole: operatorRole,
-                    rationale: rationale
+                    rationale: rationale,
+                    expectedPins: expectedPins
                 )
                 print("gos_bundle_promoted=true")
                 print("gos_spec_id=\(specId)")

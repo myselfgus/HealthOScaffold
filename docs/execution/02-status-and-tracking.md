@@ -6,6 +6,11 @@ Current phase: Controlled implementation — first vertical slice started
 
 ## Completed recently
 
+- GOS lifecycle policy hardening now enforces pragmatic review/activation policy in the file-backed registry: required rationale, compiler-report pass checks, append-only multi-review records, typed policy failures, and policy-denied lifecycle audit entries
+- reviewed-bundle activation policy now supports minimum multi-review thresholds, separation-of-duties between reviewer/activator, deterministic version/source/compiler pin checks, and compiled-spec hash pin checks via `GOSActivationPins`
+- lifecycle audit actions now explicitly include policy lifecycle checkpoints (`review_submitted`, `review_denied_policy`, `activation_requested`, `activation_denied_policy`) while keeping append-only audit history
+- HealthOSCLI promotion path now accepts minimal policy pin inputs (`--activator-id`, `--pin-*`) for deterministic activation pinning checks
+- Swift XCTest lifecycle coverage now includes review rationale failure, review compiler-report failure, insufficient-review activation denial, separation-of-duties denial, pin mismatch denials, and denied-vs-accepted lifecycle audit assertions
 - pragmatic invariant enforcement matrix was added at `docs/execution/10-invariant-matrix.md`, including explicit constitutional invariants, real current enforcement, state-machine rules, test coverage, and hardening gaps (without claiming full formal proof)
 - Swift XCTest lifecycle coverage now explicitly asserts deprecated-bundle load denial for active-only runtime loads (`bundleDeprecated`) and verifies known-bundle history remains intact after denied invalid lifecycle transitions
 - file-backed GOS registry now enforces deterministic multi-bundle load safety per spec: missing registry entries, corrupted registry files, missing active pointers with active known bundles, and competing active bundles all fail with typed errors
@@ -175,7 +180,7 @@ Current phase: Controlled implementation — first vertical slice started
 - Scribe now has a minimal validation UI surface, but it is not yet a full/final app shell
 - draft refresh remains preview/degraded until gate resolution runs the full executable spine
 - referral/prescription drafts now exist, but their regulatory effectuation/issuance remains intentionally deferred
-- GOS review/activation now has minimum persisted approval + audit coverage, but richer separation-of-duties, multi-review, and version-pinning policy is still open
+- richer operator policy governance (reviewer role authorization model, policy profile management, and distributed/multi-node review governance) remains open beyond current pragmatic hardening
 - broader GOS adoption outside the current first-slice internal runtime paths still remains open
 
 ## Open blockers / decisions
@@ -184,7 +189,7 @@ Current phase: Controlled implementation — first vertical slice started
 - decide whether the next first-slice step after this wave is microphone capture, moving draft/retrieval finalization earlier than gate resolution, or introducing lawful effectuation paths for referral/prescription
 - decide when to convert the AI skills into enforced reusable workflows/templates
 - decide when to replace the current deterministic local retrieval/context package with semantic/clinical retrieval while preserving lawful scope and topology-invariant governance constraints
-- decide the final human-facing review/activation policy for compiled GOS bundles beyond the current minimum persisted approval/audit path
+- decide the long-term production policy envelope for reviewer authorization and multi-node activation governance beyond current local pragmatic hardening
 
 ## Tracking rules
 

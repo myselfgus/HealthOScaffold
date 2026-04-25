@@ -63,7 +63,18 @@ public enum GOSRegistryError: Error, Sendable {
     case manifestDecodeFailure(bundleId: String)
     case compilerReportDecodeFailure(bundleId: String)
     case reviewRecordDecodeFailure(bundleId: String)
+    case reviewRecordsDecodeFailure(bundleId: String)
     case reviewRejectedForLifecycle(bundleId: String, lifecycleState: GOSLifecycleState)
+    case reviewPolicyNotSatisfied(bundleId: String, failures: [GOSPolicyFailure])
+    case activationPolicyNotSatisfied(bundleId: String, failures: [GOSPolicyFailure])
+    case reviewRationaleRequired(bundleId: String)
+    case activationRationaleRequired(bundleId: String)
+    case insufficientIndependentReviews(bundleId: String, required: Int, actual: Int)
+    case separationOfDutiesViolation(bundleId: String, actorId: String)
+    case reviewCompilerReportInvalid(bundleId: String)
+    case activationPinMismatch(bundleId: String, field: String, expected: String, actual: String)
+    case sourceProvenanceDecodeFailure(bundleId: String)
+    case sourceProvenanceMissingHash(bundleId: String)
     case registryMissingActivePointer(specId: String, activeBundleId: String)
     case multipleActiveBundles(specId: String, bundleIds: [String])
     case invalidLifecycleTransition(bundleId: String, fromState: GOSLifecycleState, toState: GOSLifecycleState, allowedToStates: [GOSLifecycleState])
@@ -103,11 +114,15 @@ public extension GOSRegistryError {
              .lifecycleStateNotAccepted:
             return .bundleInactive
         case .compilerReportInvalid,
+             .reviewCompilerReportInvalid,
              .runtimeBindingPlanInvalid,
              .metadataMissing,
              .manifestDecodeFailure,
              .compilerReportDecodeFailure,
-             .reviewRecordDecodeFailure:
+             .reviewRecordDecodeFailure,
+             .reviewRecordsDecodeFailure,
+             .sourceProvenanceDecodeFailure,
+             .sourceProvenanceMissingHash:
             return .bundleValidationFailure
         case .registryMissing,
              .registryEntryDecodeFailure,
@@ -118,6 +133,13 @@ public extension GOSRegistryError {
         case .activationRequiresReviewedOrActive,
              .activationRequiresReviewRecord,
              .reviewRejectedForLifecycle,
+             .reviewPolicyNotSatisfied,
+             .activationPolicyNotSatisfied,
+             .reviewRationaleRequired,
+             .activationRationaleRequired,
+             .insufficientIndependentReviews,
+             .separationOfDutiesViolation,
+             .activationPinMismatch,
              .invalidLifecycleTransition,
              .invalidActivationState,
              .invalidBundleState:
@@ -404,9 +426,128 @@ public struct GOSBundleReviewRecord: Codable, Sendable, Identifiable {
     }
 }
 
+public struct GOSSourceProvenanceRecord: Codable, Sendable {
+    public let sourceSHA256: String
+    public let sourceReference: String?
+
+    public init(sourceSHA256: String, sourceReference: String? = nil) {
+        self.sourceSHA256 = sourceSHA256
+        self.sourceReference = sourceReference
+    }
+
+    enum CodingKeys: String, CodingKey {
+        case sourceSHA256 = "source_sha256"
+        case sourceReference = "source_reference"
+    }
+}
+
+public struct GOSVersionPinningPolicy: Codable, Sendable {
+    public let requirePins: Bool
+    public let requireSourceHashPin: Bool
+    public let requireCompiledSpecHashPin: Bool
+    public let requireCompilerVersionPin: Bool
+
+    public init(
+        requirePins: Bool = false,
+        requireSourceHashPin: Bool = false,
+        requireCompiledSpecHashPin: Bool = false,
+        requireCompilerVersionPin: Bool = false
+    ) {
+        self.requirePins = requirePins
+        self.requireSourceHashPin = requireSourceHashPin
+        self.requireCompiledSpecHashPin = requireCompiledSpecHashPin
+        self.requireCompilerVersionPin = requireCompilerVersionPin
+    }
+}
+
+public struct GOSReviewPolicy: Codable, Sendable {
+    public let minimumApprovals: Int
+    public let requireRationale: Bool
+    public let compilerReportMustPass: Bool
+
+    public init(
+        minimumApprovals: Int = 1,
+        requireRationale: Bool = true,
+        compilerReportMustPass: Bool = true
+    ) {
+        self.minimumApprovals = max(1, minimumApprovals)
+        self.requireRationale = requireRationale
+        self.compilerReportMustPass = compilerReportMustPass
+    }
+}
+
+public struct GOSLifecyclePolicy: Codable, Sendable {
+    public let review: GOSReviewPolicy
+    public let enforceSeparationOfDuties: Bool
+    public let activationRequiresCompilerReportPass: Bool
+    public let versionPinning: GOSVersionPinningPolicy
+
+    public init(
+        review: GOSReviewPolicy = GOSReviewPolicy(),
+        enforceSeparationOfDuties: Bool = false,
+        activationRequiresCompilerReportPass: Bool = true,
+        versionPinning: GOSVersionPinningPolicy = GOSVersionPinningPolicy()
+    ) {
+        self.review = review
+        self.enforceSeparationOfDuties = enforceSeparationOfDuties
+        self.activationRequiresCompilerReportPass = activationRequiresCompilerReportPass
+        self.versionPinning = versionPinning
+    }
+
+    public static let `default` = GOSLifecyclePolicy()
+}
+
+public struct GOSActivationPins: Codable, Sendable {
+    public let specId: String?
+    public let specVersion: String?
+    public let bundleVersion: String?
+    public let sourceSHA256: String?
+    public let compilerVersion: String?
+    public let compiledSpecHash: String?
+
+    public init(
+        specId: String? = nil,
+        specVersion: String? = nil,
+        bundleVersion: String? = nil,
+        sourceSHA256: String? = nil,
+        compilerVersion: String? = nil,
+        compiledSpecHash: String? = nil
+    ) {
+        self.specId = specId
+        self.specVersion = specVersion
+        self.bundleVersion = bundleVersion
+        self.sourceSHA256 = sourceSHA256
+        self.compilerVersion = compilerVersion
+        self.compiledSpecHash = compiledSpecHash
+    }
+
+    enum CodingKeys: String, CodingKey {
+        case specId = "spec_id"
+        case specVersion = "spec_version"
+        case bundleVersion = "bundle_version"
+        case sourceSHA256 = "source_sha256"
+        case compilerVersion = "compiler_version"
+        case compiledSpecHash = "compiled_spec_hash"
+    }
+}
+
+public enum GOSPolicyFailure: String, Codable, Sendable {
+    case rationaleMissing = "rationale_missing"
+    case compilerReportInvalid = "compiler_report_invalid"
+    case insufficientReviews = "insufficient_reviews"
+    case insufficientIndependentReviews = "insufficient_independent_reviews"
+    case separationOfDutiesViolation = "separation_of_duties_violation"
+    case pinMismatch = "pin_mismatch"
+    case requiredPinMissing = "required_pin_missing"
+}
+
 public enum GOSLifecycleAuditAction: String, Codable, Sendable {
     case registered
+    case reviewSubmitted = "review_submitted"
+    case reviewDeniedPolicy = "review_denied_policy"
     case reviewed
+    case activationRequested = "activation_requested"
+    case activationDeniedPolicy = "activation_denied_policy"
     case activated
     case deprecated
     case revoked

@@ -467,6 +467,7 @@ public actor ScribeFirstSliceAdapter: ScribeFirstSliceFacade {
         guard specId != nil || bundleId != nil else {
             return GOSRuntimeStateView(
                 lifecycle: .inactive,
+                legalAuthorizing: false,
                 gateStillRequired: true,
                 draftOnly: true,
                 provenanceFacingOnly: true,
@@ -491,6 +492,7 @@ public actor ScribeFirstSliceAdapter: ScribeFirstSliceFacade {
                 mediatedPrimitiveFamilyCount: primitiveFamilyCount,
                 provenanceOperations: provenanceOperations
             ),
+            legalAuthorizing: false,
             gateStillRequired: true,
             draftOnly: true,
             provenanceFacingOnly: true,

@@ -69,6 +69,59 @@ public enum GOSRegistryError: Error, Sendable {
     case invalidLifecycleTransition(bundleId: String, fromState: GOSLifecycleState, toState: GOSLifecycleState, allowedToStates: [GOSLifecycleState])
 }
 
+public struct GOSLoadTypedError: Error, Sendable {
+    public let failure: GOSLoaderFailure
+    public let registryError: GOSRegistryError?
+    public let message: String
+
+    public init(
+        failure: GOSLoaderFailure,
+        registryError: GOSRegistryError? = nil,
+        message: String
+    ) {
+        self.failure = failure
+        self.registryError = registryError
+        self.message = message
+    }
+}
+
+public extension GOSRegistryError {
+    var loaderFailure: GOSLoaderFailure {
+        switch self {
+        case .bundleNotFound,
+             .manifestMissing,
+             .specMissing,
+             .compilerReportMissing,
+             .sourceProvenanceMissing,
+             .registryBundleMissing,
+             .registryMissingActivePointer:
+            return .bundleNotFound
+        case .bundleRevoked,
+             .bundleDeprecated,
+             .lifecycleStateNotAccepted:
+            return .bundleInactive
+        case .compilerReportInvalid,
+             .runtimeBindingPlanInvalid,
+             .metadataMissing,
+             .manifestDecodeFailure,
+             .compilerReportDecodeFailure,
+             .reviewRecordDecodeFailure:
+            return .bundleValidationFailure
+        case .registryMissing,
+             .registryEntryDecodeFailure,
+             .registrySpecMismatch,
+             .bundleSpecMismatch,
+             .multipleActiveBundles:
+            return .bundleRegistryFailure
+        case .activationRequiresReviewedOrActive,
+             .activationRequiresReviewRecord,
+             .reviewRejectedForLifecycle,
+             .invalidLifecycleTransition:
+            return .bundleIntegrityFailure
+        }
+    }
+}
+
 public struct GOSSourceReference: Codable, Sendable {
     public let kind: String
     public let reference: String

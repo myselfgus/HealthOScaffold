@@ -711,13 +711,19 @@ public actor FirstSliceRunner {
             _ = activation
             return runtimeView
         } catch {
+            let failureDescriptor: String
+            if let typed = error as? GOSLoadTypedError {
+                failureDescriptor = "typed:\(typed.failure.rawValue)"
+            } else {
+                failureDescriptor = String(describing: error)
+            }
             try await appendProvenance(
                 .init(
                     actorId: "aaci.gos",
                     operation: "gos.activate.failed",
                     providerName: "file-backed-registry",
                     modelName: "aaci.first-slice",
-                    promptVersion: String(describing: error),
+                    promptVersion: failureDescriptor,
                     timestamp: .now
                 ),
                 to: &records

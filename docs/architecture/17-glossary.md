@@ -6,6 +6,9 @@ The whole sovereign computational environment for health operations.
 ## AACI
 Ambient-Agentic Clinical Intelligence. A runtime inside HealthOS for parallel operational/bureaucratic automation during or around health work.
 
+## GOS
+Governed Operational Spec. A subordinate operational specification layer compiled from human-authored operational language into runtime-consumable structure; it never supersedes HealthOS Core law.
+
 ## Core
 The law-bearing nucleus of HealthOS: identity, consent, habilitation, provenance, gate, storage/governance contracts.
 

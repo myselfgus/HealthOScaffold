@@ -22,7 +22,7 @@ It is intentionally not about scenario-specific implementations.
 - [x] authoring conventions for YAML source form documented
 - [x] generic blank YAML authoring template added
 - [x] canonical `aaci.first-slice` authoring spec added
-- [ ] glossary entries added for GOS vocabulary if not already present
+- [x] glossary entries added for GOS vocabulary if not already present
 
 ## 2. Compiler pipeline
 - [x] source-canonicalization stage documented
@@ -107,6 +107,7 @@ It is intentionally not about scenario-specific implementations.
 - [x] Swift XCTest boundary coverage now also verifies ordered provenance separation (`gos.activate` → draft composition/derivation → `gate.request` → `gate.resolve` → `document.finalize.soap`) on approved gate paths
 - [x] Swift XCTest boundary coverage now also verifies that active GOS does not bypass core habilitation/consent checks (inactive professional/patient still fail before runtime mediation)
 - [x] Swift app-boundary contract now marks GOS runtime state as explicitly non-authorizing (`legalAuthorizing = false`) in both active and inactive bridge surfaces
+- [x] AACI activation now maps loader/registry failures to a typed loader error contract (`GOSLoadTypedError`) with explicit `GOSLoaderFailure` category and preserved underlying registry error
 
 ## Reading rule
 
@@ -133,3 +134,13 @@ Any future work on GOS should begin from:
 - `swift/Sources/HealthOSAACI/GOSRuntimeActivation.swift`
 - `swift/Sources/HealthOSFirstSliceSupport/FirstSliceRunner.swift`
 - `bootstrap/gos/system/gos/`
+
+## GOS definition of done ladder
+
+Use this ladder when updating status/tracking for GOS tasks:
+
+- `doctrine-only`: architecture/doctrine text exists, but no executable contract or tests.
+- `scaffolded contract`: typed/schema contract exists and builds, but implementation is stub/minimal and test depth is limited.
+- `implemented seam`: seam is executable in runtime/tooling paths and wired to real code paths, but coverage may still be narrow.
+- `tested operational path`: executable seam has automated tests that exercise success + key typed-failure paths and verify boundary invariants.
+- `production-hardened`: adds stronger policy controls (for example multi-review/separation-of-duties/version pinning) plus operational runbooks beyond scaffold baseline.

@@ -695,6 +695,27 @@ final class GOSRuntimeAdoptionTests: XCTestCase {
         }
     }
 
+    func testAACIActivationMapsRegistryFailureToTypedLoaderError() async throws {
+        let root = makeTempRoot()
+        try DirectoryLayout.bootstrap(at: root)
+        let registry = FileBackedGOSBundleRegistry(root: root)
+        let orchestrator = AACIOrchestrator(router: ProviderRouter())
+
+        do {
+            _ = try await orchestrator.activateGOS(specId: "aaci.first-slice", loader: registry)
+            XCTFail("Expected activation to fail when registry is missing.")
+        } catch let error as GOSLoadTypedError {
+            XCTAssertEqual(error.failure, .bundleRegistryFailure)
+            guard case .registryMissing(let specId)? = error.registryError else {
+                XCTFail("Expected typed loader error to preserve registryMissing underlying error.")
+                return
+            }
+            XCTAssertEqual(specId, "aaci.first-slice")
+        } catch {
+            XCTFail("Expected GOSLoadTypedError, got \(error)")
+        }
+    }
+
     func testLoadFailsWhenRegistryEntryIsCorrupted() async throws {
         let root = makeTempRoot()
         try DirectoryLayout.bootstrap(at: root)

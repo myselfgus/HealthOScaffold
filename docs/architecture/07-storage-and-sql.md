@@ -28,6 +28,14 @@
 The canonical Swift contract lives in:
 - `swift/Sources/HealthOSCore/StorageContracts.swift`
 
+Current scaffold enforcement posture:
+- `StorageLayer` now declares sensitivity semantics used by storage guards.
+- sensitive writes fail closed when governed lawfulContext is missing/insufficient.
+- `derived-artifacts` writes require minimal provenance metadata (`provenanceOperation`).
+- `operational-content` writes require core ownership metadata (`sessionId`, `patientUserId`, `finalidade` via metadata/context).
+- `reidentification-mapping` writes require explicit `scope = reidentification-governance`.
+- reads append storage audit entries and distinguish direct-identifier reads (`read-direct-identifier`).
+
 ## Object naming guidance
 
 Use owner-rooted, layer-aware paths.

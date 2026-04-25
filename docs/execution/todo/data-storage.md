@@ -34,18 +34,20 @@ Files touched:
 - `docs/architecture/21-object-integrity-strategy.md`
 - `docs/architecture/07-storage-and-sql.md`
 
-## READY
-
 ### DS-006 Decide whether lawfulContext becomes a shared strict envelope
-Objective:
-- determine whether lawfulContext remains flexible map-based or evolves into a stricter transport contract
-Files:
-- `docs/architecture/07-storage-and-sql.md`
-- optional schema/contract files
-Dependencies:
-- DS-003, DS-004
-Definition of done:
-- runtime implementers know whether lawful access context is flexible or strongly typed at the transport seam
+Outcome:
+- lawfulContext strictness is now pragmatically enforced in storage contracts through typed validation and per-layer fail-closed write/read guards (while preserving map transport compatibility)
+Files touched:
+- `swift/Sources/HealthOSCore/StorageContracts.swift`
+- `swift/Sources/HealthOSCore/FirstSliceServices.swift`
+- `swift/Sources/HealthOSCore/ReidentificationGovernance.swift`
+- `swift/Sources/HealthOSFirstSliceSupport/FirstSliceRunner.swift`
+- `swift/Tests/HealthOSTests/GOSRuntimeAdoptionTests.swift`
+- `docs/execution/02-status-and-tracking.md`
+- `docs/execution/06-scaffold-coverage-matrix.md`
+- `docs/execution/10-invariant-matrix.md`
+
+## READY
 
 ## TESTS / VALIDATION
 

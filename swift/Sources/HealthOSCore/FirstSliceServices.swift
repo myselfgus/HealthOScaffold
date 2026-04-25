@@ -171,6 +171,7 @@ public actor FileBackedStorageService: StorageService {
     }
 
     public func put(_ request: StoragePutRequest) async throws -> StorageObjectRef {
+        _ = try validateLayerGovernance(for: request)
         let base = try ownerBaseURL(for: request.owner)
         let directory = base.appending(path: request.kind)
         try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
@@ -194,13 +195,14 @@ public actor FileBackedStorageService: StorageService {
     }
 
     public func get(_ objectRef: StorageObjectRef, lawfulContext: [String : String]) async throws -> Data {
-        _ = try requireLawfulContext(lawfulContext)
+        let context = try requireLawfulContext(lawfulContext)
         let objectURL = URL(fileURLWithPath: objectRef.objectPath)
         let data = try Data(contentsOf: objectURL)
         let computedHash = Self.sha256Hex(for: data)
         guard computedHash == objectRef.contentHash else {
             throw FirstSliceError.storageIntegrityFailure(objectRef.objectPath)
         }
+        try await appendReadAudit(objectRef: objectRef, lawfulContext: context)
         return data
     }
 
@@ -271,6 +273,80 @@ public actor FileBackedStorageService: StorageService {
         try LawfulContextValidator.validate(lawfulContext, requirements: requirements)
     }
 
+    private func validateLayerGovernance(for request: StoragePutRequest) throws -> StorageLayerValidationResult {
+        let context: CoreLawfulContext?
+        if request.layer.requiresGovernedContextOnWrite {
+            context = try requireLawfulContext(
+                request.lawfulContext ?? [:],
+                requirements: .init(
+                    requireFinalidade: true
+                )
+            )
+        } else {
+            context = try request.lawfulContext.map { try requireLawfulContext($0) }
+        }
+
+        switch request.layer {
+        case .directIdentifiers:
+            guard let context else {
+                throw CoreLawError.missingActorRole
+            }
+            guard context.scope.contains("direct-identifier") else {
+                throw CoreLawError.restrictedLayerAccessDenied("direct identifier writes require scope containing direct-identifier")
+            }
+            guard !request.metadata.keys.contains(where: { $0.lowercased().contains("cpf") }) else {
+                throw CoreLawError.invalidStorageLayer("CPF fields must not be placed in storage metadata for direct identifier payloads")
+            }
+        case .reidentificationMapping:
+            guard let context else {
+                throw CoreLawError.missingActorRole
+            }
+            guard context.scope == "reidentification-governance" else {
+                throw CoreLawError.missingReidentificationScope
+            }
+            guard context.sessionId != nil else {
+                throw CoreLawError.missingSessionContext
+            }
+        case .derivedArtifacts:
+            guard request.metadata["provenanceOperation"]?.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty == false else {
+                throw CoreLawError.missingProvenanceContext
+            }
+        case .governanceMetadata:
+            guard context != nil else {
+                throw CoreLawError.missingActorRole
+            }
+            guard request.metadata["governanceActorId"]?.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty == false else {
+                throw CoreLawError.invalidStorageLayer("governance metadata writes require governanceActorId")
+            }
+        case .operationalContent:
+            guard request.metadata["sessionId"]?.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty == false else {
+                throw CoreLawError.invalidStorageLayer("operational content writes require sessionId metadata")
+            }
+            guard request.metadata["patientUserId"]?.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty == false else {
+                throw CoreLawError.invalidStorageLayer("operational content writes require patientUserId metadata")
+            }
+            let hasFinalityMetadata = request.metadata["finalidade"]?.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty == false
+            let hasFinalityContext = context?.finalidade?.isEmpty == false
+            guard hasFinalityMetadata || hasFinalityContext else {
+                throw CoreLawError.missingFinality
+            }
+        }
+        return StorageLayerValidationResult(layer: request.layer, lawfulContext: context, metadataValidated: true)
+    }
+
+    private func appendReadAudit(objectRef: StorageObjectRef, lawfulContext: CoreLawfulContext) async throws {
+        let auditURL = root.appending(path: "logs").appending(path: "storage-audit.jsonl")
+        try FileManager.default.createDirectory(at: auditURL.deletingLastPathComponent(), withIntermediateDirectories: true)
+        let entry = StorageAuditEntry(
+            objectPath: objectRef.objectPath,
+            action: objectRef.layer.containsDirectIdentifiers ? "read-direct-identifier" : "read",
+            actorId: lawfulContext.professionalUserId?.uuidString ?? lawfulContext.actorRole,
+            metadata: lawfulContext.raw
+        )
+        let encoded = try encoder.encode(entry)
+        try appendLine(encoded, to: auditURL)
+    }
+
     private func appendLine(_ data: Data, to url: URL) throws {
         if FileManager.default.fileExists(atPath: url.path) {
             let handle = try FileHandle(forWritingTo: url)
@@ -313,10 +389,22 @@ public actor FileBackedStorageService: StorageService {
             process.waitUntilExit()
             let digestData = output.fileHandleForReading.readDataToEndOfFile()
             let raw = String(decoding: digestData, as: UTF8.self)
-            return raw.split(separator: " ").first.map(String.init) ?? "sha256-unavailable"
+            if let digest = raw.split(separator: " ").first {
+                return String(digest)
+            }
         } catch {
-            return "sha256-unavailable"
+            return deterministicFallbackHash(for: data)
         }
+        return deterministicFallbackHash(for: data)
+    }
+
+    private static func deterministicFallbackHash(for data: Data) -> String {
+        var hash: UInt64 = 0xcbf29ce484222325
+        for byte in data {
+            hash ^= UInt64(byte)
+            hash &*= 0x100000001b3
+        }
+        return String(format: "fnv1a64-%016llx", hash)
     }
 }
 

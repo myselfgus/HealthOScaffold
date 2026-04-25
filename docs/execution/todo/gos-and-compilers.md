@@ -12,6 +12,13 @@ This backlog is intentionally about:
 
 It is intentionally not about scenario-specific implementations.
 
+## Invariant Enforcement Status
+
+- [x] Draft/finalization invariant now has explicit code-level guard (`FirstSliceInvariantEnforcer.ensureSOAPDraftCanFinalize`) and typed failures for missing gate approval / invalid draft finalization state.
+- [x] Registry activation now enforces typed invalid-state guards for invalid bundle lifecycle state and registry inconsistency before promoting bundles.
+- [x] AACI runtime mediation now enforces Core gate-required posture for regulatory draft actors (`aaci.draft-composer`, `aaci.referral-draft`, `aaci.prescription-draft`) even when a bundle binding omits explicit gate primitive flags.
+- [x] Swift XCTest coverage now includes explicit invariant regressions for finalization-without-approved-gate and activation with competing active bundles.
+
 ## 1. Foundational closure
 - [x] GOS named and placed in architecture
 - [x] GOS explicitly declared subordinate to HealthOS Core

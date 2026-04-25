@@ -67,6 +67,8 @@ public enum GOSRegistryError: Error, Sendable {
     case registryMissingActivePointer(specId: String, activeBundleId: String)
     case multipleActiveBundles(specId: String, bundleIds: [String])
     case invalidLifecycleTransition(bundleId: String, fromState: GOSLifecycleState, toState: GOSLifecycleState, allowedToStates: [GOSLifecycleState])
+    case invalidActivationState(specId: String, detail: String)
+    case invalidBundleState(bundleId: String, state: GOSLifecycleState, expected: [GOSLifecycleState])
 }
 
 public struct GOSLoadTypedError: Error, Sendable {
@@ -116,7 +118,9 @@ public extension GOSRegistryError {
         case .activationRequiresReviewedOrActive,
              .activationRequiresReviewRecord,
              .reviewRejectedForLifecycle,
-             .invalidLifecycleTransition:
+             .invalidLifecycleTransition,
+             .invalidActivationState,
+             .invalidBundleState:
             return .bundleIntegrityFailure
         }
     }

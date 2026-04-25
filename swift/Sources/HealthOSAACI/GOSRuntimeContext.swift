@@ -78,6 +78,7 @@ public struct AACIResolvedGOSRuntimeView: Codable, Sendable {
         metadata["gosActorBound"] = String(flags.actorBound)
         metadata["gosDraftOutputBound"] = String(flags.supportsDraftOutput)
         metadata["gosGateRequiredByBinding"] = String(flags.requiresHumanGateByBinding)
+        metadata["gosCoreGateRequired"] = String(flags.coreGateRequired)
         metadata["gosDraftOnly"] = String(flags.draftOnly)
         metadata["gosReasoningBoundary"] = runtimeBoundarySummary(for: actorId)
         return metadata
@@ -109,10 +110,14 @@ public struct AACIResolvedGOSRuntimeView: Codable, Sendable {
         let actorBound = bindingsByActorId[actorId] != nil
         let supportsDraftOutput = families.contains(GOSBindingPrimitiveFamily.draftOutputSpec.rawValue)
         let requiresHumanGateByBinding = families.contains(GOSBindingPrimitiveFamily.humanGateRequirementSpec.rawValue)
+        let regulatoryActors: Set<String> = ["aaci.draft-composer", "aaci.referral-draft", "aaci.prescription-draft"]
+        let coreGateRequired = regulatoryActors.contains(actorId)
+        let requiresHumanGate = requiresHumanGateByBinding || coreGateRequired
         return AACIGOSMediationFlags(
             actorBound: actorBound,
             supportsDraftOutput: supportsDraftOutput,
-            requiresHumanGateByBinding: requiresHumanGateByBinding,
+            requiresHumanGateByBinding: requiresHumanGate,
+            coreGateRequired: coreGateRequired,
             draftOnly: true
         )
     }
@@ -122,6 +127,7 @@ public struct AACIGOSMediationFlags: Codable, Sendable {
     public let actorBound: Bool
     public let supportsDraftOutput: Bool
     public let requiresHumanGateByBinding: Bool
+    public let coreGateRequired: Bool
     public let draftOnly: Bool
 }
 

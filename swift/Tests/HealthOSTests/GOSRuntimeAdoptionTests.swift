@@ -43,7 +43,8 @@ final class GOSRuntimeAdoptionTests: XCTestCase {
         XCTAssertEqual(soap.draft.payload["gosBindingPlanRuntimeKind"], "aaci")
         XCTAssertEqual(soap.draft.payload["gosActorBound"], "true")
         XCTAssertEqual(soap.draft.payload["gosDraftOutputBound"], "true")
-        XCTAssertEqual(soap.draft.payload["gosGateRequiredByBinding"], "false")
+        XCTAssertEqual(soap.draft.payload["gosGateRequiredByBinding"], "true")
+        XCTAssertEqual(soap.draft.payload["gosCoreGateRequired"], "true")
         XCTAssertEqual(soap.draft.payload["gosDraftOnly"], "true")
         XCTAssertEqual(soap.draft.payload["gosUsedDefaultBindingPlan"], "false")
         XCTAssertEqual(soap.draft.payload["gosBindingCount"], "3")
@@ -67,6 +68,7 @@ final class GOSRuntimeAdoptionTests: XCTestCase {
         XCTAssertEqual(referral.draft.payload["gosRuntimeActorId"], "aaci.referral-draft")
         XCTAssertEqual(referral.draft.payload["gosPrimitiveFamilies"], "draft_output_spec,human_gate_requirement_spec")
         XCTAssertEqual(referral.draft.payload["gosGateRequiredByBinding"], "true")
+        XCTAssertEqual(referral.draft.payload["gosCoreGateRequired"], "true")
         XCTAssertTrue(referral.noteSummary.contains("Human gate remains mandatory"))
         XCTAssertTrue((referral.draft.payload["gosReasoningBoundary"] ?? "").contains("aaci.referral-draft"))
 
@@ -80,6 +82,7 @@ final class GOSRuntimeAdoptionTests: XCTestCase {
         XCTAssertEqual(prescription.draft.payload["gosRuntimeActorId"], "aaci.prescription-draft")
         XCTAssertEqual(prescription.draft.payload["gosPrimitiveFamilies"], "draft_output_spec,human_gate_requirement_spec,task_spec")
         XCTAssertEqual(prescription.draft.payload["gosGateRequiredByBinding"], "true")
+        XCTAssertEqual(prescription.draft.payload["gosCoreGateRequired"], "true")
         XCTAssertTrue(prescription.noteSummary.contains("Human gate remains mandatory"))
     }
 
@@ -216,6 +219,45 @@ final class GOSRuntimeAdoptionTests: XCTestCase {
         XCTAssertTrue(operations.contains("gate.resolve"))
         XCTAssertTrue(operations.contains("document.finalize.soap"))
         XCTAssertEqual(result.summary.finalDocumentStatus, .finalized)
+    }
+
+    func testFinalizationGuardRejectsDraftFinalizationWithoutApprovedGate() throws {
+        let draft = ArtifactDraft(
+            sessionId: UUID(),
+            kind: .soap,
+            status: .awaitingGate,
+            author: DraftAuthorIdentity(actorId: "aaci.draft-composer", semanticRole: "draft-composer"),
+            payload: ["summary": "draft"]
+        )
+        let request = GateRequest(
+            draftId: draft.id,
+            requestedAction: "finalize-soap-note",
+            requiredRole: "professional",
+            requiredReviewType: .professionalDocumentReview,
+            finalizationTarget: .soapNote,
+            requiresSignature: true
+        )
+        let rejected = GateResolution(
+            gateRequestId: request.id,
+            resolverUserId: UUID(),
+            resolverRole: "professional",
+            resolution: .rejected
+        )
+        let gate = GateOutcomeSummary(
+            request: request,
+            resolution: rejected,
+            reviewedDraftStatus: .rejected,
+            approved: false
+        )
+
+        XCTAssertThrowsError(try FirstSliceInvariantEnforcer.ensureSOAPDraftCanFinalize(draft: draft, gate: gate)) { error in
+            guard case let FirstSliceError.missingGateApproval(draftId, resolution) = error else {
+                XCTFail("Expected missingGateApproval, got \(error)")
+                return
+            }
+            XCTAssertEqual(draftId, draft.id)
+            XCTAssertEqual(resolution, .rejected)
+        }
     }
 
     func testFirstSliceApprovedGateMaintainsOrderedGOSGateAndFinalizationProvenance() async throws {
@@ -538,12 +580,50 @@ final class GOSRuntimeAdoptionTests: XCTestCase {
             try await registry.activate(bundleId: bundle.manifest.bundleId, specId: bundle.manifest.specId)
             XCTFail("Expected draft activation to fail.")
         } catch {
-            guard case let GOSRegistryError.activationRequiresReviewedOrActive(bundleId, lifecycleState) = error else {
-                XCTFail("Expected activationRequiresReviewedOrActive, got \(error)")
+            guard case let GOSRegistryError.invalidBundleState(bundleId, lifecycleState, expectedStates) = error else {
+                XCTFail("Expected invalidBundleState, got \(error)")
                 return
             }
             XCTAssertEqual(bundleId, bundle.manifest.bundleId)
             XCTAssertEqual(lifecycleState, .draft)
+            XCTAssertEqual(expectedStates, [.reviewed, .active])
+        }
+    }
+
+    func testActivationRejectsRegistryWhenCompetingActiveBundlesExist() async throws {
+        let root = makeTempRoot()
+        try DirectoryLayout.bootstrap(at: root)
+        let registry = FileBackedGOSBundleRegistry(root: root)
+        let first = makeBundle(bindingPlan: AACIGOSBindings.defaultBindingPlan(specId: "aaci.first-slice"), lifecycleState: .active)
+        let second = makeBundle(
+            bundleId: "aaci-first-slice-test-bundle-alt",
+            bindingPlan: AACIGOSBindings.defaultBindingPlan(specId: "aaci.first-slice"),
+            lifecycleState: .active
+        )
+
+        try await registry.register(first.manifest)
+        try installBundleFiles(first, at: root)
+        try await registry.register(second.manifest)
+        try installBundleFiles(second, at: root)
+        let forcedEntry = GOSRegistryEntry(
+            specId: "aaci.first-slice",
+            activeBundleId: first.manifest.bundleId,
+            knownBundleIds: [first.manifest.bundleId, second.manifest.bundleId]
+        )
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
+        try encoder.encode(forcedEntry).write(to: root.appending(path: "system/gos/registry/aaci.first-slice.json"))
+
+        do {
+            try await registry.activate(bundleId: second.manifest.bundleId, specId: second.manifest.specId)
+            XCTFail("Expected invalid activation state with competing active bundles.")
+        } catch {
+            guard case let GOSRegistryError.invalidActivationState(specId, detail) = error else {
+                XCTFail("Expected invalidActivationState, got \(error)")
+                return
+            }
+            XCTAssertEqual(specId, "aaci.first-slice")
+            XCTAssertTrue(detail.contains("multiple active bundles"))
         }
     }
 
@@ -788,7 +868,6 @@ final class GOSRuntimeAdoptionTests: XCTestCase {
         try installBundleFiles(activeBundleA, at: root)
         try await registry.register(activeBundleB.manifest)
         try installBundleFiles(activeBundleB, at: root)
-        try await registry.activate(bundleId: activeBundleA.manifest.bundleId, specId: activeBundleA.manifest.specId)
 
         let encoder = JSONEncoder()
         encoder.outputFormatting = [.prettyPrinted, .sortedKeys]

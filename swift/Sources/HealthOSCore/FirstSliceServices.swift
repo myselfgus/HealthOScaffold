@@ -10,6 +10,9 @@ public enum FirstSliceError: Error, LocalizedError, Sendable {
     case missingLawfulContext(String)
     case storageIntegrityFailure(String)
     case retrievalScopeViolation
+    case missingGateApproval(draftId: UUID, resolution: GateResolutionKind)
+    case invalidDraftFinalizationState(draftId: UUID, status: DraftStatus)
+    case gosActivationInvariantViolation(String)
 
     public var errorDescription: String? {
         switch self {
@@ -31,6 +34,44 @@ public enum FirstSliceError: Error, LocalizedError, Sendable {
             return "Stored object failed integrity verification at path: \(path)."
         case .retrievalScopeViolation:
             return "Retrieval query exceeds lawful session scope."
+        case let .missingGateApproval(draftId, resolution):
+            return "Draft \(draftId.uuidString) cannot be finalized without approved gate resolution (got \(resolution.rawValue))."
+        case let .invalidDraftFinalizationState(draftId, status):
+            return "Draft \(draftId.uuidString) is in invalid state \(status.rawValue) for finalization."
+        case .gosActivationInvariantViolation(let detail):
+            return "GOS activation invariant violation: \(detail)."
+        }
+    }
+}
+
+public enum FirstSliceInvariantEnforcer {
+    public static func ensureSOAPDraftCanFinalize(
+        draft: ArtifactDraft,
+        gate: GateOutcomeSummary
+    ) throws {
+        guard gate.resolution.resolution == .approved else {
+            throw FirstSliceError.missingGateApproval(
+                draftId: draft.id,
+                resolution: gate.resolution.resolution
+            )
+        }
+        guard gate.approved else {
+            throw FirstSliceError.missingGateApproval(
+                draftId: draft.id,
+                resolution: gate.resolution.resolution
+            )
+        }
+        guard gate.reviewedDraftStatus == .approved else {
+            throw FirstSliceError.invalidDraftFinalizationState(
+                draftId: draft.id,
+                status: gate.reviewedDraftStatus
+            )
+        }
+        guard draft.status == .awaitingGate else {
+            throw FirstSliceError.invalidDraftFinalizationState(
+                draftId: draft.id,
+                status: draft.status
+            )
         }
     }
 }

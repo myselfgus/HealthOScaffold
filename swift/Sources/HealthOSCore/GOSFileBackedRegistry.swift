@@ -299,7 +299,11 @@ public actor FileBackedGOSBundleRegistry: GOSBundleRegistry, GOSBundleLoader {
             throw GOSRegistryError.bundleSpecMismatch(expectedSpecId: specId, actualSpecId: manifest.specId, bundleId: bundleId)
         }
         guard manifest.lifecycleState == .reviewed || manifest.lifecycleState == .active else {
-            throw GOSRegistryError.activationRequiresReviewedOrActive(bundleId: bundleId, lifecycleState: manifest.lifecycleState)
+            throw GOSRegistryError.invalidBundleState(
+                bundleId: bundleId,
+                state: manifest.lifecycleState,
+                expected: [.reviewed, .active]
+            )
         }
         if manifest.lifecycleState == .reviewed {
             _ = try readReviewRecord(bundleId: bundleId)
@@ -307,6 +311,30 @@ public actor FileBackedGOSBundleRegistry: GOSBundleRegistry, GOSBundleLoader {
 
         let existing = try await lookup(specId: specId) ?? GOSRegistryEntry(specId: specId)
         let known = normalizedKnownBundleIds(existing.knownBundleIds + [bundleId])
+        if let existingActiveBundleId = existing.activeBundleId,
+           !known.contains(existingActiveBundleId) {
+            throw GOSRegistryError.invalidActivationState(
+                specId: specId,
+                detail: "active pointer \(existingActiveBundleId) is not present in known bundle ids"
+            )
+        }
+        let discoveredActive = try discoverActiveBundleIds(specId: specId, knownBundleIds: known)
+        let discoveredActiveSet = Set(discoveredActive)
+        if discoveredActiveSet.count > 1 {
+            throw GOSRegistryError.invalidActivationState(
+                specId: specId,
+                detail: "multiple active bundles discovered before activation: \(Array(discoveredActiveSet).sorted())"
+            )
+        }
+        if let onlyActive = discoveredActiveSet.first,
+           let existingActiveBundleId = existing.activeBundleId,
+           onlyActive != existingActiveBundleId {
+            throw GOSRegistryError.invalidActivationState(
+                specId: specId,
+                detail: "registry active pointer \(existingActiveBundleId) does not match active manifest \(onlyActive)"
+            )
+        }
+
         if let existingActiveBundleId = existing.activeBundleId,
            existingActiveBundleId != bundleId {
             let existingActiveManifest = try readManifest(bundleId: existingActiveBundleId)
@@ -526,6 +554,24 @@ public actor FileBackedGOSBundleRegistry: GOSBundleRegistry, GOSBundleLoader {
 
     private func normalizedKnownBundleIds(_ bundleIds: [String]) -> [String] {
         Array(Set(bundleIds)).sorted()
+    }
+
+    private func discoverActiveBundleIds(specId: String, knownBundleIds: [String]) throws -> [String] {
+        var activeBundleIds: [String] = []
+        for knownBundleId in knownBundleIds {
+            let knownManifest = try readManifest(bundleId: knownBundleId)
+            guard knownManifest.specId == specId else {
+                throw GOSRegistryError.bundleSpecMismatch(
+                    expectedSpecId: specId,
+                    actualSpecId: knownManifest.specId,
+                    bundleId: knownBundleId
+                )
+            }
+            if knownManifest.lifecycleState == .active {
+                activeBundleIds.append(knownBundleId)
+            }
+        }
+        return activeBundleIds.sorted()
     }
 
     private func validateLifecycleTransition(

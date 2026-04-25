@@ -518,6 +518,10 @@ public actor FirstSliceRunner {
 
         let finalDocument: FinalDocumentPackage?
         if gate.approved {
+            try FirstSliceInvariantEnforcer.ensureSOAPDraftCanFinalize(
+                draft: draft.draft,
+                gate: gate
+            )
             let finalizedAt = Date()
             let finalPayload = FinalizedSOAPDocument(
                 sessionId: session.id,
@@ -690,10 +694,8 @@ public actor FirstSliceRunner {
         do {
             let activation = try await orchestrator.activateGOS(specId: "aaci.first-slice", loader: gosLoader)
             guard let runtimeView = await orchestrator.activeGOSRuntimeView() else {
-                throw NSError(
-                    domain: "aaci.gos",
-                    code: 1,
-                    userInfo: [NSLocalizedDescriptionKey: "AACI reported GOS activation without a resolved runtime view."]
+                throw FirstSliceError.gosActivationInvariantViolation(
+                    "AACI reported GOS activation without a resolved runtime view"
                 )
             }
             try await appendProvenance(

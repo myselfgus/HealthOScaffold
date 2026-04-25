@@ -87,6 +87,7 @@ Legend:
 - [x] Swift XCTest GOS/AACI/first-slice boundary coverage now also verifies ordered provenance transitions on approved paths (`gos.activate` → draft compose/derive → `gate.request` → `gate.resolve` → `document.finalize.soap`)
 - [x] Swift XCTest GOS/AACI/first-slice boundary coverage now also verifies active GOS cannot bypass core habilitation/consent checks (inactive professional/patient still fail)
 - [x] file-backed loader/registry now use typed lifecycle/registry/integrity failures for missing artifacts and invalid lifecycle transitions instead of generic NSError throws
+- [x] AACI activation/load seam now maps registry/loader errors into explicit typed loader categories (`GOSLoadTypedError.failure`) while preserving underlying registry error context
 - [x] AACI resolved GOS runtime metadata now exposes bounded diagnostics (`gosBindingCount`, `gosCompilerWarningCount`) alongside actor/family context without moving sovereign law into GOS/runtime
 - [~] provenance-preserving compile output can still be enriched beyond the current source-hash/report baseline
 - [~] activation/deprecation policy controls can still be deepened beyond current minimum hardening (multi-review, separation-of-duties, version pinning)

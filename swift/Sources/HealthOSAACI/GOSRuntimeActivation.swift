@@ -31,7 +31,25 @@ public struct AACIGOSActivationSummary: Codable, Sendable {
 
 public extension AACIOrchestrator {
     func activateGOS(specId: String, loader: any GOSBundleLoader) async throws -> AACIGOSActivationSummary {
-        let bundle = try await loader.loadBundle(GOSLoadRequest(specId: specId, runtimeKind: .aaci, acceptedLifecycleStates: [.active]))
+        let bundle: GOSCompiledBundle
+        do {
+            bundle = try await loader.loadBundle(
+                GOSLoadRequest(specId: specId, runtimeKind: .aaci, acceptedLifecycleStates: [.active])
+            )
+        } catch let typed as GOSLoadTypedError {
+            throw typed
+        } catch let registryError as GOSRegistryError {
+            throw GOSLoadTypedError(
+                failure: registryError.loaderFailure,
+                registryError: registryError,
+                message: String(describing: registryError)
+            )
+        } catch {
+            throw GOSLoadTypedError(
+                failure: .bundleValidationFailure,
+                message: String(describing: error)
+            )
+        }
         let bindingPlan = bundle.runtimeBindingPlan ?? AACIGOSBindings.defaultBindingPlan(specId: specId)
         let usedDefaultBindingPlan = bundle.runtimeBindingPlan == nil
 

@@ -1,0 +1,188 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "UserAgentPatientSovereigntySortioContracts",
+  "type": "object",
+  "required": [
+    "userAgentRequest",
+    "userAgentResponse",
+    "patientConsentView",
+    "patientAccessAuditView",
+    "patientExportRequestSurface",
+    "dataVisibilityRetentionItem",
+    "sortioUserAgentInteractionEnvelope"
+  ],
+  "properties": {
+    "userAgentRequest": { "$ref": "#/definitions/UserAgentRequest" },
+    "userAgentResponse": { "$ref": "#/definitions/UserAgentResponse" },
+    "patientConsentView": { "$ref": "#/definitions/PatientConsentView" },
+    "patientAccessAuditView": { "$ref": "#/definitions/PatientAccessAuditView" },
+    "patientExportRequestSurface": { "$ref": "#/definitions/PatientExportRequestSurface" },
+    "dataVisibilityRetentionItem": { "$ref": "#/definitions/DataVisibilityRetentionItem" },
+    "sortioUserAgentInteractionEnvelope": { "$ref": "#/definitions/SortioUserAgentInteractionEnvelope" }
+  },
+  "definitions": {
+    "StorageLayer": {
+      "type": "string",
+      "enum": [
+        "direct-identifiers",
+        "operational-content",
+        "governance-metadata",
+        "derived-artifacts",
+        "reidentification-mapping"
+      ]
+    },
+    "UserAgentCapability": {
+      "type": "string",
+      "enum": [
+        "explain-own-data",
+        "summarize-own-data",
+        "retrieve-own-context",
+        "list-consents",
+        "inspect-access-audit",
+        "prepare-export-request",
+        "organize-own-artifacts",
+        "ask-administrative-clarification",
+        "diagnose",
+        "prescribe",
+        "issue-referral",
+        "finalize-record",
+        "sign-document",
+        "grant-professional-habilitation",
+        "alter-legal-retention",
+        "access-reidentification-map",
+        "bypass-consent-audit"
+      ]
+    },
+    "UserAgentScope": {
+      "type": "object",
+      "required": ["userId", "cpfHashRef", "actorId", "runtimeId", "dataLayersAllowed", "dataLayersDenied", "allowDirectIdentifiersFlowExplicit", "allowReidentificationFlowExplicit"],
+      "properties": {
+        "userId": { "type": "string", "format": "uuid" },
+        "cpfHashRef": { "type": "string", "minLength": 1 },
+        "actorId": { "type": "string", "minLength": 1 },
+        "runtimeId": { "type": "string", "minLength": 1 },
+        "dataLayersAllowed": { "type": "array", "items": { "$ref": "#/definitions/StorageLayer" } },
+        "dataLayersDenied": { "type": "array", "items": { "$ref": "#/definitions/StorageLayer" } },
+        "allowDirectIdentifiersFlowExplicit": { "type": "boolean" },
+        "allowReidentificationFlowExplicit": { "type": "boolean" }
+      }
+    },
+    "UserAgentRequest": {
+      "type": "object",
+      "required": ["requestId", "scope", "requestedCapability", "lawfulContext", "provenanceRefs", "auditRefs"],
+      "properties": {
+        "requestId": { "type": "string", "format": "uuid" },
+        "scope": { "$ref": "#/definitions/UserAgentScope" },
+        "requestedCapability": { "$ref": "#/definitions/UserAgentCapability" },
+        "lawfulContext": { "type": "object", "additionalProperties": { "type": "string" } },
+        "sessionRef": { "type": "string", "format": "uuid" },
+        "contextRef": { "type": "string" },
+        "provenanceRefs": { "type": "array", "items": { "type": "string", "format": "uuid" } },
+        "auditRefs": { "type": "array", "items": { "type": "string", "format": "uuid" } }
+      }
+    },
+    "UserAgentResponse": {
+      "type": "object",
+      "required": ["requestId", "disposition", "message", "provenanceRefs", "auditRefs"],
+      "properties": {
+        "requestId": { "type": "string", "format": "uuid" },
+        "disposition": { "type": "string", "enum": ["informational-user-facing", "clinical-act"] },
+        "message": { "type": "string" },
+        "provenanceRefs": { "type": "array", "items": { "type": "string", "format": "uuid" } },
+        "auditRefs": { "type": "array", "items": { "type": "string", "format": "uuid" } }
+      }
+    },
+    "PatientConsentView": {
+      "type": "object",
+      "required": ["consentId", "finalidade", "scopeSummary", "validityStart", "revoked", "retentionObligationApplies"],
+      "properties": {
+        "consentId": { "type": "string", "format": "uuid" },
+        "finalidade": { "type": "string", "minLength": 1 },
+        "scopeSummary": { "type": "array", "items": { "type": "string" } },
+        "validityStart": { "type": "string", "format": "date-time" },
+        "validityEnd": { "type": "string", "format": "date-time" },
+        "revoked": { "type": "boolean" },
+        "revokedAt": { "type": "string", "format": "date-time" },
+        "retentionObligationApplies": { "type": "boolean" }
+      }
+    },
+    "PatientAuditQuery": {
+      "type": "object",
+      "required": ["patientUserId", "lawfulContext", "includeEmergencyMarker", "includeRegulatoryMarker"],
+      "properties": {
+        "patientUserId": { "type": "string", "format": "uuid" },
+        "lawfulContext": { "type": "object", "additionalProperties": { "type": "string" } },
+        "includeEmergencyMarker": { "type": "boolean" },
+        "includeRegulatoryMarker": { "type": "boolean" }
+      }
+    },
+    "AccessAuditEventView": {
+      "type": "object",
+      "required": ["id", "patientUserId", "actorRole", "actorDisplay", "timestamp", "finalidade", "dataLayer", "operation", "emergencyAccess", "regulatoryAccess", "redactionStatus", "secretsRedacted"],
+      "properties": {
+        "id": { "type": "string", "format": "uuid" },
+        "patientUserId": { "type": "string", "format": "uuid" },
+        "actorRole": { "type": "string" },
+        "actorDisplay": { "type": "string" },
+        "timestamp": { "type": "string", "format": "date-time" },
+        "finalidade": { "type": "string" },
+        "serviceRef": { "type": "string" },
+        "dataLayer": { "$ref": "#/definitions/StorageLayer" },
+        "operation": { "type": "string" },
+        "provenanceRef": { "type": "string", "format": "uuid" },
+        "auditRef": { "type": "string", "format": "uuid" },
+        "emergencyAccess": { "type": "boolean" },
+        "regulatoryAccess": { "type": "boolean" },
+        "redactionStatus": { "type": "string" },
+        "secretsRedacted": { "type": "boolean" }
+      }
+    },
+    "PatientAccessAuditView": {
+      "type": "object",
+      "required": ["query", "events"],
+      "properties": {
+        "query": { "$ref": "#/definitions/PatientAuditQuery" },
+        "events": { "type": "array", "items": { "$ref": "#/definitions/AccessAuditEventView" } }
+      }
+    },
+    "PatientExportRequestSurface": {
+      "type": "object",
+      "required": ["requestId", "ownerUserId", "lawfulContext", "scope", "redactionPolicy", "includeDirectIdentifiers", "directIdentifierPolicyElevated", "includeReidentificationMapping"],
+      "properties": {
+        "requestId": { "type": "string", "format": "uuid" },
+        "ownerUserId": { "type": "string", "format": "uuid" },
+        "lawfulContext": { "type": "object", "additionalProperties": { "type": "string" } },
+        "scope": { "type": "array", "items": { "$ref": "#/definitions/StorageLayer" } },
+        "redactionPolicy": { "type": "string" },
+        "includeDirectIdentifiers": { "type": "boolean" },
+        "directIdentifierPolicyElevated": { "type": "boolean" },
+        "includeReidentificationMapping": { "type": "boolean" }
+      }
+    },
+    "DataVisibilityRetentionItem": {
+      "type": "object",
+      "required": ["id", "patientUserId", "dataLayer", "visibleToPatient", "hiddenByPolicy", "retainedByServiceObligation", "exportEligible", "deletionEligible", "anonymizationEligible", "legalHold", "patientRequestedRestriction"],
+      "properties": {
+        "id": { "type": "string", "format": "uuid" },
+        "patientUserId": { "type": "string", "format": "uuid" },
+        "dataLayer": { "$ref": "#/definitions/StorageLayer" },
+        "visibleToPatient": { "type": "boolean" },
+        "hiddenByPolicy": { "type": "boolean" },
+        "retainedByServiceObligation": { "type": "boolean" },
+        "exportEligible": { "type": "boolean" },
+        "deletionEligible": { "type": "boolean" },
+        "anonymizationEligible": { "type": "boolean" },
+        "legalHold": { "type": "boolean" },
+        "patientRequestedRestriction": { "type": "boolean" }
+      }
+    },
+    "SortioUserAgentInteractionEnvelope": {
+      "type": "object",
+      "required": ["request", "response"],
+      "properties": {
+        "request": { "$ref": "#/definitions/UserAgentRequest" },
+        "response": { "$ref": "#/definitions/UserAgentResponse" }
+      }
+    }
+  }
+}

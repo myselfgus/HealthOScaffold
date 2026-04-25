@@ -149,6 +149,21 @@ Files touched:
 - `docs/execution/02-status-and-tracking.md`
 - `docs/execution/06-scaffold-coverage-matrix.md`
 
+### SORTIO-002 Harden user-agent and patient-sovereignty app-safe contracts
+Outcome:
+- User Agent scope/request/response and capability boundary contracts added in Swift Core + TS contracts, including fail-closed guards for prohibited clinical/regulatory capabilities and non-informational outputs
+- patient-facing consent/audit/export/visibility surfaces are now explicit app-safe contracts with lawfulContext and sensitive-layer policy validation
+- Sortio boundary validation contract now rejects raw CPF exposure, raw storage path leakage, and prohibited clinical capability surfacing
+Files touched:
+- `swift/Sources/HealthOSCore/UserSovereigntyContracts.swift`
+- `swift/Tests/HealthOSTests/UserSovereigntyGovernanceTests.swift`
+- `ts/packages/contracts/src/index.ts`
+- `ts/packages/runtime-user-agent/src/index.ts`
+- `schemas/contracts/user-agent-patient-sovereignty-sortio.schema.json`
+- `docs/execution/02-status-and-tracking.md`
+- `docs/execution/06-scaffold-coverage-matrix.md`
+- `docs/execution/10-invariant-matrix.md`
+
 ## READY
 
 ## TESTS / VALIDATION

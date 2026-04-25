@@ -72,6 +72,20 @@ Files touched:
 - `docs/execution/06-scaffold-coverage-matrix.md`
 - `docs/execution/10-invariant-matrix.md`
 
+### OPS-005 Establish governed backup/restore/retention/export/DR contracts
+Outcome:
+- backup/restore/retention/export/disaster-recovery governance contracts added in Swift Core with fail-closed validation for lawfulContext, sensitive-layer policy, integrity hashes, conflict handling, lifecycle safety, and final-document lineage
+- observability taxonomy extended with backup/restore/export/retention/DR event kinds without leaking direct identifiers
+- executable XCTest suite added for mandatory negative/positive governance checks and AACI/GOS control-plane boundary denials
+Files touched:
+- `swift/Sources/HealthOSCore/BackupGovernance.swift`
+- `swift/Tests/HealthOSTests/BackupGovernanceTests.swift`
+- `schemas/contracts/backup-restore-retention-export-dr-governance.schema.json`
+- `ts/packages/contracts/src/index.ts`
+- `docs/execution/02-status-and-tracking.md`
+- `docs/execution/06-scaffold-coverage-matrix.md`
+- `docs/execution/10-invariant-matrix.md`
+
 ## READY
 
 ### OPS-003 Define incident-response command set for first operator tools

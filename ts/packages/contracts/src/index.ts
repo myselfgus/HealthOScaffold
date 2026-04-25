@@ -322,3 +322,157 @@ export interface AsyncJobHealthSummary {
   failed: number;
   deadLetter: number;
 }
+
+export type BackupScope =
+  | "system"
+  | "service"
+  | "user-export"
+  | "audit-provenance"
+  | "model-provider-registry"
+  | "gos-bundle-registry";
+
+export type IntegrityStatus = "pending" | "verified" | "failed";
+
+export type EncryptionScaffoldStatus = "scaffolded" | "required" | "notImplemented";
+
+export type RetentionClass = "operational" | "legal" | "regulatory" | "user-portable";
+
+export type RestoreEligibility = "allowed" | "policy-restricted" | "denied";
+
+export interface BackupObjectEntry {
+  objectRef: { objectPath: string; contentHash: string; layer: "direct-identifiers" | "operational-content" | "governance-metadata" | "derived-artifacts" | "reidentification-mapping"; kind: string };
+  expectedHash: string;
+  provenanceRefs: string[];
+  auditRefs: string[];
+}
+
+export interface BackupManifest {
+  backupId: string;
+  createdAt: string;
+  createdBy: string;
+  nodeId?: string;
+  serviceId?: string;
+  userId?: string;
+  scope: BackupScope;
+  includedLayers: ("direct-identifiers" | "operational-content" | "governance-metadata" | "derived-artifacts" | "reidentification-mapping")[];
+  excludedLayers: ("direct-identifiers" | "operational-content" | "governance-metadata" | "derived-artifacts" | "reidentification-mapping")[];
+  objectEntries: BackupObjectEntry[];
+  schemaVersion: string;
+  storageVersion: string;
+  encryptionStatus: EncryptionScaffoldStatus;
+  integrityStatus: IntegrityStatus;
+  retentionClass: RetentionClass;
+  restoreEligibility: RestoreEligibility;
+  includesDirectIdentifiers: boolean;
+  includesReidentificationMapping: boolean;
+}
+
+export type RestoreConflictPolicy = "fail-if-exists" | "overwrite" | "skip-existing";
+export type RestoreProvenanceMode = "preserve" | "preserve-or-gap-record";
+export type LifecycleRestoreHandling = "preserve" | "do-not-reactivate-revoked";
+
+export interface RestorePlan {
+  restoreId: string;
+  sourceBackupId: string;
+  requestedBy: string;
+  lawfulContextRequired: boolean;
+  lawfulContext?: Record<string, string>;
+  targetRoot: string;
+  targetNodeId?: string;
+  targetServiceId?: string;
+  targetUserId?: string;
+  dryRun: boolean;
+  conflictPolicy?: RestoreConflictPolicy;
+  expectedObjectHashes: Record<string, string>;
+  validatedObjectHashes: Record<string, string>;
+  restoredLayers: ("direct-identifiers" | "operational-content" | "governance-metadata" | "derived-artifacts" | "reidentification-mapping")[];
+  excludedLayers: ("direct-identifiers" | "operational-content" | "governance-metadata" | "derived-artifacts" | "reidentification-mapping")[];
+  provenanceMode: RestoreProvenanceMode;
+  auditMode: RestoreProvenanceMode;
+  reidentificationHandlingExplicit: boolean;
+  directIdentifierPolicyElevated: boolean;
+  lifecycleHandling: LifecycleRestoreHandling;
+  includesFinalDocuments: boolean;
+  preservesGateLineage: boolean;
+}
+
+export interface RetentionPolicy {
+  retentionClass: RetentionClass;
+  minimumRetentionDays: number;
+  legalHold: boolean;
+  serviceRetentionObligation: boolean;
+  userVisibilityEligible: boolean;
+  userExportEligible: boolean;
+  deletionEligible: boolean;
+  anonymizationEligible: boolean;
+  archivalEligible: boolean;
+}
+
+export interface RetentionDecision {
+  id: string;
+  requestedBy: string;
+  rationale: string;
+  policy: RetentionPolicy;
+  provenanceRef?: string;
+  auditRef?: string;
+}
+
+export type ExportKind = "patient-user" | "service-operational" | "audit" | "provenance" | "regulatory-scaffold";
+
+export interface ExportRequest {
+  id: string;
+  kind: ExportKind;
+  requestedBy: string;
+  viaCoreMediation: boolean;
+  ownerUserId?: string;
+  ownerServiceId?: string;
+  lawfulContext?: Record<string, string>;
+  includeDirectIdentifiers: boolean;
+  includeReidentificationMapping: boolean;
+  directIdentifierPolicyElevated: boolean;
+  redactionStatus: string;
+}
+
+export interface ExportPackageManifest {
+  exportId: string;
+  requestId: string;
+  objectRefs: { objectPath: string; contentHash: string; layer: "direct-identifiers" | "operational-content" | "governance-metadata" | "derived-artifacts" | "reidentification-mapping"; kind: string }[];
+  objectHashes: Record<string, string>;
+  redactionStatus: string;
+  lawfulContextSnapshot: Record<string, string>;
+}
+
+export interface DisasterRecoveryPlan {
+  id: string;
+  name: string;
+  rpoMinutes: number;
+  rtoMinutes: number;
+}
+
+export interface DRReadinessReport {
+  id: string;
+  planId: string;
+  backupPresent: boolean;
+  restoreDryRunPassed: boolean;
+  integrityPassed: boolean;
+  schemaCompatible: boolean;
+  nodeFabricCompatible: boolean;
+  auditProvenanceContinuous: boolean;
+  sensitiveLayerHandlingPassed: boolean;
+}
+
+export type BackupGovernanceEventKind =
+  | "backup.created"
+  | "backup.failed"
+  | "backup.integrity_verified"
+  | "restore.requested"
+  | "restore.validated"
+  | "restore.executed"
+  | "restore.failed"
+  | "export.requested"
+  | "export.created"
+  | "export.denied"
+  | "retention.decision"
+  | "retention.hold.applied"
+  | "dr.dry_run.completed"
+  | "dr.readiness.failed";

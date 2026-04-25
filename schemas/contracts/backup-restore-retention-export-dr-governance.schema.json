@@ -1,0 +1,198 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://healthos.dev/schemas/contracts/backup-restore-retention-export-dr-governance.schema.json",
+  "title": "BackupRestoreRetentionExportDRGovernance",
+  "type": "object",
+  "definitions": {
+    "StorageLayer": {
+      "type": "string",
+      "enum": [
+        "direct-identifiers",
+        "operational-content",
+        "governance-metadata",
+        "derived-artifacts",
+        "reidentification-mapping"
+      ]
+    },
+    "StorageObjectRef": {
+      "type": "object",
+      "required": ["objectPath", "contentHash", "layer", "kind"],
+      "properties": {
+        "objectPath": { "type": "string", "minLength": 1 },
+        "contentHash": { "type": "string", "minLength": 1 },
+        "layer": { "$ref": "#/definitions/StorageLayer" },
+        "kind": { "type": "string", "minLength": 1 }
+      },
+      "additionalProperties": false
+    },
+    "BackupObjectEntry": {
+      "type": "object",
+      "required": ["objectRef", "expectedHash", "provenanceRefs", "auditRefs"],
+      "properties": {
+        "objectRef": { "$ref": "#/definitions/StorageObjectRef" },
+        "expectedHash": { "type": "string", "minLength": 1 },
+        "provenanceRefs": { "type": "array", "items": { "type": "string", "format": "uuid" } },
+        "auditRefs": { "type": "array", "items": { "type": "string", "format": "uuid" } }
+      },
+      "additionalProperties": false
+    },
+    "BackupManifest": {
+      "type": "object",
+      "required": [
+        "backupId", "createdAt", "createdBy", "scope", "includedLayers", "excludedLayers", "objectEntries",
+        "schemaVersion", "storageVersion", "encryptionStatus", "integrityStatus", "retentionClass", "restoreEligibility",
+        "includesDirectIdentifiers", "includesReidentificationMapping"
+      ],
+      "properties": {
+        "backupId": { "type": "string", "format": "uuid" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "createdBy": { "type": "string", "minLength": 1 },
+        "nodeId": { "type": "string" },
+        "serviceId": { "type": "string", "format": "uuid" },
+        "userId": { "type": "string", "format": "uuid" },
+        "scope": { "type": "string", "enum": ["system", "service", "user-export", "audit-provenance", "model-provider-registry", "gos-bundle-registry"] },
+        "includedLayers": { "type": "array", "items": { "$ref": "#/definitions/StorageLayer" } },
+        "excludedLayers": { "type": "array", "items": { "$ref": "#/definitions/StorageLayer" } },
+        "objectEntries": { "type": "array", "items": { "$ref": "#/definitions/BackupObjectEntry" } },
+        "schemaVersion": { "type": "string", "minLength": 1 },
+        "storageVersion": { "type": "string", "minLength": 1 },
+        "encryptionStatus": { "type": "string", "enum": ["scaffolded", "required", "notImplemented"] },
+        "integrityStatus": { "type": "string", "enum": ["pending", "verified", "failed"] },
+        "retentionClass": { "type": "string", "enum": ["operational", "legal", "regulatory", "user-portable"] },
+        "restoreEligibility": { "type": "string", "enum": ["allowed", "policy-restricted", "denied"] },
+        "includesDirectIdentifiers": { "type": "boolean" },
+        "includesReidentificationMapping": { "type": "boolean" }
+      },
+      "additionalProperties": false
+    },
+    "RestorePlan": {
+      "type": "object",
+      "required": [
+        "restoreId", "sourceBackupId", "requestedBy", "lawfulContextRequired", "targetRoot", "dryRun", "expectedObjectHashes",
+        "validatedObjectHashes", "restoredLayers", "excludedLayers", "provenanceMode", "auditMode", "reidentificationHandlingExplicit",
+        "directIdentifierPolicyElevated", "lifecycleHandling", "includesFinalDocuments", "preservesGateLineage"
+      ],
+      "properties": {
+        "restoreId": { "type": "string", "format": "uuid" },
+        "sourceBackupId": { "type": "string", "format": "uuid" },
+        "requestedBy": { "type": "string", "minLength": 1 },
+        "lawfulContextRequired": { "type": "boolean" },
+        "lawfulContext": { "type": "object", "additionalProperties": { "type": "string" } },
+        "targetRoot": { "type": "string", "minLength": 1 },
+        "targetNodeId": { "type": "string" },
+        "targetServiceId": { "type": "string", "format": "uuid" },
+        "targetUserId": { "type": "string", "format": "uuid" },
+        "dryRun": { "type": "boolean" },
+        "conflictPolicy": { "type": "string", "enum": ["fail-if-exists", "overwrite", "skip-existing"] },
+        "expectedObjectHashes": { "type": "object", "additionalProperties": { "type": "string" } },
+        "validatedObjectHashes": { "type": "object", "additionalProperties": { "type": "string" } },
+        "restoredLayers": { "type": "array", "items": { "$ref": "#/definitions/StorageLayer" } },
+        "excludedLayers": { "type": "array", "items": { "$ref": "#/definitions/StorageLayer" } },
+        "provenanceMode": { "type": "string", "enum": ["preserve", "preserve-or-gap-record"] },
+        "auditMode": { "type": "string", "enum": ["preserve", "preserve-or-gap-record"] },
+        "reidentificationHandlingExplicit": { "type": "boolean" },
+        "directIdentifierPolicyElevated": { "type": "boolean" },
+        "lifecycleHandling": { "type": "string", "enum": ["preserve", "do-not-reactivate-revoked"] },
+        "includesFinalDocuments": { "type": "boolean" },
+        "preservesGateLineage": { "type": "boolean" }
+      },
+      "additionalProperties": false
+    },
+    "RetentionPolicy": {
+      "type": "object",
+      "required": [
+        "retentionClass", "minimumRetentionDays", "legalHold", "serviceRetentionObligation", "userVisibilityEligible",
+        "userExportEligible", "deletionEligible", "anonymizationEligible", "archivalEligible"
+      ],
+      "properties": {
+        "retentionClass": { "type": "string", "enum": ["operational", "legal", "regulatory", "user-portable"] },
+        "minimumRetentionDays": { "type": "integer", "minimum": 0 },
+        "legalHold": { "type": "boolean" },
+        "serviceRetentionObligation": { "type": "boolean" },
+        "userVisibilityEligible": { "type": "boolean" },
+        "userExportEligible": { "type": "boolean" },
+        "deletionEligible": { "type": "boolean" },
+        "anonymizationEligible": { "type": "boolean" },
+        "archivalEligible": { "type": "boolean" }
+      },
+      "additionalProperties": false
+    },
+    "RetentionDecision": {
+      "type": "object",
+      "required": ["id", "requestedBy", "rationale", "policy"],
+      "properties": {
+        "id": { "type": "string", "format": "uuid" },
+        "requestedBy": { "type": "string", "minLength": 1 },
+        "rationale": { "type": "string", "minLength": 1 },
+        "policy": { "$ref": "#/definitions/RetentionPolicy" },
+        "provenanceRef": { "type": "string", "format": "uuid" },
+        "auditRef": { "type": "string", "format": "uuid" }
+      },
+      "additionalProperties": false
+    },
+    "ExportRequest": {
+      "type": "object",
+      "required": [
+        "id", "kind", "requestedBy", "viaCoreMediation", "includeDirectIdentifiers", "includeReidentificationMapping",
+        "directIdentifierPolicyElevated", "redactionStatus"
+      ],
+      "properties": {
+        "id": { "type": "string", "format": "uuid" },
+        "kind": { "type": "string", "enum": ["patient-user", "service-operational", "audit", "provenance", "regulatory-scaffold"] },
+        "requestedBy": { "type": "string", "minLength": 1 },
+        "viaCoreMediation": { "type": "boolean" },
+        "ownerUserId": { "type": "string", "format": "uuid" },
+        "ownerServiceId": { "type": "string", "format": "uuid" },
+        "lawfulContext": { "type": "object", "additionalProperties": { "type": "string" } },
+        "includeDirectIdentifiers": { "type": "boolean" },
+        "includeReidentificationMapping": { "type": "boolean" },
+        "directIdentifierPolicyElevated": { "type": "boolean" },
+        "redactionStatus": { "type": "string", "minLength": 1 }
+      },
+      "additionalProperties": false
+    },
+    "ExportPackageManifest": {
+      "type": "object",
+      "required": ["exportId", "requestId", "objectRefs", "objectHashes", "redactionStatus", "lawfulContextSnapshot"],
+      "properties": {
+        "exportId": { "type": "string", "format": "uuid" },
+        "requestId": { "type": "string", "format": "uuid" },
+        "objectRefs": { "type": "array", "items": { "$ref": "#/definitions/StorageObjectRef" } },
+        "objectHashes": { "type": "object", "additionalProperties": { "type": "string" } },
+        "redactionStatus": { "type": "string", "minLength": 1 },
+        "lawfulContextSnapshot": { "type": "object", "additionalProperties": { "type": "string" } }
+      },
+      "additionalProperties": false
+    },
+    "DisasterRecoveryPlan": {
+      "type": "object",
+      "required": ["id", "name", "rpoMinutes", "rtoMinutes"],
+      "properties": {
+        "id": { "type": "string", "format": "uuid" },
+        "name": { "type": "string", "minLength": 1 },
+        "rpoMinutes": { "type": "integer", "minimum": 1 },
+        "rtoMinutes": { "type": "integer", "minimum": 1 }
+      },
+      "additionalProperties": false
+    },
+    "DRReadinessReport": {
+      "type": "object",
+      "required": [
+        "id", "planId", "backupPresent", "restoreDryRunPassed", "integrityPassed", "schemaCompatible",
+        "nodeFabricCompatible", "auditProvenanceContinuous", "sensitiveLayerHandlingPassed"
+      ],
+      "properties": {
+        "id": { "type": "string", "format": "uuid" },
+        "planId": { "type": "string", "format": "uuid" },
+        "backupPresent": { "type": "boolean" },
+        "restoreDryRunPassed": { "type": "boolean" },
+        "integrityPassed": { "type": "boolean" },
+        "schemaCompatible": { "type": "boolean" },
+        "nodeFabricCompatible": { "type": "boolean" },
+        "auditProvenanceContinuous": { "type": "boolean" },
+        "sensitiveLayerHandlingPassed": { "type": "boolean" }
+      },
+      "additionalProperties": false
+    }
+  }
+}

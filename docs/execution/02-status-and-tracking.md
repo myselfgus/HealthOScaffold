@@ -6,6 +6,10 @@ Current phase: Controlled implementation — first vertical slice started
 
 ## Completed recently
 
+- backup/restore/retention/export/DR governance scaffold is now formalized in Swift Core contracts (`BackupManifest`, `RestorePlan`, `RetentionPolicy`, `ExportRequest`, `DisasterRecoveryPlan`) with explicit fail-closed validators for lawfulContext, direct-identifier/reidentification policy gates, restore hash integrity, final-document gate lineage, and revoked-lifecycle non-reactivation
+- backup/export/restore/retention/DR observability event taxonomy is now explicitly typed (`backup.*`, `restore.*`, `export.*`, `retention.*`, `dr.*`) and constrained to non-sensitive operational attributes
+- Swift XCTest coverage now includes dedicated backup governance negatives/positives (`BackupGovernanceTests`) covering manifest schema/hash rules, restore dry-run/hash/conflict/revoked/finality guards, retention legal-hold and rationale checks, export lawful-context + reidentification/direct-identifier denials, DR readiness checks, and AACI/GOS control-plane boundary denials
+
 - async runtime failure handling now emits explicit `job.policy_denied` observability events for fail-closed lawful-context/policy denials, and preserves policy-denied failures in execution records for operator inspection
 - async runtime failure transitions were tightened to enforce `running -> failed -> retry_scheduled/dead_letter` progression before retry/dead-letter routing, reducing silent transition drift in guarded failure paths
 - async runtime governance tests now assert policy-denied observability emission and record-level preservation of policy-denied failures

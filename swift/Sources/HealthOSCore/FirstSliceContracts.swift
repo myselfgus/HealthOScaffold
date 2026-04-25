@@ -138,6 +138,37 @@ public struct TranscriptionInput: Codable, Sendable {
     }
 }
 
+public struct ProviderExecutionMetadata: Codable, Sendable, Equatable {
+    public let providerId: String
+    public let providerKind: String
+    public let taskClass: String
+    public let status: String
+    public let modelId: String?
+    public let modelVersion: String?
+    public let isStub: Bool
+    public let reason: String?
+
+    public init(
+        providerId: String,
+        providerKind: String,
+        taskClass: String,
+        status: String,
+        modelId: String? = nil,
+        modelVersion: String? = nil,
+        isStub: Bool,
+        reason: String? = nil
+    ) {
+        self.providerId = providerId
+        self.providerKind = providerKind
+        self.taskClass = taskClass
+        self.status = status
+        self.modelId = modelId
+        self.modelVersion = modelVersion
+        self.isStub = isStub
+        self.reason = reason
+    }
+}
+
 public struct TranscriptionOutput: Codable, Sendable {
     public let status: TranscriptionStatus
     public let source: String
@@ -145,6 +176,7 @@ public struct TranscriptionOutput: Codable, Sendable {
     public let transcriptRef: StorageObjectRef?
     public let audioCapture: AudioCaptureArtifact?
     public let issueMessage: String?
+    public let providerExecution: ProviderExecutionMetadata?
 
     public init(
         status: TranscriptionStatus,
@@ -152,7 +184,8 @@ public struct TranscriptionOutput: Codable, Sendable {
         transcriptText: String? = nil,
         transcriptRef: StorageObjectRef? = nil,
         audioCapture: AudioCaptureArtifact? = nil,
-        issueMessage: String? = nil
+        issueMessage: String? = nil,
+        providerExecution: ProviderExecutionMetadata? = nil
     ) {
         self.status = status
         self.source = source
@@ -160,6 +193,7 @@ public struct TranscriptionOutput: Codable, Sendable {
         self.transcriptRef = transcriptRef
         self.audioCapture = audioCapture
         self.issueMessage = issueMessage
+        self.providerExecution = providerExecution
     }
 
     public var workflowText: String {

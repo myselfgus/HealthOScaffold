@@ -152,10 +152,19 @@ Legend:
 
 ## 9. Providers / ML
 - [x] provider abstraction established
+- [x] provider capability profile contract established (kind/task/data-layer/privacy/network/latency/provenance/stub markers)
+- [x] provider registration now rejects invalid/missing capability profiles
+- [x] provider routing now returns typed outcomes (`selected`, `degradedFallback`, `deniedByPolicy`, `unavailable`, `stubOnly`) with typed denial reasons
+- [x] remote fallback guard is fail-closed for direct identifiers/reidentification mapping and policy-missing/sensitive-content remote usage
+- [x] speech path honesty now preserves explicit degraded/unavailable truth when only stub STT exists (no fabricated transcript)
+- [x] seeded-text path is explicitly separated from audio transcription provider execution metadata
 - [x] offline ML boundary established
 - [x] fine-tuning/adapters concept scaffolded
 - [x] provider benchmark dimensions and routing outcomes exist
 - [x] dataset governance and promotion/rollback baseline exists
+- [x] model registry scaffold is now executable/testable with lifecycle guards (`draft/evaluated/promoted/deprecated/revoked`) and selection safeguards
+- [x] fine-tuning governance scaffold is now executable/testable for dataset-version requirement, evaluation-gated promotion, and rollback contract
+- [~] provider provenance is improved for routed execution metadata, but no measured cost/latency/quality telemetry exists yet
 - [~] operator review checklist for promotions can still be added
 
 ## 10. AI execution layer

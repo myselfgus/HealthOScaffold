@@ -78,8 +78,8 @@ public enum ScribeFirstSliceDemoBootstrap {
         try DirectoryLayout.ensureAgentTree(root: root, agentId: "aaci.capture")
 
         let router = ProviderRouter()
-        await router.register(AppleFoundationProvider())
-        await router.register(NativeSpeechProvider())
+        try await router.register(AppleFoundationProvider())
+        try await router.register(NativeSpeechProvider())
         let orchestrator = AACIOrchestrator(router: router)
         let runner = FirstSliceRunner(root: root, orchestrator: orchestrator)
         let facade = ScribeFirstSliceAdapter(runner: runner)

@@ -137,6 +137,30 @@ public struct NativeSpeechProvider: SpeechToTextProvider {
     }
 }
 
+public struct LocalEmbeddingStubProvider: EmbeddingProvider {
+    public let providerName = "local-embedding-stub"
+    public let capabilityProfile = ProviderCapabilityProfile(
+        providerId: "local-embedding-stub",
+        providerKind: .local,
+        supportedTaskClasses: [.embedding],
+        allowedDataLayers: [.operationalContent, .derivedArtifacts],
+        allowsPHI: true,
+        allowsIdentifiableData: false,
+        requiresNetwork: false,
+        latencyClass: .interactive,
+        supportsCostReporting: false,
+        supportsProvenanceReporting: true,
+        isStub: true
+    )
+
+    public init() {}
+
+    public func embed(text: String) async throws -> [Double] {
+        _ = text
+        return []
+    }
+}
+
 public struct InvalidCapabilityLanguageProvider: LanguageModelProvider {
     public let providerName: String
     public let capabilityProfile: ProviderCapabilityProfile

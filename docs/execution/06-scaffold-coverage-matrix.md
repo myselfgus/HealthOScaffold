@@ -39,6 +39,9 @@ Legend:
 - [x] storage layer write enforcement now distinguishes direct identifiers / governance metadata / derived artifacts / reidentification mappings with explicit fail-closed guards
 - [x] storage read audit now distinguishes direct-identifier access from common reads
 - [x] reidentification governance scaffold now has explicit request/resolution/audit contracts with lawfulContext-based fail-closed checks
+- [x] retrieval governance now has explicit query/policy/result contracts with fail-closed lawful-context/finality/patient-scope checks in Swift core
+- [x] agent memory governance now has explicit scope contracts (user/professional/session/service/system/derived) with fail-closed scope/provenance/layer guards
+- [x] semantic index/embedding governance now exists as scaffold contracts (status/placeholder/provenance/lawful-finalidade) without claiming real vector retrieval
 - [~] deidentification/reidentification persistence remains scaffold-level (no production cryptographic key infrastructure yet)
 
 ## 4. Runtime / actor / agent model
@@ -156,6 +159,7 @@ Legend:
 - [x] provider registration now rejects invalid/missing capability profiles
 - [x] provider routing now returns typed outcomes (`selected`, `degradedFallback`, `deniedByPolicy`, `unavailable`, `stubOnly`) with typed denial reasons
 - [x] remote fallback guard is fail-closed for direct identifiers/reidentification mapping and policy-missing/sensitive-content remote usage
+- [x] embedding provider routing seam now exists with fail-closed policy denials for direct identifiers/reidentification mapping and explicit stub posture support
 - [x] speech path honesty now preserves explicit degraded/unavailable truth when only stub STT exists (no fabricated transcript)
 - [x] seeded-text path is explicitly separated from audio transcription provider execution metadata
 - [x] offline ML boundary established
@@ -200,6 +204,7 @@ Legend:
 - [x] minimal Scribe surface now reflects referral/prescription draft-only previews separately from SOAP draft and finalized SOAP document state
 - [~] local-audio transcription remains stubbed; a real Apple-first local provider is still deferred
 - [~] retrieval quality is now deterministic lexical/tag/recency/category/intent bounded; semantic retrieval is intentionally deferred
+- [~] semantic retrieval remains intentionally unavailable/degraded without real embedding provider and index implementation; lexical fallback is explicit and deterministic
 - [~] referral/prescription effectuation remains intentionally out of scope; only draft derivation is established in this wave
 - [~] a few procedural/operator details still remain optional hardening before heavy implementation
 

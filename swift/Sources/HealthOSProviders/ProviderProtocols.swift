@@ -216,6 +216,7 @@ public protocol FineTuningProvider: Sendable {
 public actor ProviderRouter {
     private var languageProviders: [String: any LanguageModelProvider] = [:]
     private var speechProviders: [String: any SpeechToTextProvider] = [:]
+    private var embeddingProviders: [String: any EmbeddingProvider] = [:]
 
     public init() {}
 
@@ -227,6 +228,11 @@ public actor ProviderRouter {
     public func register(_ provider: any SpeechToTextProvider) throws {
         try validateCapability(provider.capabilityProfile)
         speechProviders[provider.providerName] = provider
+    }
+
+    public func register(_ provider: any EmbeddingProvider) throws {
+        try validateCapability(provider.capabilityProfile)
+        embeddingProviders[provider.providerName] = provider
     }
 
     public func route(taskKind: String) -> ProviderRouteDecision {
@@ -277,12 +283,27 @@ public actor ProviderRouter {
         }
     }
 
+    public func routeEmbedding(request: ProviderRoutingRequest) -> ProviderRoutingDecision {
+        route(request: request, providers: Array(embeddingProviders.values).sorted(by: { $0.providerName < $1.providerName })) {
+            ProviderSelection(
+                providerId: $0.providerName,
+                providerKind: $0.capabilityProfile.providerKind,
+                taskClass: request.taskClass,
+                isStub: $0.capabilityProfile.isStub
+            )
+        }
+    }
+
     public func speechProvider(for selection: ProviderSelection) -> (any SpeechToTextProvider)? {
         speechProviders[selection.providerId]
     }
 
     public func languageProvider(for selection: ProviderSelection) -> (any LanguageModelProvider)? {
         languageProviders[selection.providerId]
+    }
+
+    public func embeddingProvider(for selection: ProviderSelection) -> (any EmbeddingProvider)? {
+        embeddingProviders[selection.providerId]
     }
 
     private func validateCapability(_ profile: ProviderCapabilityProfile) throws {
@@ -319,6 +340,9 @@ public actor ProviderRouter {
                 let profile = typed.capabilityProfile
                 return (provider, makeSelection(provider), profile)
             case let typed as any SpeechToTextProvider:
+                let profile = typed.capabilityProfile
+                return (provider, makeSelection(provider), profile)
+            case let typed as any EmbeddingProvider:
                 let profile = typed.capabilityProfile
                 return (provider, makeSelection(provider), profile)
             default:

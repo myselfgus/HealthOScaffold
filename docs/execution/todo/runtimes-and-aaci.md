@@ -113,6 +113,24 @@ Files touched:
 - `docs/architecture/09-aaci.md`
 - `docs/architecture/28-first-slice-executable-path.md`
 
+### AACI-008 Harden retrieval/memory/index governance contracts without fake semantic execution
+Outcome:
+- retrieval now has explicit governed contracts for query/scope/policy/failure and an executable governed retrieval entrypoint over bounded lexical retrieval
+- memory scope contracts now explicitly separate user/professional/session/service/system/derived memory and enforce scope/provenance/layer guard rails
+- semantic index/embedding contracts now exist as scaffold only (status/provenance/vector-placeholder semantics) with explicit unavailable/degraded honesty
+- first-slice retrieval path now uses governed query flow and records explicit retrieval provenance checkpoints while preserving deterministic lexical behavior
+- provider routing now exposes embedding-provider routing boundary so semantic retrieval can fail closed when incompatible/unavailable
+Files touched:
+- `swift/Sources/HealthOSCore/RetrievalMemoryGovernance.swift`
+- `swift/Sources/HealthOSCore/FirstSliceServices.swift`
+- `swift/Sources/HealthOSFirstSliceSupport/FirstSliceRunner.swift`
+- `swift/Sources/HealthOSProviders/ProviderProtocols.swift`
+- `swift/Sources/HealthOSProviders/StubProviders.swift`
+- `swift/Tests/HealthOSTests/RetrievalMemoryGovernanceTests.swift`
+- `docs/execution/02-status-and-tracking.md`
+- `docs/execution/06-scaffold-coverage-matrix.md`
+- `docs/execution/10-invariant-matrix.md`
+
 ## READY
 
 ## TESTS / VALIDATION

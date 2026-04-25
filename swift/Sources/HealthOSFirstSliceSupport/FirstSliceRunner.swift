@@ -251,7 +251,63 @@ public actor FirstSliceRunner {
             maxMatches: 4,
             recencyDays: 365
         )
-        let boundedResult = try await retrieval.retrieve(query: retrievalQuery, lawfulContext: lawfulContext)
+        let governedQuery = try GovernedRetrievalQuery(
+            actorId: professional.id.uuidString,
+            actorRole: lawfulContext["actorRole"] ?? "professional-agent",
+            serviceId: service.id,
+            patientUserId: patient.id,
+            sessionId: session.id,
+            finalidade: consent.finalidade,
+            lawfulContext: lawfulContext,
+            allowedDataLayers: [.operationalContent],
+            mode: .lexical,
+            providerRequirement: .init(requiresEmbeddingProvider: false),
+            maxResults: 4,
+            provenanceRequired: true,
+            lexicalQuery: retrievalQuery
+        )
+        try await appendProvenance(
+            .init(
+                actorId: "aaci.context",
+                operation: "retrieval.request",
+                providerName: "core-retrieval-governance",
+                promptVersion: "retrieval-governance-v1",
+                timestamp: .now
+            ),
+            to: &provenanceRecords
+        )
+        try await appendProvenance(
+            .init(
+                actorId: "aaci.context",
+                operation: "retrieval.policy.evaluate",
+                providerName: governedQuery.mode.rawValue,
+                promptVersion: "retrieval-governance-v1",
+                timestamp: .now
+            ),
+            to: &provenanceRecords
+        )
+
+        let governedResult = try await retrieval.retrieve(governedQuery: governedQuery)
+        if governedResult.mode == .lexical, governedResult.failure == .semanticProviderUnavailable {
+            try await appendProvenance(
+                .init(
+                    actorId: "aaci.context",
+                    operation: "retrieval.lexical.fallback",
+                    providerName: "file-backed-record-index",
+                    promptVersion: "retrieval-governance-v1",
+                    timestamp: .now
+                ),
+                to: &provenanceRecords
+            )
+        }
+        let boundedResult = governedResult.boundedResult ?? BoundedRetrievalResult(
+            query: retrievalQuery,
+            matches: [],
+            source: "file-backed-record-index:unavailable",
+            quality: .degraded,
+            notice: governedResult.failure?.localizedDescription ?? "retrieval unavailable",
+            isFallbackEmpty: true
+        )
         let retrieval = contextAssembler.assemble(
             finalidade: consent.finalidade,
             transcription: transcription,
@@ -285,6 +341,16 @@ public actor FirstSliceRunner {
                 operation: "context.retrieve",
                 providerName: boundedResult.source,
                 promptVersion: gosRuntimeView == nil ? "care-context-retrieval-v3" : "care-context-retrieval-v3+gos",
+                timestamp: .now
+            ),
+            to: &provenanceRecords
+        )
+        try await appendProvenance(
+            .init(
+                actorId: "aaci.context",
+                operation: "context.package.assemble",
+                providerName: "clinical-context-assembler",
+                promptVersion: "context-assembly-v1",
                 timestamp: .now
             ),
             to: &provenanceRecords

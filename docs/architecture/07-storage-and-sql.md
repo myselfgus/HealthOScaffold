@@ -142,4 +142,5 @@ Baseline:
 - mismatch must be auditable and never silently repaired in place
 
 ## Open tasks
-- decide whether lawfulContext should remain a flexible map or become a stricter shared transport envelope
+- lawfulContext map payloads are now validated through a reusable typed adapter contract (`LawfulContextValidator` + `LawfulContextRequirement` + `CoreLawfulContext`) so existing call sites can migrate incrementally without dropping fail-closed enforcement
+- continue propagating the same typed lawfulContext contract to all core services beyond the current first-slice/storage seams

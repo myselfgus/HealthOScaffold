@@ -22,7 +22,9 @@ Legend:
 - [x] gate workflow now carries explicit review type, finalization target, rationale, and reviewer metadata
 - [x] provenance represented
 - [x] deny/failure semantics explicitly documented for core services
-- [~] some law-level invariants still need stronger contract wording
+- [x] lawfulContext contract now has reusable typed validation adapter (`LawfulContextValidator`) over existing map payloads
+- [x] core law typed failure contract now includes explicit lawful-context/consent/habilitation/finality cases (`CoreLawError`)
+- [~] some law-level invariants still need broader multi-runtime/global policy closure beyond current first-slice enforcement
 
 ## 3. Data and storage
 - [x] SQL foundation exists
@@ -33,6 +35,7 @@ Legend:
 - [x] storage API contract exists explicitly
 - [x] initial hash/integrity strategy is established
 - [x] lawfulContext v1 decision is established
+- [x] file-backed storage now fail-closes governed get/list/audit paths with typed lawful-context validation and stronger audit context requirements
 
 ## 4. Runtime / actor / agent model
 - [x] actor/agent distinction documented and typed

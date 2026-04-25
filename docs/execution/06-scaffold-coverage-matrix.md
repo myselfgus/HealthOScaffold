@@ -95,7 +95,7 @@ Legend:
 - [~] provenance-preserving compile output can still be enriched beyond the current source-hash/report baseline
 - [x] activation/review lifecycle now has pragmatic policy hardening (multi-review minimum, separation-of-duties checks, deterministic version/source/compiler/spec-hash pinning, and explicit denied/accepted lifecycle audit records)
 - [~] activation/deprecation policy controls can still be deepened beyond current pragmatic hardening (reviewer authorization models, policy profiles, distributed governance)
-- [~] deep execution-time adoption across AACI paths beyond the current first-slice internal runtime paths remains to be completed
+- [~] deep execution-time adoption across AACI session modes remains partial: a generic mediation seam exists and is now wired for current first-slice runtime paths, but non-first-slice modes are still pending
 
 ## 6. AACI
 - [x] purpose and boundaries established
@@ -109,6 +109,8 @@ Legend:
 - [x] AACI now has a default GOS primitive-family binding map scaffold in Swift
 - [x] AACI now has an activation seam for loading active GOS bundles
 - [x] AACI now influences a real executable draft path through first-slice mediation when a bundle is active
+- [x] AACI now has a small runtime-agnostic GOS mediation seam (`AACIGOSRuntimeResolver`, `AACIGOSMediationContext`, `AACIGOSProvenanceOperationResolver`) covering actor-binding lookup/fallback, mediation posture flags, and bounded `gos.use.*` operation naming
+- [~] broader AACI mode adoption remains open: the seam is tested and reused by current capture/transcription/context/SOAP/referral/prescription first-slice paths, but other AACI session modes have not been implemented yet
 
 ## 7. Apps / interfaces
 - [x] Scribe defined

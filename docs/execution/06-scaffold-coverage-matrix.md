@@ -43,6 +43,10 @@ Legend:
 - [x] agent memory governance now has explicit scope contracts (user/professional/session/service/system/derived) with fail-closed scope/provenance/layer guards
 - [x] semantic index/embedding governance now exists as scaffold contracts (status/placeholder/provenance/lawful-finalidade) without claiming real vector retrieval
 - [~] deidentification/reidentification persistence remains scaffold-level (no production cryptographic key infrastructure yet)
+- [x] backup/restore/retention/export/DR governance contracts now exist as executable Core scaffold types and validation guards in Swift (`BackupManifest`, `RestorePlan`, `RetentionPolicy`, `ExportRequest`, `DisasterRecoveryPlan`)
+- [x] backup/restore/export governance now fail-closes on missing lawfulContext, direct-identifier/reidentification policy gaps, hash mismatch, missing restore manifest, and final-document lineage mismatch
+- [x] backup/restore/export/retention/DR observability event taxonomy now includes `backup.*`, `restore.*`, `export.*`, `retention.*`, and `dr.*` event names with non-sensitive payload posture
+- [~] backup encryption remains explicitly scaffolded (`scaffolded`/`required`/`notImplemented` status), without production KMS integration claims
 
 ## 4. Runtime / actor / agent model
 - [x] actor/agent distinction documented and typed

@@ -71,3 +71,23 @@ Event payload rule:
 - restore untested -> warning
 - integrity mismatch -> critical
 - gate backlog saturation -> warning
+
+## Backup / restore / export / retention / DR governance events (implemented scaffold)
+- `backup.created`
+- `backup.failed`
+- `backup.integrity_verified`
+- `restore.requested`
+- `restore.validated`
+- `restore.executed`
+- `restore.failed`
+- `export.requested`
+- `export.created`
+- `export.denied`
+- `retention.decision`
+- `retention.hold.applied`
+- `dr.dry_run.completed`
+- `dr.readiness.failed`
+
+Payload posture:
+- include operation id, actor/system id, scope, and failure kind when present
+- include only non-sensitive attributes (no raw CPF, no direct identifier payloads, no secrets)

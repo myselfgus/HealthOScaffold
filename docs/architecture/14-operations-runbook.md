@@ -73,3 +73,17 @@
 
 Detailed visibility doctrine lives in:
 - `docs/architecture/26-operator-observability-contract.md`
+
+## Governed backup/restore/export discipline (scaffold)
+- backup, restore, and export operations are Core-mediated governance actions, not app/runtime direct storage actions
+- backup manifests must include object refs + hashes + data-layer classification + retention/restore eligibility
+- restore must validate manifest + hash integrity before destructive action; destructive restore requires explicit conflict policy
+- direct identifiers and reidentification mappings require explicit elevated policy for backup/restore
+- patient export does not include reidentification mapping by default and never bypasses lawfulContext
+- restoring final documents requires preserved gate lineage; restore cannot auto-reactivate revoked lifecycle state by default
+- encryption posture is explicit scaffold status (`scaffolded` / `required` / `notImplemented`), not production-crypto claim
+
+## Operator command boundary
+- operators may trigger governed backup/restore/export workflows
+- operators are not implicitly granted clinical-access rights by running infra commands
+- AACI and GOS are denied as control-plane decision authorities for backup/restore/export governance

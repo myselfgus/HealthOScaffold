@@ -254,10 +254,63 @@ final class GOSRuntimeAdoptionTests: XCTestCase {
         let jsonString = String(decoding: payload, as: UTF8.self)
 
         XCTAssertTrue(jsonString.contains("\"runSummary\""))
+        XCTAssertTrue(jsonString.contains("\"gosRuntimeState\""))
         XCTAssertTrue(jsonString.contains("\"gateState\""))
         XCTAssertFalse(jsonString.contains("\"gosSpec\""))
+        XCTAssertFalse(jsonString.contains("\"compiledSpecJSON\""))
         XCTAssertFalse(jsonString.contains("\"compiledSpec\""))
         XCTAssertFalse(jsonString.contains("\"runtimeBindingPlan\""))
+        XCTAssertEqual(state.gosRuntimeState.lifecycle, .active)
+        XCTAssertEqual(state.gosRuntimeState.specId, "aaci.first-slice")
+        XCTAssertEqual(state.gosRuntimeState.bundleId, bundle.manifest.bundleId)
+        XCTAssertEqual(state.gosRuntimeState.bindingPlanSource, .bundleProvided)
+        XCTAssertEqual(state.gosRuntimeState.gateStillRequired, true)
+        XCTAssertEqual(state.gosRuntimeState.draftOnly, true)
+        XCTAssertEqual(state.gosRuntimeState.provenanceFacingOnly, true)
+        XCTAssertEqual(state.gosRuntimeState.informationalOnly, true)
+        XCTAssertTrue(state.gosRuntimeState.mediationSummary?.provenanceOperations.contains("gos.use.compose.soap") == true)
+        XCTAssertNotNil(state.gosRuntimeState.mediationSummary)
+    }
+
+    func testScribeBridgeStateWithoutActiveGOSExposesOnlyInactiveRuntimeSurface() async throws {
+        let root = makeTempRoot()
+        try DirectoryLayout.bootstrap(at: root)
+        let registry = FileBackedGOSBundleRegistry(root: root)
+        if let entry = try await registry.lookup(specId: "aaci.first-slice"),
+           let activeBundleId = entry.activeBundleId {
+            try await registry.deprecate(bundleId: activeBundleId, note: "test inactive gos runtime bridge surface")
+        }
+
+        let router = ProviderRouter()
+        await router.register(AppleFoundationProvider())
+        await router.register(NativeSpeechProvider())
+        let runner = FirstSliceRunner(root: root, orchestrator: AACIOrchestrator(router: router))
+        let adapter = ScribeFirstSliceAdapter(runner: runner)
+        let professional = Usuario(cpfHash: "prof", civilToken: "prof")
+        let service = Servico(nome: "svc", tipo: "ambulatory")
+        let patient = Usuario(cpfHash: "patient", civilToken: "patient")
+
+        let start = await adapter.startProfessionalSession(.init(professional: professional, service: service))
+        let sessionId = try XCTUnwrap(start.state?.sessionId)
+        _ = await adapter.selectPatient(.init(sessionId: sessionId, patient: patient))
+        _ = await adapter.submitSessionCapture(
+            .init(
+                sessionId: sessionId,
+                capture: SessionCaptureInput(rawText: "Paciente com contexto sem GOS ativo.")
+            )
+        )
+        let resolved = await adapter.resolveGate(.init(sessionId: sessionId, approve: false))
+        let state = try XCTUnwrap(resolved.state)
+
+        XCTAssertEqual(state.gosRuntimeState.lifecycle, .inactive)
+        XCTAssertNil(state.gosRuntimeState.specId)
+        XCTAssertNil(state.gosRuntimeState.bundleId)
+        XCTAssertNil(state.gosRuntimeState.bindingPlanSource)
+        XCTAssertNil(state.gosRuntimeState.mediationSummary)
+        XCTAssertEqual(state.gosRuntimeState.gateStillRequired, true)
+        XCTAssertEqual(state.gosRuntimeState.draftOnly, true)
+        XCTAssertEqual(state.gosRuntimeState.provenanceFacingOnly, true)
+        XCTAssertEqual(state.gosRuntimeState.informationalOnly, true)
     }
 
     func testRegistryReviewAndPromotionRecordApprovalAndAudit() async throws {

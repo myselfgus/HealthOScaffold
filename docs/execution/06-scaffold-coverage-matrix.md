@@ -117,6 +117,8 @@ Legend:
 - [x] minimal Scribe surface now exposes structured retrieval summary/highlights/source hints with explicit partial/empty/degraded context truth
 - [x] app-boundary consumption patterns for GOS-derived state are now documented
 - [x] Scribe bridge runtime-state boundary now has automated coverage confirming app state stays runtime-mediated and does not expose raw compiled GOS spec payloads
+- [x] Scribe bridge now includes a dedicated runtime-mediated GOS app surface (`gosRuntimeState`) limited to lifecycle/spec-id/bundle-id/binding-source summaries plus provenance-facing/informational-only flags (no raw compiled spec or binding-plan payload exposure)
+- [x] Swift XCTest app-boundary coverage now verifies both active-GOS and no-active-GOS Scribe bridge paths return only safe GOS runtime surfaces while preserving gate-required + draft-only app semantics
 
 ## 8. Networking / operations
 - [x] topology doctrine refined: single-node as canonical bootstrap minimum, not system identity

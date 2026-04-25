@@ -36,6 +36,66 @@ public enum ScribeDerivedDraftState: String, Codable, Sendable {
     case draftOnly = "draft_only"
 }
 
+public enum GOSRuntimeLifecycleView: String, Codable, Sendable {
+    case active
+    case inactive
+}
+
+public enum GOSBindingPlanSourceView: String, Codable, Sendable {
+    case bundleProvided = "bundle_provided"
+    case runtimeDefault = "runtime_default"
+}
+
+public struct GOSMediationSummaryView: Codable, Sendable {
+    public let mediatedActorIds: [String]
+    public let mediatedPrimitiveFamilyCount: Int
+    public let provenanceOperations: [String]
+
+    public init(
+        mediatedActorIds: [String],
+        mediatedPrimitiveFamilyCount: Int,
+        provenanceOperations: [String]
+    ) {
+        self.mediatedActorIds = mediatedActorIds
+        self.mediatedPrimitiveFamilyCount = mediatedPrimitiveFamilyCount
+        self.provenanceOperations = provenanceOperations
+    }
+}
+
+public struct GOSRuntimeStateView: Codable, Sendable {
+    public let lifecycle: GOSRuntimeLifecycleView
+    public let specId: String?
+    public let bundleId: String?
+    public let bindingPlanSource: GOSBindingPlanSourceView?
+    public let mediationSummary: GOSMediationSummaryView?
+    public let gateStillRequired: Bool
+    public let draftOnly: Bool
+    public let provenanceFacingOnly: Bool
+    public let informationalOnly: Bool
+
+    public init(
+        lifecycle: GOSRuntimeLifecycleView,
+        specId: String? = nil,
+        bundleId: String? = nil,
+        bindingPlanSource: GOSBindingPlanSourceView? = nil,
+        mediationSummary: GOSMediationSummaryView? = nil,
+        gateStillRequired: Bool,
+        draftOnly: Bool,
+        provenanceFacingOnly: Bool,
+        informationalOnly: Bool
+    ) {
+        self.lifecycle = lifecycle
+        self.specId = specId
+        self.bundleId = bundleId
+        self.bindingPlanSource = bindingPlanSource
+        self.mediationSummary = mediationSummary
+        self.gateStillRequired = gateStillRequired
+        self.draftOnly = draftOnly
+        self.provenanceFacingOnly = provenanceFacingOnly
+        self.informationalOnly = informationalOnly
+    }
+}
+
 public struct StartProfessionalSessionCommand: Codable, Sendable {
     public let professional: Usuario
     public let service: Servico
@@ -231,6 +291,7 @@ public struct ScribeSessionBridgeState: Codable, Sendable {
     public let referralDraft: ScribeDerivedDraftBridgeState
     public let prescriptionDraft: ScribeDerivedDraftBridgeState
     public let finalDocument: ScribeFinalDocumentBridgeState
+    public let gosRuntimeState: GOSRuntimeStateView
     public let runSummary: SliceRunSummary?
 
     public init(
@@ -246,6 +307,7 @@ public struct ScribeSessionBridgeState: Codable, Sendable {
         referralDraft: ScribeDerivedDraftBridgeState,
         prescriptionDraft: ScribeDerivedDraftBridgeState,
         finalDocument: ScribeFinalDocumentBridgeState,
+        gosRuntimeState: GOSRuntimeStateView,
         runSummary: SliceRunSummary?
     ) {
         self.sessionId = sessionId
@@ -260,6 +322,7 @@ public struct ScribeSessionBridgeState: Codable, Sendable {
         self.referralDraft = referralDraft
         self.prescriptionDraft = prescriptionDraft
         self.finalDocument = finalDocument
+        self.gosRuntimeState = gosRuntimeState
         self.runSummary = runSummary
     }
 }

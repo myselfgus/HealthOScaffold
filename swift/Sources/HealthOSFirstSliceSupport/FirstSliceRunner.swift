@@ -305,7 +305,8 @@ public actor FirstSliceRunner {
                     draftId: draftDocument.draft.id,
                     draftStatus: draftDocument.draft.status,
                     runtimeView: gosRuntimeView
-                )
+                ),
+                lawfulContext: lawfulContext
             )
         )
         try await storage.audit(objectRef: draftRef, action: "write-draft", actorId: professional.id.uuidString, metadata: lawfulContext)
@@ -369,7 +370,8 @@ public actor FirstSliceRunner {
                     readyForFutureGate: referralDraftDocument.readyForFutureGate,
                     runtimeView: gosRuntimeView,
                     actorId: "aaci.referral-draft"
-                )
+                ),
+                lawfulContext: lawfulContext
             )
         )
         try await storage.audit(
@@ -445,7 +447,8 @@ public actor FirstSliceRunner {
                     readyForFutureGate: prescriptionDraftDocument.readyForFutureGate,
                     runtimeView: gosRuntimeView,
                     actorId: "aaci.prescription-draft"
-                )
+                ),
+                lawfulContext: lawfulContext
             )
         )
         try await storage.audit(
@@ -595,11 +598,15 @@ public actor FirstSliceRunner {
                     content: finalData,
                     metadata: [
                         "sessionId": session.id.uuidString,
+                        "patientUserId": patient.id.uuidString,
+                        "finalidade": consent.finalidade,
+                        "provenanceOperation": "document.finalize.soap",
                         "sourceDraftId": draft.draft.id.uuidString,
                         "gateRequestId": gate.request.id.uuidString,
                         "gateResolutionId": gate.resolution.id.uuidString,
                         "finalDocumentId": finalPayload.id.uuidString
-                    ]
+                    ],
+                    lawfulContext: lawfulContext
                 )
             )
             try await storage.audit(
@@ -652,7 +659,11 @@ public actor FirstSliceRunner {
                 kind: "gate-requests",
                 layer: .governanceMetadata,
                 content: gateRequestData,
-                metadata: ["sessionId": session.id.uuidString]
+                metadata: [
+                    "sessionId": session.id.uuidString,
+                    "governanceActorId": professional.id.uuidString
+                ],
+                lawfulContext: lawfulContext
             )
         )
         _ = try await storage.put(
@@ -661,7 +672,11 @@ public actor FirstSliceRunner {
                 kind: "gate-resolutions",
                 layer: .governanceMetadata,
                 content: gateResolutionData,
-                metadata: ["sessionId": session.id.uuidString]
+                metadata: [
+                    "sessionId": session.id.uuidString,
+                    "governanceActorId": professional.id.uuidString
+                ],
+                lawfulContext: lawfulContext
             )
         )
 
@@ -672,7 +687,11 @@ public actor FirstSliceRunner {
                 kind: "session-events",
                 layer: .governanceMetadata,
                 content: eventsData,
-                metadata: ["sessionId": session.id.uuidString]
+                metadata: [
+                    "sessionId": session.id.uuidString,
+                    "governanceActorId": professional.id.uuidString
+                ],
+                lawfulContext: lawfulContext
             )
         )
 
@@ -844,7 +863,8 @@ public actor FirstSliceRunner {
             base: [
             "sessionId": sessionId.uuidString,
             "draftId": draftId.uuidString,
-            "draftStatus": draftStatus.rawValue
+            "draftStatus": draftStatus.rawValue,
+            "provenanceOperation": "draft.compose.soap"
             ],
             actorId: "aaci.draft-composer",
             runtimeView: runtimeView
@@ -866,7 +886,8 @@ public actor FirstSliceRunner {
             "draftId": draftId.uuidString,
             "sourceSOAPDraftId": sourceSOAPDraftId.uuidString,
             "draftStatus": draftStatus.rawValue,
-            "readyForFutureGate": String(readyForFutureGate)
+            "readyForFutureGate": String(readyForFutureGate),
+            "provenanceOperation": actorId == "aaci.referral-draft" ? "draft.compose.referral" : "draft.compose.prescription"
             ],
             actorId: actorId,
             runtimeView: runtimeView
@@ -1001,11 +1022,13 @@ public actor FirstSliceRunner {
                     base: [
                     "sessionId": sessionId.uuidString,
                     "patientUserId": patientUserId.uuidString,
-                    "displayName": audioReference.displayName
+                    "displayName": audioReference.displayName,
+                    "finalidade": lawfulContext["finalidade"] ?? "care-context-retrieval"
                     ],
                     actorId: "aaci.capture",
                     runtimeView: runtimeView
-                )
+                ),
+                lawfulContext: lawfulContext
             )
         )
         try await storage.audit(
@@ -1036,11 +1059,13 @@ public actor FirstSliceRunner {
                 metadata: gosRuntimeMetadata(
                     base: [
                     "sessionId": sessionId.uuidString,
-                    "patientUserId": patientUserId.uuidString
+                    "patientUserId": patientUserId.uuidString,
+                    "finalidade": lawfulContext["finalidade"] ?? "care-context-retrieval"
                     ],
                     actorId: "aaci.transcription",
                     runtimeView: runtimeView
-                )
+                ),
+                lawfulContext: lawfulContext
             )
         )
         try await storage.audit(

@@ -9,7 +9,11 @@ public enum CoreLawError: Error, LocalizedError, Sendable, Equatable {
     case missingServiceContext
     case missingProfessionalContext
     case missingSessionContext
+    case missingProvenanceContext
+    case missingReidentificationScope
     case invalidLawfulContext(String)
+    case invalidStorageLayer(String)
+    case restrictedLayerAccessDenied(String)
     case consentRequired(String)
     case habilitationRequired(String)
     case gateApprovalRequired(String)
@@ -33,8 +37,16 @@ public enum CoreLawError: Error, LocalizedError, Sendable, Equatable {
             return "Missing lawful context professionalUserId."
         case .missingSessionContext:
             return "Missing lawful context sessionId."
+        case .missingProvenanceContext:
+            return "Missing required provenance context."
+        case .missingReidentificationScope:
+            return "Missing lawful reidentification scope."
         case .invalidLawfulContext(let detail):
             return "Invalid lawful context: \(detail)."
+        case .invalidStorageLayer(let detail):
+            return "Invalid storage layer usage: \(detail)."
+        case .restrictedLayerAccessDenied(let detail):
+            return "Restricted layer access denied: \(detail)."
         case .consentRequired(let detail):
             return "Consent required: \(detail)."
         case .habilitationRequired(let detail):

@@ -602,7 +602,8 @@ final class GOSRuntimeAdoptionTests: XCTestCase {
                 owner: .servico(serviceId: UUID()),
                 kind: "drafts-soap",
                 layer: .derivedArtifacts,
-                content: Data("payload".utf8)
+                content: Data("payload".utf8),
+                metadata: ["provenanceOperation": "draft.compose.soap"]
             )
         )
 
@@ -633,7 +634,8 @@ final class GOSRuntimeAdoptionTests: XCTestCase {
                 owner: .servico(serviceId: serviceId),
                 kind: "drafts-soap",
                 layer: .derivedArtifacts,
-                content: Data("payload".utf8)
+                content: Data("payload".utf8),
+                metadata: ["provenanceOperation": "draft.compose.soap"]
             )
         )
         try await storage.audit(
@@ -683,6 +685,253 @@ final class GOSRuntimeAdoptionTests: XCTestCase {
             XCTFail("Expected operational file read failure with valid lawfulContext.")
         } catch {
             XCTAssertFalse(error is CoreLawError)
+        }
+    }
+
+    func testDirectIdentifiersWriteFailsWithoutLawfulContext() async throws {
+        let root = makeTempRoot()
+        try DirectoryLayout.bootstrap(at: root)
+        let storage = FileBackedStorageService(root: root)
+
+        do {
+            _ = try await storage.put(
+                StoragePutRequest(
+                    owner: .usuario(cpfHash: "hash-user"),
+                    kind: "civil-identity",
+                    layer: .directIdentifiers,
+                    content: Data("ciphertext".utf8)
+                )
+            )
+            XCTFail("Expected direct identifier write to fail without lawfulContext.")
+        } catch {
+            XCTAssertEqual(error as? CoreLawError, .missingActorRole)
+        }
+    }
+
+    func testReidentificationMappingWriteFailsWithoutGovernanceScope() async throws {
+        let root = makeTempRoot()
+        try DirectoryLayout.bootstrap(at: root)
+        let storage = FileBackedStorageService(root: root)
+
+        do {
+            _ = try await storage.put(
+                StoragePutRequest(
+                    owner: .usuario(cpfHash: "hash-user"),
+                    kind: "reidentification-map",
+                    layer: .reidentificationMapping,
+                    content: Data("map".utf8),
+                    lawfulContext: [
+                        "actorRole": "professional-agent",
+                        "scope": "care-context",
+                        "serviceId": UUID().uuidString,
+                        "patientUserId": UUID().uuidString,
+                        "habilitationId": UUID().uuidString,
+                        "finalidade": "care-context-retrieval",
+                        "sessionId": UUID().uuidString
+                    ]
+                )
+            )
+            XCTFail("Expected reidentification mapping write to fail without reidentification scope.")
+        } catch {
+            XCTAssertEqual(error as? CoreLawError, .missingReidentificationScope)
+        }
+    }
+
+    func testOperationalContentWriteWithValidContextAndMetadataPasses() async throws {
+        let root = makeTempRoot()
+        try DirectoryLayout.bootstrap(at: root)
+        let storage = FileBackedStorageService(root: root)
+        let serviceId = UUID()
+
+        let objectRef = try await storage.put(
+            StoragePutRequest(
+                owner: .servico(serviceId: serviceId),
+                kind: "transcripts",
+                layer: .operationalContent,
+                content: Data("transcript".utf8),
+                metadata: [
+                    "sessionId": UUID().uuidString,
+                    "patientUserId": UUID().uuidString,
+                    "finalidade": "care-context-retrieval"
+                ],
+                lawfulContext: [
+                    "actorRole": "professional-agent",
+                    "scope": "care-context",
+                    "serviceId": serviceId.uuidString,
+                    "patientUserId": UUID().uuidString,
+                    "habilitationId": UUID().uuidString,
+                    "finalidade": "care-context-retrieval",
+                    "sessionId": UUID().uuidString
+                ]
+            )
+        )
+        XCTAssertEqual(objectRef.layer, .operationalContent)
+    }
+
+    func testDerivedArtifactWriteFailsWithoutProvenanceMetadata() async throws {
+        let root = makeTempRoot()
+        try DirectoryLayout.bootstrap(at: root)
+        let storage = FileBackedStorageService(root: root)
+        do {
+            _ = try await storage.put(
+                StoragePutRequest(
+                    owner: .servico(serviceId: UUID()),
+                    kind: "drafts-soap",
+                    layer: .derivedArtifacts,
+                    content: Data("draft".utf8)
+                )
+            )
+            XCTFail("Expected derived artifact write to require provenance metadata.")
+        } catch {
+            XCTAssertEqual(error as? CoreLawError, .missingProvenanceContext)
+        }
+    }
+
+    func testCPFHashIsUsedInUserStoragePathWithoutRawCPF() async throws {
+        let root = makeTempRoot()
+        try DirectoryLayout.bootstrap(at: root)
+        let storage = FileBackedStorageService(root: root)
+        let cpfHash = "abc123hashedcpf"
+        let objectRef = try await storage.put(
+            StoragePutRequest(
+                owner: .usuario(cpfHash: cpfHash),
+                kind: "notes",
+                layer: .operationalContent,
+                content: Data("note".utf8),
+                metadata: [
+                    "sessionId": UUID().uuidString,
+                    "patientUserId": UUID().uuidString,
+                    "finalidade": "care-context-retrieval"
+                ]
+            )
+        )
+        XCTAssertTrue(objectRef.objectPath.contains(cpfHash))
+        XCTAssertFalse(objectRef.objectPath.contains("111.222.333-44"))
+    }
+
+    func testStorageHashChangesWhenContentChanges() async throws {
+        let root = makeTempRoot()
+        try DirectoryLayout.bootstrap(at: root)
+        let storage = FileBackedStorageService(root: root)
+        let serviceId = UUID()
+
+        let first = try await storage.put(
+            StoragePutRequest(
+                owner: .servico(serviceId: serviceId),
+                kind: "drafts-soap",
+                layer: .derivedArtifacts,
+                content: Data("payload-1".utf8),
+                metadata: ["provenanceOperation": "draft.compose.soap"]
+            )
+        )
+        let second = try await storage.put(
+            StoragePutRequest(
+                owner: .servico(serviceId: serviceId),
+                kind: "drafts-soap",
+                layer: .derivedArtifacts,
+                content: Data("payload-2".utf8),
+                metadata: ["provenanceOperation": "draft.compose.soap"]
+            )
+        )
+        XCTAssertNotEqual(first.contentHash, second.contentHash)
+    }
+
+    func testStorageReadAuditRecordsDirectIdentifierAccessClass() async throws {
+        let root = makeTempRoot()
+        try DirectoryLayout.bootstrap(at: root)
+        let storage = FileBackedStorageService(root: root)
+        let serviceId = UUID()
+        let patientId = UUID()
+        let context: [String: String] = [
+            "actorRole": "professional-agent",
+            "scope": "direct-identifier-access",
+            "serviceId": serviceId.uuidString,
+            "patientUserId": patientId.uuidString,
+            "habilitationId": UUID().uuidString,
+            "finalidade": "identity-verification",
+            "sessionId": UUID().uuidString
+        ]
+        let objectRef = try await storage.put(
+            StoragePutRequest(
+                owner: .usuario(cpfHash: "hash-user"),
+                kind: "civil-identity",
+                layer: .directIdentifiers,
+                content: Data("ciphertext".utf8),
+                lawfulContext: context
+            )
+        )
+        _ = try await storage.get(objectRef, lawfulContext: context)
+
+        let auditURL = root.appending(path: "logs/storage-audit.jsonl")
+        let payload = try String(contentsOf: auditURL, encoding: .utf8)
+        XCTAssertTrue(payload.contains("read-direct-identifier"))
+    }
+
+    func testReidentificationRequestRequiresLawfulContextAndRationale() async throws {
+        let service = ReidentificationGovernanceService()
+        let request = ReidentificationRequest(
+            mapId: UUID(),
+            requesterActorId: "actor-1",
+            finalidade: "identity-check",
+            rationale: "   ",
+            lawfulContext: [:]
+        )
+        do {
+            _ = try await service.submitRequest(request)
+            XCTFail("Expected reidentification request to fail without rationale and context.")
+        } catch {
+            XCTAssertTrue(error is CoreLawError)
+        }
+    }
+
+    func testReidentificationRequestAndResolutionProduceAuditAndRequireRequest() async throws {
+        let root = makeTempRoot()
+        try DirectoryLayout.bootstrap(at: root)
+        let ledger = FileBackedProvenanceLedger(root: root)
+        let service = ReidentificationGovernanceService(provenance: ledger)
+        let request = ReidentificationRequest(
+            mapId: UUID(),
+            requesterActorId: "actor-1",
+            finalidade: "identity-check",
+            rationale: "Required for lawful patient safety callback.",
+            lawfulContext: [
+                "actorRole": "professional-agent",
+                "scope": "reidentification-governance",
+                "serviceId": UUID().uuidString,
+                "patientUserId": UUID().uuidString,
+                "habilitationId": UUID().uuidString,
+                "finalidade": "identity-check",
+                "sessionId": UUID().uuidString
+            ]
+        )
+        let requestAudit = try await service.submitRequest(request)
+        XCTAssertEqual(requestAudit.action, .request)
+
+        let resolution = ReidentificationResolution(
+            requestId: request.id,
+            resolverActorId: "resolver-1",
+            approved: true,
+            rationale: "Approved under governed scope."
+        )
+        let resolutionAudit = try await service.resolveRequest(
+            resolution,
+            lawfulContext: request.lawfulContext
+        )
+        XCTAssertEqual(resolutionAudit.action, .resolution)
+
+        do {
+            _ = try await service.resolveRequest(
+                ReidentificationResolution(
+                    requestId: UUID(),
+                    resolverActorId: "resolver-1",
+                    approved: true,
+                    rationale: "invalid"
+                ),
+                lawfulContext: request.lawfulContext
+            )
+            XCTFail("Expected resolution to fail when request id is unknown.")
+        } catch {
+            XCTAssertTrue(error is CoreLawError)
         }
     }
 
@@ -752,6 +1001,38 @@ final class GOSRuntimeAdoptionTests: XCTestCase {
         XCTAssertEqual(state.gosRuntimeState.informationalOnly, true)
         XCTAssertTrue(state.gosRuntimeState.mediationSummary?.provenanceOperations.contains("gos.use.compose.soap") == true)
         XCTAssertNotNil(state.gosRuntimeState.mediationSummary)
+    }
+
+    func testScribeBridgeStateDoesNotExposeDirectIdentifiers() async throws {
+        let root = makeTempRoot()
+        try DirectoryLayout.bootstrap(at: root)
+        let router = ProviderRouter()
+        await router.register(AppleFoundationProvider())
+        await router.register(NativeSpeechProvider())
+        let runner = FirstSliceRunner(root: root, orchestrator: AACIOrchestrator(router: router))
+        let adapter = ScribeFirstSliceAdapter(runner: runner)
+        let professional = Usuario(cpfHash: "prof-cpf-hash", civilToken: "prof-token")
+        let service = Servico(nome: "svc", tipo: "ambulatory")
+        let patient = Usuario(cpfHash: "patient-cpf-hash", civilToken: "patient-token")
+
+        let start = await adapter.startProfessionalSession(.init(professional: professional, service: service))
+        let sessionId = try XCTUnwrap(start.state?.sessionId)
+        _ = await adapter.selectPatient(.init(sessionId: sessionId, patient: patient))
+        _ = await adapter.submitSessionCapture(
+            .init(
+                sessionId: sessionId,
+                capture: SessionCaptureInput(rawText: "Paciente relata tontura.")
+            )
+        )
+        let resolved = await adapter.resolveGate(.init(sessionId: sessionId, approve: false))
+        let state = try XCTUnwrap(resolved.state)
+        let payload = try JSONEncoder().encode(state)
+        let jsonString = String(decoding: payload, as: UTF8.self)
+
+        XCTAssertFalse(jsonString.contains("cpfHash"))
+        XCTAssertFalse(jsonString.contains("civilToken"))
+        XCTAssertFalse(jsonString.contains("prof-cpf-hash"))
+        XCTAssertFalse(jsonString.contains("patient-cpf-hash"))
     }
 
     func testScribeBridgeStateWithoutActiveGOSExposesOnlyInactiveRuntimeSurface() async throws {

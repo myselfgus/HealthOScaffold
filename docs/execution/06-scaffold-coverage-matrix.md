@@ -36,6 +36,10 @@ Legend:
 - [x] initial hash/integrity strategy is established
 - [x] lawfulContext v1 decision is established
 - [x] file-backed storage now fail-closes governed get/list/audit paths with typed lawful-context validation and stronger audit context requirements
+- [x] storage layer write enforcement now distinguishes direct identifiers / governance metadata / derived artifacts / reidentification mappings with explicit fail-closed guards
+- [x] storage read audit now distinguishes direct-identifier access from common reads
+- [x] reidentification governance scaffold now has explicit request/resolution/audit contracts with lawfulContext-based fail-closed checks
+- [~] deidentification/reidentification persistence remains scaffold-level (no production cryptographic key infrastructure yet)
 
 ## 4. Runtime / actor / agent model
 - [x] actor/agent distinction documented and typed

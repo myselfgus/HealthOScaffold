@@ -89,6 +89,7 @@ Legend:
 - [x] file-backed loader/registry now use typed lifecycle/registry/integrity failures for missing artifacts and invalid lifecycle transitions instead of generic NSError throws
 - [x] AACI activation/load seam now maps registry/loader errors into explicit typed loader categories (`GOSLoadTypedError.failure`) while preserving underlying registry error context
 - [x] AACI resolved GOS runtime metadata now exposes bounded diagnostics (`gosBindingCount`, `gosCompilerWarningCount`) alongside actor/family context without moving sovereign law into GOS/runtime
+- [x] invariant enforcement layer now hard-fails on finalization without approved gate (`FirstSliceInvariantEnforcer`), invalid GOS activation state (`invalidActivationState`), invalid bundle lifecycle activation (`invalidBundleState`), and core-gate-required regulatory draft actors under AACI mediation
 - [~] provenance-preserving compile output can still be enriched beyond the current source-hash/report baseline
 - [~] activation/deprecation policy controls can still be deepened beyond current minimum hardening (multi-review, separation-of-duties, version pinning)
 - [~] deep execution-time adoption across AACI paths beyond the current first-slice internal runtime paths remains to be completed

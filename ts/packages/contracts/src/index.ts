@@ -769,3 +769,165 @@ export interface SortioNotificationObligationsSummary {
   pendingPostEmergencyReview: number;
   pendingExportNotifications: number;
 }
+
+export type ServiceActorRole =
+  | "service_admin"
+  | "operational_coordinator"
+  | "professional"
+  | "billing_admin"
+  | "observer_auditor";
+
+export type ServiceMembershipStatus = "active" | "inactive" | "suspended" | "revoked";
+
+export type ServiceOperationAction =
+  | "queue:read"
+  | "queue:assign"
+  | "gate:worklist:read"
+  | "gate:resolve:clinical"
+  | "professional:session:start"
+  | "professional:document:draft"
+  | "professional:document:finalize"
+  | "service:document:read"
+  | "service:draft:read"
+  | "service:task:write";
+
+export interface ServiceOperationalContext {
+  serviceId: string;
+  actorId: string;
+  actorRole: ServiceActorRole;
+  memberId?: string;
+  professionalUserId?: string;
+  patientUserId?: string;
+  lawfulContext: Record<string, string>;
+  finalidade?: string;
+  scope: string;
+  allowedOperations: ServiceOperationAction[];
+  deniedOperations: ServiceOperationAction[];
+  provenanceRefs: string[];
+  auditRefs: string[];
+  viaCoreMediation: boolean;
+}
+
+export interface ServiceMembership {
+  memberId: string;
+  serviceId: string;
+  role: ServiceActorRole;
+  status: ServiceMembershipStatus;
+  professionalUserId?: string;
+  professionalRecordId?: string;
+  habilitationId?: string;
+  provenanceRef?: string;
+  auditRef?: string;
+}
+
+export type ProfessionalHabilitationStatus = "active" | "inactive" | "expired" | "suspended" | "revoked";
+
+export interface ProfessionalHabilitationSurface {
+  professionalUserId: string;
+  professionalRecordId: string;
+  serviceId: string;
+  habilitationId: string;
+  status: ProfessionalHabilitationStatus;
+  allowedScope: string[];
+  validFrom: string;
+  validUntil?: string;
+  restrictions: string[];
+  provenanceRefs: string[];
+  auditRefs: string[];
+  appSafeInformational: boolean;
+  decidedByCore: boolean;
+}
+
+export interface ServiceConsentSummary {
+  finalidade: string;
+  granted: boolean;
+  expiresAt?: string;
+}
+
+export interface PatientServiceRelationshipSurface {
+  serviceId: string;
+  patientUserId: string;
+  relationshipStatus: "active" | "inactive" | "suspended" | "archived";
+  consentSummary: ServiceConsentSummary[];
+  visibilityStatus: "visible" | "restricted" | "hidden";
+  retentionCustodyMarkers: string[];
+  activeSessionRefs: string[];
+  accessRestrictions: string[];
+  provenanceRefs: string[];
+  auditRefs: string[];
+  appSafePatientRef: string;
+  directIdentifiersExposed: boolean;
+}
+
+export type ServiceQueueItemKind =
+  | "session_awaiting_documentation"
+  | "draft_awaiting_gate"
+  | "document_pending_review"
+  | "export_pending_preparation"
+  | "audit_request_pending_response"
+  | "administrative_task"
+  | "provider_job_task_status";
+
+export interface ServiceQueueItem {
+  id: string;
+  serviceId: string;
+  kind: ServiceQueueItemKind;
+  status: string;
+  lawfulScopeSummary: string;
+  coreMediatedActionRef: string;
+  appSafeSummary: string;
+  containsSensitivePayload: boolean;
+  grantsAccessByItself: boolean;
+  provenanceRefs: string[];
+  auditRefs: string[];
+}
+
+export interface ServiceDocumentSurface {
+  artifactOrDraftId: string;
+  kind: DraftKind;
+  status: "draft" | "awaiting_gate" | "approved" | "rejected" | "final";
+  patientRef: string;
+  professionalRef: string;
+  gateStatus: GateRequestStatus;
+  finalizationStatus: string;
+  provenanceRefs: string[];
+  createdAt: string;
+  updatedAt: string;
+  accessScopeSummary: string;
+  contentExposedRaw: boolean;
+  coreTransitionOnly: boolean;
+}
+
+export interface GateWorklistItem {
+  gateRequestId: string;
+  targetArtifactOrDraftRef: string;
+  requiredRole: ServiceActorRole;
+  assignedProfessionalUserId?: string;
+  status: "pending" | "in_review" | "resolved";
+  createdAt: string;
+  rationaleSummarySafe: string;
+  provenanceRefs: string[];
+}
+
+export type ServiceAdministrativeTaskKind =
+  | "request_missing_document"
+  | "notify_pending_gate"
+  | "prepare_export_package_request"
+  | "schedule_operational_follow_up"
+  | "assign_administrative_owner"
+  | "reconcile_incomplete_metadata"
+  | "review_audit_response_status";
+
+export interface ServiceAdministrativeTask {
+  id: string;
+  serviceId: string;
+  requestedByActorId: string;
+  requestedByRole: ServiceActorRole;
+  kind: ServiceAdministrativeTaskKind;
+  lawfulContext: Record<string, string>;
+  finalidade: string;
+  consentValidated: boolean;
+  habilitationValidated: boolean;
+  generatedAuditRef?: string;
+  generatedProvenanceRef?: string;
+}

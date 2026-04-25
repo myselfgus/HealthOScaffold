@@ -86,6 +86,23 @@ Files touched:
 - `docs/execution/06-scaffold-coverage-matrix.md`
 - `docs/execution/10-invariant-matrix.md`
 
+
+### OPS-006 Harden regulatory/interoperability/signature/emergency governance scaffold
+Outcome:
+- new Core contracts/validators added for regulatory audit pathways, emergency/break-glass access, retention-vs-visibility governance, digital-signature scaffold, interoperability package scaffold, and legal/probative lineage guards
+- regulatory observability taxonomy expanded with explicit non-sensitive event kinds (`regulatory.audit.*`, `emergency_access.*`, `retention.visibility_decision`, `signature.*`, `interoperability.*`)
+- SQL scaffold metadata tables added for regulatory audit requests, emergency access requests, digital signature requests, and interoperability packages (placeholder-only delivery posture)
+- executable Swift XCTest suite added for mandatory negative/positive boundary checks (`RegulatoryGovernanceTests`)
+Files touched:
+- `swift/Sources/HealthOSCore/RegulatoryGovernance.swift`
+- `swift/Tests/HealthOSTests/RegulatoryGovernanceTests.swift`
+- `schemas/contracts/regulatory-interoperability-signature-emergency-governance.schema.json`
+- `ts/packages/contracts/src/index.ts`
+- `sql/migrations/001_init.sql`
+- `docs/execution/02-status-and-tracking.md`
+- `docs/execution/06-scaffold-coverage-matrix.md`
+- `docs/execution/10-invariant-matrix.md`
+
 ## READY
 
 ### OPS-003 Define incident-response command set for first operator tools

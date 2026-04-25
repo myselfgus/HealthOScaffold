@@ -6,6 +6,9 @@ Current phase: Controlled implementation — first vertical slice started
 
 ## Completed recently
 
+- regulatory/interoperability/signature/emergency governance scaffold is now formalized in Swift Core (`RegulatoryAuditRequest`, `EmergencyAccessRequest`, `RetentionVisibilityDecision`, `DigitalSignatureRequest`, `InteroperabilityPackage`, `ProbativeDocumentLineage`) with fail-closed validators for legal basis/scope/duration/lawfulContext, package layer minimization, placeholder-only external delivery, and signature lineage guards
+- regulatory observability taxonomy is now explicitly typed (`regulatory.audit.*`, `emergency_access.*`, `retention.visibility_decision`, `signature.*`, `interoperability.*`) with non-sensitive attribute posture (no clinical payload, no raw CPF, no private key material)
+- Swift XCTest coverage now includes dedicated regulatory governance negatives/positives (`RegulatoryGovernanceTests`) covering audit request denials, emergency/break-glass expiry guards, retention-vs-visibility/deletion separation, signature scaffold honesty (no fake qualified status without prerequisites), interoperability package lineage checks, and AACI/GOS boundary denials
 - backup/restore/retention/export/DR governance scaffold is now formalized in Swift Core contracts (`BackupManifest`, `RestorePlan`, `RetentionPolicy`, `ExportRequest`, `DisasterRecoveryPlan`) with explicit fail-closed validators for lawfulContext, direct-identifier/reidentification policy gates, restore hash integrity, final-document gate lineage, and revoked-lifecycle non-reactivation
 - backup/export/restore/retention/DR observability event taxonomy is now explicitly typed (`backup.*`, `restore.*`, `export.*`, `retention.*`, `dr.*`) and constrained to non-sensitive operational attributes
 - Swift XCTest coverage now includes dedicated backup governance negatives/positives (`BackupGovernanceTests`) covering manifest schema/hash rules, restore dry-run/hash/conflict/revoked/finality guards, retention legal-hold and rationale checks, export lawful-context + reidentification/direct-identifier denials, DR readiness checks, and AACI/GOS control-plane boundary denials
@@ -214,6 +217,7 @@ Current phase: Controlled implementation — first vertical slice started
 
 ## Known gaps
 
+- regulatory/interop/signature pathways remain scaffold-only: no RNDS/TISS endpoint delivery, no ICP-Brasil or qualified signature provider integration, and no production compliance claim
 - async runtime remains local scaffold (in-memory executor + SQL contract shape); no distributed queue, worker mesh, or production scheduler is implemented in this wave
 - language-model and speech providers remain stubbed for execution quality (no real external provider/API integration in this wave)
 - provider provenance is now more explicit for routed execution metadata, but end-to-end cost/latency/quality reporting remains intentionally unimplemented (no fabricated benchmark/cost claims)
@@ -230,6 +234,7 @@ Current phase: Controlled implementation — first vertical slice started
 
 ## Open blockers / decisions
 
+- decide authorization and escalation policy depth for regulatory-audit approvals, emergency post-review workflows, and patient-notification dispatch integration (currently represented as obligations/contracts only)
 - decide when to replace the current stubbed local transcription path with a real local Apple-first transcription provider
 - decide whether the next first-slice step after this wave is microphone capture, moving draft/retrieval finalization earlier than gate resolution, or introducing lawful effectuation paths for referral/prescription
 - decide when to convert the AI skills into enforced reusable workflows/templates

@@ -1,0 +1,183 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://healthos.dev/schemas/contracts/regulatory-interoperability-signature-emergency-governance.schema.json",
+  "title": "RegulatoryInteroperabilitySignatureEmergencyGovernance",
+  "type": "object",
+  "definitions": {
+    "StorageLayer": {
+      "type": "string",
+      "enum": [
+        "direct-identifiers",
+        "operational-content",
+        "governance-metadata",
+        "derived-artifacts",
+        "reidentification-mapping"
+      ]
+    },
+    "RegulatoryAuditStatus": {
+      "type": "string",
+      "enum": [
+        "requested",
+        "validated",
+        "denied",
+        "approved",
+        "package_prepared",
+        "delivered_externally_placeholder",
+        "closed"
+      ]
+    },
+    "EmergencyAccessStatus": {
+      "type": "string",
+      "enum": [
+        "requested",
+        "granted",
+        "denied",
+        "expired",
+        "revoked",
+        "post_review_required",
+        "post_review_completed"
+      ]
+    },
+    "DocumentLegalSignatureStatus": {
+      "type": "string",
+      "enum": [
+        "unsigned",
+        "signature_requested",
+        "signed_unverified",
+        "verified_qualified_placeholder",
+        "invalid",
+        "unsupported"
+      ]
+    },
+    "RegulatoryAuditRequest": {
+      "type": "object",
+      "required": [
+        "id",
+        "authorityKind",
+        "legalBasis",
+        "rationale",
+        "requestedScope",
+        "requestedDataLayers",
+        "serviceId",
+        "requestedByActor",
+        "timeWindowStart",
+        "timeWindowEnd",
+        "lawfulContext",
+        "viaCoreMediation",
+        "status"
+      ],
+      "properties": {
+        "id": { "type": "string", "format": "uuid" },
+        "authorityKind": {
+          "type": "string",
+          "enum": ["internal-compliance", "judicial-order", "public-health-authority", "regulator", "other-lawful-authority"]
+        },
+        "legalBasis": { "type": "string", "minLength": 1 },
+        "rationale": { "type": "string", "minLength": 1 },
+        "requestedScope": {
+          "type": "object",
+          "required": ["operations", "includeProvenance", "includeAuditTrail"],
+          "properties": {
+            "operations": { "type": "array", "items": { "type": "string", "minLength": 1 }, "minItems": 1 },
+            "includeProvenance": { "type": "boolean" },
+            "includeAuditTrail": { "type": "boolean" }
+          },
+          "additionalProperties": false
+        },
+        "requestedDataLayers": { "type": "array", "items": { "$ref": "#/definitions/StorageLayer" }, "minItems": 1 },
+        "serviceId": { "type": "string", "format": "uuid" },
+        "patientUserId": { "type": "string", "format": "uuid" },
+        "requestedByActor": { "type": "string", "minLength": 1 },
+        "approvedByActor": { "type": "string", "minLength": 1 },
+        "timeWindowStart": { "type": "string", "format": "date-time" },
+        "timeWindowEnd": { "type": "string", "format": "date-time" },
+        "lawfulContext": { "type": "object", "additionalProperties": { "type": "string" } },
+        "exportPackageRefs": { "type": "array", "items": { "type": "string" } },
+        "auditRefs": { "type": "array", "items": { "type": "string", "format": "uuid" } },
+        "provenanceRefs": { "type": "array", "items": { "type": "string", "format": "uuid" } },
+        "viaCoreMediation": { "type": "boolean" },
+        "status": { "$ref": "#/definitions/RegulatoryAuditStatus" }
+      },
+      "additionalProperties": false
+    },
+    "EmergencyAccessRequest": {
+      "type": "object",
+      "required": [
+        "id",
+        "actorId",
+        "actorRole",
+        "patientUserId",
+        "serviceId",
+        "emergencyRationale",
+        "requestedScope",
+        "requestedDurationMinutes",
+        "requestedBySource",
+        "lawfulContext",
+        "status"
+      ],
+      "properties": {
+        "id": { "type": "string", "format": "uuid" },
+        "actorId": { "type": "string", "minLength": 1 },
+        "actorRole": { "type": "string", "minLength": 1 },
+        "patientUserId": { "type": "string", "format": "uuid" },
+        "serviceId": { "type": "string", "format": "uuid" },
+        "emergencyRationale": { "type": "string", "minLength": 1 },
+        "requestedScope": { "type": "array", "items": { "type": "string", "minLength": 1 }, "minItems": 1 },
+        "requestedDurationMinutes": { "type": "integer", "minimum": 1 },
+        "requestedBySource": { "type": "string", "minLength": 1 },
+        "lawfulContext": { "type": "object", "additionalProperties": { "type": "string" } },
+        "status": { "$ref": "#/definitions/EmergencyAccessStatus" }
+      },
+      "additionalProperties": false
+    },
+    "DigitalSignatureRequest": {
+      "type": "object",
+      "required": [
+        "id",
+        "documentRef",
+        "documentHash",
+        "sourceDraftId",
+        "gateRequestId",
+        "gateResolutionId",
+        "gateApproved",
+        "signerUserId",
+        "signatureProviderKind",
+        "requestedAt",
+        "verificationStatus",
+        "legalStatus"
+      ],
+      "properties": {
+        "id": { "type": "string", "format": "uuid" },
+        "documentRef": {
+          "type": "object",
+          "required": ["objectPath", "contentHash", "layer", "kind"],
+          "properties": {
+            "objectPath": { "type": "string", "minLength": 1 },
+            "contentHash": { "type": "string", "minLength": 1 },
+            "layer": { "$ref": "#/definitions/StorageLayer" },
+            "kind": { "type": "string", "minLength": 1 }
+          },
+          "additionalProperties": false
+        },
+        "documentHash": { "type": "string", "minLength": 1 },
+        "sourceDraftId": { "type": "string", "format": "uuid" },
+        "gateRequestId": { "type": "string", "format": "uuid" },
+        "gateResolutionId": { "type": "string", "format": "uuid" },
+        "gateApproved": { "type": "boolean" },
+        "signerUserId": { "type": "string", "format": "uuid" },
+        "signerProfessionalRecordId": { "type": "string", "format": "uuid" },
+        "signatureProviderKind": {
+          "type": "string",
+          "enum": ["none", "local-scaffold", "qualified-provider-placeholder"]
+        },
+        "certificateRefPlaceholder": { "type": "string" },
+        "requestedAt": { "type": "string", "format": "date-time" },
+        "signedAt": { "type": "string", "format": "date-time" },
+        "verificationStatus": { "type": "string", "minLength": 1 },
+        "legalStatus": { "$ref": "#/definitions/DocumentLegalSignatureStatus" },
+        "provenanceRefs": { "type": "array", "items": { "type": "string", "format": "uuid" } }
+      },
+      "additionalProperties": false
+    }
+  }
+}

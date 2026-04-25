@@ -411,3 +411,89 @@ CREATE INDEX idx_proveniencia_agente ON proveniencia(agente_id, tempo_sistema);
 CREATE INDEX idx_async_jobs_state_priority ON async_jobs(state, priority, created_at);
 CREATE INDEX idx_async_job_attempts_job ON async_job_attempts(job_id, attempt);
 CREATE INDEX idx_async_job_events_job ON async_job_events(job_id, created_at);
+
+-- ============================================================================
+-- SECTION 11: REGULATORY / EMERGENCY / SIGNATURE / INTEROPERABILITY SCAFFOLD
+-- ============================================================================
+-- Scaffold-only governance metadata for future regulated pathways.
+-- No external endpoint integration is represented in this migration.
+
+CREATE TABLE regulatory_audit_requests (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  authority_kind TEXT NOT NULL,
+  legal_basis TEXT NOT NULL,
+  rationale TEXT NOT NULL,
+  requested_scope JSONB NOT NULL DEFAULT '{}'::jsonb,
+  requested_data_layers JSONB NOT NULL DEFAULT '[]'::jsonb,
+  service_id UUID NOT NULL REFERENCES servicos(id),
+  patient_user_id UUID REFERENCES usuarios(id),
+  time_window_start TIMESTAMPTZ NOT NULL,
+  time_window_end TIMESTAMPTZ NOT NULL,
+  requested_by_actor TEXT NOT NULL,
+  approved_by_actor TEXT,
+  lawful_context JSONB NOT NULL DEFAULT '{}'::jsonb,
+  export_package_refs JSONB NOT NULL DEFAULT '[]'::jsonb,
+  audit_refs JSONB NOT NULL DEFAULT '[]'::jsonb,
+  provenance_refs JSONB NOT NULL DEFAULT '[]'::jsonb,
+  status TEXT NOT NULL,
+  via_core_mediation BOOLEAN NOT NULL DEFAULT TRUE,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE TABLE emergency_access_requests (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  actor_id TEXT NOT NULL,
+  actor_role TEXT NOT NULL,
+  patient_user_id UUID NOT NULL REFERENCES usuarios(id),
+  service_id UUID NOT NULL REFERENCES servicos(id),
+  emergency_rationale TEXT NOT NULL,
+  requested_scope JSONB NOT NULL DEFAULT '[]'::jsonb,
+  requested_duration_minutes INTEGER NOT NULL,
+  granted_duration_minutes INTEGER,
+  approved_by_actor TEXT,
+  post_access_review_required BOOLEAN NOT NULL DEFAULT TRUE,
+  patient_notification_required BOOLEAN NOT NULL DEFAULT TRUE,
+  audit_refs JSONB NOT NULL DEFAULT '[]'::jsonb,
+  provenance_refs JSONB NOT NULL DEFAULT '[]'::jsonb,
+  expires_at TIMESTAMPTZ,
+  status TEXT NOT NULL,
+  lawful_context JSONB NOT NULL DEFAULT '{}'::jsonb,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE TABLE digital_signature_requests (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  document_ref TEXT NOT NULL,
+  document_hash TEXT NOT NULL,
+  source_draft_id UUID NOT NULL REFERENCES drafts(id),
+  gate_request_id UUID NOT NULL REFERENCES gate_requests(id),
+  gate_resolution_id UUID NOT NULL REFERENCES gate_resolutions(id),
+  gate_approved BOOLEAN NOT NULL,
+  signer_user_id UUID NOT NULL REFERENCES usuarios(id),
+  signer_professional_record_id UUID REFERENCES registros_profissionais(id),
+  provider_kind TEXT NOT NULL,
+  certificate_ref_placeholder TEXT,
+  requested_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  signed_at TIMESTAMPTZ,
+  verification_status TEXT NOT NULL,
+  legal_status TEXT NOT NULL,
+  provenance_refs JSONB NOT NULL DEFAULT '[]'::jsonb,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE TABLE interoperability_packages (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  profile_kind TEXT NOT NULL,
+  source_refs JSONB NOT NULL DEFAULT '[]'::jsonb,
+  source_hashes JSONB NOT NULL DEFAULT '{}'::jsonb,
+  provenance_refs JSONB NOT NULL DEFAULT '[]'::jsonb,
+  validation_report TEXT NOT NULL,
+  delivery_status TEXT NOT NULL,
+  external_delivery_performed BOOLEAN NOT NULL DEFAULT FALSE,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE INDEX idx_regulatory_audit_requests_status ON regulatory_audit_requests(status, created_at);
+CREATE INDEX idx_emergency_access_requests_status ON emergency_access_requests(status, created_at);
+CREATE INDEX idx_digital_signature_requests_status ON digital_signature_requests(legal_status, requested_at);
+CREATE INDEX idx_interoperability_packages_profile ON interoperability_packages(profile_kind, created_at);

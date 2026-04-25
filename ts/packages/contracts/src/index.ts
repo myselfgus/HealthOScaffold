@@ -476,3 +476,114 @@ export type BackupGovernanceEventKind =
   | "retention.hold.applied"
   | "dr.dry_run.completed"
   | "dr.readiness.failed";
+
+export type RegulatoryAuditStatus =
+  | "requested"
+  | "validated"
+  | "denied"
+  | "approved"
+  | "package_prepared"
+  | "delivered_externally_placeholder"
+  | "closed";
+
+export type EmergencyAccessStatus =
+  | "requested"
+  | "granted"
+  | "denied"
+  | "expired"
+  | "revoked"
+  | "post_review_required"
+  | "post_review_completed";
+
+export type RegulatoryAuthorityKind =
+  | "internal-compliance"
+  | "judicial-order"
+  | "public-health-authority"
+  | "regulator"
+  | "other-lawful-authority";
+
+export type SignatureProviderKind = "none" | "local-scaffold" | "qualified-provider-placeholder";
+
+export type DocumentLegalSignatureStatus =
+  | "unsigned"
+  | "signature_requested"
+  | "signed_unverified"
+  | "verified_qualified_placeholder"
+  | "invalid"
+  | "unsupported";
+
+export interface RegulatoryAuditScope {
+  operations: string[];
+  includeProvenance: boolean;
+  includeAuditTrail: boolean;
+}
+
+export interface RegulatoryAuditRequest {
+  id: string;
+  authorityKind: RegulatoryAuthorityKind;
+  legalBasis: string;
+  rationale: string;
+  requestedScope: RegulatoryAuditScope;
+  requestedDataLayers: ("direct-identifiers" | "operational-content" | "governance-metadata" | "derived-artifacts" | "reidentification-mapping")[];
+  serviceId: string;
+  patientUserId?: string;
+  requestedByActor: string;
+  approvedByActor?: string;
+  timeWindowStart: string;
+  timeWindowEnd: string;
+  lawfulContext: Record<string, string>;
+  exportPackageRefs: string[];
+  auditRefs: string[];
+  provenanceRefs: string[];
+  viaCoreMediation: boolean;
+  status: RegulatoryAuditStatus;
+}
+
+export interface EmergencyAccessRequest {
+  id: string;
+  actorId: string;
+  actorRole: string;
+  patientUserId: string;
+  serviceId: string;
+  emergencyRationale: string;
+  requestedScope: string[];
+  requestedDurationMinutes: number;
+  requestedBySource: "operator" | "system" | "app" | "aaci" | "gos";
+  lawfulContext: Record<string, string>;
+  status: EmergencyAccessStatus;
+}
+
+export interface DigitalSignatureRequest {
+  id: string;
+  documentRef: { objectPath: string; contentHash: string; layer: "direct-identifiers" | "operational-content" | "governance-metadata" | "derived-artifacts" | "reidentification-mapping"; kind: string };
+  documentHash: string;
+  sourceDraftId: string;
+  gateRequestId: string;
+  gateResolutionId: string;
+  gateApproved: boolean;
+  signerUserId: string;
+  signerProfessionalRecordId?: string;
+  signatureProviderKind: SignatureProviderKind;
+  certificateRefPlaceholder?: string;
+  requestedAt: string;
+  signedAt?: string;
+  verificationStatus: string;
+  legalStatus: DocumentLegalSignatureStatus;
+  provenanceRefs: string[];
+}
+
+export type RegulatoryGovernanceEventKind =
+  | "regulatory.audit.requested"
+  | "regulatory.audit.denied"
+  | "regulatory.audit.package_prepared"
+  | "emergency_access.requested"
+  | "emergency_access.granted"
+  | "emergency_access.expired"
+  | "emergency_access.revoked"
+  | "emergency_access.post_review_required"
+  | "retention.visibility_decision"
+  | "signature.requested"
+  | "signature.completed_placeholder"
+  | "signature.verification_failed"
+  | "interoperability.package_prepared"
+  | "interoperability.validation_failed";

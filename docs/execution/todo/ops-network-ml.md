@@ -52,6 +52,26 @@ Files touched:
 - `docs/architecture/27-provider-threshold-policy.md`
 - `docs/architecture/16-providers-and-ml.md`
 
+### ML-004 Harden provider governance contracts and routing safety scaffolds
+Outcome:
+- provider capability profile contract added with typed validation gates at provider registration
+- provider routing evolved to typed policy outcomes/denial reasons with local-vs-remote + data-layer aware checks
+- remote fallback guard now fails closed for sensitive layers without explicit policy
+- model registry and fine-tuning governance scaffolds are now executable/testable contracts (without claiming production catalogs/trainers)
+- speech path now preserves honest degraded/unavailable behavior for stub STT and keeps seeded-text provenance distinct
+Files touched:
+- `swift/Sources/HealthOSProviders/ProviderProtocols.swift`
+- `swift/Sources/HealthOSProviders/StubProviders.swift`
+- `swift/Sources/HealthOSProviders/ModelGovernance.swift`
+- `swift/Sources/HealthOSAACI/AACI.swift`
+- `swift/Sources/HealthOSCore/FirstSliceContracts.swift`
+- `swift/Sources/HealthOSFirstSliceSupport/FirstSliceRunner.swift`
+- `swift/Tests/HealthOSTests/ProviderGovernanceTests.swift`
+- `docs/architecture/16-providers-and-ml.md`
+- `docs/execution/02-status-and-tracking.md`
+- `docs/execution/06-scaffold-coverage-matrix.md`
+- `docs/execution/10-invariant-matrix.md`
+
 ## READY
 
 ### OPS-003 Define incident-response command set for first operator tools

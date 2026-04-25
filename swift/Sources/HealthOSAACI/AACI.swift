@@ -30,7 +30,15 @@ public actor AACIOrchestrator {
                 status: .ready,
                 source: "seeded-text",
                 transcriptText: input.seededText,
-                audioCapture: input.audioCapture
+                audioCapture: input.audioCapture,
+                providerExecution: ProviderExecutionMetadata(
+                    providerId: "seeded-text",
+                    providerKind: "local",
+                    taskClass: "speech-to-text",
+                    status: "selected",
+                    isStub: false,
+                    reason: "input-seeded-text"
+                )
             )
         case .localAudioFile:
             guard let audioCapture = input.audioCapture else {
@@ -40,33 +48,122 @@ public actor AACIOrchestrator {
                     issueMessage: "No local audio artifact was available for transcription."
                 )
             }
-            guard let provider = await router.speechProvider(taskKind: "transcription") else {
+            let request = ProviderRoutingRequest(
+                taskClass: .speechToText,
+                dataLayer: .operationalContent,
+                lawfulContext: ["scope": "first-slice-transcription"],
+                finalidade: "care-transcription",
+                allowsRemoteFallback: false,
+                fallbackAllowed: true
+            )
+            let routingDecision = await router.routeSpeech(request: request)
+            switch routingDecision {
+            case .deniedByPolicy(let reason):
                 return TranscriptionOutput(
                     status: .unavailable,
                     source: "none",
                     audioCapture: audioCapture,
-                    issueMessage: "No local speech provider is registered for the current first-slice environment."
+                    issueMessage: "Speech routing denied by policy: \(reason.rawValue).",
+                    providerExecution: ProviderExecutionMetadata(
+                        providerId: "none",
+                        providerKind: "none",
+                        taskClass: request.taskClass.rawValue,
+                        status: ProviderExecutionStatus.denied.rawValue,
+                        isStub: false,
+                        reason: reason.rawValue
+                    )
                 )
-            }
+            case .unavailable(let reason):
+                return TranscriptionOutput(
+                    status: .unavailable,
+                    source: "none",
+                    audioCapture: audioCapture,
+                    issueMessage: "No speech provider available: \(reason.rawValue).",
+                    providerExecution: ProviderExecutionMetadata(
+                        providerId: "none",
+                        providerKind: "none",
+                        taskClass: request.taskClass.rawValue,
+                        status: ProviderExecutionStatus.unavailable.rawValue,
+                        isStub: false,
+                        reason: reason.rawValue
+                    )
+                )
+            case .selected(let selection), .degradedFallback(let selection, _), .stubOnly(let selection, _):
+                guard let provider = await router.speechProvider(for: selection) else {
+                    return TranscriptionOutput(
+                        status: .unavailable,
+                        source: "none",
+                        audioCapture: audioCapture,
+                        issueMessage: "Speech provider selection resolved to unavailable registry entry.",
+                        providerExecution: ProviderExecutionMetadata(
+                            providerId: selection.providerId,
+                            providerKind: selection.providerKind.rawValue,
+                            taskClass: selection.taskClass.rawValue,
+                            status: ProviderExecutionStatus.unavailable.rawValue,
+                            modelId: selection.modelId,
+                            modelVersion: selection.modelVersion,
+                            isStub: selection.isStub,
+                            reason: ProviderSafetyDenialReason.noProviderAvailable.rawValue
+                        )
+                    )
+                }
 
-            do {
-                let result = try await provider.transcribe(audioURL: audioCapture.reference.fileURL)
-                return TranscriptionOutput(
-                    status: result.status,
-                    source: provider.providerName,
-                    transcriptText: result.transcriptText,
-                    audioCapture: audioCapture,
-                    issueMessage: result.message
-                )
-            } catch {
-                return TranscriptionOutput(
-                    status: .degraded,
-                    source: provider.providerName,
-                    audioCapture: audioCapture,
-                    issueMessage: "Local transcription failed: \(error.localizedDescription)"
-                )
+                do {
+                    let result = try await provider.transcribe(audioURL: audioCapture.reference.fileURL)
+                    return TranscriptionOutput(
+                        status: result.status,
+                        source: provider.providerName,
+                        transcriptText: result.transcriptText,
+                        audioCapture: audioCapture,
+                        issueMessage: result.message,
+                        providerExecution: ProviderExecutionMetadata(
+                            providerId: selection.providerId,
+                            providerKind: selection.providerKind.rawValue,
+                            taskClass: selection.taskClass.rawValue,
+                            status: selection.isStub ? ProviderExecutionStatus.stubOnly.rawValue : ProviderExecutionStatus.selected.rawValue,
+                            modelId: selection.modelId,
+                            modelVersion: selection.modelVersion,
+                            isStub: selection.isStub,
+                            reason: selection.isStub ? ProviderSafetyDenialReason.noRealProviderAvailable.rawValue : nil
+                        )
+                    )
+                } catch {
+                    return TranscriptionOutput(
+                        status: .degraded,
+                        source: provider.providerName,
+                        audioCapture: audioCapture,
+                        issueMessage: "Local transcription failed: \(error.localizedDescription)",
+                        providerExecution: ProviderExecutionMetadata(
+                            providerId: selection.providerId,
+                            providerKind: selection.providerKind.rawValue,
+                            taskClass: selection.taskClass.rawValue,
+                            status: ProviderExecutionStatus.degraded.rawValue,
+                            modelId: selection.modelId,
+                            modelVersion: selection.modelVersion,
+                            isStub: selection.isStub,
+                            reason: "speech-execution-error"
+                        )
+                    )
+                }
             }
         }
+    }
+
+    public func languageModelSelection(
+        taskClass: ProviderTaskClass,
+        dataLayer: StorageLayer,
+        lawfulContext: [String: String],
+        finalidade: String
+    ) async -> ProviderRoutingDecision {
+        let request = ProviderRoutingRequest(
+            taskClass: taskClass,
+            dataLayer: dataLayer,
+            lawfulContext: lawfulContext,
+            finalidade: finalidade,
+            allowsRemoteFallback: false,
+            fallbackAllowed: true
+        )
+        return await router.routeLanguage(request: request)
     }
 
     public func composeSOAPDraft(

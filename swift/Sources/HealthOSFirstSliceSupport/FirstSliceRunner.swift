@@ -169,7 +169,8 @@ public actor FirstSliceRunner {
                 status: .degraded,
                 source: transcription.source,
                 audioCapture: transcription.audioCapture,
-                issueMessage: "Transcription provider reported ready but produced no transcript text."
+                issueMessage: "Transcription provider reported ready but produced no transcript text.",
+                providerExecution: transcription.providerExecution
             )
         }
 
@@ -190,7 +191,8 @@ public actor FirstSliceRunner {
                 transcriptText: transcriptText,
                 transcriptRef: transcriptRef,
                 audioCapture: transcription.audioCapture,
-                issueMessage: transcription.issueMessage
+                issueMessage: transcription.issueMessage,
+                providerExecution: transcription.providerExecution
             )
         }
 
@@ -217,15 +219,22 @@ public actor FirstSliceRunner {
             .init(
                 actorId: "aaci.transcription",
                 operation: "transcription.process",
-                providerName: transcription.source,
-                modelName: transcription.source == "seeded-text" ? nil : "stub",
-                modelVersion: "v1",
+                providerName: transcription.providerExecution?.providerId ?? transcription.source,
+                modelName: transcription.providerExecution?.isStub == true ? "stub" : transcription.providerExecution?.modelId,
+                modelVersion: transcription.providerExecution?.modelVersion,
                 promptVersion: gosPromptVersion(prefix: "transcription-v1", runtimeView: gosRuntimeView),
                 inputHash: transcription.audioCapture?.storedRef.contentHash,
                 outputHash: transcription.transcriptRef?.contentHash,
                 timestamp: .now
             ),
             to: &provenanceRecords
+        )
+
+        let languageModelDecision = await orchestrator.languageModelSelection(
+            taskClass: .languageModel,
+            dataLayer: .derivedArtifacts,
+            lawfulContext: lawfulContext,
+            finalidade: consent.finalidade
         )
 
         try await seedDemoRecordIndexIfNeeded(serviceId: service.id, patientUserId: patient.id)
@@ -331,9 +340,9 @@ public actor FirstSliceRunner {
             .init(
                 actorId: "aaci.draft-composer",
                 operation: "draft.compose.soap",
-                providerName: "apple-foundation",
-                modelName: "stub",
-                modelVersion: "v1",
+                providerName: providerId(from: languageModelDecision),
+                modelName: providerModelName(from: languageModelDecision),
+                modelVersion: providerModelVersion(from: languageModelDecision),
                 promptVersion: gosPromptVersion(prefix: "soap-v2", runtimeView: gosRuntimeView),
                 outputHash: draft.draftRef.contentHash,
                 timestamp: .now
@@ -408,9 +417,9 @@ public actor FirstSliceRunner {
             .init(
                 actorId: "aaci.referral-draft",
                 operation: "draft.compose.referral",
-                providerName: "apple-foundation",
-                modelName: "stub",
-                modelVersion: "v1",
+                providerName: providerId(from: languageModelDecision),
+                modelName: providerModelName(from: languageModelDecision),
+                modelVersion: providerModelVersion(from: languageModelDecision),
                 promptVersion: gosPromptVersion(prefix: "referral-draft-v1", runtimeView: gosRuntimeView),
                 outputHash: referralDraftRef.contentHash,
                 timestamp: .now
@@ -485,9 +494,9 @@ public actor FirstSliceRunner {
             .init(
                 actorId: "aaci.prescription-draft",
                 operation: "draft.compose.prescription",
-                providerName: "apple-foundation",
-                modelName: "stub",
-                modelVersion: "v1",
+                providerName: providerId(from: languageModelDecision),
+                modelName: providerModelName(from: languageModelDecision),
+                modelVersion: providerModelVersion(from: languageModelDecision),
                 promptVersion: gosPromptVersion(prefix: "prescription-draft-v1", runtimeView: gosRuntimeView),
                 outputHash: prescriptionDraftRef.contentHash,
                 timestamp: .now
@@ -1192,6 +1201,39 @@ public actor FirstSliceRunner {
             return [.encounterSummary, .observation, .allergy]
         case .generalContext:
             return [.encounterSummary, .observation, .allergy, .medication]
+        }
+    }
+
+    private func providerId(from decision: ProviderRoutingDecision) -> String {
+        switch decision {
+        case .selected(let selection), .degradedFallback(let selection, _), .stubOnly(let selection, _):
+            return selection.providerId
+        case .deniedByPolicy:
+            return "denied-by-policy"
+        case .unavailable:
+            return "unavailable"
+        }
+    }
+
+    private func providerModelName(from decision: ProviderRoutingDecision) -> String? {
+        switch decision {
+        case .selected(let selection):
+            return selection.isStub ? "stub" : selection.modelId
+        case .degradedFallback(let selection, _):
+            return selection.isStub ? "stub" : selection.modelId
+        case .stubOnly:
+            return "stub"
+        case .deniedByPolicy, .unavailable:
+            return nil
+        }
+    }
+
+    private func providerModelVersion(from decision: ProviderRoutingDecision) -> String? {
+        switch decision {
+        case .selected(let selection), .degradedFallback(let selection, _), .stubOnly(let selection, _):
+            return selection.modelVersion
+        case .deniedByPolicy, .unavailable:
+            return nil
         }
     }
 

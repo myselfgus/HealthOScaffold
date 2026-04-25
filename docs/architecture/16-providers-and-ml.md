@@ -7,6 +7,27 @@
 - RetrievalProvider
 - FineTuningProvider
 
+## Provider capability contract (scaffold hardening)
+
+Provider registration is now expected to carry a typed capability profile (not ad hoc strings).
+
+Minimum profile fields:
+- provider id
+- provider kind (`local`, `remote`, `apple-native`, `http-local`, `training-offline`)
+- supported task classes (`speech-to-text`, `language-model`, `embedding`, `retrieval`, `fine-tuning`, `evaluation`)
+- allowed data layers
+- PHI / identifiable-data allowance flags
+- network requirement
+- latency class
+- cost-reporting support
+- provenance-reporting support
+- stub marker (`isStub`)
+
+Fail-closed posture:
+- provider without a valid capability profile is rejected at registration
+- routing decisions are typed (`selected`, `degradedFallback`, `deniedByPolicy`, `unavailable`, `stubOnly`)
+- denial reasons are typed (not free-form strings for critical decisions)
+
 ## Principles
 - provider choice is task-dependent
 - local/private-first where quality permits
@@ -66,6 +87,16 @@ Every provider decision should consider:
 - remote_allowed_if_deidentified
 - offline_only
 
+## Remote fallback safety posture
+
+Remote fallback remains scaffold/stub in this wave (no real remote API integration).
+Even as stub, policy must fail-closed:
+- direct identifiers: remote denied
+- reidentification mappings: remote denied
+- sensitive operational content: remote denied unless explicit policy allows
+- missing explicit remote policy: remote denied
+- remote usage must remain provenance-visible
+
 ## Benchmark matrix dimensions
 - latency
 - qualitative task fitness
@@ -97,6 +128,19 @@ Each benchmark run should produce:
 - deprecated
 - retired
 
+Current scaffold lifecycle contract for executable tests:
+- `draft`
+- `evaluated`
+- `promoted`
+- `deprecated`
+- `revoked`
+
+Notes:
+- model registry is governance metadata, not clinical authorization
+- `draft` cannot be promoted without an evaluation reference
+- `revoked` is not selectable
+- `deprecated` is excluded by default selection unless explicitly included
+
 ## Adapter promotion path
 1. candidate adapter created
 2. offline evaluation run recorded
@@ -124,6 +168,20 @@ Python remains the offline ML boundary for:
 - evaluation
 - adapter jobs
 - promotion/rollback logic
+
+Fine-tuning governance scaffold now includes explicit typed records for:
+- dataset version
+- training job
+- adapter artifact
+- evaluation result
+- promotion decision
+- rollback decision
+
+Guard rails:
+- training job without dataset version fails
+- adapter promotion without evaluation fails
+- rollback requires an explicit previous adapter reference
+- online inference path does not auto-create training jobs
 
 ## Open tasks
 - define operator review checklist for promotion decisions

@@ -192,8 +192,8 @@ final class GOSRuntimeAdoptionTests: XCTestCase {
         try await registry.activate(bundleId: bundle.manifest.bundleId, specId: bundle.manifest.specId)
 
         let router = ProviderRouter()
-        await router.register(AppleFoundationProvider())
-        await router.register(NativeSpeechProvider())
+        try await router.register(AppleFoundationProvider())
+        try await router.register(NativeSpeechProvider())
         let runner = FirstSliceRunner(root: root, orchestrator: AACIOrchestrator(router: router))
 
         let input = FirstSliceSessionInput(
@@ -248,8 +248,8 @@ final class GOSRuntimeAdoptionTests: XCTestCase {
         try DirectoryLayout.bootstrap(at: root)
 
         let router = ProviderRouter()
-        await router.register(AppleFoundationProvider())
-        await router.register(NativeSpeechProvider())
+        try await router.register(AppleFoundationProvider())
+        try await router.register(NativeSpeechProvider())
         let runner = FirstSliceRunner(root: root, orchestrator: AACIOrchestrator(router: router))
         let result = try await runner.run(
             input: makeSessionInput(gateApprove: false, text: "Paciente sem bundle ativo.")
@@ -280,8 +280,8 @@ final class GOSRuntimeAdoptionTests: XCTestCase {
         try await registry.activate(bundleId: bundle.manifest.bundleId, specId: bundle.manifest.specId)
 
         let router = ProviderRouter()
-        await router.register(AppleFoundationProvider())
-        await router.register(NativeSpeechProvider())
+        try await router.register(AppleFoundationProvider())
+        try await router.register(NativeSpeechProvider())
         let runner = FirstSliceRunner(root: root, orchestrator: AACIOrchestrator(router: router))
         let result = try await runner.run(
             input: makeSessionInput(gateApprove: false, text: "Paciente com insonia e cefaleia.")
@@ -312,8 +312,8 @@ final class GOSRuntimeAdoptionTests: XCTestCase {
         try await registry.activate(bundleId: bundle.manifest.bundleId, specId: bundle.manifest.specId)
 
         let router = ProviderRouter()
-        await router.register(AppleFoundationProvider())
-        await router.register(NativeSpeechProvider())
+        try await router.register(AppleFoundationProvider())
+        try await router.register(NativeSpeechProvider())
         let runner = FirstSliceRunner(root: root, orchestrator: AACIOrchestrator(router: router))
         let result = try await runner.run(
             input: makeSessionInput(gateApprove: true, text: "Paciente com insonia e dor.")
@@ -417,8 +417,8 @@ final class GOSRuntimeAdoptionTests: XCTestCase {
         try await registry.activate(bundleId: bundle.manifest.bundleId, specId: bundle.manifest.specId)
 
         let router = ProviderRouter()
-        await router.register(AppleFoundationProvider())
-        await router.register(NativeSpeechProvider())
+        try await router.register(AppleFoundationProvider())
+        try await router.register(NativeSpeechProvider())
         let runner = FirstSliceRunner(root: root, orchestrator: AACIOrchestrator(router: router))
         let result = try await runner.run(
             input: makeSessionInput(gateApprove: true, text: "Paciente com dor e fadiga.")
@@ -451,8 +451,8 @@ final class GOSRuntimeAdoptionTests: XCTestCase {
         try await registry.activate(bundleId: bundle.manifest.bundleId, specId: bundle.manifest.specId)
 
         let router = ProviderRouter()
-        await router.register(AppleFoundationProvider())
-        await router.register(NativeSpeechProvider())
+        try await router.register(AppleFoundationProvider())
+        try await router.register(NativeSpeechProvider())
         let runner = FirstSliceRunner(root: root, orchestrator: AACIOrchestrator(router: router))
 
         do {
@@ -958,8 +958,8 @@ final class GOSRuntimeAdoptionTests: XCTestCase {
         try await registry.activate(bundleId: bundle.manifest.bundleId, specId: bundle.manifest.specId)
 
         let router = ProviderRouter()
-        await router.register(AppleFoundationProvider())
-        await router.register(NativeSpeechProvider())
+        try await router.register(AppleFoundationProvider())
+        try await router.register(NativeSpeechProvider())
         let runner = FirstSliceRunner(root: root, orchestrator: AACIOrchestrator(router: router))
         let adapter = ScribeFirstSliceAdapter(runner: runner)
         let professional = Usuario(cpfHash: "prof", civilToken: "prof")
@@ -1007,8 +1007,8 @@ final class GOSRuntimeAdoptionTests: XCTestCase {
         let root = makeTempRoot()
         try DirectoryLayout.bootstrap(at: root)
         let router = ProviderRouter()
-        await router.register(AppleFoundationProvider())
-        await router.register(NativeSpeechProvider())
+        try await router.register(AppleFoundationProvider())
+        try await router.register(NativeSpeechProvider())
         let runner = FirstSliceRunner(root: root, orchestrator: AACIOrchestrator(router: router))
         let adapter = ScribeFirstSliceAdapter(runner: runner)
         let professional = Usuario(cpfHash: "prof-cpf-hash", civilToken: "prof-token")
@@ -1045,8 +1045,8 @@ final class GOSRuntimeAdoptionTests: XCTestCase {
         }
 
         let router = ProviderRouter()
-        await router.register(AppleFoundationProvider())
-        await router.register(NativeSpeechProvider())
+        try await router.register(AppleFoundationProvider())
+        try await router.register(NativeSpeechProvider())
         let runner = FirstSliceRunner(root: root, orchestrator: AACIOrchestrator(router: router))
         let adapter = ScribeFirstSliceAdapter(runner: runner)
         let professional = Usuario(cpfHash: "prof", civilToken: "prof")

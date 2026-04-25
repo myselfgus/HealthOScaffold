@@ -2,11 +2,13 @@ import Foundation
 
 public actor FileBackedGOSBundleRegistry: GOSBundleRegistry, GOSBundleLoader {
     public let root: URL
+    public let lifecyclePolicy: GOSLifecyclePolicy
     private let encoder: JSONEncoder
     private let decoder: JSONDecoder
 
-    public init(root: URL) {
+    public init(root: URL, lifecyclePolicy: GOSLifecyclePolicy = .default) {
         self.root = root
+        self.lifecyclePolicy = lifecyclePolicy
         self.encoder = JSONEncoder()
         self.encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
         self.encoder.dateEncodingStrategy = .iso8601
@@ -76,15 +78,60 @@ public actor FileBackedGOSBundleRegistry: GOSBundleRegistry, GOSBundleLoader {
         guard manifest.lifecycleState == .draft || manifest.lifecycleState == .reviewed else {
             throw GOSRegistryError.reviewRejectedForLifecycle(bundleId: bundleId, lifecycleState: manifest.lifecycleState)
         }
+        try appendAuditRecord(
+            GOSLifecycleAuditRecord(
+                specId: specId,
+                bundleId: bundleId,
+                action: .reviewSubmitted,
+                actorId: reviewerId,
+                actorRole: reviewerRole,
+                rationale: rationale,
+                fromState: manifest.lifecycleState,
+                toState: manifest.lifecycleState
+            )
+        )
+        let reviewRationale = rationale.trimmingCharacters(in: .whitespacesAndNewlines)
+        var reviewPolicyFailures: [GOSPolicyFailure] = []
+        if lifecyclePolicy.review.requireRationale, reviewRationale.isEmpty {
+            reviewPolicyFailures.append(.rationaleMissing)
+        }
+        if lifecyclePolicy.review.compilerReportMustPass {
+            let report = try loadCompilerReport(bundleId: bundleId, manifest: manifest)
+            if !report.parseOK || !report.structuralOK || !report.crossReferenceOK {
+                reviewPolicyFailures.append(.compilerReportInvalid)
+            }
+        }
+        if !reviewPolicyFailures.isEmpty {
+            try appendAuditRecord(
+                GOSLifecycleAuditRecord(
+                    specId: specId,
+                    bundleId: bundleId,
+                    action: .reviewDeniedPolicy,
+                    actorId: reviewerId,
+                    actorRole: reviewerRole,
+                    rationale: "policy_failures=\(reviewPolicyFailures.map(\.rawValue).joined(separator: ","))",
+                    fromState: manifest.lifecycleState,
+                    toState: manifest.lifecycleState
+                )
+            )
+            if reviewPolicyFailures.contains(.rationaleMissing) {
+                throw GOSRegistryError.reviewRationaleRequired(bundleId: bundleId)
+            }
+            if reviewPolicyFailures.contains(.compilerReportInvalid) {
+                throw GOSRegistryError.reviewCompilerReportInvalid(bundleId: bundleId)
+            }
+            throw GOSRegistryError.reviewPolicyNotSatisfied(bundleId: bundleId, failures: reviewPolicyFailures)
+        }
 
         let reviewRecord = GOSBundleReviewRecord(
             specId: specId,
             bundleId: bundleId,
             reviewerId: reviewerId,
             reviewerRole: reviewerRole,
-            rationale: rationale
+            rationale: reviewRationale
         )
         try encoder.encode(reviewRecord).write(to: reviewRecordURL(bundleId: bundleId))
+        try appendReviewRecord(reviewRecord, bundleId: bundleId)
 
         let reviewedManifest = GOSBundleManifest(
             bundleId: manifest.bundleId,
@@ -113,7 +160,7 @@ public actor FileBackedGOSBundleRegistry: GOSBundleRegistry, GOSBundleLoader {
             action: .reviewed,
             actorId: reviewerId,
             actorRole: reviewerRole,
-            rationale: rationale,
+            rationale: reviewRationale,
             fromState: manifest.lifecycleState,
             toState: .reviewed,
             recordedAt: reviewRecord.reviewedAt
@@ -139,14 +186,16 @@ public actor FileBackedGOSBundleRegistry: GOSBundleRegistry, GOSBundleLoader {
         specId: String,
         actorId: String = NSUserName(),
         actorRole: String = "operator",
-        rationale: String = "bundle promoted via HealthOSCLI"
+        rationale: String = "bundle promoted via HealthOSCLI",
+        expectedPins: GOSActivationPins? = nil
     ) async throws -> GOSLifecycleAuditRecord {
         try await activateBundle(
             bundleId: bundleId,
             specId: specId,
             actorId: actorId,
             actorRole: actorRole,
-            rationale: rationale
+            rationale: rationale,
+            expectedPins: expectedPins
         ).lifecycleAuditRecord
     }
 
@@ -292,7 +341,8 @@ public actor FileBackedGOSBundleRegistry: GOSBundleRegistry, GOSBundleLoader {
         specId: String,
         actorId: String,
         actorRole: String,
-        rationale: String
+        rationale: String,
+        expectedPins: GOSActivationPins? = nil
     ) async throws -> GOSActivationResult {
         let manifest = try readManifest(bundleId: bundleId)
         guard manifest.specId == specId else {
@@ -305,8 +355,41 @@ public actor FileBackedGOSBundleRegistry: GOSBundleRegistry, GOSBundleLoader {
                 expected: [.reviewed, .active]
             )
         }
-        if manifest.lifecycleState == .reviewed {
-            _ = try readReviewRecord(bundleId: bundleId)
+        try appendAuditRecord(
+            GOSLifecycleAuditRecord(
+                specId: specId,
+                bundleId: bundleId,
+                action: .activationRequested,
+                actorId: actorId,
+                actorRole: actorRole,
+                rationale: rationale,
+                fromState: manifest.lifecycleState,
+                toState: manifest.lifecycleState
+            )
+        )
+        let normalizedRationale = rationale.trimmingCharacters(in: .whitespacesAndNewlines)
+        let policyEvaluation = try evaluateActivationPolicy(
+            bundleId: bundleId,
+            specId: specId,
+            actorId: actorId,
+            manifest: manifest,
+            expectedPins: expectedPins,
+            rationale: normalizedRationale
+        )
+        if !policyEvaluation.failures.isEmpty {
+            try appendAuditRecord(
+                GOSLifecycleAuditRecord(
+                    specId: specId,
+                    bundleId: bundleId,
+                    action: .activationDeniedPolicy,
+                    actorId: actorId,
+                    actorRole: actorRole,
+                    rationale: "policy_failures=\(policyEvaluation.failures.map(\.rawValue).joined(separator: ","))",
+                    fromState: manifest.lifecycleState,
+                    toState: manifest.lifecycleState
+                )
+            )
+            throw policyEvaluation.error
         }
 
         let existing = try await lookup(specId: specId) ?? GOSRegistryEntry(specId: specId)
@@ -359,7 +442,7 @@ public actor FileBackedGOSBundleRegistry: GOSBundleRegistry, GOSBundleLoader {
             action: .activated,
             actorId: actorId,
             actorRole: actorRole,
-            rationale: rationale,
+            rationale: normalizedRationale,
             fromState: manifest.lifecycleState,
             toState: .active
         )
@@ -392,6 +475,10 @@ public actor FileBackedGOSBundleRegistry: GOSBundleRegistry, GOSBundleLoader {
 
     private func reviewRecordURL(bundleId: String) -> URL {
         bundleDirectoryURL(bundleId: bundleId).appending(path: "review-approval.json")
+    }
+
+    private func reviewRecordsURL(bundleId: String) -> URL {
+        bundleDirectoryURL(bundleId: bundleId).appending(path: "review-approvals.jsonl")
     }
 
     private func manifestURL(bundleId: String) -> URL {
@@ -434,6 +521,212 @@ public actor FileBackedGOSBundleRegistry: GOSBundleRegistry, GOSBundleLoader {
         } catch {
             throw GOSRegistryError.reviewRecordDecodeFailure(bundleId: bundleId)
         }
+    }
+
+    private func readReviewRecords(bundleId: String) throws -> [GOSBundleReviewRecord] {
+        let single = try? readReviewRecord(bundleId: bundleId)
+        let jsonlURL = reviewRecordsURL(bundleId: bundleId)
+        guard FileManager.default.fileExists(atPath: jsonlURL.path) else {
+            return single.map { [$0] } ?? []
+        }
+        let lines = try String(contentsOf: jsonlURL, encoding: .utf8)
+            .split(whereSeparator: \.isNewline)
+        let decoded = try lines.map { line in
+            do {
+                return try decoder.decode(GOSBundleReviewRecord.self, from: Data(line.utf8))
+            } catch {
+                throw GOSRegistryError.reviewRecordsDecodeFailure(bundleId: bundleId)
+            }
+        }
+        if let single {
+            let hasSingle = decoded.contains(where: { $0.id == single.id })
+            return hasSingle ? decoded : decoded + [single]
+        }
+        return decoded
+    }
+
+    private func appendReviewRecord(_ record: GOSBundleReviewRecord, bundleId: String) throws {
+        let url = reviewRecordsURL(bundleId: bundleId)
+        let lineEncoder = JSONEncoder()
+        lineEncoder.outputFormatting = [.sortedKeys]
+        lineEncoder.dateEncodingStrategy = .iso8601
+        let data = try lineEncoder.encode(record)
+        if FileManager.default.fileExists(atPath: url.path) {
+            let handle = try FileHandle(forWritingTo: url)
+            defer { try? handle.close() }
+            try handle.seekToEnd()
+            handle.write(data)
+            handle.write(Data("\n".utf8))
+        } else {
+            try (data + Data("\n".utf8)).write(to: url)
+        }
+    }
+
+    private func loadCompilerReport(bundleId: String, manifest: GOSBundleManifest) throws -> GOSCompilerReportRecord {
+        let reportData = try loadRequiredJSONFile(
+            bundleId: bundleId,
+            relativePath: manifest.compilerReportPath ?? "compiler-report.json",
+            missingCode: 22
+        )
+        return try decodeCompilerReport(bundleId: bundleId, from: reportData)
+    }
+
+    private func loadSourceProvenance(bundleId: String, manifest: GOSBundleManifest) throws -> GOSSourceProvenanceRecord {
+        let provenanceData = try loadRequiredJSONFile(
+            bundleId: bundleId,
+            relativePath: manifest.sourceProvenancePath ?? "source-provenance.json",
+            missingCode: 23
+        )
+        do {
+            return try decoder.decode(GOSSourceProvenanceRecord.self, from: provenanceData)
+        } catch {
+            throw GOSRegistryError.sourceProvenanceDecodeFailure(bundleId: bundleId)
+        }
+    }
+
+    private func compiledSpecHash(bundleId: String, manifest: GOSBundleManifest) throws -> String {
+        let specData = try loadRequiredJSONFile(
+            bundleId: bundleId,
+            relativePath: manifest.specPath ?? "spec.json",
+            missingCode: 21
+        )
+        return self.sha256Hex(for: specData)
+    }
+
+    private func sha256Hex(for data: Data) -> String {
+        let process = Process()
+        process.executableURL = URL(fileURLWithPath: "/usr/bin/env")
+        process.arguments = ["shasum", "-a", "256"]
+        let outputPipe = Pipe()
+        let inputPipe = Pipe()
+        process.standardOutput = outputPipe
+        process.standardError = Pipe()
+        process.standardInput = inputPipe
+
+        do {
+            try process.run()
+            inputPipe.fileHandleForWriting.write(data)
+            try inputPipe.fileHandleForWriting.close()
+            process.waitUntilExit()
+            let output = String(data: outputPipe.fileHandleForReading.readDataToEndOfFile(), encoding: .utf8) ?? ""
+            return output.split(separator: " ").first.map(String.init) ?? "sha256-unavailable"
+        } catch {
+            return "sha256-unavailable"
+        }
+    }
+
+    private func evaluateActivationPolicy(
+        bundleId: String,
+        specId: String,
+        actorId: String,
+        manifest: GOSBundleManifest,
+        expectedPins: GOSActivationPins?,
+        rationale: String
+    ) throws -> (failures: [GOSPolicyFailure], error: GOSRegistryError) {
+        var failures: [GOSPolicyFailure] = []
+        if lifecyclePolicy.review.requireRationale, rationale.isEmpty {
+            failures.append(.rationaleMissing)
+        }
+        let reviewRecords = try readReviewRecords(bundleId: bundleId)
+        let uniqueReviewers = Set(reviewRecords.map(\.reviewerId))
+        if manifest.lifecycleState == .reviewed {
+            if uniqueReviewers.count < lifecyclePolicy.review.minimumApprovals {
+                failures.append(.insufficientReviews)
+            }
+            if lifecyclePolicy.enforceSeparationOfDuties && uniqueReviewers.contains(actorId) {
+                failures.append(.separationOfDutiesViolation)
+            }
+            if lifecyclePolicy.enforceSeparationOfDuties {
+                let independentReviewers = uniqueReviewers.subtracting([actorId])
+                if independentReviewers.count < lifecyclePolicy.review.minimumApprovals {
+                    failures.append(.insufficientIndependentReviews)
+                }
+            }
+        }
+        if lifecyclePolicy.activationRequiresCompilerReportPass {
+            let report = try loadCompilerReport(bundleId: bundleId, manifest: manifest)
+            if !report.parseOK || !report.structuralOK || !report.crossReferenceOK {
+                failures.append(.compilerReportInvalid)
+            }
+        }
+        var pinMismatchError: GOSRegistryError?
+        if let pins = expectedPins {
+            let pinEvaluation = try evaluatePins(bundleId: bundleId, manifest: manifest, pins: pins)
+            failures.append(contentsOf: pinEvaluation.failures)
+            pinMismatchError = pinEvaluation.mismatchError
+        } else if lifecyclePolicy.versionPinning.requirePins {
+            failures.append(.requiredPinMissing)
+        }
+
+        if failures.contains(.separationOfDutiesViolation) {
+            return (failures, .separationOfDutiesViolation(bundleId: bundleId, actorId: actorId))
+        }
+        if failures.contains(.insufficientIndependentReviews) {
+            let independentCount = Set(reviewRecords.map(\.reviewerId)).subtracting([actorId]).count
+            return (failures, .insufficientIndependentReviews(bundleId: bundleId, required: lifecyclePolicy.review.minimumApprovals, actual: independentCount))
+        }
+        if failures.contains(.insufficientReviews) {
+            return (failures, .activationPolicyNotSatisfied(bundleId: bundleId, failures: failures))
+        }
+        if failures.contains(.rationaleMissing) {
+            return (failures, .activationRationaleRequired(bundleId: bundleId))
+        }
+        if failures.contains(.compilerReportInvalid) {
+            return (failures, .compilerReportInvalid(bundleId: bundleId))
+        }
+        if failures.contains(.requiredPinMissing) {
+            return (failures, .activationPolicyNotSatisfied(bundleId: bundleId, failures: failures))
+        }
+        if let pinMismatchError {
+            return (failures, pinMismatchError)
+        }
+        if failures.contains(.pinMismatch) {
+            return (failures, .activationPolicyNotSatisfied(bundleId: bundleId, failures: failures))
+        }
+        return (failures, .activationPolicyNotSatisfied(bundleId: bundleId, failures: failures))
+    }
+
+    private func evaluatePins(
+        bundleId: String,
+        manifest: GOSBundleManifest,
+        pins: GOSActivationPins
+    ) throws -> (failures: [GOSPolicyFailure], mismatchError: GOSRegistryError?) {
+        var failures: [GOSPolicyFailure] = []
+        var mismatchError: GOSRegistryError?
+        func evaluateField(_ field: String, expected: String?, actual: String) {
+            guard let expected else {
+                if lifecyclePolicy.versionPinning.requirePins {
+                    failures.append(.requiredPinMissing)
+                }
+                return
+            }
+            if expected != actual {
+                failures.append(.pinMismatch)
+                if mismatchError == nil {
+                    mismatchError = GOSRegistryError.activationPinMismatch(bundleId: bundleId, field: field, expected: expected, actual: actual)
+                }
+            }
+        }
+
+        evaluateField("spec_id", expected: pins.specId, actual: manifest.specId)
+        evaluateField("spec_version", expected: pins.specVersion, actual: manifest.specVersion)
+        evaluateField("bundle_version", expected: pins.bundleVersion, actual: manifest.bundleVersion)
+
+        if lifecyclePolicy.versionPinning.requireCompilerVersionPin || pins.compilerVersion != nil {
+            evaluateField("compiler_version", expected: pins.compilerVersion, actual: manifest.compilerVersion)
+        }
+        if lifecyclePolicy.versionPinning.requireSourceHashPin || pins.sourceSHA256 != nil {
+            let provenance = try loadSourceProvenance(bundleId: bundleId, manifest: manifest)
+            guard !provenance.sourceSHA256.isEmpty else {
+                throw GOSRegistryError.sourceProvenanceMissingHash(bundleId: bundleId)
+            }
+            evaluateField("source_sha256", expected: pins.sourceSHA256, actual: provenance.sourceSHA256)
+        }
+        if lifecyclePolicy.versionPinning.requireCompiledSpecHashPin || pins.compiledSpecHash != nil {
+            let actualSpecHash = try compiledSpecHash(bundleId: bundleId, manifest: manifest)
+            evaluateField("compiled_spec_hash", expected: pins.compiledSpecHash, actual: actualSpecHash)
+        }
+        return (failures, mismatchError)
     }
 
     private func loadRequiredJSONFile(

@@ -515,6 +515,301 @@ final class GOSRuntimeAdoptionTests: XCTestCase {
         XCTAssertNotNil(activationAuditJSON["lifecycle_state"])
     }
 
+    func testReviewFailsWithoutRationaleWhenPolicyRequiresIt() async throws {
+        let root = makeTempRoot()
+        try DirectoryLayout.bootstrap(at: root)
+        let registry = FileBackedGOSBundleRegistry(
+            root: root,
+            lifecyclePolicy: GOSLifecyclePolicy(review: GOSReviewPolicy(minimumApprovals: 1, requireRationale: true, compilerReportMustPass: true))
+        )
+        let bundle = makeBundle(bindingPlan: AACIGOSBindings.defaultBindingPlan(specId: "aaci.first-slice"), lifecycleState: .draft)
+        try await registry.register(bundle.manifest)
+        try installBundleFiles(bundle, at: root)
+
+        do {
+            _ = try await registry.review(
+                bundleId: bundle.manifest.bundleId,
+                specId: bundle.manifest.specId,
+                reviewerId: "reviewer-a",
+                reviewerRole: "operator",
+                rationale: "   "
+            )
+            XCTFail("Expected review rationale requirement failure.")
+        } catch {
+            guard case let GOSRegistryError.reviewRationaleRequired(bundleId) = error else {
+                XCTFail("Expected reviewRationaleRequired, got \(error)")
+                return
+            }
+            XCTAssertEqual(bundleId, bundle.manifest.bundleId)
+        }
+    }
+
+    func testReviewFailsWhenCompilerReportIsInvalid() async throws {
+        let root = makeTempRoot()
+        try DirectoryLayout.bootstrap(at: root)
+        let registry = FileBackedGOSBundleRegistry(root: root)
+        let bundle = makeBundle(bindingPlan: AACIGOSBindings.defaultBindingPlan(specId: "aaci.first-slice"), lifecycleState: .draft, compilerReport: .init(parseOK: true, structuralOK: false, crossReferenceOK: true))
+        try await registry.register(bundle.manifest)
+        try installBundleFiles(bundle, at: root)
+
+        do {
+            _ = try await registry.review(
+                bundleId: bundle.manifest.bundleId,
+                specId: bundle.manifest.specId,
+                reviewerId: "reviewer-a",
+                reviewerRole: "operator",
+                rationale: "failed compiler report should block review"
+            )
+            XCTFail("Expected review compiler report validation failure.")
+        } catch {
+            guard case let GOSRegistryError.reviewCompilerReportInvalid(bundleId) = error else {
+                XCTFail("Expected reviewCompilerReportInvalid, got \(error)")
+                return
+            }
+            XCTAssertEqual(bundleId, bundle.manifest.bundleId)
+        }
+    }
+
+    func testActivationFailsWithInsufficientReviewsAndPassesWithMinimumApprovals() async throws {
+        let root = makeTempRoot()
+        try DirectoryLayout.bootstrap(at: root)
+        let registry = FileBackedGOSBundleRegistry(
+            root: root,
+            lifecyclePolicy: GOSLifecyclePolicy(review: GOSReviewPolicy(minimumApprovals: 2, requireRationale: true, compilerReportMustPass: true))
+        )
+        let bundle = makeBundle(bindingPlan: AACIGOSBindings.defaultBindingPlan(specId: "aaci.first-slice"), lifecycleState: .draft)
+        try await registry.register(bundle.manifest)
+        try installBundleFiles(bundle, at: root)
+        _ = try await registry.review(
+            bundleId: bundle.manifest.bundleId,
+            specId: bundle.manifest.specId,
+            reviewerId: "reviewer-1",
+            reviewerRole: "operator",
+            rationale: "first approval"
+        )
+
+        do {
+            _ = try await registry.promoteReviewedBundle(
+                bundleId: bundle.manifest.bundleId,
+                specId: bundle.manifest.specId,
+                actorId: "activator-1",
+                actorRole: "operator",
+                rationale: "should fail with one approval"
+            )
+            XCTFail("Expected activation policy failure for insufficient reviews.")
+        } catch {
+            guard case let GOSRegistryError.activationPolicyNotSatisfied(bundleId, failures) = error else {
+                XCTFail("Expected activationPolicyNotSatisfied, got \(error)")
+                return
+            }
+            XCTAssertEqual(bundleId, bundle.manifest.bundleId)
+            XCTAssertTrue(failures.contains(.insufficientReviews))
+        }
+
+        _ = try await registry.review(
+            bundleId: bundle.manifest.bundleId,
+            specId: bundle.manifest.specId,
+            reviewerId: "reviewer-2",
+            reviewerRole: "operator",
+            rationale: "second approval"
+        )
+        _ = try await registry.promoteReviewedBundle(
+            bundleId: bundle.manifest.bundleId,
+            specId: bundle.manifest.specId,
+            actorId: "activator-1",
+            actorRole: "operator",
+            rationale: "now policy threshold is satisfied"
+        )
+        let reviewRecords = try readReviewRecords(at: root, bundleId: bundle.manifest.bundleId)
+        XCTAssertEqual(reviewRecords.count, 2)
+    }
+
+    func testActivationSeparationOfDutiesPolicyEnforced() async throws {
+        let root = makeTempRoot()
+        try DirectoryLayout.bootstrap(at: root)
+        let registry = FileBackedGOSBundleRegistry(
+            root: root,
+            lifecyclePolicy: GOSLifecyclePolicy(
+                review: GOSReviewPolicy(minimumApprovals: 1, requireRationale: true, compilerReportMustPass: true),
+                enforceSeparationOfDuties: true
+            )
+        )
+        let bundle = makeBundle(bindingPlan: AACIGOSBindings.defaultBindingPlan(specId: "aaci.first-slice"), lifecycleState: .draft)
+        try await registry.register(bundle.manifest)
+        try installBundleFiles(bundle, at: root)
+        _ = try await registry.review(
+            bundleId: bundle.manifest.bundleId,
+            specId: bundle.manifest.specId,
+            reviewerId: "reviewer-1",
+            reviewerRole: "operator",
+            rationale: "approval one"
+        )
+
+        do {
+            _ = try await registry.promoteReviewedBundle(
+                bundleId: bundle.manifest.bundleId,
+                specId: bundle.manifest.specId,
+                actorId: "reviewer-1",
+                actorRole: "operator",
+                rationale: "same actor should fail"
+            )
+            XCTFail("Expected separation of duties enforcement failure.")
+        } catch {
+            guard case let GOSRegistryError.separationOfDutiesViolation(bundleId, actorId) = error else {
+                XCTFail("Expected separationOfDutiesViolation, got \(error)")
+                return
+            }
+            XCTAssertEqual(bundleId, bundle.manifest.bundleId)
+            XCTAssertEqual(actorId, "reviewer-1")
+        }
+
+        _ = try await registry.promoteReviewedBundle(
+            bundleId: bundle.manifest.bundleId,
+            specId: bundle.manifest.specId,
+            actorId: "activator-2",
+            actorRole: "operator",
+            rationale: "independent activator"
+        )
+    }
+
+    func testActivationPinningEnforcedForVersionAndSourceHash() async throws {
+        let root = makeTempRoot()
+        try DirectoryLayout.bootstrap(at: root)
+        let registry = FileBackedGOSBundleRegistry(root: root)
+        let bundle = makeBundle(bindingPlan: AACIGOSBindings.defaultBindingPlan(specId: "aaci.first-slice"), lifecycleState: .draft)
+        try await registry.register(bundle.manifest)
+        try installBundleFiles(bundle, at: root)
+        _ = try await registry.review(
+            bundleId: bundle.manifest.bundleId,
+            specId: bundle.manifest.specId,
+            reviewerId: "reviewer-1",
+            reviewerRole: "operator",
+            rationale: "approval for pin tests"
+        )
+
+        do {
+            _ = try await registry.promoteReviewedBundle(
+                bundleId: bundle.manifest.bundleId,
+                specId: bundle.manifest.specId,
+                actorId: "activator-1",
+                actorRole: "operator",
+                rationale: "bad source hash pin",
+                expectedPins: GOSActivationPins(
+                    specId: bundle.manifest.specId,
+                    specVersion: bundle.manifest.specVersion,
+                    bundleVersion: bundle.manifest.bundleVersion,
+                    sourceSHA256: "wrong",
+                    compilerVersion: bundle.manifest.compilerVersion
+                )
+            )
+            XCTFail("Expected activation pin mismatch on source hash.")
+        } catch {
+            guard case let GOSRegistryError.activationPinMismatch(bundleId, field, _, _) = error else {
+                XCTFail("Expected activationPinMismatch, got \(error)")
+                return
+            }
+            XCTAssertEqual(bundleId, bundle.manifest.bundleId)
+            XCTAssertEqual(field, "source_sha256")
+        }
+
+        do {
+            _ = try await registry.promoteReviewedBundle(
+                bundleId: bundle.manifest.bundleId,
+                specId: bundle.manifest.specId,
+                actorId: "activator-1",
+                actorRole: "operator",
+                rationale: "bad spec version pin",
+                expectedPins: GOSActivationPins(
+                    specId: bundle.manifest.specId,
+                    specVersion: "999.0.0",
+                    bundleVersion: bundle.manifest.bundleVersion,
+                    sourceSHA256: "abc",
+                    compilerVersion: bundle.manifest.compilerVersion
+                )
+            )
+            XCTFail("Expected activation pin mismatch on spec version.")
+        } catch {
+            guard case let GOSRegistryError.activationPinMismatch(bundleId, field, _, _) = error else {
+                XCTFail("Expected activationPinMismatch, got \(error)")
+                return
+            }
+            XCTAssertEqual(bundleId, bundle.manifest.bundleId)
+            XCTAssertEqual(field, "spec_version")
+        }
+
+        _ = try await registry.promoteReviewedBundle(
+            bundleId: bundle.manifest.bundleId,
+            specId: bundle.manifest.specId,
+            actorId: "activator-1",
+            actorRole: "operator",
+            rationale: "pins aligned",
+            expectedPins: GOSActivationPins(
+                specId: bundle.manifest.specId,
+                specVersion: bundle.manifest.specVersion,
+                bundleVersion: bundle.manifest.bundleVersion,
+                sourceSHA256: "abc",
+                compilerVersion: bundle.manifest.compilerVersion
+            )
+        )
+    }
+
+    func testActivationDeniedAndAcceptedAreBothAuditedWithoutLosingKnownBundles() async throws {
+        let root = makeTempRoot()
+        try DirectoryLayout.bootstrap(at: root)
+        let registry = FileBackedGOSBundleRegistry(
+            root: root,
+            lifecyclePolicy: GOSLifecyclePolicy(review: GOSReviewPolicy(minimumApprovals: 2, requireRationale: true, compilerReportMustPass: true))
+        )
+        let bundle = makeBundle(bindingPlan: AACIGOSBindings.defaultBindingPlan(specId: "aaci.first-slice"), lifecycleState: .draft)
+        try await registry.register(bundle.manifest)
+        try installBundleFiles(bundle, at: root)
+        _ = try await registry.review(
+            bundleId: bundle.manifest.bundleId,
+            specId: bundle.manifest.specId,
+            reviewerId: "reviewer-1",
+            reviewerRole: "operator",
+            rationale: "first review"
+        )
+
+        do {
+            _ = try await registry.promoteReviewedBundle(
+                bundleId: bundle.manifest.bundleId,
+                specId: bundle.manifest.specId,
+                actorId: "activator-1",
+                actorRole: "operator",
+                rationale: "policy should deny"
+            )
+            XCTFail("Expected policy denied activation.")
+        } catch {
+            guard case GOSRegistryError.activationPolicyNotSatisfied = error else {
+                XCTFail("Expected activationPolicyNotSatisfied, got \(error)")
+                return
+            }
+        }
+
+        _ = try await registry.review(
+            bundleId: bundle.manifest.bundleId,
+            specId: bundle.manifest.specId,
+            reviewerId: "reviewer-2",
+            reviewerRole: "operator",
+            rationale: "second review"
+        )
+        _ = try await registry.promoteReviewedBundle(
+            bundleId: bundle.manifest.bundleId,
+            specId: bundle.manifest.specId,
+            actorId: "activator-1",
+            actorRole: "operator",
+            rationale: "policy now passes"
+        )
+
+        let audit = try readAuditRecords(at: root)
+        XCTAssertTrue(audit.contains { $0.action == .activationDeniedPolicy && $0.bundleId == bundle.manifest.bundleId })
+        XCTAssertTrue(audit.contains { $0.action == .activated && $0.bundleId == bundle.manifest.bundleId })
+        let lookedUpEntry = try await registry.lookup(specId: bundle.manifest.specId)
+        let entry = try XCTUnwrap(lookedUpEntry)
+        XCTAssertTrue(entry.knownBundleIds.contains(bundle.manifest.bundleId))
+    }
+
     func testRegistryLoaderRejectsMismatchedRuntimeBindingPlan() async throws {
         let root = makeTempRoot()
         try DirectoryLayout.bootstrap(at: root)
@@ -1179,6 +1474,18 @@ final class GOSRuntimeAdoptionTests: XCTestCase {
         }
     }
 
+    private func readReviewRecords(at root: URL, bundleId: String) throws -> [GOSBundleReviewRecord] {
+        let reviewURL = root.appending(path: "system/gos/bundles/\(bundleId)/review-approvals.jsonl")
+        guard FileManager.default.fileExists(atPath: reviewURL.path) else { return [] }
+        let lines = try String(contentsOf: reviewURL, encoding: .utf8)
+            .split(whereSeparator: \.isNewline)
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .iso8601
+        return try lines.map { line in
+            try decoder.decode(GOSBundleReviewRecord.self, from: Data(line.utf8))
+        }
+    }
+
     private func readJSONObject(at url: URL) throws -> [String: Any] {
         let object = try JSONSerialization.jsonObject(with: Data(contentsOf: url))
         return try XCTUnwrap(object as? [String: Any])
@@ -1201,7 +1508,8 @@ final class GOSRuntimeAdoptionTests: XCTestCase {
     private func makeBundle(
         bundleId: String = "aaci-first-slice-test-bundle",
         bindingPlan: GOSRuntimeBindingPlan,
-        lifecycleState: GOSLifecycleState = .active
+        lifecycleState: GOSLifecycleState = .active,
+        compilerReport: GOSCompilerReportRecord = GOSCompilerReportRecord(parseOK: true, structuralOK: true, crossReferenceOK: true)
     ) -> GOSCompiledBundle {
         let manifest = GOSBundleManifest(
             bundleId: bundleId,
@@ -1221,12 +1529,11 @@ final class GOSRuntimeAdoptionTests: XCTestCase {
             authoringForm: "yaml",
             compiledForm: "json"
         )
-        let report = GOSCompilerReportRecord(parseOK: true, structuralOK: true, crossReferenceOK: true)
         let specJSON = "{\"metadata\":{\"title\":\"AACI First Slice Governed Workflow\",\"status\":\"active\",\"authoring_form\":\"yaml\",\"compiled_form\":\"json\"}}".data(using: .utf8)!
         return GOSCompiledBundle(
             manifest: manifest,
             metadata: metadata,
-            compilerReport: report,
+            compilerReport: compilerReport,
             runtimeBindingPlan: bindingPlan,
             compiledSpecJSON: specJSON
         )

@@ -31,7 +31,11 @@
       "type": "string",
       "enum": [
         "registered",
+        "review_submitted",
+        "review_denied_policy",
         "reviewed",
+        "activation_requested",
+        "activation_denied_policy",
         "activated",
         "deprecated",
         "revoked"

@@ -164,6 +164,22 @@ Files touched:
 - `docs/execution/06-scaffold-coverage-matrix.md`
 - `docs/execution/10-invariant-matrix.md`
 
+### CLOUD-002 Harden service-operations and CloudClinic app-safe core contracts
+Outcome:
+- added governed Service Operations contracts for context, membership roles, professional habilitation surface, patient-service relationship, queue/worklist, document/draft surface, gate worklist, and administrative task allowlist
+- fail-closed Swift validators enforce CloudClinic mediation boundary (no direct law decisions, no queue-as-authorization, no admin clinical gate approval, no direct identifier leakage)
+- cross-language contract alignment extended with TS contract types and JSON Schema for service operations surface bundle
+- dedicated Swift XCTest coverage added for required negative and positive governance paths
+Files touched:
+- `swift/Sources/HealthOSCore/ServiceOperationsContracts.swift`
+- `swift/Tests/HealthOSTests/ServiceOperationsGovernanceTests.swift`
+- `ts/packages/contracts/src/index.ts`
+- `schemas/contracts/service-operations-cloudclinic.schema.json`
+- `docs/architecture/41-service-operations-cloudclinic-core-contracts.md`
+- `docs/execution/02-status-and-tracking.md`
+- `docs/execution/06-scaffold-coverage-matrix.md`
+- `docs/execution/10-invariant-matrix.md`
+
 ## READY
 
 ## TESTS / VALIDATION
@@ -172,6 +188,7 @@ Files touched:
 - every app consumes core/runtime contracts instead of reimplementing them
 - app boundaries match user role and service context
 - `swift build`
+- `swift test`
 - `swift run HealthOSCLI`
 - `swift run HealthOSCLI --reject-gate`
 - `swift run HealthOSCLI --audio-file /System/Library/Sounds/Glass.aiff`

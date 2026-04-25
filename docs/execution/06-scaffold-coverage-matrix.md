@@ -152,6 +152,9 @@ Legend:
 - [x] user-agent/patient-sovereignty contracts now exist in Swift Core + TS contracts for capability scope, consent surface, patient audit surface, export request/status surface, visibility-vs-retention summaries, and Sortio interaction envelope boundaries
 - [x] User Agent guard layer now fail-closes prohibited clinical/regulatory capabilities (`diagnose`, `prescribe`, `issue-referral`, `finalize-record`, `sign-document`, retention/habilitation bypass attempts), missing lawfulContext, denied sensitive layers, and non-informational outputs
 - [x] Swift XCTest coverage now includes explicit patient sovereignty negative tests for consent revocation policy acknowledgements, cross-patient audit view denial, reidentification export denial-by-default, direct-identifier policy gates, and Sortio app-safe payload boundaries
+- [x] service-operations/CloudClinic core contracts now exist in Swift+TS+schema for service context, membership roles, habilitation surface, patient-service relationship, operational queue, document/draft surface, gate worklist, and administrative task governance
+- [x] Swift XCTest coverage now includes service-operations governance negatives/positives (lawfulContext/finality guards, role/membership denials, habilitation expiry/inactive denials, queue non-authorization, draft/final gate protections, admin gate-resolution denial, and admin-task allowlist enforcement)
+- [~] CloudClinic runtime adapter and persisted service-ops projections remain scaffold-level (contracts/validators only in this wave)
 
 ## 8. Networking / operations
 - [x] topology doctrine refined: single-node as canonical bootstrap minimum, not system identity

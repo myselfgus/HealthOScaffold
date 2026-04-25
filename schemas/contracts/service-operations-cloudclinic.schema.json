@@ -1,0 +1,186 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "healthos/contracts/service-operations-cloudclinic",
+  "title": "Service Operations / CloudClinic mediated contracts",
+  "type": "object",
+  "required": [
+    "serviceOperationalContext",
+    "serviceMembership",
+    "professionalHabilitationSurface",
+    "patientServiceRelationshipSurface",
+    "serviceQueueItem",
+    "serviceDocumentSurface",
+    "gateWorklistItem",
+    "serviceAdministrativeTask"
+  ],
+  "properties": {
+    "serviceOperationalContext": { "$ref": "#/$defs/serviceOperationalContext" },
+    "serviceMembership": { "$ref": "#/$defs/serviceMembership" },
+    "professionalHabilitationSurface": { "$ref": "#/$defs/professionalHabilitationSurface" },
+    "patientServiceRelationshipSurface": { "$ref": "#/$defs/patientServiceRelationshipSurface" },
+    "serviceQueueItem": { "$ref": "#/$defs/serviceQueueItem" },
+    "serviceDocumentSurface": { "$ref": "#/$defs/serviceDocumentSurface" },
+    "gateWorklistItem": { "$ref": "#/$defs/gateWorklistItem" },
+    "serviceAdministrativeTask": { "$ref": "#/$defs/serviceAdministrativeTask" }
+  },
+  "$defs": {
+    "serviceActorRole": {
+      "type": "string",
+      "enum": ["service_admin", "operational_coordinator", "professional", "billing_admin", "observer_auditor"]
+    },
+    "serviceOperationalContext": {
+      "type": "object",
+      "required": ["serviceId", "actorId", "actorRole", "lawfulContext", "scope", "allowedOperations", "deniedOperations", "viaCoreMediation"],
+      "properties": {
+        "serviceId": { "type": "string", "format": "uuid" },
+        "actorId": { "type": "string", "minLength": 1 },
+        "actorRole": { "$ref": "#/$defs/serviceActorRole" },
+        "memberId": { "type": ["string", "null"], "format": "uuid" },
+        "professionalUserId": { "type": ["string", "null"], "format": "uuid" },
+        "patientUserId": { "type": ["string", "null"], "format": "uuid" },
+        "lawfulContext": { "type": "object", "additionalProperties": { "type": "string" } },
+        "finalidade": { "type": ["string", "null"] },
+        "scope": { "type": "string", "minLength": 1 },
+        "allowedOperations": { "type": "array", "items": { "type": "string" } },
+        "deniedOperations": { "type": "array", "items": { "type": "string" } },
+        "provenanceRefs": { "type": "array", "items": { "type": "string", "format": "uuid" } },
+        "auditRefs": { "type": "array", "items": { "type": "string", "format": "uuid" } },
+        "viaCoreMediation": { "type": "boolean", "const": true }
+      }
+    },
+    "serviceMembership": {
+      "type": "object",
+      "required": ["memberId", "serviceId", "role", "status"],
+      "properties": {
+        "memberId": { "type": "string", "format": "uuid" },
+        "serviceId": { "type": "string", "format": "uuid" },
+        "role": { "$ref": "#/$defs/serviceActorRole" },
+        "status": { "type": "string", "enum": ["active", "inactive", "suspended", "revoked"] },
+        "professionalUserId": { "type": ["string", "null"], "format": "uuid" },
+        "professionalRecordId": { "type": ["string", "null"], "format": "uuid" },
+        "habilitationId": { "type": ["string", "null"], "format": "uuid" }
+      }
+    },
+    "professionalHabilitationSurface": {
+      "type": "object",
+      "required": ["professionalUserId", "professionalRecordId", "serviceId", "habilitationId", "status", "allowedScope", "validFrom", "restrictions", "appSafeInformational", "decidedByCore"],
+      "properties": {
+        "professionalUserId": { "type": "string", "format": "uuid" },
+        "professionalRecordId": { "type": "string", "format": "uuid" },
+        "serviceId": { "type": "string", "format": "uuid" },
+        "habilitationId": { "type": "string", "format": "uuid" },
+        "status": { "type": "string", "enum": ["active", "inactive", "expired", "suspended", "revoked"] },
+        "allowedScope": { "type": "array", "items": { "type": "string" } },
+        "validFrom": { "type": "string", "format": "date-time" },
+        "validUntil": { "type": ["string", "null"], "format": "date-time" },
+        "restrictions": { "type": "array", "items": { "type": "string" } },
+        "provenanceRefs": { "type": "array", "items": { "type": "string", "format": "uuid" } },
+        "auditRefs": { "type": "array", "items": { "type": "string", "format": "uuid" } },
+        "appSafeInformational": { "type": "boolean", "const": true },
+        "decidedByCore": { "type": "boolean", "const": true }
+      }
+    },
+    "patientServiceRelationshipSurface": {
+      "type": "object",
+      "required": ["serviceId", "patientUserId", "relationshipStatus", "consentSummary", "visibilityStatus", "retentionCustodyMarkers", "accessRestrictions", "appSafePatientRef", "directIdentifiersExposed"],
+      "properties": {
+        "serviceId": { "type": "string", "format": "uuid" },
+        "patientUserId": { "type": "string", "format": "uuid" },
+        "relationshipStatus": { "type": "string", "enum": ["active", "inactive", "suspended", "archived"] },
+        "consentSummary": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["finalidade", "granted"],
+            "properties": {
+              "finalidade": { "type": "string", "minLength": 1 },
+              "granted": { "type": "boolean" },
+              "expiresAt": { "type": ["string", "null"], "format": "date-time" }
+            }
+          }
+        },
+        "visibilityStatus": { "type": "string", "enum": ["visible", "restricted", "hidden"] },
+        "retentionCustodyMarkers": { "type": "array", "items": { "type": "string" } },
+        "activeSessionRefs": { "type": "array", "items": { "type": "string", "format": "uuid" } },
+        "accessRestrictions": { "type": "array", "items": { "type": "string" } },
+        "provenanceRefs": { "type": "array", "items": { "type": "string", "format": "uuid" } },
+        "auditRefs": { "type": "array", "items": { "type": "string", "format": "uuid" } },
+        "appSafePatientRef": { "type": "string", "minLength": 1 },
+        "directIdentifiersExposed": { "type": "boolean", "const": false }
+      }
+    },
+    "serviceQueueItem": {
+      "type": "object",
+      "required": ["id", "serviceId", "kind", "status", "lawfulScopeSummary", "coreMediatedActionRef", "appSafeSummary", "containsSensitivePayload", "grantsAccessByItself"],
+      "properties": {
+        "id": { "type": "string", "format": "uuid" },
+        "serviceId": { "type": "string", "format": "uuid" },
+        "kind": {
+          "type": "string",
+          "enum": ["session_awaiting_documentation", "draft_awaiting_gate", "document_pending_review", "export_pending_preparation", "audit_request_pending_response", "administrative_task", "provider_job_task_status"]
+        },
+        "status": { "type": "string", "minLength": 1 },
+        "lawfulScopeSummary": { "type": "string", "minLength": 1 },
+        "coreMediatedActionRef": { "type": "string", "minLength": 1 },
+        "appSafeSummary": { "type": "string", "minLength": 1 },
+        "containsSensitivePayload": { "type": "boolean" },
+        "grantsAccessByItself": { "type": "boolean", "const": false },
+        "provenanceRefs": { "type": "array", "items": { "type": "string", "format": "uuid" } },
+        "auditRefs": { "type": "array", "items": { "type": "string", "format": "uuid" } }
+      }
+    },
+    "serviceDocumentSurface": {
+      "type": "object",
+      "required": ["artifactOrDraftId", "kind", "status", "patientRef", "professionalRef", "gateStatus", "finalizationStatus", "provenanceRefs", "createdAt", "updatedAt", "accessScopeSummary", "contentExposedRaw", "coreTransitionOnly"],
+      "properties": {
+        "artifactOrDraftId": { "type": "string", "format": "uuid" },
+        "kind": { "type": "string" },
+        "status": { "type": "string", "enum": ["draft", "awaiting_gate", "approved", "rejected", "final"] },
+        "patientRef": { "type": "string", "minLength": 1 },
+        "professionalRef": { "type": "string", "minLength": 1 },
+        "gateStatus": { "type": "string", "enum": ["pending", "approved", "rejected", "cancelled"] },
+        "finalizationStatus": { "type": "string", "minLength": 1 },
+        "provenanceRefs": { "type": "array", "items": { "type": "string", "format": "uuid" } },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" },
+        "accessScopeSummary": { "type": "string", "minLength": 1 },
+        "contentExposedRaw": { "type": "boolean", "const": false },
+        "coreTransitionOnly": { "type": "boolean", "const": true }
+      }
+    },
+    "gateWorklistItem": {
+      "type": "object",
+      "required": ["gateRequestId", "targetArtifactOrDraftRef", "requiredRole", "status", "createdAt", "rationaleSummarySafe"],
+      "properties": {
+        "gateRequestId": { "type": "string", "format": "uuid" },
+        "targetArtifactOrDraftRef": { "type": "string", "minLength": 1 },
+        "requiredRole": { "$ref": "#/$defs/serviceActorRole" },
+        "assignedProfessionalUserId": { "type": ["string", "null"], "format": "uuid" },
+        "status": { "type": "string", "enum": ["pending", "in_review", "resolved"] },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "rationaleSummarySafe": { "type": "string", "minLength": 1 },
+        "provenanceRefs": { "type": "array", "items": { "type": "string", "format": "uuid" } }
+      }
+    },
+    "serviceAdministrativeTask": {
+      "type": "object",
+      "required": ["id", "serviceId", "requestedByActorId", "requestedByRole", "kind", "lawfulContext", "finalidade", "consentValidated", "habilitationValidated"],
+      "properties": {
+        "id": { "type": "string", "format": "uuid" },
+        "serviceId": { "type": "string", "format": "uuid" },
+        "requestedByActorId": { "type": "string", "minLength": 1 },
+        "requestedByRole": { "$ref": "#/$defs/serviceActorRole" },
+        "kind": {
+          "type": "string",
+          "enum": ["request_missing_document", "notify_pending_gate", "prepare_export_package_request", "schedule_operational_follow_up", "assign_administrative_owner", "reconcile_incomplete_metadata", "review_audit_response_status"]
+        },
+        "lawfulContext": { "type": "object", "additionalProperties": { "type": "string" } },
+        "finalidade": { "type": "string", "minLength": 1 },
+        "consentValidated": { "type": "boolean", "const": true },
+        "habilitationValidated": { "type": "boolean", "const": true },
+        "generatedAuditRef": { "type": ["string", "null"], "format": "uuid" },
+        "generatedProvenanceRef": { "type": ["string", "null"], "format": "uuid" }
+      }
+    }
+  }
+}

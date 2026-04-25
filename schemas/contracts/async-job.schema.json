@@ -1,0 +1,120 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://healthos.dev/schemas/contracts/async-job.schema.json",
+  "title": "AsyncJob",
+  "type": "object",
+  "required": [
+    "id",
+    "kind",
+    "requestedByActor",
+    "submissionSource",
+    "lawfulContextRequirement",
+    "dataLayersTouched",
+    "inputRefs",
+    "outputRefs",
+    "idempotencyKey",
+    "priority",
+    "createdAt",
+    "retryCount",
+    "retryPolicy",
+    "state",
+    "provenanceRefs",
+    "auditRefs",
+    "idempotent",
+    "allowsRemoteProvider"
+  ],
+  "properties": {
+    "id": { "type": "string", "format": "uuid" },
+    "kind": {
+      "type": "string",
+      "enum": [
+        "indexing",
+        "embedding_generation",
+        "retrieval_index_maintenance",
+        "provenance_enrichment",
+        "audit_export",
+        "backup",
+        "restore_validation",
+        "provider_evaluation",
+        "fine_tuning_offline",
+        "lifecycle_maintenance",
+        "agent_mailbox_dispatch",
+        "maintenance"
+      ]
+    },
+    "requestedByActor": { "type": "string", "minLength": 1 },
+    "submissionSource": { "type": "string", "enum": ["operator", "system", "aaci", "app", "gos"] },
+    "lawfulContextRequirement": {
+      "type": "object",
+      "required": [
+        "requireLawfulContext",
+        "requireFinalidade",
+        "requireConsent",
+        "requireHabilitation",
+        "requirePatientContext",
+        "requireServiceContext"
+      ],
+      "properties": {
+        "requireLawfulContext": { "type": "boolean" },
+        "requireFinalidade": { "type": "boolean" },
+        "requireConsent": { "type": "boolean" },
+        "requireHabilitation": { "type": "boolean" },
+        "requirePatientContext": { "type": "boolean" },
+        "requireServiceContext": { "type": "boolean" }
+      },
+      "additionalProperties": false
+    },
+    "dataLayersTouched": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "direct-identifiers",
+          "operational-content",
+          "governance-metadata",
+          "derived-artifacts",
+          "reidentification-mapping"
+        ]
+      }
+    },
+    "inputRefs": { "type": "array", "items": { "type": "string" } },
+    "outputRefs": { "type": "array", "items": { "type": "string" } },
+    "idempotencyKey": { "type": "string", "minLength": 1 },
+    "priority": { "type": "string", "enum": ["low", "normal", "high", "critical"] },
+    "createdAt": { "type": "string", "format": "date-time" },
+    "scheduledAt": { "type": "string", "format": "date-time" },
+    "startedAt": { "type": "string", "format": "date-time" },
+    "completedAt": { "type": "string", "format": "date-time" },
+    "failedAt": { "type": "string", "format": "date-time" },
+    "retryCount": { "type": "integer", "minimum": 0 },
+    "retryPolicy": {
+      "type": "object",
+      "required": ["maxRetries", "baseDelaySeconds", "backoff", "automaticRetryAllowed"],
+      "properties": {
+        "maxRetries": { "type": "integer", "minimum": 0 },
+        "baseDelaySeconds": { "type": "integer", "minimum": 1 },
+        "backoff": { "type": "string", "enum": ["fixed", "exponential"] },
+        "automaticRetryAllowed": { "type": "boolean" }
+      },
+      "additionalProperties": false
+    },
+    "state": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "leased",
+        "running",
+        "completed",
+        "failed",
+        "retry_scheduled",
+        "cancelled",
+        "dead_letter"
+      ]
+    },
+    "provenanceRefs": { "type": "array", "items": { "type": "string", "format": "uuid" } },
+    "auditRefs": { "type": "array", "items": { "type": "string", "format": "uuid" } },
+    "idempotent": { "type": "boolean" },
+    "allowsRemoteProvider": { "type": "boolean" }
+  },
+  "additionalProperties": false
+}

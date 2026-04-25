@@ -49,6 +49,16 @@ Policy:
 - failed jobs move to visible failed queue with diagnostics
 - retries must preserve idempotency assumptions or explicitly record non-idempotent risk
 
+Current scaffold status:
+- local governed executor is implemented in Swift Core (`InMemoryAsyncJobRuntime`)
+- typed job contract includes taxonomy, lawful-context requirements, data layers touched, idempotency key, retry/backoff policy, and lifecycle states
+- sensitive jobs fail closed when lawful context is missing/invalid
+- non-idempotent jobs do not auto-retry
+- retries are bounded and terminal failures move to dead-letter state
+- explicit observability events are emitted for enqueue/start/complete/fail/retry/dead-letter/cancel/policy-deny/idempotency-reuse
+- operator control surface is local and minimal (`list`, `inspect`, `cancel pending`, `requeue dead letter`, `health summary`)
+- no distributed queue or production scheduler is claimed in this wave
+
 ### User-agent runtime
 Characteristics:
 - user-facing explanation and retrieval

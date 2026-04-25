@@ -52,6 +52,9 @@ Legend:
 - [x] permission/boundary model established at scaffold level
 - [x] retry/backpressure baseline exists
 - [x] runtime-state surfacing doctrine exists
+- [x] async runtime now has typed job governance contracts (job kind taxonomy, lawful-context requirements, retry/backpressure policy, idempotency, and observability event taxonomy)
+- [x] async runtime now has a minimal executable local executor with guarded lifecycle transitions, fail-closed sensitive-job checks, dead-letter flow, and operator control helpers
+- [~] async runtime persistence/execution remains local scaffold-level (in-memory executor + SQL table shape); distributed queue/worker orchestration is intentionally not implemented
 
 ## 5. GOS (Governed Operational Spec)
 - [x] GOS formally introduced as subordinate layer between HealthOS Core and runtimes
@@ -151,6 +154,7 @@ Legend:
 - [x] launchd/backup/network docs scaffolded
 - [x] runbook detail exists at meaningful baseline
 - [x] MeshProvider abstraction has meaningful contract form
+- [x] operator observability contract now includes async-job event and workload surfaces (retry/dead-letter visibility)
 - [~] operator incident-command vocabulary can still be made more explicit
 
 ## 9. Providers / ML

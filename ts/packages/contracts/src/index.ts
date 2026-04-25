@@ -192,3 +192,133 @@ export interface FinalizedSOAPDocument {
   finalization: DocumentFinalizationMetadata;
   summary: string;
 }
+
+export type AsyncJobState =
+  | "pending"
+  | "leased"
+  | "running"
+  | "completed"
+  | "failed"
+  | "retry_scheduled"
+  | "cancelled"
+  | "dead_letter";
+
+export type AsyncJobPriority = "low" | "normal" | "high" | "critical";
+
+export type AsyncJobKind =
+  | "indexing"
+  | "embedding_generation"
+  | "retrieval_index_maintenance"
+  | "provenance_enrichment"
+  | "audit_export"
+  | "backup"
+  | "restore_validation"
+  | "provider_evaluation"
+  | "fine_tuning_offline"
+  | "lifecycle_maintenance"
+  | "agent_mailbox_dispatch"
+  | "maintenance";
+
+export type AsyncJobFailureKind =
+  | "policy_denied"
+  | "validation_failed"
+  | "dependency_failure"
+  | "timeout"
+  | "transport_failure"
+  | "internal_failure"
+  | "cancelled";
+
+export type JobSubmissionSource = "operator" | "system" | "aaci" | "app" | "gos";
+
+export interface AsyncJobLawfulContextRequirement {
+  requireLawfulContext: boolean;
+  requireFinalidade: boolean;
+  requireConsent: boolean;
+  requireHabilitation: boolean;
+  requirePatientContext: boolean;
+  requireServiceContext: boolean;
+}
+
+export interface AsyncJobRetryPolicy {
+  maxRetries: number;
+  baseDelaySeconds: number;
+  backoff: "fixed" | "exponential";
+  automaticRetryAllowed: boolean;
+}
+
+export interface AsyncJobDescriptor {
+  id: string;
+  kind: AsyncJobKind;
+  requestedByActor: string;
+  submissionSource: JobSubmissionSource;
+  lawfulContextRequirement: AsyncJobLawfulContextRequirement;
+  dataLayersTouched: ("direct-identifiers" | "operational-content" | "governance-metadata" | "derived-artifacts" | "reidentification-mapping")[];
+  inputRefs: string[];
+  outputRefs: string[];
+  idempotencyKey: string;
+  priority: AsyncJobPriority;
+  createdAt: string;
+  scheduledAt?: string;
+  startedAt?: string;
+  completedAt?: string;
+  failedAt?: string;
+  retryCount: number;
+  retryPolicy: AsyncJobRetryPolicy;
+  state: AsyncJobState;
+  provenanceRefs: string[];
+  auditRefs: string[];
+  idempotent: boolean;
+  allowsRemoteProvider: boolean;
+}
+
+export interface AsyncJobFailure {
+  kind: AsyncJobFailureKind;
+  message: string;
+  at: string;
+}
+
+export interface AsyncJobAttemptRecord {
+  attempt: number;
+  startedAt: string;
+  finishedAt: string;
+  failure?: AsyncJobFailure;
+  provenanceRef?: string;
+  auditRef?: string;
+}
+
+export interface AsyncJobExecutionRecord {
+  jobId: string;
+  attempts: AsyncJobAttemptRecord[];
+  lastFailure?: AsyncJobFailure;
+}
+
+export type AsyncJobEventKind =
+  | "job.enqueued"
+  | "job.started"
+  | "job.completed"
+  | "job.failed"
+  | "job.retry_scheduled"
+  | "job.dead_lettered"
+  | "job.cancelled"
+  | "job.policy_denied"
+  | "job.idempotency_reused";
+
+export interface AsyncJobObservabilityEvent {
+  id: string;
+  kind: AsyncJobEventKind;
+  jobId: string;
+  jobKind: AsyncJobKind;
+  state: AsyncJobState;
+  source: string;
+  timestamp: string;
+  failureKind?: AsyncJobFailureKind;
+  provenanceRef?: string;
+}
+
+export interface AsyncJobHealthSummary {
+  pending: number;
+  running: number;
+  retryScheduled: number;
+  failed: number;
+  deadLetter: number;
+}

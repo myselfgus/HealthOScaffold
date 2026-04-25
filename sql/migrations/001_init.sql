@@ -264,9 +264,10 @@ CREATE TABLE fine_tuning_jobs (
 );
 
 -- ============================================================================
--- SECTION 08: DE-IDENTIFICATION AND MESSAGE/TOOL LOGGING
+-- SECTION 08: DE-IDENTIFICATION, ASYNC JOBS, AND MESSAGE/TOOL LOGGING
 -- ============================================================================
 -- deidentification_maps protects the mapping between tokenized identity references and encrypted values.
+-- async_jobs/async_job_attempts/async_job_events define local async runtime governance metadata.
 -- agent_messages captures mailbox/message traffic.
 -- tool_definitions and tool_invocations record tool surface and usage.
 
@@ -305,6 +306,57 @@ CREATE TABLE tool_invocations (
   actor_id TEXT NOT NULL,
   args_json JSONB NOT NULL,
   result_ref TEXT,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+
+CREATE TABLE async_jobs (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  kind TEXT NOT NULL,
+  requested_by_actor TEXT NOT NULL,
+  submission_source TEXT NOT NULL,
+  lawful_context_requirement JSONB NOT NULL DEFAULT '{}'::jsonb,
+  data_layers_touched JSONB NOT NULL DEFAULT '[]'::jsonb,
+  input_refs JSONB NOT NULL DEFAULT '[]'::jsonb,
+  output_refs JSONB NOT NULL DEFAULT '[]'::jsonb,
+  idempotency_key TEXT NOT NULL UNIQUE,
+  priority TEXT NOT NULL DEFAULT 'normal',
+  state TEXT NOT NULL DEFAULT 'pending',
+  retry_count INTEGER NOT NULL DEFAULT 0,
+  max_retries INTEGER NOT NULL DEFAULT 0,
+  backoff_policy JSONB NOT NULL DEFAULT '{}'::jsonb,
+  idempotent BOOLEAN NOT NULL DEFAULT TRUE,
+  allows_remote_provider BOOLEAN NOT NULL DEFAULT FALSE,
+  scheduled_at TIMESTAMPTZ,
+  started_at TIMESTAMPTZ,
+  completed_at TIMESTAMPTZ,
+  failed_at TIMESTAMPTZ,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE TABLE async_job_attempts (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  job_id UUID NOT NULL REFERENCES async_jobs(id),
+  attempt INTEGER NOT NULL,
+  state TEXT NOT NULL,
+  failure_kind TEXT,
+  failure_message TEXT,
+  provenance_ref UUID,
+  audit_ref UUID,
+  started_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  finished_at TIMESTAMPTZ,
+  UNIQUE(job_id, attempt)
+);
+
+CREATE TABLE async_job_events (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  job_id UUID NOT NULL REFERENCES async_jobs(id),
+  event_kind TEXT NOT NULL,
+  job_kind TEXT NOT NULL,
+  state TEXT NOT NULL,
+  source_actor TEXT NOT NULL,
+  failure_kind TEXT,
+  provenance_ref UUID,
   created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
@@ -355,3 +407,7 @@ CREATE INDEX idx_eventos_sessao ON eventos_sessao(sessao_id, kind);
 CREATE INDEX idx_artefatos_sessao ON artefatos(sessao_id, kind, status);
 CREATE INDEX idx_consentimentos_usuario ON consentimentos(titular_usuario_id, finalidade);
 CREATE INDEX idx_proveniencia_agente ON proveniencia(agente_id, tempo_sistema);
+
+CREATE INDEX idx_async_jobs_state_priority ON async_jobs(state, priority, created_at);
+CREATE INDEX idx_async_job_attempts_job ON async_job_attempts(job_id, attempt);
+CREATE INDEX idx_async_job_events_job ON async_job_events(job_id, created_at);

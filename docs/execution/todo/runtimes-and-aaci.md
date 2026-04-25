@@ -2,6 +2,26 @@
 
 ## COMPLETED
 
+### RT-006 Harden async runtime/jobs/queues observability scaffold
+Outcome:
+- async runtime moved from simple stub to typed governance contracts with job taxonomy, lifecycle states, lawful-context requirements, retry/backpressure policy, idempotency rules, and observability event taxonomy
+- Swift Core now provides a local governed executor (`InMemoryAsyncJobRuntime`) with guarded state transitions, fail-closed policy denial for sensitive jobs, retry/dead-letter behavior, cancellation, dead-letter requeue, and minimal operator control helpers
+- SQL migration now includes async job metadata tables (`async_jobs`, `async_job_attempts`, `async_job_events`) for future persisted execution
+- TypeScript contracts/runtime-async package now mirror the typed async job contract surface for cross-language consistency
+- Swift test coverage now includes lifecycle/lawfulContext/retry/idempotency/observability/boundary negative tests (`AsyncRuntimeGovernanceTests`)
+Files touched:
+- `swift/Sources/HealthOSCore/AsyncRuntimeJobs.swift`
+- `swift/Tests/HealthOSTests/AsyncRuntimeGovernanceTests.swift`
+- `ts/packages/contracts/src/index.ts`
+- `ts/packages/runtime-async/src/index.ts`
+- `schemas/contracts/async-job.schema.json`
+- `sql/migrations/001_init.sql`
+- `docs/architecture/20-runtime-operational-policy.md`
+- `docs/architecture/26-operator-observability-contract.md`
+- `docs/execution/02-status-and-tracking.md`
+- `docs/execution/06-scaffold-coverage-matrix.md`
+- `docs/execution/10-invariant-matrix.md`
+
 ### RT-005 Refine sovereignty/privacy/topology vocabulary for runtime-facing doctrine
 Outcome:
 - patient sovereignty language aligned to governance/control instead of physical byte custody claims

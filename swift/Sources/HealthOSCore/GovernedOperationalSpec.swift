@@ -42,6 +42,8 @@ public enum GOSLoaderFailure: String, Codable, Sendable {
 }
 
 public enum GOSRegistryError: Error, Sendable {
+    case registryMissing(specId: String)
+    case registryEntryDecodeFailure(specId: String)
     case bundleNotFound(bundleId: String)
     case manifestMissing(bundleId: String)
     case specMissing(bundleId: String, path: String)
@@ -62,6 +64,9 @@ public enum GOSRegistryError: Error, Sendable {
     case compilerReportDecodeFailure(bundleId: String)
     case reviewRecordDecodeFailure(bundleId: String)
     case reviewRejectedForLifecycle(bundleId: String, lifecycleState: GOSLifecycleState)
+    case registryMissingActivePointer(specId: String, activeBundleId: String)
+    case multipleActiveBundles(specId: String, bundleIds: [String])
+    case invalidLifecycleTransition(bundleId: String, fromState: GOSLifecycleState, toState: GOSLifecycleState, allowedToStates: [GOSLifecycleState])
 }
 
 public struct GOSSourceReference: Codable, Sendable {

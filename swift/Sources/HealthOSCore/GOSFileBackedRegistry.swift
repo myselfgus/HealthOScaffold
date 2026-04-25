@@ -18,7 +18,11 @@ public actor FileBackedGOSBundleRegistry: GOSBundleRegistry, GOSBundleLoader {
         let url = registryFileURL(specId: specId)
         guard FileManager.default.fileExists(atPath: url.path) else { return nil }
         let data = try Data(contentsOf: url)
-        return try decoder.decode(GOSRegistryEntry.self, from: data)
+        do {
+            return try decoder.decode(GOSRegistryEntry.self, from: data)
+        } catch {
+            throw GOSRegistryError.registryEntryDecodeFailure(specId: specId)
+        }
     }
 
     public func register(_ manifest: GOSBundleManifest) async throws {
@@ -26,7 +30,7 @@ public actor FileBackedGOSBundleRegistry: GOSBundleRegistry, GOSBundleLoader {
         try encoder.encode(manifest).write(to: manifestURL(bundleId: manifest.bundleId))
 
         let existing = try await lookup(specId: manifest.specId) ?? GOSRegistryEntry(specId: manifest.specId)
-        let known = Array(Set(existing.knownBundleIds + [manifest.bundleId])).sorted()
+        let known = normalizedKnownBundleIds(existing.knownBundleIds + [manifest.bundleId])
         let updated = GOSRegistryEntry(specId: manifest.specId, activeBundleId: existing.activeBundleId, knownBundleIds: known)
         try encoder.encode(updated).write(to: registryFileURL(specId: manifest.specId))
         try appendAuditRecord(
@@ -99,7 +103,7 @@ public actor FileBackedGOSBundleRegistry: GOSBundleRegistry, GOSBundleLoader {
         try encoder.encode(reviewedManifest).write(to: manifestURL(bundleId: bundleId))
 
         let existing = try await lookup(specId: specId) ?? GOSRegistryEntry(specId: specId)
-        let known = Array(Set(existing.knownBundleIds + [bundleId])).sorted()
+        let known = normalizedKnownBundleIds(existing.knownBundleIds + [bundleId])
         let updated = GOSRegistryEntry(specId: specId, activeBundleId: existing.activeBundleId, knownBundleIds: known)
         try encoder.encode(updated).write(to: registryFileURL(specId: specId))
 
@@ -167,14 +171,56 @@ public actor FileBackedGOSBundleRegistry: GOSBundleRegistry, GOSBundleLoader {
     }
 
     public func loadBundle(_ request: GOSLoadRequest) async throws -> GOSCompiledBundle {
-        guard let registry = try await lookup(specId: request.specId), let activeBundleId = registry.activeBundleId else {
-            throw GOSRegistryError.bundleNotFound(bundleId: request.specId)
+        guard let registry = try await lookup(specId: request.specId) else {
+            throw GOSRegistryError.registryMissing(specId: request.specId)
         }
+        let knownBundleIds = normalizedKnownBundleIds(registry.knownBundleIds)
         guard registry.specId == request.specId else {
             throw GOSRegistryError.registrySpecMismatch(expectedSpecId: request.specId, actualSpecId: registry.specId)
         }
-        guard registry.knownBundleIds.contains(activeBundleId) else {
+        guard let activeBundleId = registry.activeBundleId else {
+            var activeCandidates: [String] = []
+            for bundleId in knownBundleIds {
+                let manifest = try readManifest(bundleId: bundleId)
+                if manifest.lifecycleState == .active {
+                    activeCandidates.append(bundleId)
+                }
+            }
+            if let singleActiveCandidate = activeCandidates.onlyElement {
+                throw GOSRegistryError.registryMissingActivePointer(
+                    specId: request.specId,
+                    activeBundleId: singleActiveCandidate
+                )
+            }
+            if !activeCandidates.isEmpty {
+                throw GOSRegistryError.multipleActiveBundles(specId: request.specId, bundleIds: activeCandidates.sorted())
+            }
+            throw GOSRegistryError.bundleNotFound(bundleId: request.specId)
+        }
+        guard knownBundleIds.contains(activeBundleId) else {
             throw GOSRegistryError.registryBundleMissing(specId: request.specId, bundleId: activeBundleId)
+        }
+
+        var activeManifests: [String] = []
+        for bundleId in knownBundleIds {
+            let manifest = try readManifest(bundleId: bundleId)
+            guard manifest.specId == request.specId else {
+                throw GOSRegistryError.bundleSpecMismatch(
+                    expectedSpecId: request.specId,
+                    actualSpecId: manifest.specId,
+                    bundleId: bundleId
+                )
+            }
+            if manifest.lifecycleState == .active {
+                activeManifests.append(bundleId)
+            }
+        }
+        let activeSet = Set(activeManifests)
+        if activeSet.count > 1 {
+            throw GOSRegistryError.multipleActiveBundles(specId: request.specId, bundleIds: Array(activeSet).sorted())
+        }
+        if let discoveredActive = activeSet.first, discoveredActive != activeBundleId {
+            throw GOSRegistryError.registryMissingActivePointer(specId: request.specId, activeBundleId: discoveredActive)
         }
 
         let manifest = try readManifest(bundleId: activeBundleId)
@@ -259,24 +305,24 @@ public actor FileBackedGOSBundleRegistry: GOSBundleRegistry, GOSBundleLoader {
             _ = try readReviewRecord(bundleId: bundleId)
         }
 
-        let updatedManifest = GOSBundleManifest(
-            bundleId: manifest.bundleId,
-            specId: manifest.specId,
-            specVersion: manifest.specVersion,
-            bundleVersion: manifest.bundleVersion,
-            compilerVersion: manifest.compilerVersion,
-            compiledAt: manifest.compiledAt,
-            lifecycleState: .active,
-            replacesBundleId: manifest.replacesBundleId,
-            compilerReportPath: manifest.compilerReportPath,
-            specPath: manifest.specPath,
-            sourceProvenancePath: manifest.sourceProvenancePath,
-            notes: manifest.notes
-        )
-        try encoder.encode(updatedManifest).write(to: manifestURL(bundleId: bundleId))
-
         let existing = try await lookup(specId: specId) ?? GOSRegistryEntry(specId: specId)
-        let known = Array(Set(existing.knownBundleIds + [bundleId])).sorted()
+        let known = normalizedKnownBundleIds(existing.knownBundleIds + [bundleId])
+        if let existingActiveBundleId = existing.activeBundleId,
+           existingActiveBundleId != bundleId {
+            let existingActiveManifest = try readManifest(bundleId: existingActiveBundleId)
+            guard existingActiveManifest.specId == specId else {
+                throw GOSRegistryError.bundleSpecMismatch(
+                    expectedSpecId: specId,
+                    actualSpecId: existingActiveManifest.specId,
+                    bundleId: existingActiveBundleId
+                )
+            }
+            if existingActiveManifest.lifecycleState == .active {
+                try writeManifest(existingActiveManifest, replacingLifecycleWith: .superseded)
+            }
+        }
+
+        try writeManifest(manifest, replacingLifecycleWith: .active)
         let updated = GOSRegistryEntry(specId: specId, activeBundleId: bundleId, knownBundleIds: known)
         try encoder.encode(updated).write(to: registryFileURL(specId: specId))
         let auditRecord = GOSLifecycleAuditRecord(
@@ -391,32 +437,27 @@ public actor FileBackedGOSBundleRegistry: GOSBundleRegistry, GOSBundleLoader {
         auditAction: GOSLifecycleAuditAction
     ) throws {
         let manifest = try readManifest(bundleId: bundleId)
-        let updated = GOSBundleManifest(
-            bundleId: manifest.bundleId,
-            specId: manifest.specId,
-            specVersion: manifest.specVersion,
-            bundleVersion: manifest.bundleVersion,
-            compilerVersion: manifest.compilerVersion,
-            compiledAt: manifest.compiledAt,
-            lifecycleState: state,
-            replacesBundleId: manifest.replacesBundleId,
-            compilerReportPath: manifest.compilerReportPath,
-            specPath: manifest.specPath,
-            sourceProvenancePath: manifest.sourceProvenancePath,
-            notes: note ?? manifest.notes
-        )
-        try encoder.encode(updated).write(to: manifestURL(bundleId: bundleId))
+        try validateLifecycleTransition(bundleId: bundleId, from: manifest.lifecycleState, to: state)
+        try writeManifest(manifest, replacingLifecycleWith: state, notes: note ?? manifest.notes)
 
         if clearActiveRegistryPointer {
             let registryURL = registryFileURL(specId: manifest.specId)
             if FileManager.default.fileExists(atPath: registryURL.path) {
                 let registryData = try Data(contentsOf: registryURL)
                 let registry = try decoder.decode(GOSRegistryEntry.self, from: registryData)
+                let normalizedKnown = normalizedKnownBundleIds(registry.knownBundleIds + [bundleId])
                 if registry.activeBundleId == bundleId {
                     let updatedRegistry = GOSRegistryEntry(
                         specId: registry.specId,
                         activeBundleId: nil,
-                        knownBundleIds: registry.knownBundleIds
+                        knownBundleIds: normalizedKnown
+                    )
+                    try encoder.encode(updatedRegistry).write(to: registryURL)
+                } else {
+                    let updatedRegistry = GOSRegistryEntry(
+                        specId: registry.specId,
+                        activeBundleId: registry.activeBundleId,
+                        knownBundleIds: normalizedKnown
                     )
                     try encoder.encode(updatedRegistry).write(to: registryURL)
                 }
@@ -481,5 +522,68 @@ public actor FileBackedGOSBundleRegistry: GOSBundleRegistry, GOSBundleLoader {
         } else {
             try (data + Data("\n".utf8)).write(to: url)
         }
+    }
+
+    private func normalizedKnownBundleIds(_ bundleIds: [String]) -> [String] {
+        Array(Set(bundleIds)).sorted()
+    }
+
+    private func validateLifecycleTransition(
+        bundleId: String,
+        from: GOSLifecycleState,
+        to: GOSLifecycleState
+    ) throws {
+        if from == to { return }
+        let allowed: [GOSLifecycleState]
+        switch from {
+        case .draft:
+            allowed = [.reviewed, .revoked]
+        case .reviewed:
+            allowed = [.active, .revoked]
+        case .active:
+            allowed = [.deprecated, .revoked]
+        case .deprecated:
+            allowed = []
+        case .superseded:
+            allowed = []
+        case .revoked:
+            allowed = []
+        }
+        guard allowed.contains(to) else {
+            throw GOSRegistryError.invalidLifecycleTransition(
+                bundleId: bundleId,
+                fromState: from,
+                toState: to,
+                allowedToStates: allowed
+            )
+        }
+    }
+
+    private func writeManifest(
+        _ manifest: GOSBundleManifest,
+        replacingLifecycleWith lifecycleState: GOSLifecycleState,
+        notes: String? = nil
+    ) throws {
+        let updatedManifest = GOSBundleManifest(
+            bundleId: manifest.bundleId,
+            specId: manifest.specId,
+            specVersion: manifest.specVersion,
+            bundleVersion: manifest.bundleVersion,
+            compilerVersion: manifest.compilerVersion,
+            compiledAt: manifest.compiledAt,
+            lifecycleState: lifecycleState,
+            replacesBundleId: manifest.replacesBundleId,
+            compilerReportPath: manifest.compilerReportPath,
+            specPath: manifest.specPath,
+            sourceProvenancePath: manifest.sourceProvenancePath,
+            notes: notes ?? manifest.notes
+        )
+        try encoder.encode(updatedManifest).write(to: manifestURL(bundleId: manifest.bundleId))
+    }
+}
+
+private extension Array {
+    var onlyElement: Element? {
+        count == 1 ? first : nil
     }
 }

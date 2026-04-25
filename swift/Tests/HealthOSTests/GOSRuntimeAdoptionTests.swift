@@ -620,7 +620,7 @@ final class GOSRuntimeAdoptionTests: XCTestCase {
         XCTAssertTrue(entry.knownBundleIds.contains(bundle.manifest.bundleId))
     }
 
-    func testDeprecateNonActivePreservesKnownBundlesAndActivePointer() async throws {
+    func testRevokeNonActivePreservesKnownBundlesAndActivePointer() async throws {
         let root = makeTempRoot()
         try DirectoryLayout.bootstrap(at: root)
         let registry = FileBackedGOSBundleRegistry(root: root)
@@ -636,7 +636,7 @@ final class GOSRuntimeAdoptionTests: XCTestCase {
         try await registry.register(reviewedBundle.manifest)
         try installBundleFiles(reviewedBundle, at: root)
 
-        try await registry.deprecate(bundleId: reviewedBundle.manifest.bundleId, note: "no longer preferred")
+        try await registry.revoke(bundleId: reviewedBundle.manifest.bundleId, note: "withdrawn after review")
         let lookedUpEntry = try await registry.lookup(specId: activeBundle.manifest.specId)
         let entry = try XCTUnwrap(lookedUpEntry)
         XCTAssertEqual(entry.activeBundleId, activeBundle.manifest.bundleId)
@@ -673,6 +673,123 @@ final class GOSRuntimeAdoptionTests: XCTestCase {
             }
             XCTAssertEqual(specId, bundle.manifest.specId)
             XCTAssertEqual(bundleId, "missing-bundle-id")
+        }
+    }
+
+    func testLoadFailsWhenRegistryIsMissingForSpec() async throws {
+        let root = makeTempRoot()
+        try DirectoryLayout.bootstrap(at: root)
+        let registry = FileBackedGOSBundleRegistry(root: root)
+
+        do {
+            _ = try await registry.loadBundle(
+                GOSLoadRequest(specId: "aaci.first-slice", runtimeKind: .aaci, acceptedLifecycleStates: [.active])
+            )
+            XCTFail("Expected load to fail when registry entry does not exist.")
+        } catch {
+            guard case let GOSRegistryError.registryMissing(specId) = error else {
+                XCTFail("Expected registryMissing, got \(error)")
+                return
+            }
+            XCTAssertEqual(specId, "aaci.first-slice")
+        }
+    }
+
+    func testLoadFailsWhenRegistryEntryIsCorrupted() async throws {
+        let root = makeTempRoot()
+        try DirectoryLayout.bootstrap(at: root)
+        let registry = FileBackedGOSBundleRegistry(root: root)
+        let registryURL = root.appending(path: "system/gos/registry/aaci.first-slice.json")
+        try FileManager.default.createDirectory(at: registryURL.deletingLastPathComponent(), withIntermediateDirectories: true)
+        try "{invalid-json".data(using: .utf8)!.write(to: registryURL)
+
+        do {
+            _ = try await registry.loadBundle(
+                GOSLoadRequest(specId: "aaci.first-slice", runtimeKind: .aaci, acceptedLifecycleStates: [.active])
+            )
+            XCTFail("Expected load to fail when registry entry is corrupted.")
+        } catch {
+            guard case let GOSRegistryError.registryEntryDecodeFailure(specId) = error else {
+                XCTFail("Expected registryEntryDecodeFailure, got \(error)")
+                return
+            }
+            XCTAssertEqual(specId, "aaci.first-slice")
+        }
+    }
+
+    func testLoadFailsWhenRegistryPointerIsMissingButSingleActiveBundleExists() async throws {
+        let root = makeTempRoot()
+        try DirectoryLayout.bootstrap(at: root)
+        let registry = FileBackedGOSBundleRegistry(root: root)
+        let bundle = makeBundle(bindingPlan: AACIGOSBindings.defaultBindingPlan(specId: "aaci.first-slice"), lifecycleState: .active)
+        try await registry.register(bundle.manifest)
+        try installBundleFiles(bundle, at: root)
+
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
+        let inconsistentEntry = GOSRegistryEntry(
+            specId: bundle.manifest.specId,
+            activeBundleId: nil,
+            knownBundleIds: [bundle.manifest.bundleId]
+        )
+        try encoder.encode(inconsistentEntry).write(to: root.appending(path: "system/gos/registry/\(bundle.manifest.specId).json"))
+
+        do {
+            _ = try await registry.loadBundle(
+                GOSLoadRequest(specId: bundle.manifest.specId, runtimeKind: .aaci, acceptedLifecycleStates: [.active])
+            )
+            XCTFail("Expected missing active pointer to fail when an active known bundle exists.")
+        } catch {
+            guard case let GOSRegistryError.registryMissingActivePointer(specId, activeBundleId) = error else {
+                XCTFail("Expected registryMissingActivePointer, got \(error)")
+                return
+            }
+            XCTAssertEqual(specId, bundle.manifest.specId)
+            XCTAssertEqual(activeBundleId, bundle.manifest.bundleId)
+        }
+    }
+
+    func testLoadFailsWhenMultipleKnownBundlesAreActive() async throws {
+        let root = makeTempRoot()
+        try DirectoryLayout.bootstrap(at: root)
+        let registry = FileBackedGOSBundleRegistry(root: root)
+        let activeBundleA = makeBundle(
+            bundleId: "aaci-first-slice-active-a",
+            bindingPlan: AACIGOSBindings.defaultBindingPlan(specId: "aaci.first-slice"),
+            lifecycleState: .active
+        )
+        let activeBundleB = makeBundle(
+            bundleId: "aaci-first-slice-active-b",
+            bindingPlan: AACIGOSBindings.defaultBindingPlan(specId: "aaci.first-slice"),
+            lifecycleState: .active
+        )
+        try await registry.register(activeBundleA.manifest)
+        try installBundleFiles(activeBundleA, at: root)
+        try await registry.register(activeBundleB.manifest)
+        try installBundleFiles(activeBundleB, at: root)
+        try await registry.activate(bundleId: activeBundleA.manifest.bundleId, specId: activeBundleA.manifest.specId)
+
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
+        let forcedEntry = GOSRegistryEntry(
+            specId: "aaci.first-slice",
+            activeBundleId: activeBundleA.manifest.bundleId,
+            knownBundleIds: [activeBundleA.manifest.bundleId, activeBundleB.manifest.bundleId]
+        )
+        try encoder.encode(forcedEntry).write(to: root.appending(path: "system/gos/registry/aaci.first-slice.json"))
+
+        do {
+            _ = try await registry.loadBundle(
+                GOSLoadRequest(specId: "aaci.first-slice", runtimeKind: .aaci, acceptedLifecycleStates: [.active])
+            )
+            XCTFail("Expected multiple active bundles to fail deterministic load.")
+        } catch {
+            guard case let GOSRegistryError.multipleActiveBundles(specId, bundleIds) = error else {
+                XCTFail("Expected multipleActiveBundles, got \(error)")
+                return
+            }
+            XCTAssertEqual(specId, "aaci.first-slice")
+            XCTAssertEqual(Set(bundleIds), Set([activeBundleA.manifest.bundleId, activeBundleB.manifest.bundleId]))
         }
     }
 
@@ -786,6 +903,55 @@ final class GOSRuntimeAdoptionTests: XCTestCase {
         let entry = try XCTUnwrap(lookedUpEntry)
         XCTAssertNil(entry.activeBundleId)
         XCTAssertTrue(entry.knownBundleIds.contains(bundle.manifest.bundleId))
+    }
+
+    func testDeprecateRejectsInvalidTransitionFromReviewed() async throws {
+        let root = makeTempRoot()
+        try DirectoryLayout.bootstrap(at: root)
+        let registry = FileBackedGOSBundleRegistry(root: root)
+        let bundle = makeBundle(bindingPlan: AACIGOSBindings.defaultBindingPlan(specId: "aaci.first-slice"), lifecycleState: .reviewed)
+        try await registry.register(bundle.manifest)
+        try installBundleFiles(bundle, at: root)
+
+        do {
+            try await registry.deprecate(bundleId: bundle.manifest.bundleId, note: "invalid transition")
+            XCTFail("Expected reviewed -> deprecated to be denied.")
+        } catch {
+            guard case let GOSRegistryError.invalidLifecycleTransition(bundleId, fromState, toState, _) = error else {
+                XCTFail("Expected invalidLifecycleTransition, got \(error)")
+                return
+            }
+            XCTAssertEqual(bundleId, bundle.manifest.bundleId)
+            XCTAssertEqual(fromState, .reviewed)
+            XCTAssertEqual(toState, .deprecated)
+        }
+    }
+
+    func testLoadAndActivationUseDefaultBindingPlanWhenBundlePlanFileIsMissing() async throws {
+        let root = makeTempRoot()
+        try DirectoryLayout.bootstrap(at: root)
+        let registry = FileBackedGOSBundleRegistry(root: root)
+        var bundle = makeBundle(bindingPlan: AACIGOSBindings.defaultBindingPlan(specId: "aaci.first-slice"), lifecycleState: .active)
+        bundle = GOSCompiledBundle(
+            manifest: bundle.manifest,
+            metadata: bundle.metadata,
+            compilerReport: bundle.compilerReport,
+            runtimeBindingPlan: nil,
+            compiledSpecJSON: bundle.compiledSpecJSON
+        )
+        try await registry.register(bundle.manifest)
+        try installBundleFiles(bundle, at: root)
+        try await registry.activate(bundleId: bundle.manifest.bundleId, specId: bundle.manifest.specId)
+
+        let loaded = try await registry.loadBundle(
+            GOSLoadRequest(specId: bundle.manifest.specId, runtimeKind: .aaci, acceptedLifecycleStates: [.active])
+        )
+        XCTAssertNil(loaded.runtimeBindingPlan)
+
+        let orchestrator = AACIOrchestrator(router: ProviderRouter())
+        let activation = try await orchestrator.activateGOS(specId: bundle.manifest.specId, loader: registry)
+        XCTAssertTrue(activation.usedDefaultBindingPlan)
+        XCTAssertGreaterThan(activation.bindingCount, 0)
     }
 
     private func makeTempRoot() -> URL {

@@ -310,8 +310,15 @@ public actor AACIOrchestrator {
         actorId: String,
         gosView: AACIResolvedGOSRuntimeView?
     ) -> [String: String] {
-        guard let gosView else { return payload }
-        return payload.merging(gosView.metadataForRuntimePath(actorId: actorId)) { current, _ in current }
+        let runtimePath = AACIGOSRuntimeResolver.runtimePath(for: actorId)
+        guard let mediationContext = AACIGOSRuntimeResolver.resolveMediationContext(
+            actorId: actorId,
+            runtimePath: runtimePath,
+            runtimeView: gosView
+        ) else {
+            return payload
+        }
+        return payload.merging(mediationContext.payloadMetadata) { current, _ in current }
     }
 
     private func enforceDraftOnlyBoundary(

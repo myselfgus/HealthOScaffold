@@ -104,6 +104,84 @@ final class GOSRuntimeAdoptionTests: XCTestCase {
         XCTAssertFalse(soap.noteSummary.contains("Human gate remains mandatory"))
     }
 
+    func testGOSRuntimeResolverResolvesMediationContextForKnownActor() async throws {
+        let orchestrator = AACIOrchestrator(router: ProviderRouter())
+        let loader = InMemoryBundleLoader(bundle: makeBundle(bindingPlan: makeCustomBindingPlan()))
+        _ = try await orchestrator.activateGOS(specId: "aaci.first-slice", loader: loader)
+        let runtimeView = await orchestrator.activeGOSRuntimeView()
+        let context = AACIGOSRuntimeResolver.resolveMediationContext(
+            actorId: "aaci.draft-composer",
+            runtimePath: .composeSOAP,
+            runtimeView: runtimeView
+        )
+
+        XCTAssertNotNil(context)
+        XCTAssertEqual(context?.specId, "aaci.first-slice")
+        XCTAssertEqual(context?.bundleId, "aaci-first-slice-test-bundle")
+        XCTAssertEqual(context?.runtimeKind, .aaci)
+        XCTAssertEqual(context?.actorId, "aaci.draft-composer")
+        XCTAssertEqual(context?.semanticRole, "soap-runtime-composer")
+        XCTAssertEqual(context?.primitiveFamilies, ["draft_output_spec", "task_spec"])
+        XCTAssertEqual(context?.resolvedProvenanceOperation, "gos.use.compose.soap")
+        XCTAssertEqual(context?.provenanceOperationPrefix, "gos.use")
+        XCTAssertEqual(context?.draftOnly, true)
+        XCTAssertEqual(context?.gateStillRequired, true)
+        XCTAssertEqual(context?.legalAuthorizing, false)
+        XCTAssertEqual(context?.payloadMetadata["gosMediationOperation"], "gos.use.compose.soap")
+    }
+
+    func testGOSRuntimeResolverWithoutActiveRuntimeReturnsNilAndDoesNotBreakPath() {
+        let context = AACIGOSRuntimeResolver.resolveMediationContext(
+            actorId: "aaci.draft-composer",
+            runtimePath: .composeSOAP,
+            runtimeView: nil
+        )
+        XCTAssertNil(context)
+    }
+
+    func testGOSRuntimeResolverActorBindingKnownAndUnknownFallback() async throws {
+        let orchestrator = AACIOrchestrator(router: ProviderRouter())
+        let loader = InMemoryBundleLoader(bundle: makeBundle(bindingPlan: makeCustomBindingPlan()))
+        _ = try await orchestrator.activateGOS(specId: "aaci.first-slice", loader: loader)
+        let runtimeView = await orchestrator.activeGOSRuntimeView()
+
+        let known = try AACIGOSRuntimeResolver.resolveActorBinding(
+            actorId: "aaci.draft-composer",
+            runtimeView: runtimeView
+        )
+        XCTAssertEqual(known?.isBound, true)
+        XCTAssertEqual(known?.semanticRole, "soap-runtime-composer")
+
+        let unknown = try AACIGOSRuntimeResolver.resolveActorBinding(
+            actorId: "aaci.unknown",
+            runtimeView: runtimeView
+        )
+        XCTAssertEqual(unknown?.isBound, false)
+        XCTAssertEqual(unknown?.semanticRole, "unbound")
+        XCTAssertEqual(unknown?.primitiveFamilies, [])
+    }
+
+    func testGOSRuntimeResolverActorBindingRequiredMissingThrowsTypedError() async throws {
+        let orchestrator = AACIOrchestrator(router: ProviderRouter())
+        let loader = InMemoryBundleLoader(bundle: makeBundle(bindingPlan: makeCustomBindingPlan()))
+        _ = try await orchestrator.activateGOS(specId: "aaci.first-slice", loader: loader)
+        let runtimeView = await orchestrator.activeGOSRuntimeView()
+
+        XCTAssertThrowsError(
+            try AACIGOSRuntimeResolver.resolveActorBinding(
+                actorId: "aaci.unknown",
+                runtimeView: runtimeView,
+                required: true
+            )
+        ) { error in
+            guard case let AACIGOSRuntimeResolverError.actorBindingMissing(actorId) = error else {
+                XCTFail("Expected actorBindingMissing, got \(error)")
+                return
+            }
+            XCTAssertEqual(actorId, "aaci.unknown")
+        }
+    }
+
     func testFirstSliceRecordsDistinctGOSUsageProvenanceWhenBundleIsActive() async throws {
         let root = makeTempRoot()
         try DirectoryLayout.bootstrap(at: root)
@@ -128,6 +206,7 @@ final class GOSRuntimeAdoptionTests: XCTestCase {
 
         let result = try await runner.run(input: input)
         let operations = Set(result.provenanceRecords.map(\.operation))
+        let captureUsage = try XCTUnwrap(result.provenanceRecords.first { $0.operation == "gos.use.capture" })
         let transcriptionUsage = try XCTUnwrap(result.provenanceRecords.first { $0.operation == "gos.use.transcription" })
         let contextUsage = try XCTUnwrap(result.provenanceRecords.first { $0.operation == "gos.use.context.retrieve" })
         let draftUsage = try XCTUnwrap(result.provenanceRecords.first { $0.operation == "gos.use.compose.soap" })
@@ -142,11 +221,13 @@ final class GOSRuntimeAdoptionTests: XCTestCase {
         let transcriptMetadata = try readStorageMetadata(for: try XCTUnwrap(result.transcription.transcriptRef).objectPath)
 
         XCTAssertTrue(operations.contains("gos.activate"))
+        XCTAssertTrue(operations.contains("gos.use.capture"))
         XCTAssertTrue(operations.contains("gos.use.transcription"))
         XCTAssertTrue(operations.contains("gos.use.context.retrieve"))
         XCTAssertTrue(operations.contains("gos.use.compose.soap"))
         XCTAssertTrue(operations.contains("gos.use.derive.referral"))
         XCTAssertTrue(operations.contains("gos.use.derive.prescription"))
+        XCTAssertEqual(captureUsage.actorId, "aaci.capture")
         XCTAssertEqual(transcriptionUsage.actorId, "aaci.transcription")
         XCTAssertEqual(contextUsage.actorId, "aaci.context")
         XCTAssertEqual(draftUsage.actorId, "aaci.draft-composer")
@@ -160,6 +241,33 @@ final class GOSRuntimeAdoptionTests: XCTestCase {
         XCTAssertEqual(referralEvent.payload.attributes["gosRuntimeActorId"], "aaci.referral-draft")
         XCTAssertEqual(prescriptionEvent.payload.attributes["gosRuntimeActorId"], "aaci.prescription-draft")
         XCTAssertTrue((soapEvent.payload.attributes["gosReasoningBoundary"] ?? "").contains("draft-only under human gate"))
+    }
+
+    func testFirstSliceWithoutActiveGOSStillRunsAndDoesNotEmitGOSUsage() async throws {
+        let root = makeTempRoot()
+        try DirectoryLayout.bootstrap(at: root)
+
+        let router = ProviderRouter()
+        await router.register(AppleFoundationProvider())
+        await router.register(NativeSpeechProvider())
+        let runner = FirstSliceRunner(root: root, orchestrator: AACIOrchestrator(router: router))
+        let result = try await runner.run(
+            input: makeSessionInput(gateApprove: false, text: "Paciente sem bundle ativo.")
+        )
+        let operations = Set(result.provenanceRecords.map(\.operation))
+
+        XCTAssertFalse(operations.contains("gos.activate"))
+        XCTAssertFalse(operations.contains("gos.use.capture"))
+        XCTAssertFalse(operations.contains("gos.use.transcription"))
+        XCTAssertFalse(operations.contains("gos.use.context.retrieve"))
+        XCTAssertFalse(operations.contains("gos.use.compose.soap"))
+        XCTAssertFalse(operations.contains("gos.use.derive.referral"))
+        XCTAssertFalse(operations.contains("gos.use.derive.prescription"))
+        XCTAssertTrue(operations.contains("draft.compose.soap"))
+        XCTAssertTrue(operations.contains("gate.request"))
+        XCTAssertTrue(operations.contains("gate.resolve"))
+        XCTAssertNil(result.finalDocument)
+        XCTAssertEqual(result.draft.draft.status, .awaitingGate)
     }
 
     func testFirstSliceWithActiveGOSKeepsDraftOnlyUntilHumanGateApproval() async throws {

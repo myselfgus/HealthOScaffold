@@ -132,6 +132,13 @@ public actor FirstSliceRunner {
             )
         }
 
+        try await appendGOSUsageProvenanceIfActive(
+            runtimePath: .capture,
+            actorId: "aaci.capture",
+            runtimeView: gosRuntimeView,
+            to: &provenanceRecords
+        )
+
         let transcriptionInput = TranscriptionInput(
             captureMode: input.capture.mode,
             seededText: input.capture.normalizedText,
@@ -172,7 +179,7 @@ public actor FirstSliceRunner {
         }
 
         try await appendGOSUsageProvenanceIfActive(
-            operation: "gos.use.transcription",
+            runtimePath: .transcription,
             actorId: "aaci.transcription",
             runtimeView: gosRuntimeView,
             to: &provenanceRecords
@@ -226,7 +233,7 @@ public actor FirstSliceRunner {
             boundedResult: boundedResult
         )
         try await appendGOSUsageProvenanceIfActive(
-            operation: "gos.use.context.retrieve",
+            runtimePath: .contextRetrieval,
             actorId: "aaci.context",
             runtimeView: gosRuntimeView,
             to: &provenanceRecords
@@ -264,7 +271,7 @@ public actor FirstSliceRunner {
             context: retrieval
         )
         try await appendGOSUsageProvenanceIfActive(
-            operation: "gos.use.compose.soap",
+            runtimePath: .composeSOAP,
             actorId: "aaci.draft-composer",
             runtimeView: gosRuntimeView,
             to: &provenanceRecords
@@ -319,7 +326,7 @@ public actor FirstSliceRunner {
             sourceSOAPDraftRef: draftRef
         )
         try await appendGOSUsageProvenanceIfActive(
-            operation: "gos.use.derive.referral",
+            runtimePath: .deriveReferral,
             actorId: "aaci.referral-draft",
             runtimeView: gosRuntimeView,
             to: &provenanceRecords
@@ -389,7 +396,7 @@ public actor FirstSliceRunner {
             sourceSOAPDraftRef: draftRef
         )
         try await appendGOSUsageProvenanceIfActive(
-            operation: "gos.use.derive.prescription",
+            runtimePath: .derivePrescription,
             actorId: "aaci.prescription-draft",
             runtimeView: gosRuntimeView,
             to: &provenanceRecords
@@ -701,7 +708,7 @@ public actor FirstSliceRunner {
             try await appendProvenance(
                 .init(
                     actorId: "aaci.gos",
-                    operation: "gos.activate",
+                    operation: AACIGOSProvenanceOperationResolver.activation,
                     providerName: "file-backed-registry",
                     modelName: runtimeView.specId,
                     modelVersion: runtimeView.bundleId,
@@ -722,7 +729,7 @@ public actor FirstSliceRunner {
             try await appendProvenance(
                 .init(
                     actorId: "aaci.gos",
-                    operation: "gos.activate.failed",
+                    operation: AACIGOSProvenanceOperationResolver.activationFailed,
                     providerName: "file-backed-registry",
                     modelName: "aaci.first-slice",
                     promptVersion: failureDescriptor,
@@ -735,7 +742,7 @@ public actor FirstSliceRunner {
     }
 
     private func appendGOSUsageProvenanceIfActive(
-        operation: String,
+        runtimePath: AACIGOSRuntimePath,
         actorId: String,
         runtimeView: AACIResolvedGOSRuntimeView?,
         to records: inout [ProvenanceRecord]
@@ -744,7 +751,7 @@ public actor FirstSliceRunner {
         try await appendProvenance(
             .init(
                 actorId: actorId,
-                operation: operation,
+                operation: AACIGOSProvenanceOperationResolver.usageOperation(for: runtimePath),
                 providerName: "aaci-runtime",
                 modelName: runtimeView.specId,
                 modelVersion: runtimeView.bundleId,
@@ -853,8 +860,15 @@ public actor FirstSliceRunner {
         actorId: String,
         runtimeView: AACIResolvedGOSRuntimeView?
     ) -> [String: String] {
-        guard let runtimeView else { return base }
-        return base.merging(runtimeView.metadataForRuntimePath(actorId: actorId)) { current, _ in current }
+        let runtimePath = AACIGOSRuntimeResolver.runtimePath(for: actorId)
+        guard let mediationContext = AACIGOSRuntimeResolver.resolveMediationContext(
+            actorId: actorId,
+            runtimePath: runtimePath,
+            runtimeView: runtimeView
+        ) else {
+            return base
+        }
+        return base.merging(mediationContext.payloadMetadata) { current, _ in current }
     }
 
     private func captureReceivedEventAttributes(

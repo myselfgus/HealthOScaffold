@@ -70,6 +70,22 @@ public actor FirstSliceRunner {
             ),
             to: &provenanceRecords
         )
+        try await appendProvenance(
+            .init(
+                actorId: professional.id.uuidString,
+                operation: "habilitation.validate",
+                timestamp: .now
+            ),
+            to: &provenanceRecords
+        )
+        try await appendProvenance(
+            .init(
+                actorId: professional.id.uuidString,
+                operation: "consent.validate",
+                timestamp: .now
+            ),
+            to: &provenanceRecords
+        )
 
         let _ = await orchestrator.startSession(session)
         events.append(
@@ -293,6 +309,12 @@ public actor FirstSliceRunner {
             )
         )
         try await storage.audit(objectRef: draftRef, action: "write-draft", actorId: professional.id.uuidString, metadata: lawfulContext)
+        try await appendStorageLawProvenance(
+            actorId: professional.id.uuidString,
+            writeObjectRef: draftRef,
+            auditAction: "write-draft",
+            to: &provenanceRecords
+        )
         let draft = DraftPackage(soapDraft: draftDocument, draftRef: draftRef)
         events.append(
             SessionEventRecord(
@@ -355,6 +377,12 @@ public actor FirstSliceRunner {
             action: "write-referral-draft",
             actorId: professional.id.uuidString,
             metadata: lawfulContext
+        )
+        try await appendStorageLawProvenance(
+            actorId: professional.id.uuidString,
+            writeObjectRef: referralDraftRef,
+            auditAction: "write-referral-draft",
+            to: &provenanceRecords
         )
         let referralDraft = ReferralDraftPackage(
             document: referralDraftDocument,
@@ -425,6 +453,12 @@ public actor FirstSliceRunner {
             action: "write-prescription-draft",
             actorId: professional.id.uuidString,
             metadata: lawfulContext
+        )
+        try await appendStorageLawProvenance(
+            actorId: professional.id.uuidString,
+            writeObjectRef: prescriptionDraftRef,
+            auditAction: "write-prescription-draft",
+            to: &provenanceRecords
         )
         let prescriptionDraft = PrescriptionDraftPackage(
             document: prescriptionDraftDocument,
@@ -573,6 +607,12 @@ public actor FirstSliceRunner {
                 action: "write-final-document",
                 actorId: professional.id.uuidString,
                 metadata: lawfulContext
+            )
+            try await appendStorageLawProvenance(
+                actorId: professional.id.uuidString,
+                writeObjectRef: finalDocumentRef,
+                auditAction: "write-final-document",
+                to: &provenanceRecords
             )
             events.append(
                 SessionEventRecord(
@@ -756,6 +796,33 @@ public actor FirstSliceRunner {
                 modelName: runtimeView.specId,
                 modelVersion: runtimeView.bundleId,
                 promptVersion: runtimeView.usedDefaultBindingPlan ? "default-binding-plan" : "bundle-binding-plan",
+                timestamp: .now
+            ),
+            to: &records
+        )
+    }
+
+    private func appendStorageLawProvenance(
+        actorId: String,
+        writeObjectRef: StorageObjectRef,
+        auditAction: String,
+        to records: inout [ProvenanceRecord]
+    ) async throws {
+        try await appendProvenance(
+            .init(
+                actorId: actorId,
+                operation: "storage.write",
+                outputHash: writeObjectRef.contentHash,
+                timestamp: .now
+            ),
+            to: &records
+        )
+        try await appendProvenance(
+            .init(
+                actorId: actorId,
+                operation: "storage.audit",
+                promptVersion: auditAction,
+                outputHash: writeObjectRef.contentHash,
                 timestamp: .now
             ),
             to: &records
@@ -1114,7 +1181,7 @@ public actor FirstSliceRunner {
                 "actorRole": "system-seed",
                 "scope": "care-context",
                 "finalidade": "care-context-retrieval",
-                "habilitationId": "seed",
+                "habilitationId": UUID().uuidString,
                 "patientUserId": patientUserId.uuidString
             ]
         )

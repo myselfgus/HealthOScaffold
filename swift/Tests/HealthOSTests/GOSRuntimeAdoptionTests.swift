@@ -368,6 +368,45 @@ final class GOSRuntimeAdoptionTests: XCTestCase {
         }
     }
 
+    func testFinalizationGuardRejectsDraftWithoutAwaitingGateState() throws {
+        let draft = ArtifactDraft(
+            sessionId: UUID(),
+            kind: .soap,
+            status: .draft,
+            author: DraftAuthorIdentity(actorId: "aaci.draft-composer", semanticRole: "draft-composer"),
+            payload: ["summary": "draft"]
+        )
+        let request = GateRequest(
+            draftId: draft.id,
+            requestedAction: "finalize-soap-note",
+            requiredRole: "professional",
+            requiredReviewType: .professionalDocumentReview,
+            finalizationTarget: .soapNote,
+            requiresSignature: true
+        )
+        let approved = GateResolution(
+            gateRequestId: request.id,
+            resolverUserId: UUID(),
+            resolverRole: "professional",
+            resolution: .approved
+        )
+        let gate = GateOutcomeSummary(
+            request: request,
+            resolution: approved,
+            reviewedDraftStatus: .approved,
+            approved: true
+        )
+
+        XCTAssertThrowsError(try FirstSliceInvariantEnforcer.ensureSOAPDraftCanFinalize(draft: draft, gate: gate)) { error in
+            guard case let FirstSliceError.invalidDraftFinalizationState(draftId, status) = error else {
+                XCTFail("Expected invalidDraftFinalizationState, got \(error)")
+                return
+            }
+            XCTAssertEqual(draftId, draft.id)
+            XCTAssertEqual(status, .draft)
+        }
+    }
+
     func testFirstSliceApprovedGateMaintainsOrderedGOSGateAndFinalizationProvenance() async throws {
         let root = makeTempRoot()
         try DirectoryLayout.bootstrap(at: root)
@@ -428,8 +467,8 @@ final class GOSRuntimeAdoptionTests: XCTestCase {
             )
             XCTFail("Expected inactive professional to fail before GOS-mediated runtime work.")
         } catch {
-            guard case FirstSliceError.inactiveProfessionalUser = error else {
-                XCTFail("Expected inactiveProfessionalUser, got \(error)")
+            guard case CoreLawError.habilitationRequired = error else {
+                XCTFail("Expected habilitationRequired, got \(error)")
                 return
             }
         }
@@ -446,10 +485,217 @@ final class GOSRuntimeAdoptionTests: XCTestCase {
             )
             XCTFail("Expected inactive patient to fail before GOS-mediated runtime work.")
         } catch {
-            guard case FirstSliceError.inactivePatientUser = error else {
-                XCTFail("Expected inactivePatientUser, got \(error)")
+            guard case CoreLawError.consentRequired = error else {
+                XCTFail("Expected consentRequired, got \(error)")
                 return
             }
+        }
+    }
+
+    func testLawfulContextValidatorFailsWhenActorRoleIsMissing() throws {
+        XCTAssertThrowsError(
+            try LawfulContextValidator.validate(
+                ["scope": "care-context", "finalidade": "care-context-retrieval"],
+                requirements: .init(requireFinalidade: true)
+            )
+        ) { error in
+            XCTAssertEqual(error as? CoreLawError, .missingActorRole)
+        }
+    }
+
+    func testLawfulContextValidatorFailsWhenScopeIsMissing() throws {
+        XCTAssertThrowsError(
+            try LawfulContextValidator.validate(
+                ["actorRole": "professional-agent", "finalidade": "care-context-retrieval"],
+                requirements: .init(requireFinalidade: true)
+            )
+        ) { error in
+            XCTAssertEqual(error as? CoreLawError, .missingScope)
+        }
+    }
+
+    func testLawfulContextValidatorFailsWhenRequiredFinalidadeIsMissing() throws {
+        XCTAssertThrowsError(
+            try LawfulContextValidator.validate(
+                ["actorRole": "professional-agent", "scope": "care-context"],
+                requirements: .init(requireFinalidade: true)
+            )
+        ) { error in
+            XCTAssertEqual(error as? CoreLawError, .missingFinality)
+        }
+    }
+
+    func testLawfulContextValidatorFailsWhenRequiredPatientContextIsMissing() throws {
+        XCTAssertThrowsError(
+            try LawfulContextValidator.validate(
+                [
+                    "actorRole": "professional-agent",
+                    "scope": "care-context",
+                    "finalidade": "care-context-retrieval"
+                ],
+                requirements: .init(requirePatientUserId: true, requireFinalidade: true)
+            )
+        ) { error in
+            XCTAssertEqual(error as? CoreLawError, .missingPatientContext)
+        }
+    }
+
+    func testLawfulContextValidatorFailsWhenRequiredServiceContextIsMissing() throws {
+        XCTAssertThrowsError(
+            try LawfulContextValidator.validate(
+                [
+                    "actorRole": "professional-agent",
+                    "scope": "care-context",
+                    "finalidade": "care-context-retrieval"
+                ],
+                requirements: .init(requireServiceId: true, requireFinalidade: true)
+            )
+        ) { error in
+            XCTAssertEqual(error as? CoreLawError, .missingServiceContext)
+        }
+    }
+
+    func testLawfulContextValidatorAcceptsValidContext() throws {
+        let serviceId = UUID()
+        let patientId = UUID()
+        let professionalId = UUID()
+        let habilitationId = UUID()
+        let sessionId = UUID()
+        let context = try LawfulContextValidator.validate(
+            [
+                "actorRole": "professional-agent",
+                "scope": "care-context",
+                "serviceId": serviceId.uuidString,
+                "patientUserId": patientId.uuidString,
+                "professionalUserId": professionalId.uuidString,
+                "habilitationId": habilitationId.uuidString,
+                "finalidade": "care-context-retrieval",
+                "sessionId": sessionId.uuidString,
+                "origin": "first-slice",
+                "operation": "context.retrieve"
+            ],
+            requirements: .init(
+                requireServiceId: true,
+                requirePatientUserId: true,
+                requireProfessionalUserId: true,
+                requireHabilitationId: true,
+                requireFinalidade: true,
+                requireSessionId: true
+            )
+        )
+        XCTAssertEqual(context.actorRole, "professional-agent")
+        XCTAssertEqual(context.scope, "care-context")
+        XCTAssertEqual(context.serviceId, serviceId)
+        XCTAssertEqual(context.patientUserId, patientId)
+        XCTAssertEqual(context.professionalUserId, professionalId)
+        XCTAssertEqual(context.habilitationId, habilitationId)
+        XCTAssertEqual(context.finalidade, "care-context-retrieval")
+        XCTAssertEqual(context.sessionId, sessionId)
+    }
+
+    func testStorageAuditFailsWithoutGovernedLawfulContext() async throws {
+        let root = makeTempRoot()
+        try DirectoryLayout.bootstrap(at: root)
+        let storage = FileBackedStorageService(root: root)
+        let objectRef = try await storage.put(
+            StoragePutRequest(
+                owner: .servico(serviceId: UUID()),
+                kind: "drafts-soap",
+                layer: .derivedArtifacts,
+                content: Data("payload".utf8)
+            )
+        )
+
+        do {
+            try await storage.audit(
+                objectRef: objectRef,
+                action: "write-draft",
+                actorId: "professional-1",
+                metadata: [:]
+            )
+            XCTFail("Expected missing actorRole for storage audit without lawfulContext.")
+        } catch {
+            XCTAssertEqual(error as? CoreLawError, .missingActorRole)
+        }
+    }
+
+    func testStorageAuditWithValidContextWritesAuditEntry() async throws {
+        let root = makeTempRoot()
+        try DirectoryLayout.bootstrap(at: root)
+        let storage = FileBackedStorageService(root: root)
+        let serviceId = UUID()
+        let patientId = UUID()
+        let habilitationId = UUID()
+        let sessionId = UUID()
+
+        let objectRef = try await storage.put(
+            StoragePutRequest(
+                owner: .servico(serviceId: serviceId),
+                kind: "drafts-soap",
+                layer: .derivedArtifacts,
+                content: Data("payload".utf8)
+            )
+        )
+        try await storage.audit(
+            objectRef: objectRef,
+            action: "write-draft",
+            actorId: "professional-1",
+            metadata: [
+                "actorRole": "professional-agent",
+                "scope": "care-context",
+                "serviceId": serviceId.uuidString,
+                "patientUserId": patientId.uuidString,
+                "habilitationId": habilitationId.uuidString,
+                "finalidade": "care-context-retrieval",
+                "sessionId": sessionId.uuidString
+            ]
+        )
+        let auditURL = root.appending(path: "logs/storage-audit.jsonl")
+        let payload = try String(contentsOf: auditURL, encoding: .utf8)
+        XCTAssertTrue(payload.contains("write-draft"))
+        XCTAssertTrue(payload.contains("objectPath"))
+    }
+
+    func testStorageGovernedFailureIsDistinctFromOperationalFailure() async throws {
+        let root = makeTempRoot()
+        try DirectoryLayout.bootstrap(at: root)
+        let storage = FileBackedStorageService(root: root)
+        let serviceId = UUID()
+        let objectRef = StorageObjectRef(
+            objectPath: root.appending(path: "services/\(serviceId.uuidString)/records/missing.bin").path,
+            contentHash: "hash",
+            layer: .operationalContent,
+            kind: "transcripts"
+        )
+
+        do {
+            _ = try await storage.get(objectRef, lawfulContext: [:])
+            XCTFail("Expected governed failure due to missing lawfulContext.")
+        } catch {
+            XCTAssertEqual(error as? CoreLawError, .missingActorRole)
+        }
+
+        do {
+            _ = try await storage.get(
+                objectRef,
+                lawfulContext: ["actorRole": "professional-agent", "scope": "care-context"]
+            )
+            XCTFail("Expected operational file read failure with valid lawfulContext.")
+        } catch {
+            XCTAssertFalse(error is CoreLawError)
+        }
+    }
+
+    func testConsentValidationFailsWhenFinalidadeIsMissing() async throws {
+        let consentService = SimpleConsentService()
+        do {
+            _ = try await consentService.validate(
+                patient: Usuario(cpfHash: "patient", civilToken: "patient", active: true),
+                finalidade: "   "
+            )
+            XCTFail("Expected consent validation to fail when finalidade is missing.")
+        } catch {
+            XCTAssertEqual(error as? CoreLawError, .missingFinality)
         }
     }
 

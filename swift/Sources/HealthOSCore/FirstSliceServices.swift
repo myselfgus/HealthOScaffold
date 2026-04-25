@@ -106,7 +106,9 @@ public actor SimpleHabilitationService {
     public init() {}
 
     public func validate(professional: Usuario, service: Servico) throws -> HabilitationContext {
-        guard professional.active else { throw FirstSliceError.inactiveProfessionalUser }
+        guard professional.active else {
+            throw CoreLawError.habilitationRequired("Professional user is inactive.")
+        }
         guard !service.nome.isEmpty else { throw FirstSliceError.invalidService }
         return HabilitationContext(professionalUserId: professional.id, serviceId: service.id)
     }
@@ -116,7 +118,12 @@ public actor SimpleConsentService {
     public init() {}
 
     public func validate(patient: Usuario, finalidade: String) throws -> ConsentContext {
-        guard patient.active else { throw FirstSliceError.inactivePatientUser }
+        guard patient.active else {
+            throw CoreLawError.consentRequired("Patient is inactive.")
+        }
+        guard !finalidade.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+            throw CoreLawError.missingFinality
+        }
         return ConsentContext(patientUserId: patient.id, finalidade: finalidade)
     }
 }
@@ -187,7 +194,7 @@ public actor FileBackedStorageService: StorageService {
     }
 
     public func get(_ objectRef: StorageObjectRef, lawfulContext: [String : String]) async throws -> Data {
-        try requireLawfulContext(lawfulContext)
+        _ = try requireLawfulContext(lawfulContext)
         let objectURL = URL(fileURLWithPath: objectRef.objectPath)
         let data = try Data(contentsOf: objectURL)
         let computedHash = Self.sha256Hex(for: data)
@@ -198,7 +205,14 @@ public actor FileBackedStorageService: StorageService {
     }
 
     public func list(owner: StorageOwner, filters: [String : String], lawfulContext: [String : String]) async throws -> [StorageObjectRef] {
-        try requireLawfulContext(lawfulContext)
+        let requirements: LawfulContextRequirement
+        switch owner {
+        case .usuario:
+            requirements = .init(requireFinalidade: true)
+        case .servico:
+            requirements = .init(requireServiceId: true, requireFinalidade: true)
+        }
+        _ = try requireLawfulContext(lawfulContext, requirements: requirements)
         let base = try ownerBaseURL(for: owner)
         guard FileManager.default.fileExists(atPath: base.path) else { return [] }
 
@@ -217,6 +231,19 @@ public actor FileBackedStorageService: StorageService {
     }
 
     public func audit(objectRef: StorageObjectRef, action: String, actorId: String, metadata: [String : String]) async throws {
+        _ = try requireLawfulContext(
+            metadata,
+            requirements: .init(
+                requireServiceId: true,
+                requirePatientUserId: true,
+                requireHabilitationId: true,
+                requireFinalidade: true,
+                requireSessionId: true
+            )
+        )
+        guard !actorId.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+            throw CoreLawError.invalidLawfulContext("Audit actorId must be non-empty")
+        }
         let auditURL = root.appending(path: "logs").appending(path: "storage-audit.jsonl")
         try FileManager.default.createDirectory(at: auditURL.deletingLastPathComponent(), withIntermediateDirectories: true)
 
@@ -236,12 +263,12 @@ public actor FileBackedStorageService: StorageService {
         }
     }
 
-    private func requireLawfulContext(_ lawfulContext: [String: String]) throws {
-        for key in ["actorRole", "scope"] {
-            guard lawfulContext[key] != nil else {
-                throw FirstSliceError.missingLawfulContext(key)
-            }
-        }
+    @discardableResult
+    private func requireLawfulContext(
+        _ lawfulContext: [String: String],
+        requirements: LawfulContextRequirement = .init()
+    ) throws -> CoreLawfulContext {
+        try LawfulContextValidator.validate(lawfulContext, requirements: requirements)
     }
 
     private func appendLine(_ data: Data, to url: URL) throws {
@@ -383,10 +410,15 @@ public actor FileBackedRecordIndex {
     }
 
     private func requireLawfulContext(_ lawfulContext: [String: String], patientUserId: UUID) throws {
-        for key in ["actorRole", "scope", "finalidade", "habilitationId", "patientUserId"] {
-            guard lawfulContext[key] != nil else { throw FirstSliceError.missingLawfulContext(key) }
-        }
-        guard lawfulContext["patientUserId"] == patientUserId.uuidString else {
+        let context = try LawfulContextValidator.validate(
+            lawfulContext,
+            requirements: .init(
+                requirePatientUserId: true,
+                requireHabilitationId: true,
+                requireFinalidade: true
+            )
+        )
+        guard context.patientUserId == patientUserId else {
             throw FirstSliceError.retrievalScopeViolation
         }
     }

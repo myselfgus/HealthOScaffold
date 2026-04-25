@@ -14,6 +14,10 @@ It is intentionally not about scenario-specific implementations.
 
 ## Invariant Enforcement Status
 
+- [x] Core lawful-context enforcement now has a reusable typed validator/adapter (`LawfulContextValidator`) that accepts current map payloads and validates required constitutional keys (`actorRole`, `scope`, `finalidade`, service/patient/professional/habilitation/session ids).
+- [x] Core law typed failures now include explicit lawful-context/consent/habilitation/finalization error contracts (`CoreLawError`) instead of adding new generic error pathways.
+- [x] File-backed storage audit/get/list paths now fail closed on missing governed context with typed law failures and enforce stronger audit context requirements for sensitive operations.
+- [x] Swift XCTest coverage now includes lawful-context negative/positive contract tests and storage governed-vs-operational failure distinction tests.
 - [x] Draft/finalization invariant now has explicit code-level guard (`FirstSliceInvariantEnforcer.ensureSOAPDraftCanFinalize`) and typed failures for missing gate approval / invalid draft finalization state.
 - [x] Registry activation now enforces typed invalid-state guards for invalid bundle lifecycle state and registry inconsistency before promoting bundles.
 - [x] AACI runtime mediation now enforces Core gate-required posture for regulatory draft actors (`aaci.draft-composer`, `aaci.referral-draft`, `aaci.prescription-draft`) even when a bundle binding omits explicit gate primitive flags.

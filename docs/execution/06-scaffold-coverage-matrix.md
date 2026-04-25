@@ -90,6 +90,8 @@ Legend:
 - [x] AACI activation/load seam now maps registry/loader errors into explicit typed loader categories (`GOSLoadTypedError.failure`) while preserving underlying registry error context
 - [x] AACI resolved GOS runtime metadata now exposes bounded diagnostics (`gosBindingCount`, `gosCompilerWarningCount`) alongside actor/family context without moving sovereign law into GOS/runtime
 - [x] invariant enforcement layer now hard-fails on finalization without approved gate (`FirstSliceInvariantEnforcer`), invalid GOS activation state (`invalidActivationState`), invalid bundle lifecycle activation (`invalidBundleState`), and core-gate-required regulatory draft actors under AACI mediation
+- [x] pragmatic invariant matrix now exists and maps constitutional invariants to concrete enforcement/tests/gaps (`docs/execution/10-invariant-matrix.md`)
+- [x] Swift lifecycle hardening now includes explicit deprecated-bundle load denial under active-only load requirements and known-bundle history preservation checks on denied lifecycle transitions
 - [~] provenance-preserving compile output can still be enriched beyond the current source-hash/report baseline
 - [~] activation/deprecation policy controls can still be deepened beyond current minimum hardening (multi-review, separation-of-duties, version pinning)
 - [~] deep execution-time adoption across AACI paths beyond the current first-slice internal runtime paths remains to be completed

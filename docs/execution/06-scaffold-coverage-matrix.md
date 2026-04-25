@@ -66,6 +66,9 @@ Legend:
 - [x] AACI default runtime binding plan scaffold established in Swift
 - [x] minimal-functional file-backed runtime loader/registry established
 - [x] loader/registry minimum hardening now checks active-pointer consistency, required bundle artifacts, compiler-report pass/fail status, and runtime-binding-plan compatibility
+- [x] loader now fails with typed errors when registry entries are missing/corrupted, active pointers are missing but active candidates exist, or multiple known bundles are concurrently active for one spec
+- [x] file-backed activation now enforces single-active-per-spec resolution by superseding previously active manifests when a different bundle is promoted
+- [x] lifecycle transitions now enforce explicit policy-valid moves with typed invalid-transition failures rather than permissive state rewrites
 - [x] AACI activation/load seam established
 - [x] first-slice runner now consumes optional active GOS bundles to mediate persisted draft content, metadata, events, and provenance
 - [x] AACI runtime draft composition/referral/prescription now consume active GOS mediation directly inside orchestrator execution paths

@@ -68,6 +68,8 @@ It is intentionally not about scenario-specific implementations.
 - [x] minimal activation hardening added: only reviewed/active bundles may be promoted, and deprecate/revoke clear active registry pointers
 - [x] bootstrap exemplar bundle, registry entry, and copy script added for `aaci.first-slice`
 - [x] minimum loader hardening added for registry-pointer consistency, manifest/spec/report/source-provenance presence, compiler-report validity checks, and runtime-binding-plan shape checks
+- [x] deterministic multi-bundle conflict hardening added in file-backed registry loader (typed failures for missing active pointer with active candidates, competing active bundles, missing/corrupted registry entries)
+- [x] lifecycle transition hardening now enforces explicit allowed transitions (`draft -> reviewed`, `reviewed -> active`, `reviewed -> revoked`, `active -> deprecated`, `active -> revoked`) with typed invalid-transition failures
 - [x] minimal lifecycle ergonomics helper added for reviewed→active promotion (`FileBackedGOSBundleRegistry.promoteReviewedBundle(...)`, surfaced in CLI as `--gos-promote-bundle`)
 - [x] draft→reviewed review records and append-only lifecycle audit records now persist in the file-backed registry/CLI path
 - [x] registry lifecycle persistence now remains schema-aligned in `snake_case` across manifest, registry entry, review record, and audit artifacts
@@ -94,6 +96,10 @@ It is intentionally not about scenario-specific implementations.
   - load failures for missing spec/compiler-report/source-provenance artifacts
   - load failure when registry active pointer references an unknown bundle id
   - runtime-binding-plan mismatch rejection
+  - registry-missing and registry-corruption load failures
+  - missing active-pointer inconsistency with known active bundle candidates
+  - deterministic rejection of competing active bundles for the same spec
+  - bundle-load success without `runtime-binding-plan.json` plus AACI default-plan activation fallback
 - [x] TypeScript tests added for `@healthos/gos-tooling` compile + cross-reference failure paths
 - [x] TypeScript tests now also cover bundle CLI lifecycle artifact emission
 - [x] TypeScript tests now also cover CLI `validate` and `compile` success paths plus validation/bundle failure exits for evidence-hook and cross-reference defects

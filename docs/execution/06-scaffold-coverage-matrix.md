@@ -234,3 +234,14 @@ What remains is mostly optional hardening and procedural refinement, not identit
 - [x] all declared GOS primitive families now exist in canonical schema form
 - [x] GOS now also has authoring docs, runtime-binding docs, lifecycle docs, app-consumption docs, a generic YAML template, an authoring schema, a bundle-manifest schema, TypeScript tooling scaffold, and Swift runtime contracts
 - [~] GOS still needs broader runtime adoption and richer lifecycle policy hardening before heavy production use
+
+## 14. Regulatory / interoperability / signature / emergency governance
+- [x] regulatory-audit scaffold now has governed contracts with fail-closed validation for legal basis, rationale, scope, lawfulContext, core mediation, and data-layer minimization
+- [x] emergency/break-glass scaffold now has governed request+grant contracts with mandatory rationale/scope/duration, expirability, post-review obligation, patient-notification obligation, and AACI/GOS authority denial
+- [x] retention-vs-visibility governance now has explicit contractual separation for legal retention obligation, patient visibility/export, service custody, deletion eligibility, and anonymization eligibility
+- [x] digital-signature scaffold now enforces honest legal status (`unsigned` / `signature_requested` / placeholder states) and rejects signature flow without final-document lineage, approved gate, and document hash
+- [x] interoperability scaffold now models FHIR/RNDS/TISS as profile adapters/packages with source refs/hashes/provenance and placeholder-only external delivery (no real endpoint integration)
+- [x] legal/probative lineage now has explicit contract fields for source draft, gate request/resolution, final document ref/hash, signer metadata, signature envelope placeholder, provenance chain, retention class, and export/audit package refs
+- [x] observability taxonomy now includes `regulatory.audit.*`, `emergency_access.*`, `retention.visibility_decision`, `signature.*`, and `interoperability.*` event kinds with non-sensitive payload posture
+- [~] SQL persistence is scaffold-level only for new governance tables; no production RBAC/approval workflow engine is wired yet
+- [~] cross-runtime adoption is partial: contracts and tests are in Core, while runtime/app/operator surfaces still consume previous governance set by default

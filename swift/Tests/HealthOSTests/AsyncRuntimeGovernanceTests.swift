@@ -128,6 +128,8 @@ final class AsyncRuntimeGovernanceTests: XCTestCase {
         }
 
         XCTAssertEqual(result.state, .deadLetter)
+        let events = await runtime.observabilityEvents()
+        XCTAssertTrue(events.contains { $0.kind == .policyDenied && $0.failureKind == .policyDenied })
     }
 
     func testNonSensitiveJobRunsWithoutLawfulContext() async throws {
@@ -284,6 +286,19 @@ final class AsyncRuntimeGovernanceTests: XCTestCase {
         let events = await runtime.observabilityEvents()
         XCTAssertTrue(events.contains { $0.kind == .failed })
         XCTAssertTrue(events.contains { $0.kind == .deadLettered })
+    }
+
+    func testPolicyDeniedFailurePreservedInExecutionRecord() async throws {
+        let runtime = InMemoryAsyncJobRuntime()
+        let job = try await runtime.enqueue(makeJob(sensitive: true))
+
+        _ = try await runtime.runJob(id: job.id, lawfulContext: nil) { _, _ in
+            XCTFail("Execution must be denied by policy before handler execution")
+            return .completed(outputRefs: [], provenanceRef: nil, auditRef: nil)
+        }
+
+        let inspected = try await runtime.inspectJob(id: job.id)
+        XCTAssertEqual(inspected.1?.lastFailure?.kind, .policyDenied)
     }
 
     func testAppCannotSubmitSensitiveJobWithoutCoreMediation() async throws {

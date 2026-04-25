@@ -15,6 +15,8 @@ Define the minimum operator-facing visibility required to run a single-node Heal
 ### Workload health
 - async failed jobs count
 - async deferred jobs count
+- async dead-letter count
+- async retry-scheduled count
 - gate backlog count
 - stale pending gates count
 - stale drafts awaiting gate count
@@ -40,6 +42,22 @@ They must not be treated as legal proof of access authorization or clinical comp
 - queue/gate panel
 - backup/restore panel
 - integrity panel
+
+## Async job event surface (implemented scaffold)
+- `job.enqueued`
+- `job.started`
+- `job.completed`
+- `job.failed`
+- `job.retry_scheduled`
+- `job.dead_lettered`
+- `job.cancelled`
+- `job.policy_denied`
+- `job.idempotency_reused`
+
+Event payload rule:
+- include job id, job kind, state, source actor/system, timestamp
+- include failure kind and provenance reference when present
+- never include direct identifiers in observability event payloads
 
 ## Alert classes
 - warning

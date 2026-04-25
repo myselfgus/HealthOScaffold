@@ -466,6 +466,14 @@ public actor FirstSliceRunner {
                 )
             )
         )
+        try await appendProvenance(
+            .init(
+                actorId: professional.id.uuidString,
+                operation: "gate.request",
+                timestamp: .now
+            ),
+            to: &provenanceRecords
+        )
         let gateResolution = await gateService.resolve(
             gateRequest,
             resolverUserId: professional.id,

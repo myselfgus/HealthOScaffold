@@ -76,6 +76,7 @@ It is intentionally not about scenario-specific implementations.
 ## 6. App boundary discipline
 - [x] app-boundary doctrine clarified: apps do not interpret GOS as sovereign law
 - [x] examples of allowed Scribe/Sortio/CloudClinic consumption patterns documented
+- [x] Swift boundary coverage now verifies Scribe bridge state remains runtime-mediated and does not expose raw compiled GOS payload/spec objects as app-law inputs
 
 ## 7. Validation hardening
 - [x] Swift XCTest coverage now verifies file-backed lifecycle/loader behavior for:
@@ -94,6 +95,7 @@ It is intentionally not about scenario-specific implementations.
 - [x] TypeScript tests added for `@healthos/gos-tooling` compile + cross-reference failure paths
 - [x] TypeScript tests now also cover bundle CLI lifecycle artifact emission
 - [x] TypeScript tests now also cover CLI `validate` and `compile` success paths plus validation/bundle failure exits for evidence-hook and cross-reference defects
+- [x] Swift XCTest boundary coverage now verifies active-bundle and no-bundle first-slice execution, explicit gate.request/gate.resolve/document.finalize separation, and draft-only preservation under rejected human gate even when GOS is active
 
 ## Reading rule
 

@@ -2,6 +2,28 @@
 
 ## COMPLETED
 
+### RT-009 Establish repository validation harness and drift detectors
+Outcome:
+- local validation harness added (`scripts/validate-local.sh`) with fail-closed sequencing for bootstrap, docs/schema/contract checks, Swift build/test, TS build/test, Python compile check, and CLI/Scribe smoke checks
+- documentation drift checker added (`scripts/check-docs.sh`) to validate required docs, referenced paths, documented Make targets, stale test claims, and accidental production-ready wording
+- contract drift checker added (`scripts/check-contract-drift.sh`) for critical schema/Swift/TS/SQL presence plus storage/runtime/GOS vocabulary parity checks
+- schema syntax harness added (`scripts/validate-schemas.sh`) and Makefile targets aligned (`validate-docs`, `validate-schemas`, `validate-contracts`, `validate-all`, `python-check`, `smoke-cli`, `smoke-scribe`)
+Files touched:
+- `Makefile`
+- `scripts/validate-local.sh`
+- `scripts/check-docs.sh`
+- `scripts/check-contract-drift.sh`
+- `scripts/validate-schemas.sh`
+- `README.md`
+- `AGENTS.md`
+- `CLAUDE.md`
+- `docs/execution/02-status-and-tracking.md`
+- `docs/execution/06-scaffold-coverage-matrix.md`
+- `docs/execution/10-invariant-matrix.md`
+- `docs/execution/11-current-maturity-map.md`
+- `docs/execution/12-next-agent-handoff.md`
+- `docs/execution/todo/runtimes-and-aaci.md`
+
 ### RT-007 Harden async policy-denial observability and failure transition guards
 Outcome:
 - async runtime now emits explicit `job.policy_denied` events when lawful-context/policy checks fail closed before handler execution

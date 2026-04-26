@@ -14,6 +14,14 @@ Legend:
 - [~] partially established / needs closure
 - [ ] not yet established enough
 
+## 0. Repository validation harness
+- [x] local validation harness exists (`make validate-all` / `scripts/validate-local.sh`)
+- [x] docs drift checker exists (`scripts/check-docs.sh`)
+- [x] contract drift checker exists (`scripts/check-contract-drift.sh`)
+- [x] schema syntax harness exists (`scripts/validate-schemas.sh`)
+- [x] smoke commands are explicit (`make smoke-cli`, `make smoke-scribe`)
+- [~] validation remains local-only (no distributed CI gate in this wave)
+
 ## 1. Canonical system identity
 - [x] HealthOS defined as the whole system
 - [x] HealthOS explicitly defined as health-exclusive by ontology (not generic cloud + plugins)

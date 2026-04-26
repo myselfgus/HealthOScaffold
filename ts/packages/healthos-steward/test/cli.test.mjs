@@ -23,6 +23,12 @@ test('prompt codex-next works without provider', () => {
   assert.match(out, /Generate next engineering task/);
 });
 
+test('next-task command is deterministic and non-deprecated', () => {
+  const out = execFileSync('node', [cli, 'next-task'], { encoding: 'utf8', cwd });
+  assert.match(out, /recommended_command/);
+  assert.doesNotMatch(out, /Deprecated/);
+});
+
 test('agent mode requires provider and network flag', () => {
   let failed = false;
   try {

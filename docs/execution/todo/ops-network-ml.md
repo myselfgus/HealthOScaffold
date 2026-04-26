@@ -115,6 +115,21 @@ Files touched:
 - `docs/execution/skills/project-steward-skill.md`
 - `docs/execution/02-status-and-tracking.md`
 
+### ML-007 Complete Steward provider hardening validation closure
+Outcome:
+- restored deterministic `healthos-steward next-task` command (non-deprecated) for offline/core task scaffolding
+- hardened provider adapters with consistent dry-run-disabled behavior, HTTP error classification, and shared output extraction for OpenAI/Anthropic/xAI
+- PR review posting now writes the real provider output only when invocation succeeds; no placeholder comment is posted on failure
+- provider unit tests now mock `fetch` for OpenAI/Anthropic/xAI real invocation paths without live network
+Files touched:
+- `ts/packages/healthos-steward/src/steward.ts`
+- `ts/packages/healthos-steward/src/providers/xai.ts`
+- `ts/packages/healthos-steward/test/cli.test.mjs`
+- `ts/packages/healthos-steward/test/providers.test.mjs`
+- `docs/architecture/44-project-steward-agent.md`
+- `docs/execution/skills/project-steward-skill.md`
+- `docs/execution/02-status-and-tracking.md`
+
 ## READY
 
 ### OPS-003 Define incident-response command set for first operator tools

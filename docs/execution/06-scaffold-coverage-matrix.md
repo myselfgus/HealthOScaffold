@@ -275,3 +275,12 @@ What remains is mostly optional hardening and procedural refinement, not identit
 - [x] observability taxonomy now includes `regulatory.audit.*`, `emergency_access.*`, `retention.visibility_decision`, `signature.*`, and `interoperability.*` event kinds with non-sensitive payload posture
 - [~] SQL persistence is scaffold-level only for new governance tables; no production RBAC/approval workflow engine is wired yet
 - [~] cross-runtime adoption is partial: contracts and tests are in Core, while runtime/app/operator surfaces still consume previous governance set by default
+
+## 11. Scaffold RC closure audit status (2026-04-26)
+
+- [x] objective RC criteria documented (`docs/execution/13-scaffold-release-candidate-criteria.md`)
+- [x] final gap register documented (`docs/execution/14-final-gap-register.md`)
+- [x] scaffold finalization plan documented (`docs/execution/15-scaffold-finalization-plan.md`)
+- [~] strict closure still blocked by open small-closure items tracked as scaffold blockers (GAP-001, GAP-002)
+- [x] non-blocking production-phase gaps are explicitly separated from scaffold closure
+

@@ -17,8 +17,12 @@ As of April 26, 2026, repository posture is:
 4. `06-scaffold-coverage-matrix.md`
 5. `10-invariant-matrix.md`
 6. `11-current-maturity-map.md`
-7. relevant `todo/*.md`
-8. matching `skills/*.md`
+7. `12-next-agent-handoff.md`
+8. `13-scaffold-release-candidate-criteria.md`
+9. `14-final-gap-register.md`
+10. `15-scaffold-finalization-plan.md`
+11. relevant `todo/*.md`
+12. matching `skills/*.md`
 
 ## Maturity ladder (required language)
 

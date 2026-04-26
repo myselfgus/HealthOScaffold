@@ -284,3 +284,20 @@ Whenever a work unit ends, update:
 - in progress
 - known gaps
 - open blockers / decisions
+
+## Scaffold RC closure / final gap audit (2026-04-26)
+
+- completed full-repo closure audit focused on scaffold readiness (not product readiness) and produced explicit closure criteria doc: `docs/execution/13-scaffold-release-candidate-criteria.md`
+- created final actionable residual gap register with category + impact + owner/module + validation expectation: `docs/execution/14-final-gap-register.md`
+- created explicit finalization plan sequencing last closure actions, merge criteria, validation criteria, and post-scaffold handoff: `docs/execution/15-scaffold-finalization-plan.md`
+- synchronized entry/read-order docs (`README.md`, `AGENTS.md`, `CLAUDE.md`, `docs/execution/README.md`) to include scaffold RC closure references and anti-overclaim posture
+- synchronized maturity/handoff docs (`11-current-maturity-map.md`, `12-next-agent-handoff.md`) with closure classification and blocker-aware next task selection
+- current explicit scaffold blockers for strict closure: GAP-001 (cross-app adapter propagation) and GAP-002 (incident command set)
+
+Validation executed in this work unit:
+- `make validate-all` => PASS (local harness)
+- `cd swift && swift build && swift test` => PASS
+- `cd ts && npm install && npm run build && npm test --if-present` => PASS (workspace has no root test script; command exits clean)
+- `cd python && python -m compileall .` => PASS
+- `cd swift && swift run HealthOSCLI && swift run HealthOSScribeApp --smoke-test` => PASS
+

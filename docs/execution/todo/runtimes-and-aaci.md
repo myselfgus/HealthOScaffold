@@ -206,3 +206,25 @@ Definition of done:
 - no subagent requires undefined access semantics
 - provider routing remains provider-agnostic at contract level
 - actor/agent/runtime vocabulary matches glossary and schemas
+
+### RT-010 Scaffold RC closure audit and final gap classification
+Outcome:
+- scaffold RC closure criteria now explicit and objective in a dedicated execution doc
+- final residual gap register now classifies blockers, post-scaffold hardening, production, and regulatory requirements with owner/module/validation fields
+- scaffold finalization plan now defines last-action ordering, merge/validation criteria, and non-blocking production-phase items
+- entry/handoff/maturity docs were synchronized to avoid drift and false production claims during closure prep
+Files touched:
+- `docs/execution/13-scaffold-release-candidate-criteria.md`
+- `docs/execution/14-final-gap-register.md`
+- `docs/execution/15-scaffold-finalization-plan.md`
+- `README.md`
+- `AGENTS.md`
+- `CLAUDE.md`
+- `docs/execution/README.md`
+- `docs/execution/02-status-and-tracking.md`
+- `docs/execution/06-scaffold-coverage-matrix.md`
+- `docs/execution/10-invariant-matrix.md`
+- `docs/execution/11-current-maturity-map.md`
+- `docs/execution/12-next-agent-handoff.md`
+- `docs/execution/todo/runtimes-and-aaci.md`
+

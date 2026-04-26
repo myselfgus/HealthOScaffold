@@ -91,3 +91,6 @@ It must not be interpreted as production certification or external regulatory qu
 
 
 | 42. Validation harness fail-closed and drift-sensitive | Repository quality gate | Evita drift silencioso entre docs/contratos/comandos | `make validate-all` encadeia docs/schema/contracts/build/test/smoke e falha em qualquer etapa crítica; scripts retornam non-zero e gravam resumo local | `make validate-all`, `scripts/check-docs.sh`, `scripts/check-contract-drift.sh`, `scripts/validate-schemas.sh` | Ainda local-only; não substitui CI distribuída | Próxima onda: acoplar mesmos gates em CI sem alterar postura de maturidade |
+
+| 43. Scaffold closure never equals product readiness | Repository governance | Evita claim falso de produção/compliance ao fechar scaffold | critérios explícitos de scaffold RC + non-claims em `13-scaffold-release-candidate-criteria.md`; gap register/plan exigem classificação de lacunas em vez de ocultação | validação documental via `scripts/check-docs.sh` + execução de `make validate-all` | Ainda depende de disciplina humana para manter wording atualizado | Revalidar critérios/non-claims a cada rodada de fechamento e tag prep |
+

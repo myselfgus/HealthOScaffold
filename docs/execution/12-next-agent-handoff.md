@@ -7,9 +7,10 @@ Repository is in controlled implementation/scaffold hardening with strong govern
 ## How to choose next task
 
 1. Open `docs/execution/02-status-and-tracking.md`.
-2. Pick highest-priority `READY` task in `docs/execution/todo/*.md`.
-3. Load matching skill in `docs/execution/skills/`.
-4. Validate dependencies before coding.
+2. Confirm closure criteria and blockers in `docs/execution/13-scaffold-release-candidate-criteria.md` and `docs/execution/14-final-gap-register.md`.
+3. Pick highest-priority `READY` task in `docs/execution/todo/*.md`.
+4. Load matching skill in `docs/execution/skills/`.
+5. Validate dependencies before coding.
 
 ## Do not touch without explicit reason
 
@@ -19,11 +20,11 @@ Repository is in controlled implementation/scaffold hardening with strong govern
 
 ## Priority gaps now
 
-1. wire `make validate-all` quality gates into CI/distributed execution without declaring production-hardening
-2. propagate cross-app envelope usage into non-Scribe adapters
-3. extend runtime adapter coverage (user-agent/service) with boundary tests
+1. close scaffold blockers listed in `docs/execution/14-final-gap-register.md` (currently GAP-001 cross-app adapter propagation and GAP-002 incident command set)
+2. extend runtime adapter coverage (user-agent/service) with boundary tests
+3. wire `make validate-all` quality gates into CI/distributed execution without declaring production-hardening
 4. continue storage/retrieval/provider parity without fake capability claims
-5. define operator incident command set from existing ops observability contracts
+5. keep regulatory/provider/semantic non-claims explicit while preparing scaffold RC fixes + tag prep
 
 ## Validation command baseline
 

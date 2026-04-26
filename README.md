@@ -98,3 +98,12 @@ Use `docs/execution/11-current-maturity-map.md` for full detail. Short view:
 - Providers/ML/retrieval semantic: **scaffolded contract to implemented seam only**
 - Apps/UI: **contract-first + minimal Scribe validation UI, no final product UI**
 - Ops/network/backup/regulatory: **governed scaffold with tests; not production-hardened**
+
+## Scaffold RC closure references
+
+For final scaffold-closure auditing and handoff discipline, use:
+- `docs/execution/13-scaffold-release-candidate-criteria.md`
+- `docs/execution/14-final-gap-register.md`
+- `docs/execution/15-scaffold-finalization-plan.md`
+
+A scaffold RC decision is about architectural/coding-foundation completion, not product or compliance completion.

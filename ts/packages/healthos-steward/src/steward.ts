@@ -5,7 +5,7 @@ import { execSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { createProviderRouter } from './providers/router.js';
 import { appendInvocationLog } from './providers/invocation-log.js';
-import type { StewardLLMInvocationLog, StewardLLMRequest } from './providers/types.js';
+import type { StewardLLMInvocationLog, StewardLLMRequest, StewardLLMResponse } from './providers/types.js';
 
 export const REQUIRED_DOCS = [
   'README.md', 'AGENTS.md', 'CLAUDE.md', 'docs/execution/02-status-and-tracking.md', 'docs/execution/06-scaffold-coverage-matrix.md',
@@ -90,34 +90,42 @@ class StewardCore {
 
 class StewardAgentRuntime {
   constructor(private readonly root: string) {}
-  private async invoke(command: string, request: StewardLLMRequest, prNumber?: number) {
+  private async invoke(command: string, request: StewardLLMRequest, prNumber?: number): Promise<StewardLLMResponse> {
     const router = await createProviderRouter(this.root);
     const providerKind = router.explainProvider(request.providerId).kind;
     const response = await router.invoke(request);
     console.log(response.text || JSON.stringify(response, null, 2));
     const row: StewardLLMInvocationLog = { timestamp: new Date().toISOString(), command, providerId: response.providerId, providerKind, model: response.model, templateId: request.templateId, inputHash: response.inputHash, outputHash: response.outputHash, status: response.status, errorKind: response.errorKind, durationMs: response.durationMs, dryRun: request.dryRun, postedToGitHub: response.postedToGitHub, repoRef: gitSummary(this.root).head, prNumber };
     await appendInvocationLog(resolve(this.root, 'runtime-data/steward/model-invocations.jsonl'), row);
+    return response;
+  }
+  private responseExitCode(response: StewardLLMResponse): number {
     return response.status === 'ok' || response.status === 'dryRun' ? 0 : 2;
   }
   async planNext(providerId: string, dryRun: boolean, allowNetwork: boolean) {
     const prompt = await readFile(resolve(this.root, '.healthos-steward/prompts/model-next-task.md'), 'utf8');
-    return this.invoke('agent plan-next', { providerId, templateId: 'model-next-task', systemPrompt: 'HealthOS steward agent runtime', userPrompt: prompt, inputKind: 'nextTask', repoContextRefs: REQUIRED_DOCS as unknown as string[], dryRun, allowNetwork, allowGitHubWrite: false });
+    const response = await this.invoke('agent plan-next', { providerId, templateId: 'model-next-task', systemPrompt: 'HealthOS steward agent runtime', userPrompt: prompt, inputKind: 'nextTask', repoContextRefs: REQUIRED_DOCS as unknown as string[], dryRun, allowNetwork, allowGitHubWrite: false });
+    return this.responseExitCode(response);
   }
   async architectureReview(providerId: string, dryRun: boolean, allowNetwork: boolean) {
     const prompt = await readFile(resolve(this.root, '.healthos-steward/prompts/model-architecture-review.md'), 'utf8');
-    return this.invoke('agent architecture-review', { providerId, templateId: 'model-architecture-review', systemPrompt: 'HealthOS steward architecture reviewer', userPrompt: prompt, inputKind: 'architectureReview', repoContextRefs: ['docs/architecture/44-project-steward-agent.md'], dryRun, allowNetwork, allowGitHubWrite: false });
+    const response = await this.invoke('agent architecture-review', { providerId, templateId: 'model-architecture-review', systemPrompt: 'HealthOS steward architecture reviewer', userPrompt: prompt, inputKind: 'architectureReview', repoContextRefs: ['docs/architecture/44-project-steward-agent.md'], dryRun, allowNetwork, allowGitHubWrite: false });
+    return this.responseExitCode(response);
   }
   async reviewDiff(providerId: string, dryRun: boolean, allowNetwork: boolean) {
     const diff = execSync('git diff -- .', { cwd: this.root, encoding: 'utf8' });
-    return this.invoke('agent review-diff', { providerId, templateId: 'model-pr-review', systemPrompt: 'HealthOS steward diff reviewer', userPrompt: diff || 'No local diff.', inputKind: 'diffReview', repoContextRefs: ['docs/execution/10-invariant-matrix.md'], dryRun, allowNetwork, allowGitHubWrite: false });
+    const response = await this.invoke('agent review-diff', { providerId, templateId: 'model-pr-review', systemPrompt: 'HealthOS steward diff reviewer', userPrompt: diff || 'No local diff.', inputKind: 'diffReview', repoContextRefs: ['docs/execution/10-invariant-matrix.md'], dryRun, allowNetwork, allowGitHubWrite: false });
+    return this.responseExitCode(response);
   }
   async reviewPr(providerId: string, pr: string, repo: string, dryRun: boolean, allowNetwork: boolean, postComment: boolean) {
     if (!githubReady(this.root)) throw new Error('GitHub integration unavailable: gh CLI missing or unauthenticated.');
     const data = loadPRDetails(this.root, pr, repo);
     const payload = `PR #${data.number}: ${data.title}\n${loadPRDiff(this.root, pr, repo).slice(0, 20000)}`;
-    const code = await this.invoke('agent review-pr', { providerId, templateId: 'model-pr-review', systemPrompt: 'HealthOS steward PR reviewer', userPrompt: payload, inputKind: 'prReview', repoContextRefs: ['.healthos-steward/policies/invariant-policy.yaml', '.healthos-steward/policies/pr-review-rubric.yaml'], dryRun, allowNetwork, allowGitHubWrite: postComment });
-    if (postComment && !dryRun) runGh(this.root, ['pr', 'comment', pr, '--repo', repo, '--body', '# Steward generated review\n\nPosted explicitly with --post-comment.']);
-    return code;
+    const response = await this.invoke('agent review-pr', { providerId, templateId: 'model-pr-review', systemPrompt: 'HealthOS steward PR reviewer', userPrompt: payload, inputKind: 'prReview', repoContextRefs: ['.healthos-steward/policies/invariant-policy.yaml', '.healthos-steward/policies/pr-review-rubric.yaml'], dryRun, allowNetwork, allowGitHubWrite: postComment });
+    if (postComment && !dryRun && response.status === 'ok' && response.text.trim()) {
+      runGh(this.root, ['pr', 'comment', pr, '--repo', repo, '--body', response.text]);
+    }
+    return this.responseExitCode(response);
   }
 }
 
@@ -137,7 +145,14 @@ export async function runStewardCLI(argv: string[]): Promise<number> {
 
   if (command === 'status') { console.log(JSON.stringify({ ...(await core.status()), providers: router.checkProviders() }, null, 2)); return 0; }
   if (command === 'scan') { const docs = await core.scan(); console.log(JSON.stringify({ required_docs_ok: docs.ok.length, missing_docs: docs.missing }, null, 2)); return docs.missing.length ? 2 : 0; }
-  if (command === 'next-task') { console.log('Deprecated: use `healthos-steward agent plan-next --provider <id> --allow-network` or `healthos-steward prompt codex-next`.'); return 0; }
+  if (command === 'next-task') {
+    console.log(JSON.stringify({
+      recommended_command: 'healthos-steward prompt codex-next',
+      note: 'Deterministic core next-task helper. For model-backed planning use: healthos-steward agent plan-next --provider <id> --allow-network [--dry-run]',
+      prompt: await core.promptCodexNext(),
+    }, null, 2));
+    return 0;
+  }
   if (command === 'validate') { const out = await core.validate(parsed['dry-run'] === true); if ('dryRun' in out) console.log(`dry-run: ${out.dryRun}`); return out.ok === false ? 1 : 0; }
 
   if (command === 'providers' && subcommand === 'list') { console.log(JSON.stringify(router.listProviders(), null, 2)); return 0; }

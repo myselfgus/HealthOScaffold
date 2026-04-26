@@ -98,6 +98,7 @@ Use it for repository diagnostics/planning/handoff (not clinical runtime behavio
 
 ```bash
 cd ts && npx --yes --workspace @healthos/steward healthos-steward status
+cd ts && npx --yes --workspace @healthos/steward healthos-steward next-task
 cd ts && npx --yes --workspace @healthos/steward healthos-steward prompt codex-next
 cd ts && npx --yes --workspace @healthos/steward healthos-steward review-pr --pr 123
 ```

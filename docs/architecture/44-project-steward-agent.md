@@ -34,6 +34,7 @@ TypeScript was selected because the repo already has a TS workspace with existin
 ```bash
 healthos-steward status
 healthos-steward scan
+healthos-steward next-task
 healthos-steward prompt codex-next
 healthos-steward validate [--dry-run]
 healthos-steward review-pr --pr <number> [--repo <owner/repo>]
@@ -95,3 +96,4 @@ Safety constraints:
 - credentials only via env vars
 - invocation logs omit secrets and keep hashes
 - GitHub writes remain explicit (`--post-comment`)
+- PR review comment posting uses real provider output only; no placeholder comment is posted on provider failure.

@@ -71,3 +71,51 @@ test('local-command dry-run does not execute', async () => {
   assert.equal(response.status, 'dryRun');
   rmSync(root, { recursive: true, force: true });
 });
+
+test('openai invoke parses responses payload with mocked fetch', async () => {
+  const root = setup({ version: '0.1.0', providers: [{ ...baseProvider, enabled: true }] });
+  process.env.OPENAI_API_KEY = 'sk-test-openai';
+  global.fetch = async () => ({
+    ok: true,
+    status: 200,
+    json: async () => ({ output_text: 'openai ok' }),
+  });
+  const { createProviderRouter } = await import('../dist/providers/router.js');
+  const router = await createProviderRouter(root);
+  const response = await router.invoke({ providerId: 'openai-default', templateId: 't', systemPrompt: 's', userPrompt: 'u', inputKind: 'freeform', repoContextRefs: [], dryRun: false, allowNetwork: true, allowGitHubWrite: false });
+  assert.equal(response.status, 'ok');
+  assert.equal(response.text, 'openai ok');
+  rmSync(root, { recursive: true, force: true });
+});
+
+test('anthropic invoke parses messages payload with mocked fetch', async () => {
+  const root = setup({ version: '0.1.0', providers: [{ ...baseProvider, id: 'anthropic-default', kind: 'anthropic', apiKeyEnv: 'ANTHROPIC_API_KEY', endpointMode: 'messages', enabled: true }] });
+  process.env.ANTHROPIC_API_KEY = 'anthropic-test-key';
+  global.fetch = async () => ({
+    ok: true,
+    status: 200,
+    json: async () => ({ content: [{ type: 'text', text: 'anthropic ok' }] }),
+  });
+  const { createProviderRouter } = await import('../dist/providers/router.js');
+  const router = await createProviderRouter(root);
+  const response = await router.invoke({ providerId: 'anthropic-default', templateId: 't', systemPrompt: 's', userPrompt: 'u', inputKind: 'freeform', repoContextRefs: [], dryRun: false, allowNetwork: true, allowGitHubWrite: false });
+  assert.equal(response.status, 'ok');
+  assert.equal(response.text, 'anthropic ok');
+  rmSync(root, { recursive: true, force: true });
+});
+
+test('xai invoke parses chat completions payload with mocked fetch', async () => {
+  const root = setup({ version: '0.1.0', providers: [{ ...baseProvider, id: 'xai-default', kind: 'xai', apiKeyEnv: 'XAI_API_KEY', endpointMode: 'chatCompletions', enabled: true }] });
+  process.env.XAI_API_KEY = 'xai-test-key';
+  global.fetch = async () => ({
+    ok: true,
+    status: 200,
+    json: async () => ({ choices: [{ message: { content: 'xai ok' } }] }),
+  });
+  const { createProviderRouter } = await import('../dist/providers/router.js');
+  const router = await createProviderRouter(root);
+  const response = await router.invoke({ providerId: 'xai-default', templateId: 't', systemPrompt: 's', userPrompt: 'u', inputKind: 'freeform', repoContextRefs: [], dryRun: false, allowNetwork: true, allowGitHubWrite: false });
+  assert.equal(response.status, 'ok');
+  assert.equal(response.text, 'xai ok');
+  rmSync(root, { recursive: true, force: true });
+});

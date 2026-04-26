@@ -107,8 +107,15 @@ Location:
 
 Do not treat steward memory as canonical truth; treat it as derived index over official docs.
 
+Steward has two explicitly separated layers:
+- `StewardCore` — deterministic, offline, no provider/network required (status, scan, next-task, validate, memory, prompt, handoff).
+- `StewardAgentRuntime` — model-backed planning/review; requires explicit `--provider` and `--allow-network` and never runs by default.
+
+Codex/Claude Code are external executors, not internal steward providers. Internal LLM provider surface is OpenAI/Anthropic/xAI/disabled only.
+
 ## Project Steward provider safety
 
 - Provider usage in steward is optional and must remain fail-closed.
 - Never commit provider local config with secrets.
 - PR review posting is never default; requires explicit operator flag.
+- PR review posting only sends real provider output; placeholder/error text is never posted as a comment.

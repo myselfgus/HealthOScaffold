@@ -6,6 +6,14 @@ Current phase: Controlled implementation — first vertical slice started
 
 ## Completed recently
 
+
+## Governance/doc readiness consolidation (2026-04-26)
+
+- repository entry docs were reconciled to reduce drift across `README.md`, `AGENTS.md`, `CLAUDE.md`, execution guides, TODOs, and skills
+- command baseline now includes explicit test/check commands in `Makefile` (`swift-test`, `ts-test`, `python-compile`, `swift-smoke`)
+- maturity signaling is now explicitly consolidated in `11-current-maturity-map.md` using the canonical ladder (`doctrine-only` → `production-hardened`)
+- next-agent handoff is now centralized in `12-next-agent-handoff.md` to reduce repeated context reconstruction and false maturity claims
+
 - Scribe / Professional Workspace / AACI session contracts were hardened in Swift Core with explicit app-safe governed surfaces for professional workspace context, session state machine states, capture-transcription honesty, retrieval-context posture, draft review, human gate review, final-document lineage, and aggregate Scribe app runtime state (`ScribeProfessionalWorkspaceContracts.swift`)
 - Scribe-first-slice bridge state now exposes explicit professional session state, workspace context, and allowed-next-actions metadata so app-facing session orchestration remains runtime-mediated and does not imply app-owned law decisions
 - Swift XCTest coverage now includes dedicated Scribe workspace/session boundary negatives (`ScribeProfessionalWorkspaceContractsTests`) for missing habilitation/finalidade/patient selection, gate/finalization state-machine denials, capture/transcription honesty, retrieval scope and leak checks, draft-only/gate-required invariants, gate reviewer/rationale policy, final document lineage, and app-boundary sensitive leak denial

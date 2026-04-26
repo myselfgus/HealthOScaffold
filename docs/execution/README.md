@@ -1,28 +1,39 @@
 # Execution layer
 
-This directory turns the scaffold into a governed execution system.
+This directory governs implementation order and anti-drift behavior for HealthOScaffold.
 
-Use it in this order:
+## Current phase posture
+
+As of April 26, 2026, repository posture is:
+- **controlled implementation / scaffold hardening**
+- executable contracts and tests across multiple domains
+- no production-hardening claim
+
+## Read in this order
 
 1. `00-master-plan.md`
 2. `01-agent-operating-protocol.md`
 3. `02-status-and-tracking.md`
-4. `phases/phase-00-governance.md`
-5. continue sequentially through phase files
-6. consult `todo/` files for executable domain work
+4. `06-scaffold-coverage-matrix.md`
+5. `10-invariant-matrix.md`
+6. `11-current-maturity-map.md`
+7. relevant `todo/*.md`
+8. matching `skills/*.md`
 
-## Purpose
+## Maturity ladder (required language)
 
-This layer exists so that:
-- humans do not lose the conceptual hierarchy
-- AIs do not jump randomly between layers
-- every task has dependencies, outputs, tests, and a definition of done
-- progress can be resumed without ambiguity
+Use only this ladder when updating status/coverage/todo:
+1. doctrine-only
+2. scaffolded contract
+3. implemented seam
+4. tested operational path
+5. production-hardened
+
+Never skip levels in claims. If uncertain, downgrade to the lower level and record the gap.
 
 ## Rules
 
-- Never skip a phase dependency without recording the decision.
-- Never implement app behavior before the relevant core contract exists.
-- Never implement a gate-bypassing shortcut.
-- Never treat AACI as the whole system.
-- Always update status files after a completed work chunk.
+- Never mark a TODO done without concrete validation evidence.
+- Never claim real provider/signature/interoperability/semantic retrieval if still scaffold/stub.
+- Never move core law into app/runtime/GOS.
+- Always update tracking (`02-status-and-tracking.md` + relevant `todo/*.md`) in same work unit.

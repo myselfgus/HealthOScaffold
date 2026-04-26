@@ -49,6 +49,14 @@ Files touched:
 
 ## READY
 
+### DS-007 Propagate lawfulContext and layer guard parity beyond first-slice call sites
+Priority: High
+Skill: `docs/execution/skills/storage-data-layer-skill.md`
+Definition of done:
+- remaining Core storage/retrieval/ops entrypoints reuse same fail-closed context/layer checks
+- tests prove parity for governed-vs-operational boundaries
+
+
 ## TESTS / VALIDATION
 
 - local bootstrap reproduces canonical tree

@@ -770,6 +770,159 @@ export interface SortioNotificationObligationsSummary {
   pendingExportNotifications: number;
 }
 
+
+
+export type AppKind = "Scribe" | "Sortio" | "CloudClinic";
+
+export type AppActorRole =
+  | "professional"
+  | "patient"
+  | "service_admin"
+  | "operational_coordinator"
+  | "observer_auditor";
+
+export type AppRefCapability = "navigation_only" | "data_access_capable";
+
+export type AppRedactionStatus = "none" | "pseudonymized" | "redacted" | "deidentified" | "restricted";
+
+export interface SafeRefCore {
+  refId: string;
+  displayLabel?: string;
+  redactionStatus: AppRedactionStatus;
+  capability: AppRefCapability;
+  grantsDataAccess: boolean;
+  directIdentifierPresent: boolean;
+}
+
+export interface SafeUserRef { core: SafeRefCore; }
+export interface SafePatientRef { core: SafeRefCore; }
+export interface SafeProfessionalRef { core: SafeRefCore; }
+export interface SafeServiceRef { core: SafeRefCore; }
+export interface SafeSessionRef { core: SafeRefCore; }
+export interface SafeDraftRef { core: SafeRefCore; }
+export interface SafeGateRef { core: SafeRefCore; }
+export interface SafeArtifactRef { core: SafeRefCore; }
+export interface SafeExportRef { core: SafeRefCore; }
+export interface SafeAuditRef { core: SafeRefCore; }
+export interface SafeProvenanceRef { core: SafeRefCore; }
+
+export interface AppSubjectRefs {
+  user?: SafeUserRef;
+  patient?: SafePatientRef;
+  professional?: SafeProfessionalRef;
+  service?: SafeServiceRef;
+  session?: SafeSessionRef;
+  draft?: SafeDraftRef;
+  gate?: SafeGateRef;
+  artifact?: SafeArtifactRef;
+  export?: SafeExportRef;
+  audit?: SafeAuditRef;
+  provenance?: SafeProvenanceRef;
+}
+
+export type AppActionId =
+  | "start_professional_session"
+  | "submit_capture"
+  | "request_context_retrieval"
+  | "request_draft_generation"
+  | "submit_gate_review"
+  | "view_finalization_status"
+  | "inspect_consent"
+  | "request_consent_revocation"
+  | "inspect_access_audit"
+  | "request_export"
+  | "ask_user_agent"
+  | "inspect_visibility_status"
+  | "inspect_queue"
+  | "inspect_pending_gates"
+  | "inspect_service_patients"
+  | "inspect_operational_documents"
+  | "assign_administrative_task"
+  | "inspect_service_audit_status";
+
+export type AppDeniedActionReason =
+  | "app_mismatch"
+  | "role_mismatch"
+  | "missing_habilitation"
+  | "consent_not_authorized"
+  | "finality_not_authorized"
+  | "core_mediation_required"
+  | "prohibited_by_policy";
+
+export interface AppAllowedAction {
+  action: AppActionId;
+  coreCommandRef: string;
+  requiresCoreMediation: boolean;
+  legalAuthorizing: boolean;
+}
+
+export interface AppDeniedAction {
+  action: AppActionId;
+  reason: AppDeniedActionReason;
+}
+
+export interface AppSurfaceIssue {
+  kind: "degraded" | "denied" | "warning";
+  code: string;
+  message: string;
+}
+
+export interface RedactionSurfaceStatus {
+  status: AppRedactionStatus;
+  directIdentifierPresent: boolean;
+  reidentificationRequired: boolean;
+  reidentificationAllowed: boolean;
+  reason: string;
+  lawfulScopeSummary: string;
+}
+
+export interface AppSurfaceEnvelope {
+  requestId: string;
+  appKind: AppKind;
+  actorRole: AppActorRole;
+  subjectRefs: AppSubjectRefs;
+  allowedActions: AppAllowedAction[];
+  deniedActions: AppDeniedAction[];
+  issues: AppSurfaceIssue[];
+  provenanceRefs: SafeProvenanceRef[];
+  auditRefs: SafeAuditRef[];
+  redaction: RedactionSurfaceStatus;
+  generatedAt: string;
+  legalAuthorizing: false;
+}
+
+export type AppNotificationKind =
+  | "gate_pending"
+  | "document_finalized"
+  | "consent_changed"
+  | "export_ready"
+  | "emergency_access_occurred"
+  | "regulatory_audit_occurred"
+  | "signature_requested"
+  | "signature_status_changed"
+  | "backup_export_failed"
+  | "provider_degraded"
+  | "async_job_failed";
+
+export interface AppNotificationSurface {
+  id: string;
+  appKind: AppKind;
+  actorRole: AppActorRole;
+  kind: AppNotificationKind;
+  summary: string;
+  refs: AppSubjectRefs;
+  payloadContainsSensitiveData: boolean;
+  grantsAccess: boolean;
+}
+
+export interface NotificationObligationRecord {
+  obligationId: string;
+  kind: AppNotificationKind;
+  patientUserRef?: SafeUserRef;
+  markedComplete: boolean;
+  completionRecordedAt?: string;
+  completionRecordRef?: SafeAuditRef;
+}
 export type ServiceActorRole =
   | "service_admin"
   | "operational_coordinator"

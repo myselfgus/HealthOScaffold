@@ -1,0 +1,141 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://healthos.dev/schemas/contracts/cross-app-coordination-shared-surfaces.schema.json",
+  "title": "CrossAppCoordinationSharedSurfaces",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["appSurfaceEnvelope", "notificationSurface", "notificationObligationRecord"],
+  "properties": {
+    "appSurfaceEnvelope": { "$ref": "#/$defs/AppSurfaceEnvelope" },
+    "notificationSurface": { "$ref": "#/$defs/AppNotificationSurface" },
+    "notificationObligationRecord": { "$ref": "#/$defs/NotificationObligationRecord" }
+  },
+  "$defs": {
+    "SafeRefCore": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["refId", "redactionStatus", "capability", "grantsDataAccess", "directIdentifierPresent"],
+      "properties": {
+        "refId": { "type": "string", "minLength": 1 },
+        "displayLabel": { "type": "string" },
+        "redactionStatus": { "enum": ["none", "pseudonymized", "redacted", "deidentified", "restricted"] },
+        "capability": { "enum": ["navigation_only", "data_access_capable"] },
+        "grantsDataAccess": { "type": "boolean" },
+        "directIdentifierPresent": { "const": false }
+      }
+    },
+    "AppSubjectRefs": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "user": { "$ref": "#/$defs/SafeRefCore" },
+        "patient": { "$ref": "#/$defs/SafeRefCore" },
+        "professional": { "$ref": "#/$defs/SafeRefCore" },
+        "service": { "$ref": "#/$defs/SafeRefCore" },
+        "session": { "$ref": "#/$defs/SafeRefCore" },
+        "draft": { "$ref": "#/$defs/SafeRefCore" },
+        "gate": { "$ref": "#/$defs/SafeRefCore" },
+        "artifact": { "$ref": "#/$defs/SafeRefCore" },
+        "export": { "$ref": "#/$defs/SafeRefCore" },
+        "audit": { "$ref": "#/$defs/SafeRefCore" },
+        "provenance": { "$ref": "#/$defs/SafeRefCore" }
+      }
+    },
+    "AppAllowedAction": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["action", "coreCommandRef", "requiresCoreMediation", "legalAuthorizing"],
+      "properties": {
+        "action": { "type": "string", "minLength": 1 },
+        "coreCommandRef": { "type": "string", "pattern": "^core://" },
+        "requiresCoreMediation": { "const": true },
+        "legalAuthorizing": { "const": false }
+      }
+    },
+    "AppDeniedAction": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["action", "reason"],
+      "properties": {
+        "action": { "type": "string", "minLength": 1 },
+        "reason": {
+          "enum": ["app_mismatch", "role_mismatch", "missing_habilitation", "consent_not_authorized", "finality_not_authorized", "core_mediation_required", "prohibited_by_policy"]
+        }
+      }
+    },
+    "AppSurfaceIssue": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "code", "message"],
+      "properties": {
+        "kind": { "enum": ["degraded", "denied", "warning"] },
+        "code": { "type": "string", "minLength": 1 },
+        "message": { "type": "string", "minLength": 1 }
+      }
+    },
+    "RedactionSurfaceStatus": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "directIdentifierPresent", "reidentificationRequired", "reidentificationAllowed", "reason", "lawfulScopeSummary"],
+      "properties": {
+        "status": { "enum": ["none", "pseudonymized", "redacted", "deidentified", "restricted"] },
+        "directIdentifierPresent": { "const": false },
+        "reidentificationRequired": { "type": "boolean" },
+        "reidentificationAllowed": { "const": false },
+        "reason": { "type": "string", "minLength": 1 },
+        "lawfulScopeSummary": { "type": "string", "minLength": 1 }
+      }
+    },
+    "AppSurfaceEnvelope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["requestId", "appKind", "actorRole", "subjectRefs", "allowedActions", "deniedActions", "issues", "provenanceRefs", "auditRefs", "redaction", "generatedAt", "legalAuthorizing"],
+      "properties": {
+        "requestId": { "type": "string", "format": "uuid" },
+        "appKind": { "enum": ["Scribe", "Sortio", "CloudClinic"] },
+        "actorRole": { "enum": ["professional", "patient", "service_admin", "operational_coordinator", "observer_auditor"] },
+        "subjectRefs": { "$ref": "#/$defs/AppSubjectRefs" },
+        "allowedActions": { "type": "array", "items": { "$ref": "#/$defs/AppAllowedAction" } },
+        "deniedActions": { "type": "array", "items": { "$ref": "#/$defs/AppDeniedAction" } },
+        "issues": { "type": "array", "items": { "$ref": "#/$defs/AppSurfaceIssue" } },
+        "provenanceRefs": { "type": "array", "items": { "$ref": "#/$defs/SafeRefCore" } },
+        "auditRefs": { "type": "array", "items": { "$ref": "#/$defs/SafeRefCore" } },
+        "redaction": { "$ref": "#/$defs/RedactionSurfaceStatus" },
+        "generatedAt": { "type": "string", "format": "date-time" },
+        "legalAuthorizing": { "const": false }
+      }
+    },
+    "AppNotificationSurface": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "appKind", "actorRole", "kind", "summary", "refs", "payloadContainsSensitiveData", "grantsAccess"],
+      "properties": {
+        "id": { "type": "string", "format": "uuid" },
+        "appKind": { "enum": ["Scribe", "Sortio", "CloudClinic"] },
+        "actorRole": { "enum": ["professional", "patient", "service_admin", "operational_coordinator", "observer_auditor"] },
+        "kind": {
+          "enum": ["gate_pending", "document_finalized", "consent_changed", "export_ready", "emergency_access_occurred", "regulatory_audit_occurred", "signature_requested", "signature_status_changed", "backup_export_failed", "provider_degraded", "async_job_failed"]
+        },
+        "summary": { "type": "string", "minLength": 1 },
+        "refs": { "$ref": "#/$defs/AppSubjectRefs" },
+        "payloadContainsSensitiveData": { "const": false },
+        "grantsAccess": { "const": false }
+      }
+    },
+    "NotificationObligationRecord": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["obligationId", "kind", "markedComplete"],
+      "properties": {
+        "obligationId": { "type": "string", "format": "uuid" },
+        "kind": {
+          "enum": ["gate_pending", "document_finalized", "consent_changed", "export_ready", "emergency_access_occurred", "regulatory_audit_occurred", "signature_requested", "signature_status_changed", "backup_export_failed", "provider_degraded", "async_job_failed"]
+        },
+        "patientUserRef": { "$ref": "#/$defs/SafeRefCore" },
+        "markedComplete": { "type": "boolean" },
+        "completionRecordedAt": { "type": "string", "format": "date-time" },
+        "completionRecordRef": { "$ref": "#/$defs/SafeRefCore" }
+      }
+    }
+  }
+}

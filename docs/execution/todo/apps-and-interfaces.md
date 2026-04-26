@@ -193,6 +193,25 @@ Files touched:
 - `docs/execution/06-scaffold-coverage-matrix.md`
 - `docs/execution/10-invariant-matrix.md`
 
+
+### APP-007 Harden cross-app coordination shared app surfaces/contracts
+Outcome:
+- added shared cross-app app-facing envelope contract with typed app kind/actor role/safe subject refs/allowed-denied actions/issues/provenance-audit refs/redaction posture and explicit `legalAuthorizing = false`
+- added typed safe-reference taxonomy (`SafeUserRef`, `SafePatientRef`, `SafeProfessionalRef`, `SafeServiceRef`, `SafeSessionRef`, `SafeDraftRef`, `SafeGateRef`, `SafeArtifactRef`, `SafeExportRef`, `SafeAuditRef`, `SafeProvenanceRef`) with navigation-vs-access capability posture and anti-sensitive-leak guards
+- added role/app-aware action and notification/obligation validators so Scribe/Sortio/CloudClinic surfaces fail-closed on app mismatch, role mismatch, non-core command refs, sensitive payload leaks, and unrecorded patient-obligation completion
+- added dedicated Swift XCTest boundary suite (`CrossAppCoordinationContractsTests`) covering shared envelope, safe refs, role-aware actions, redaction defaults, notification payload minimization, and cross-app surface isolation negatives
+- aligned TypeScript contracts and JSON schema with the new shared cross-app surface vocabulary
+Files touched:
+- `swift/Sources/HealthOSCore/CrossAppCoordinationContracts.swift`
+- `swift/Tests/HealthOSTests/CrossAppCoordinationContractsTests.swift`
+- `ts/packages/contracts/src/index.ts`
+- `schemas/contracts/cross-app-coordination-shared-surfaces.schema.json`
+- `docs/architecture/43-cross-app-coordination-shared-surfaces.md`
+- `docs/execution/02-status-and-tracking.md`
+- `docs/execution/06-scaffold-coverage-matrix.md`
+- `docs/execution/10-invariant-matrix.md`
+- `docs/execution/todo/apps-and-interfaces.md`
+
 ## READY
 
 ## TESTS / VALIDATION

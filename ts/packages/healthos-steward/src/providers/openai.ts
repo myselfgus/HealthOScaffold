@@ -1,5 +1,5 @@
 import type { StewardLLMProvider, StewardLLMProviderConfig, StewardLLMRequest, StewardLLMResponse } from './types.js';
-import { baseResponse, hashText, readEnv, redactSecrets, safeErrorMessage } from './utils.js';
+import { baseResponse, classifyHttpError, extractLLMText, hashText, readEnv, redactSecrets, safeErrorMessage } from './utils.js';
 
 export function createOpenAIProvider(config: StewardLLMProviderConfig): StewardLLMProvider {
   return {
@@ -11,8 +11,8 @@ export function createOpenAIProvider(config: StewardLLMProviderConfig): StewardL
     async invoke(request: StewardLLMRequest): Promise<StewardLLMResponse> {
       const started = Date.now();
       const base = baseResponse(config, request);
-      if (!config.enabled) return { ...base, status: 'disabled', text: '', durationMs: Date.now() - started, outputHash: hashText('') };
-      if (request.dryRun) return { ...base, status: 'dryRun', text: '[dry-run] openai payload prepared', raw: { endpointMode: config.endpointMode }, durationMs: Date.now() - started, outputHash: hashText('[dry-run]') };
+      if (!config.enabled && !request.dryRun) return { ...base, status: 'disabled', text: '', errorKind: 'providerDisabled', errorMessage: 'provider is disabled', durationMs: Date.now() - started, outputHash: hashText('') };
+      if (request.dryRun) return { ...base, status: 'dryRun', text: `[dry-run] openai payload prepared${config.enabled ? '' : ' (provider disabled; no network call)'}`, raw: { endpointMode: config.endpointMode, enabled: config.enabled }, durationMs: Date.now() - started, outputHash: hashText('[dry-run]') };
       if (!request.allowNetwork) return { ...base, status: 'providerError', text: '', errorKind: 'networkDenied', errorMessage: 'network calls are disabled for this invocation', durationMs: Date.now() - started, outputHash: hashText('') };
       const apiKey = readEnv(config.apiKeyEnv);
       if (!apiKey) return { ...base, status: 'missingSecret', text: '', errorKind: 'missingSecret', errorMessage: `missing ${config.apiKeyEnv}`, durationMs: Date.now() - started, outputHash: hashText('') };
@@ -38,9 +38,10 @@ export function createOpenAIProvider(config: StewardLLMProviderConfig): StewardL
         });
         const raw = await response.json() as Record<string, unknown>;
         if (!response.ok) {
-          return { ...base, status: 'providerError', text: '', raw, errorKind: 'httpError', errorMessage: `openai error ${response.status}`, durationMs: Date.now() - started, outputHash: hashText(JSON.stringify(raw)) };
+          const errorKind = classifyHttpError(response.status);
+          return { ...base, status: 'providerError', text: '', raw, errorKind, errorMessage: `openai error ${response.status}`, durationMs: Date.now() - started, outputHash: hashText(JSON.stringify(raw)) };
         }
-        const text = String(raw.output_text ?? '');
+        const text = extractLLMText(raw, config.endpointMode);
         return { ...base, status: 'ok', text: redactSecrets(text), raw, durationMs: Date.now() - started, outputHash: hashText(text) };
       } catch (error) {
         return { ...base, status: String(safeErrorMessage(error)).includes('timeout') ? 'timeout' : 'providerError', text: '', errorKind: 'unknown', errorMessage: safeErrorMessage(error), durationMs: Date.now() - started, outputHash: hashText('') };

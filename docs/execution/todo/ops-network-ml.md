@@ -103,6 +103,18 @@ Files touched:
 - `docs/execution/06-scaffold-coverage-matrix.md`
 - `docs/execution/10-invariant-matrix.md`
 
+### ML-006 Project Steward agent runtime conceptual correction and provider hardening closure
+Outcome:
+- separated deterministic Steward Core commands from provider-backed Agent Runtime commands
+- restricted primary internal LLM providers to openai/anthropic/xai/disabled and removed codex/claude internal-provider posture from examples
+- reinforced explicit network gating (`--allow-network`) and explicit provider requirement for agentic commands
+Files touched:
+- `ts/packages/healthos-steward/*`
+- `.healthos-steward/providers/*`
+- `docs/architecture/44-project-steward-agent.md`
+- `docs/execution/skills/project-steward-skill.md`
+- `docs/execution/02-status-and-tracking.md`
+
 ## READY
 
 ### OPS-003 Define incident-response command set for first operator tools

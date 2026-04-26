@@ -15,7 +15,7 @@
         ],
         "properties": {
           "id": { "type": "string" },
-          "kind": { "enum": ["openai", "anthropic", "xai", "codex-cli", "claude-code-cli", "local-command", "disabled"] },
+          "kind": { "enum": ["openai", "anthropic", "xai", "disabled", "local-command"] },
           "enabled": { "type": "boolean" },
           "model": { "type": "string" },
           "apiKeyEnv": { "type": "string" },
@@ -30,7 +30,10 @@
           "supportsHandoff": { "type": "boolean" },
           "supportsStructuredJson": { "type": "boolean" },
           "supportsToolUse": { "type": "boolean" },
-          "notes": { "type": "string" }
+          "notes": { "type": "string" },
+          "anthropicVersion": { "type": "string" },
+          "command": { "type": "array", "items": { "type": "string" } },
+          "commandAllowlist": { "type": "array", "items": { "type": "array", "items": { "type": "string" } } }
         }
       }
     }

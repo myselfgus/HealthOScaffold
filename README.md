@@ -98,7 +98,6 @@ Use it for repository diagnostics/planning/handoff (not clinical runtime behavio
 
 ```bash
 cd ts && npx --yes --workspace @healthos/steward healthos-steward status
-cd ts && npx --yes --workspace @healthos/steward healthos-steward next-task
 cd ts && npx --yes --workspace @healthos/steward healthos-steward prompt codex-next
 cd ts && npx --yes --workspace @healthos/steward healthos-steward review-pr --pr 123
 ```
@@ -126,7 +125,7 @@ A scaffold RC decision is about architectural/coding-foundation completion, not 
 
 ## Project Steward provider orchestration (model-agnostic)
 
-`@healthos/steward` now supports optional provider adapters (OpenAI, Anthropic, xAI, local-command) with secure defaults:
+`@healthos/steward` now supports optional provider adapters (OpenAI, Anthropic, xAI, disabled) with secure defaults:
 - providers disabled by default
 - dry-run first behavior
 - no secrets committed

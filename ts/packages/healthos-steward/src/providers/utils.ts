@@ -1,11 +1,11 @@
 import { createHash } from 'node:crypto';
-import type { StewardModelProviderConfig, StewardModelRequest, StewardModelResponse } from './types.js';
+import type { StewardLLMProviderConfig, StewardLLMRequest, StewardLLMResponse } from './types.js';
 
 export function hashText(value: string): string {
   return createHash('sha256').update(value).digest('hex');
 }
 
-export function buildInputHash(request: StewardModelRequest): string {
+export function buildInputHash(request: StewardLLMRequest): string {
   return hashText(JSON.stringify({
     providerId: request.providerId,
     templateId: request.templateId,
@@ -17,7 +17,7 @@ export function buildInputHash(request: StewardModelRequest): string {
   }));
 }
 
-export function baseResponse(config: StewardModelProviderConfig, request: StewardModelRequest): Omit<StewardModelResponse, 'status' | 'text' | 'durationMs' | 'outputHash'> {
+export function baseResponse(config: StewardLLMProviderConfig, request: StewardLLMRequest): Omit<StewardLLMResponse, 'status' | 'text' | 'durationMs' | 'outputHash'> {
   return {
     providerId: config.id,
     model: config.model,

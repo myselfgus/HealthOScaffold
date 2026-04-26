@@ -10,6 +10,10 @@ Current phase: Controlled implementation — first vertical slice started
 ## Governance/doc readiness consolidation (2026-04-26)
 
 
+- Project Steward conceptual correction completed: deterministic `StewardCore` and provider-required `StewardAgentRuntime` are now explicitly separated in CLI/runtime behavior
+- Steward provider layer is now explicitly LLM-focused (OpenAI/Anthropic/xAI/disabled), with Codex/Claude Code treated as external executors rather than internal providers
+- agentic operations now require explicit `--provider` and `--allow-network`; deterministic commands continue working without provider or network
+
 - Project Steward engineering scaffold was introduced with a TypeScript CLI package (`@healthos/steward`) and commands for status/scan/next-task/validate/review-pr/memory/prompt/handoff, with explicit fail-closed behavior when GitHub CLI is unavailable or not authenticated
 - repository-scoped persistent steward memory/policy/prompt templates now exist at `.healthos-steward/` with explicit derived-index posture and no-secrets/no-clinical-payload constraints
 - architecture/skill docs now document steward role/boundary (`docs/architecture/44-project-steward-agent.md`, `docs/execution/skills/project-steward-skill.md`) and agent entry docs now reference steward usage without replacing canonical execution docs

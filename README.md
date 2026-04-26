@@ -100,6 +100,7 @@ Use it for repository diagnostics/planning/handoff (not clinical runtime behavio
 cd ts && npx --yes --workspace @healthos/steward healthos-steward status
 cd ts && npx --yes --workspace @healthos/steward healthos-steward next-task
 cd ts && npx --yes --workspace @healthos/steward healthos-steward prompt codex-next
+cd ts && npx --yes --workspace @healthos/steward healthos-steward review-pr --pr 123
 ```
 
 The steward memory is a **derived operational index**. Canonical truth remains in `README.md`, `AGENTS.md`, `CLAUDE.md`, and `docs/execution/*`.

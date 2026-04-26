@@ -10,5 +10,10 @@
   ],
   "last_synced_at": "2026-04-26T00:00:00Z",
   "stale_after_days": 7,
-  "notes": "Operational index only. Official docs remain canonical."
+  "notes": "Operational index only. Official docs remain canonical.",
+  "github_integration": {
+    "mode": "gh-cli",
+    "status": "implemented",
+    "notes": "Requires gh auth login; mock mode for tests via HEALTHOS_STEWARD_GH_MOCK_DIR"
+  }
 }

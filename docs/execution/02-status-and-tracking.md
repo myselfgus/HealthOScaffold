@@ -14,6 +14,7 @@ Current phase: Controlled implementation — first vertical slice started
 - repository-scoped persistent steward memory/policy/prompt templates now exist at `.healthos-steward/` with explicit derived-index posture and no-secrets/no-clinical-payload constraints
 - architecture/skill docs now document steward role/boundary (`docs/architecture/44-project-steward-agent.md`, `docs/execution/skills/project-steward-skill.md`) and agent entry docs now reference steward usage without replacing canonical execution docs
 - TypeScript tests were added for steward CLI baseline commands and parseability checks
+- Project Steward now has real GitHub CLI integration for PR ingestion (PR metadata/checks/comments) and write-through comment commands for PR/issue (`comment-pr`, `comment-issue`), with explicit authenticated-`gh` requirement and fail-closed setup errors
 
 - repository entry docs were reconciled to reduce drift across `README.md`, `AGENTS.md`, `CLAUDE.md`, execution guides, TODOs, and skills
 - command baseline now includes explicit test/check commands in `Makefile` (`swift-test`, `ts-test`, `python-compile`, `swift-smoke`)

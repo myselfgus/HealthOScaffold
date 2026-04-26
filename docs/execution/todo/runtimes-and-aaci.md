@@ -200,6 +200,19 @@ Files touched:
 - `docs/execution/02-status-and-tracking.md`
 - `docs/execution/todo/runtimes-and-aaci.md`
 
+### RT-011 Add real GitHub integration to Project Steward
+Outcome:
+- `healthos-steward review-pr` now reads PR metadata, status checks, issue comments, and review comments through authenticated `gh` CLI
+- `healthos-steward comment-pr` and `healthos-steward comment-issue` now post comments to GitHub targets through `gh`
+- deterministic mock mode (`HEALTHOS_STEWARD_GH_MOCK_DIR`) added for local tests without network/token dependencies
+Files touched:
+- `ts/packages/healthos-steward/src/steward.ts`
+- `ts/packages/healthos-steward/test/*`
+- `docs/architecture/44-project-steward-agent.md`
+- `docs/execution/skills/project-steward-skill.md`
+- `docs/execution/02-status-and-tracking.md`
+- `docs/execution/todo/runtimes-and-aaci.md`
+
 ## READY
 
 ### RT-008 Extend runtime-boundary tests for user-agent and service-runtime adapters

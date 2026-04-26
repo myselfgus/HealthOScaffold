@@ -1,0 +1,10 @@
+{
+  "number": 123,
+  "title": "Test PR",
+  "url": "https://github.com/myselfgus/HealthOScaffold/pull/123",
+  "mergeStateStatus": "CLEAN",
+  "reviewDecision": "REVIEW_REQUIRED",
+  "comments": [{"id": 1}],
+  "reviews": [{"id": 2}],
+  "statusCheckRollup": [{"name": "validate-all", "status": "SUCCESS"}]
+}

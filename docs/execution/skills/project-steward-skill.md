@@ -34,6 +34,9 @@ cd ts && npm test --workspace @healthos/steward
 cd ts && npx --yes --workspace @healthos/steward healthos-steward status
 cd ts && npx --yes --workspace @healthos/steward healthos-steward next-task
 cd ts && npx --yes --workspace @healthos/steward healthos-steward prompt codex-next
+cd ts && npx --yes --workspace @healthos/steward healthos-steward review-pr --pr <n> --repo <owner/repo>
+cd ts && npx --yes --workspace @healthos/steward healthos-steward comment-pr --pr <n> --body "..." --repo <owner/repo>
+cd ts && npx --yes --workspace @healthos/steward healthos-steward comment-issue --issue <n> --body "..." --repo <owner/repo>
 make validate-all
 ```
 

@@ -39,6 +39,23 @@ type ValidationRecord = {
   status: 'pass' | 'fail';
 };
 
+type GitHubIntegrationStatus = {
+  available: boolean;
+  authenticated: boolean;
+  mode: 'gh-cli' | 'mock' | 'unavailable';
+};
+
+type PRDetails = {
+  number: number;
+  title: string;
+  url: string;
+  mergeStateStatus?: string;
+  reviewDecision?: string;
+  comments?: unknown[];
+  reviews?: unknown[];
+  statusCheckRollup?: unknown[];
+};
+
 function repoRoot(): string {
   return resolve(process.cwd(), '..', '..', '..');
 }
@@ -138,6 +155,130 @@ function gitSummary(root: string): { branch: string; head: string } {
   return { branch, head };
 }
 
+function isMockGitHubMode(): boolean {
+  return Boolean(process.env.HEALTHOS_STEWARD_GH_MOCK_DIR);
+}
+
+function runGh(root: string, args: string[]): string {
+  const mockDir = process.env.HEALTHOS_STEWARD_GH_MOCK_DIR;
+  if (mockDir) {
+    const key = args.join('__').replace(/[^a-zA-Z0-9._-]/g, '_');
+    const file = resolve(mockDir, `${key}.json`);
+    try {
+      return execSync(`cat '${file}'`, { encoding: 'utf8' });
+    } catch {
+      throw new Error(`mock response not found for: gh ${args.join(' ')}`);
+    }
+  }
+
+  return execSync(`gh ${args.map((item) => `'${item.replace(/'/g, "'\\''")}'`).join(' ')}`, {
+    cwd: root,
+    encoding: 'utf8',
+    stdio: ['ignore', 'pipe', 'pipe'],
+  });
+}
+
+function githubIntegrationStatus(root: string): GitHubIntegrationStatus {
+  if (isMockGitHubMode()) {
+    return { available: true, authenticated: true, mode: 'mock' };
+  }
+
+  try {
+    execSync('gh --version', { cwd: root, stdio: 'ignore' });
+  } catch {
+    return { available: false, authenticated: false, mode: 'unavailable' };
+  }
+
+  try {
+    execSync('gh auth status', { cwd: root, stdio: 'ignore' });
+    return { available: true, authenticated: true, mode: 'gh-cli' };
+  } catch {
+    return { available: true, authenticated: false, mode: 'gh-cli' };
+  }
+}
+
+function parseJsonSafe<T>(raw: string): T {
+  return JSON.parse(raw) as T;
+}
+
+function requireGithubReady(root: string): GitHubIntegrationStatus {
+  const status = githubIntegrationStatus(root);
+  if (!status.available) {
+    throw new Error('GitHub integration unavailable: gh CLI is not installed.');
+  }
+  if (!status.authenticated) {
+    throw new Error('GitHub integration unavailable: gh CLI is not authenticated (run gh auth login).');
+  }
+  return status;
+}
+
+function getRepoSlug(root: string): string {
+  const remote = execSync('git remote get-url origin', { cwd: root, encoding: 'utf8' }).trim();
+  const match = remote.match(/github\.com[:/](.+?)(?:\.git)?$/);
+  if (!match) {
+    throw new Error(`Unable to infer GitHub repo slug from origin: ${remote}`);
+  }
+  return match[1];
+}
+
+function loadPRDetails(root: string, prNumber: string, repo: string): PRDetails {
+  const viewRaw = runGh(root, [
+    'pr',
+    'view',
+    prNumber,
+    '--repo',
+    repo,
+    '--json',
+    'number,title,url,mergeStateStatus,reviewDecision,comments,reviews,statusCheckRollup',
+  ]);
+  return parseJsonSafe<PRDetails>(viewRaw);
+}
+
+function loadIssueComments(root: string, prNumber: string, repo: string): unknown[] {
+  const raw = runGh(root, ['api', `repos/${repo}/issues/${prNumber}/comments`]);
+  return parseJsonSafe<unknown[]>(raw);
+}
+
+function loadReviewComments(root: string, prNumber: string, repo: string): unknown[] {
+  const raw = runGh(root, ['api', `repos/${repo}/pulls/${prNumber}/comments`]);
+  return parseJsonSafe<unknown[]>(raw);
+}
+
+function buildPRReviewReport(pr: PRDetails, issueComments: unknown[], reviewComments: unknown[]): string {
+  const checks = Array.isArray(pr.statusCheckRollup) ? pr.statusCheckRollup.length : 0;
+  const inlineComments = reviewComments.length;
+  const issueLevelComments = issueComments.length;
+
+  const checklist = [
+    '- [ ] PR moved law into app surface?',
+    '- [ ] PR moved law into GOS?',
+    '- [ ] PR moved law into AACI?',
+    '- [ ] PR allows gate bypass?',
+    '- [ ] PR exposes raw CPF?',
+    '- [ ] PR exposes reidentification mapping?',
+    '- [ ] PR invents fictitious clinical data/examples?',
+    '- [ ] PR claims false maturity/production readiness?',
+    '- [ ] PR updated docs/execution/02-status-and-tracking.md and relevant TODO?',
+    '- [ ] PR updated tests/contracts together when required?',
+    '- [ ] PR executed validation harness (make validate-all)?',
+    '- [ ] PR kept Swift/TS/schema/SQL contracts synchronized when changed?',
+  ].join('\n');
+
+  return [
+    '# PR Review Scaffold (GitHub integrated)',
+    `PR: #${pr.number} ${pr.title}`,
+    `URL: ${pr.url}`,
+    `mergeStateStatus: ${pr.mergeStateStatus ?? 'unknown'}`,
+    `reviewDecision: ${pr.reviewDecision ?? 'unknown'}`,
+    `status checks found: ${checks}`,
+    `issue comments found: ${issueLevelComments}`,
+    `inline review comments found: ${inlineComments}`,
+    '',
+    '## Mandatory checklist',
+    checklist,
+  ].join('\n');
+}
+
 export async function runStewardCLI(argv: string[]): Promise<number> {
   const [command, maybeSubcommand, ...rest] = argv;
   const root = repoRoot();
@@ -146,7 +287,7 @@ export async function runStewardCLI(argv: string[]): Promise<number> {
   const parsed = parseArgs(maybeSubcommand && maybeSubcommand.startsWith('--') ? [maybeSubcommand, ...rest] : rest);
 
   if (!command || command === 'help') {
-    console.log('Usage: healthos-steward <status|scan|next-task|validate|review-pr|memory|prompt|handoff> ...');
+    console.log('Usage: healthos-steward <status|scan|next-task|validate|review-pr|comment-pr|comment-issue|memory|prompt|handoff> ...');
     return 0;
   }
 
@@ -154,7 +295,7 @@ export async function runStewardCLI(argv: string[]): Promise<number> {
     const docs = await checkDocs(root);
     const state = await readProjectState(root);
     const git = gitSummary(root);
-    console.log(JSON.stringify({ git, docs, memory_state: state, github_integration: 'not configured' }, null, 2));
+    console.log(JSON.stringify({ git, docs, memory_state: state, github_integration: githubIntegrationStatus(root) }, null, 2));
     return 0;
   }
 
@@ -189,11 +330,64 @@ export async function runStewardCLI(argv: string[]): Promise<number> {
   }
 
   if (command === 'review-pr') {
-    const pr = parsed.pr;
-    const invariants = await readFile(resolve(steward, 'policies/invariant-policy.yaml'), 'utf8');
-    const rubric = await readFile(resolve(steward, 'policies/pr-review-rubric.yaml'), 'utf8');
-    console.log(`# PR Review Scaffold\nPR: ${pr ?? 'not provided'}\ngithub integration not configured\n\nProvide local diff via: git diff origin/main...HEAD > /tmp/pr.diff\n\n## Invariants\n${invariants}\n\n## Checklist\n${rubric}`);
-    return pr ? 0 : 2;
+    const pr = String(parsed.pr ?? '');
+    if (!pr) {
+      console.error('Missing required flag: --pr <number>');
+      return 2;
+    }
+
+    try {
+      requireGithubReady(root);
+      const repo = String(parsed.repo ?? getRepoSlug(root));
+      const prDetails = loadPRDetails(root, pr, repo);
+      const issueComments = loadIssueComments(root, pr, repo);
+      const reviewComments = loadReviewComments(root, pr, repo);
+      console.log(buildPRReviewReport(prDetails, issueComments, reviewComments));
+      return 0;
+    } catch (error) {
+      console.error(String(error instanceof Error ? error.message : error));
+      return 2;
+    }
+  }
+
+  if (command === 'comment-pr') {
+    const pr = String(parsed.pr ?? '');
+    const body = String(parsed.body ?? '');
+    if (!pr || !body) {
+      console.error('Usage: healthos-steward comment-pr --pr <number> --body "..."');
+      return 2;
+    }
+
+    try {
+      requireGithubReady(root);
+      const repo = String(parsed.repo ?? getRepoSlug(root));
+      runGh(root, ['pr', 'comment', pr, '--repo', repo, '--body', body]);
+      console.log(JSON.stringify({ commented: true, target: 'pr', pr, repo }, null, 2));
+      return 0;
+    } catch (error) {
+      console.error(String(error instanceof Error ? error.message : error));
+      return 2;
+    }
+  }
+
+  if (command === 'comment-issue') {
+    const issue = String(parsed.issue ?? '');
+    const body = String(parsed.body ?? '');
+    if (!issue || !body) {
+      console.error('Usage: healthos-steward comment-issue --issue <number> --body "..."');
+      return 2;
+    }
+
+    try {
+      requireGithubReady(root);
+      const repo = String(parsed.repo ?? getRepoSlug(root));
+      runGh(root, ['issue', 'comment', issue, '--repo', repo, '--body', body]);
+      console.log(JSON.stringify({ commented: true, target: 'issue', issue, repo }, null, 2));
+      return 0;
+    } catch (error) {
+      console.error(String(error instanceof Error ? error.message : error));
+      return 2;
+    }
   }
 
   if (command === 'memory' && subcommand === 'show') {

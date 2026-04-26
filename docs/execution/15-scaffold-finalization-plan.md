@@ -71,3 +71,7 @@ After scaffold closure, prioritize:
 3. operational hardening: incident command set, CI gates, restore drill automation, distributed async execution
 4. regulatory endpoint/signature integration without over-claiming legal validity until complete
 
+
+## Steward-specific safeguard
+
+Steward provider integrations must stay optional, dry-run capable, and explicit for any network/GitHub write operation.

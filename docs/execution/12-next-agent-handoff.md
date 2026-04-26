@@ -55,3 +55,7 @@ make smoke-scribe
 - no production-ready claims
 - no false claims for provider/signature/interoperability/semantic retrieval
 - explicitly record residual gaps/failures
+
+## Steward provider follow-up
+
+Project Steward now has optional provider adapters and dry-run orchestration; next iterations should improve adapter-specific error typing and richer output formatting without introducing autonomy creep.

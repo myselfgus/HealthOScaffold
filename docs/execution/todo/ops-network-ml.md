@@ -123,3 +123,18 @@ Definition of done:
 - no public data service exposure by default
 - restore path is documented
 - ML pipeline remains offline boundary, not accidental production runtime
+
+### ML-005 Extend Project Steward with model-agnostic provider orchestration (OpenAI/Anthropic/xAI + local-command)
+Outcome:
+- optional provider adapter layer added under `ts/packages/healthos-steward/src/providers/*`
+- provider config schema/example added under `.healthos-steward/providers/`
+- dry-run safe routing + invocation logs (hash-based) implemented
+- CLI expanded with `providers`, `ask`, `delegate`, and provider-aware `review-pr`/`prompt` flows
+- provider tests and CLI tests added without real network/API usage
+Files touched:
+- `ts/packages/healthos-steward/*`
+- `.healthos-steward/providers/*`
+- `.healthos-steward/prompts/*`
+- `docs/architecture/44-project-steward-agent.md`
+- `docs/execution/skills/project-steward-skill.md`
+- `docs/execution/02-status-and-tracking.md`

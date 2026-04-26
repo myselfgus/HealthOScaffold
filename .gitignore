@@ -27,3 +27,7 @@ __pycache__/
 # Data
 runtime-data/
 coverage/
+.healthos-steward/providers/providers.local.json
+.healthos-steward/providers/*.local.json
+*.env
+runtime-data/steward/model-invocations.jsonl

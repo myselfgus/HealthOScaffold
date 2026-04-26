@@ -1,0 +1,64 @@
+import type { StewardModelProvider, StewardModelProviderConfig, StewardModelRequest, StewardModelResponse } from './types.js';
+import { baseResponse, hashText, readEnv, redactSecrets, safeErrorMessage } from './utils.js';
+
+export function createXAIProvider(config: StewardModelProviderConfig): StewardModelProvider {
+  return {
+    health() {
+      if (!config.enabled) return { providerId: config.id, enabled: false, status: 'disabled', detail: 'provider is disabled' };
+      if (!readEnv(config.apiKeyEnv)) return { providerId: config.id, enabled: true, status: 'missingSecret', detail: `missing ${config.apiKeyEnv}` };
+      return { providerId: config.id, enabled: true, status: 'ready', detail: 'ready' };
+    },
+    async invoke(request: StewardModelRequest): Promise<StewardModelResponse> {
+      const started = Date.now();
+      const base = baseResponse(config, request);
+      if (!config.enabled) return { ...base, status: 'disabled', text: '', durationMs: Date.now() - started, outputHash: hashText('') };
+      if (request.dryRun) return { ...base, status: 'dryRun', text: '[dry-run] xai payload prepared', raw: { endpointMode: config.endpointMode }, durationMs: Date.now() - started, outputHash: hashText('[dry-run]') };
+      if (!request.allowNetwork) return { ...base, status: 'providerError', text: '', errorKind: 'networkDenied', errorMessage: 'network calls are disabled for this invocation', durationMs: Date.now() - started, outputHash: hashText('') };
+      const apiKey = readEnv(config.apiKeyEnv);
+      if (!apiKey) return { ...base, status: 'missingSecret', text: '', errorKind: 'missingSecret', errorMessage: `missing ${config.apiKeyEnv}`, durationMs: Date.now() - started, outputHash: hashText('') };
+
+      const baseUrl = config.baseUrl ?? 'https://api.x.ai/v1';
+      let path = '/responses';
+      let body: Record<string, unknown>;
+
+      if (config.endpointMode === 'responses') {
+        body = { model: config.model, input: request.userPrompt, instructions: request.systemPrompt };
+        if (config.maxOutputTokens) body.max_output_tokens = config.maxOutputTokens;
+      } else if (config.endpointMode === 'chatCompletions') {
+        path = '/chat/completions';
+        body = {
+          model: config.model,
+          messages: [
+            { role: 'system', content: request.systemPrompt },
+            { role: 'user', content: request.userPrompt },
+          ],
+        };
+        if (config.maxOutputTokens) body.max_tokens = config.maxOutputTokens;
+      } else {
+        return { ...base, status: 'unsupported', text: '', errorKind: 'unsupported', errorMessage: `xai adapter supports responses/chatCompletions; got ${config.endpointMode}`, durationMs: Date.now() - started, outputHash: hashText('') };
+      }
+
+      try {
+        const response = await fetch(`${baseUrl}${path}`, {
+          method: 'POST',
+          headers: {
+            'content-type': 'application/json',
+            authorization: `Bearer ${apiKey}`,
+          },
+          body: JSON.stringify(body),
+          signal: AbortSignal.timeout(config.timeoutMs),
+        });
+        const raw = await response.json() as Record<string, unknown>;
+        if (!response.ok) {
+          return { ...base, status: 'providerError', text: '', raw, errorKind: 'httpError', errorMessage: `xai error ${response.status}`, durationMs: Date.now() - started, outputHash: hashText(JSON.stringify(raw)) };
+        }
+        const text = config.endpointMode === 'responses'
+          ? String(raw.output_text ?? '')
+          : String(((raw.choices as Array<Record<string, unknown>> | undefined)?.[0]?.message as Record<string, unknown> | undefined)?.content ?? '');
+        return { ...base, status: 'ok', text: redactSecrets(text), raw, durationMs: Date.now() - started, outputHash: hashText(text) };
+      } catch (error) {
+        return { ...base, status: String(safeErrorMessage(error)).includes('timeout') ? 'timeout' : 'providerError', text: '', errorKind: 'unknown', errorMessage: safeErrorMessage(error), durationMs: Date.now() - started, outputHash: hashText('') };
+      }
+    },
+  };
+}

@@ -57,7 +57,7 @@ type PRDetails = {
 };
 
 function repoRoot(): string {
-  return resolve(process.cwd(), '..', '..', '..');
+  return resolve(dirname(fileURLToPath(import.meta.url)), '..', '..', '..', '..');
 }
 
 function stewardRoot(root: string): string {

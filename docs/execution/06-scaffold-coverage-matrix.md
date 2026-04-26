@@ -144,6 +144,9 @@ Legend:
 - [x] minimal macOS SwiftUI Scribe validation surface now consumes the first-slice bridge without taking ownership of governance logic
 - [x] minimal Scribe surface now exposes seeded-text and local-audio capture modes with explicit transcription state
 - [x] minimal Scribe surface now exposes structured retrieval summary/highlights/source hints with explicit partial/empty/degraded context truth
+- [x] Scribe professional workspace boundary now has explicit governed contracts for workspace context, session state machine, capture/transcription, retrieval/context, draft review, gate review, and final-document lineage surfaces
+- [x] Scribe bridge state now exposes runtime-mediated professional `sessionState`, workspace context, and allowed-next-actions without granting app law decision power
+- [x] Swift XCTest now includes dedicated Scribe workspace/session boundary negatives for habilitation/finalidade/patient gating, gate/finalization rules, degraded honesty, and sensitive app-boundary leak denials
 - [x] app-boundary consumption patterns for GOS-derived state are now documented
 - [x] Scribe bridge runtime-state boundary now has automated coverage confirming app state stays runtime-mediated and does not expose raw compiled GOS spec payloads
 - [x] Scribe bridge now includes a dedicated runtime-mediated GOS app surface (`gosRuntimeState`) limited to lifecycle/spec-id/bundle-id/binding-source summaries plus provenance-facing/informational-only flags (no raw compiled spec or binding-plan payload exposure)

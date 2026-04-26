@@ -1,14 +1,14 @@
-import type { StewardModelProvider, StewardModelProviderConfig, StewardModelRequest, StewardModelResponse } from './types.js';
+import type { StewardLLMProvider, StewardLLMProviderConfig, StewardLLMRequest, StewardLLMResponse } from './types.js';
 import { baseResponse, hashText, readEnv, redactSecrets, safeErrorMessage } from './utils.js';
 
-export function createAnthropicProvider(config: StewardModelProviderConfig): StewardModelProvider {
+export function createAnthropicProvider(config: StewardLLMProviderConfig): StewardLLMProvider {
   return {
     health() {
       if (!config.enabled) return { providerId: config.id, enabled: false, status: 'disabled', detail: 'provider is disabled' };
       if (!readEnv(config.apiKeyEnv)) return { providerId: config.id, enabled: true, status: 'missingSecret', detail: `missing ${config.apiKeyEnv}` };
       return { providerId: config.id, enabled: true, status: 'ready', detail: 'ready' };
     },
-    async invoke(request: StewardModelRequest): Promise<StewardModelResponse> {
+    async invoke(request: StewardLLMRequest): Promise<StewardLLMResponse> {
       const started = Date.now();
       const base = baseResponse(config, request);
       if (!config.enabled) return { ...base, status: 'disabled', text: '', durationMs: Date.now() - started, outputHash: hashText('') };

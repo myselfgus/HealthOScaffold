@@ -1,17 +1,15 @@
-export type StewardModelProviderKind =
+export type StewardLLMProviderKind =
   | 'openai'
   | 'anthropic'
   | 'xai'
-  | 'codex-cli'
-  | 'claude-code-cli'
-  | 'local-command'
-  | 'disabled';
+  | 'disabled'
+  | 'local-command';
 
-export type StewardProviderEndpointMode = 'responses' | 'chatCompletions' | 'messages' | 'localCommand';
-export type StewardInputKind = 'nextTask' | 'prReview' | 'handoff' | 'architectureReview' | 'freeform';
-export type StewardModelStatus = 'ok' | 'dryRun' | 'disabled' | 'missingSecret' | 'providerError' | 'timeout' | 'unsupported';
+export type StewardLLMEndpointMode = 'responses' | 'chatCompletions' | 'messages' | 'localCommand';
+export type StewardInputKind = 'nextTask' | 'prReview' | 'handoff' | 'architectureReview' | 'freeform' | 'diffReview' | 'memorySync';
+export type StewardLLMStatus = 'ok' | 'dryRun' | 'disabled' | 'missingSecret' | 'providerError' | 'timeout' | 'unsupported';
 
-export type StewardProviderCapability = {
+export type StewardLLMProviderCapability = {
   supportsPrReview: boolean;
   supportsNextTask: boolean;
   supportsHandoff: boolean;
@@ -26,14 +24,14 @@ export type StewardProviderHealth = {
   detail: string;
 };
 
-export type StewardModelProviderConfig = {
+export type StewardLLMProviderConfig = {
   id: string;
-  kind: StewardModelProviderKind;
+  kind: StewardLLMProviderKind;
   enabled: boolean;
   model: string;
   apiKeyEnv?: string;
   baseUrl?: string;
-  endpointMode: StewardProviderEndpointMode;
+  endpointMode: StewardLLMEndpointMode;
   timeoutMs: number;
   maxOutputTokens?: number;
   temperature?: number;
@@ -50,7 +48,7 @@ export type StewardModelProviderConfig = {
   metadata?: Record<string, string | number | boolean>;
 };
 
-export type StewardModelRequest = {
+export type StewardLLMRequest = {
   providerId: string;
   templateId: string;
   systemPrompt: string;
@@ -63,47 +61,47 @@ export type StewardModelRequest = {
   metadata?: Record<string, string | number | boolean>;
 };
 
-export type StewardModelFailure = {
+export type StewardLLMFailure = {
   errorKind: 'networkDenied' | 'httpError' | 'missingSecret' | 'providerDisabled' | 'misconfigured' | 'timeout' | 'unsupported' | 'localCommandDenied' | 'unknown';
   errorMessage: string;
 };
 
-export type StewardModelResponse = {
+export type StewardLLMResponse = {
   providerId: string;
   model: string;
-  status: StewardModelStatus;
+  status: StewardLLMStatus;
   text: string;
   raw?: unknown;
   inputHash: string;
   outputHash: string;
   durationMs: number;
-  errorKind?: StewardModelFailure['errorKind'];
+  errorKind?: StewardLLMFailure['errorKind'];
   errorMessage?: string;
   postedToGitHub: boolean;
 };
 
-export type StewardModelProvider = {
-  invoke: (request: StewardModelRequest) => Promise<StewardModelResponse>;
+export type StewardLLMProvider = {
+  invoke: (request: StewardLLMRequest) => Promise<StewardLLMResponse>;
   health: () => StewardProviderHealth;
 };
 
-export type StewardModelRouter = {
-  listProviders: () => StewardModelProviderConfig[];
+export type StewardLLMRouter = {
+  listProviders: () => StewardLLMProviderConfig[];
   checkProviders: () => StewardProviderHealth[];
-  explainProvider: (providerId: string) => StewardModelProviderConfig;
-  invoke: (request: StewardModelRequest) => Promise<StewardModelResponse>;
+  explainProvider: (providerId: string) => StewardLLMProviderConfig;
+  invoke: (request: StewardLLMRequest) => Promise<StewardLLMResponse>;
 };
 
-export type StewardModelInvocationLog = {
+export type StewardLLMInvocationLog = {
   timestamp: string;
   command: string;
   providerId: string;
-  providerKind: StewardModelProviderKind;
+  providerKind: StewardLLMProviderKind;
   model: string;
   templateId: string;
   inputHash: string;
   outputHash: string;
-  status: StewardModelStatus;
+  status: StewardLLMStatus;
   errorKind?: string;
   durationMs: number;
   dryRun: boolean;
@@ -114,5 +112,5 @@ export type StewardModelInvocationLog = {
 
 export type ProviderConfigFile = {
   version: string;
-  providers: StewardModelProviderConfig[];
+  providers: StewardLLMProviderConfig[];
 };

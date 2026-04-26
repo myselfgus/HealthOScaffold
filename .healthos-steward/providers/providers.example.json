@@ -1,5 +1,5 @@
 {
-  "version": "0.1.0",
+  "version": "0.2.0",
   "providers": [
     {
       "id": "openai-default",
@@ -18,7 +18,7 @@
       "supportsHandoff": true,
       "supportsStructuredJson": true,
       "supportsToolUse": false,
-      "notes": "Use a model available to your account."
+      "notes": "OpenAI Responses API. Model must be configured and available to your account."
     },
     {
       "id": "anthropic-default",
@@ -38,7 +38,7 @@
       "supportsHandoff": true,
       "supportsStructuredJson": true,
       "supportsToolUse": false,
-      "notes": "Requires anthropic-version header."
+      "notes": "Anthropic Messages API with required anthropic-version header."
     },
     {
       "id": "xai-default",
@@ -57,41 +57,22 @@
       "supportsHandoff": true,
       "supportsStructuredJson": true,
       "supportsToolUse": false,
-      "notes": "Responses first; chatCompletions only as explicit fallback."
+      "notes": "xAI Responses API preferred; chatCompletions may be used as explicit fallback."
     },
     {
-      "id": "codex-cli-default",
-      "kind": "codex-cli",
+      "id": "disabled-default",
+      "kind": "disabled",
       "enabled": false,
-      "model": "local-codex-cli",
-      "endpointMode": "localCommand",
-      "timeoutMs": 30000,
+      "model": "none",
+      "endpointMode": "responses",
+      "timeoutMs": 1000,
       "dryRunDefault": true,
-      "supportsPrReview": true,
-      "supportsNextTask": true,
-      "supportsHandoff": true,
+      "supportsPrReview": false,
+      "supportsNextTask": false,
+      "supportsHandoff": false,
       "supportsStructuredJson": false,
       "supportsToolUse": false,
-      "command": ["healthos-steward", "delegate", "--target", "codex", "--task", "next", "--dry-run"],
-      "commandAllowlist": [["healthos-steward", "delegate"]],
-      "notes": "Dry-run by default; explicit execution needed for real delegation."
-    },
-    {
-      "id": "claude-code-cli-default",
-      "kind": "claude-code-cli",
-      "enabled": false,
-      "model": "local-claude-code-cli",
-      "endpointMode": "localCommand",
-      "timeoutMs": 30000,
-      "dryRunDefault": true,
-      "supportsPrReview": true,
-      "supportsNextTask": true,
-      "supportsHandoff": true,
-      "supportsStructuredJson": false,
-      "supportsToolUse": false,
-      "command": ["healthos-steward", "delegate", "--target", "claude", "--task", "next", "--dry-run"],
-      "commandAllowlist": [["healthos-steward", "delegate"]],
-      "notes": "Dry-run by default; explicit execution needed for real delegation."
+      "notes": "Fail-closed placeholder when no LLM provider is configured."
     }
   ]
 }

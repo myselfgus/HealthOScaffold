@@ -4,17 +4,17 @@ import { createOpenAIProvider } from './openai.js';
 import { createAnthropicProvider } from './anthropic.js';
 import { createXAIProvider } from './xai.js';
 import { createLocalCommandProvider } from './local-command.js';
-import type { ProviderConfigFile, StewardModelProvider, StewardModelProviderConfig, StewardModelRequest, StewardModelResponse, StewardModelRouter } from './types.js';
+import type { ProviderConfigFile, StewardLLMProvider, StewardLLMProviderConfig, StewardLLMRequest, StewardLLMResponse, StewardLLMRouter } from './types.js';
 
-function providerFactory(config: StewardModelProviderConfig): StewardModelProvider {
+function providerFactory(config: StewardLLMProviderConfig): StewardLLMProvider {
   if (config.kind === 'openai') return createOpenAIProvider(config);
   if (config.kind === 'anthropic') return createAnthropicProvider(config);
   if (config.kind === 'xai') return createXAIProvider(config);
-  if (config.kind === 'local-command' || config.kind === 'codex-cli' || config.kind === 'claude-code-cli') return createLocalCommandProvider(config);
+  if (config.kind === 'local-command') return createLocalCommandProvider(config);
   return createLocalCommandProvider({ ...config, command: ['echo', 'provider disabled'], commandAllowlist: [['echo']] });
 }
 
-export async function loadProviderConfigs(repoRoot: string): Promise<StewardModelProviderConfig[]> {
+export async function loadProviderConfigs(repoRoot: string): Promise<StewardLLMProviderConfig[]> {
   const localPath = resolve(repoRoot, '.healthos-steward/providers/providers.local.json');
   const examplePath = resolve(repoRoot, '.healthos-steward/providers/providers.example.json');
   const primaryPath = await readFile(localPath, 'utf8').then(() => localPath).catch(() => examplePath);
@@ -22,9 +22,9 @@ export async function loadProviderConfigs(repoRoot: string): Promise<StewardMode
   return parsed.providers;
 }
 
-export async function createProviderRouter(repoRoot: string): Promise<StewardModelRouter> {
+export async function createProviderRouter(repoRoot: string): Promise<StewardLLMRouter> {
   const configs = await loadProviderConfigs(repoRoot);
-  const map = new Map<string, { config: StewardModelProviderConfig; provider: StewardModelProvider }>();
+  const map = new Map<string, { config: StewardLLMProviderConfig; provider: StewardLLMProvider }>();
   for (const config of configs) map.set(config.id, { config, provider: providerFactory(config) });
 
   return {
@@ -44,7 +44,7 @@ export async function createProviderRouter(repoRoot: string): Promise<StewardMod
       if (!entry) throw new Error(`unknown provider: ${providerId}`);
       return entry.config;
     },
-    async invoke(request: StewardModelRequest): Promise<StewardModelResponse> {
+    async invoke(request: StewardLLMRequest): Promise<StewardLLMResponse> {
       const entry = map.get(request.providerId);
       if (!entry) {
         throw new Error(`unknown provider: ${request.providerId}`);

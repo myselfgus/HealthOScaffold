@@ -31,11 +31,10 @@ Use this skill when implementing or modifying the repository engineering steward
 ```bash
 cd ts && npm run build --workspace @healthos/steward
 cd ts && npx --yes --workspace @healthos/steward healthos-steward status
-cd ts && npx --yes --workspace @healthos/steward healthos-steward next-task
 cd ts && npx --yes --workspace @healthos/steward healthos-steward prompt codex-next
 cd ts && npx --yes --workspace @healthos/steward healthos-steward review-pr --pr <n> --repo <owner/repo>
-cd ts && npx --yes --workspace @healthos/steward healthos-steward comment-pr --pr <n> --body "..." --repo <owner/repo>
-cd ts && npx --yes --workspace @healthos/steward healthos-steward comment-issue --issue <n> --body "..." --repo <owner/repo>
+cd ts && npx --yes --workspace @healthos/steward healthos-steward agent plan-next --provider <id> --allow-network --dry-run
+cd ts && npx --yes --workspace @healthos/steward healthos-steward agent review-diff --provider <id> --allow-network --dry-run
 make validate-all
 ```
 
@@ -50,6 +49,6 @@ make validate-all
 
 When touching steward provider orchestration, validate:
 - `providers list/check/explain`
-- `ask --dry-run`
+- `agent plan-next --dry-run --allow-network --provider <id>`
 - `review-pr --dry-run` with diff payload generation
 - no secret leakage in logs/config

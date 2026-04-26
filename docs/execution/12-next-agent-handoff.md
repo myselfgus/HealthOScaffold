@@ -19,10 +19,11 @@ Repository is in controlled implementation/scaffold hardening with strong govern
 
 ## Priority gaps now
 
-1. propagate cross-app envelope usage into non-Scribe adapters
-2. extend runtime adapter coverage (user-agent/service) with boundary tests
-3. continue storage/retrieval/provider parity without fake capability claims
-4. define operator incident command set from existing ops observability contracts
+1. wire `make validate-all` quality gates into CI/distributed execution without declaring production-hardening
+2. propagate cross-app envelope usage into non-Scribe adapters
+3. extend runtime adapter coverage (user-agent/service) with boundary tests
+4. continue storage/retrieval/provider parity without fake capability claims
+5. define operator incident command set from existing ops observability contracts
 
 ## Validation command baseline
 
@@ -31,8 +32,13 @@ make swift-build
 make swift-test
 make ts-build
 make ts-test
-make python-compile
-make swift-smoke
+make python-check
+make validate-docs
+make validate-schemas
+make validate-contracts
+make validate-all
+make smoke-cli
+make smoke-scribe
 ```
 
 ## Branch / PR discipline

@@ -219,6 +219,12 @@ Current phase: Controlled implementation — first vertical slice started
 - Swift XCTest coverage now includes dedicated cross-app boundary negatives/positives (`CrossAppCoordinationContractsTests`) for shared envelope safety, safe refs, role-aware action isolation across Scribe/Sortio/CloudClinic, redaction posture defaults, notification payload minimization, and obligation-record integrity
 - TypeScript contract workspace and JSON Schema now mirror the cross-app shared-surface vocabulary (`AppSurfaceEnvelope`, safe refs, app actions, notifications/obligations)
 
+- repository validation harness is now executable through `make validate-all` / `scripts/validate-local.sh`, chaining docs/schema/contract drift checks plus Swift/TS/Python checks and smoke commands with fail-closed non-zero exits and local summary artifact output (`runtime-data/validation/latest-validation-summary.txt`)
+- Makefile validation gate coverage now includes `validate-docs`, `validate-schemas`, `validate-contracts`, `validate-all`, `smoke-cli`, `smoke-scribe`, and `python-check`, with legacy aliases preserved for compatibility (`python-compile`, `swift-smoke`)
+- new docs drift checker (`scripts/check-docs.sh`) now verifies required execution docs, referenced doc paths, documented Make targets, stale "no tests configured" claims, and accidental un-negated production-ready wording
+- new contract drift checker (`scripts/check-contract-drift.sh`) now enforces baseline cross-layer presence for critical schema/Swift/TS/SQL/runtime files, storage-layer vocabulary parity, runtime lifecycle state parity, and GOS lifecycle state presence
+- schema harness (`scripts/validate-schemas.sh`) now validates JSON syntax for all files under `schemas/` and enforces critical governance/GOS schema presence
+
 ## In progress
 
 - Scribe-first-slice runtime remains scaffold-level for partial flows: draft refresh still degrades honestly before full spine execution/gate resolution, and microphone capture remains placeholder-only

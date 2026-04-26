@@ -49,15 +49,18 @@ make swift-build
 make swift-test
 make ts-build
 make ts-test
-make python-compile
+make python-check
+make validate-docs
+make validate-schemas
+make validate-contracts
+make validate-all
 ```
 
 Optional local smoke path:
 
 ```bash
-cd swift
-swift run HealthOSCLI
-swift run HealthOSScribeApp --smoke-test
+make smoke-cli
+make smoke-scribe
 ```
 
 ## Where agents should start

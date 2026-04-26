@@ -194,6 +194,9 @@ public actor ScribeFirstSliceAdapter: ScribeFirstSliceFacade {
         let baseState = makePendingState(sessionId: command.sessionId, workspace: workspace)
         let draftReadyState = ScribeSessionBridgeState(
             sessionId: baseState.sessionId,
+            sessionState: .draftReady,
+            workspaceContext: makeWorkspaceContext(sessionId: command.sessionId, workspace: workspace),
+            allowedNextActions: [.openGate, .resolveGate],
             captureMode: baseState.captureMode,
             draftState: .awaitingGate,
             gateState: .pending,
@@ -331,6 +334,9 @@ public actor ScribeFirstSliceAdapter: ScribeFirstSliceFacade {
         let transcriptPreview = workspace?.capture.map { String($0.previewText.prefix(160)) } ?? ""
         return ScribeSessionBridgeState(
             sessionId: sessionId,
+            sessionState: pendingSessionState(for: workspace),
+            workspaceContext: workspace.map { makeWorkspaceContext(sessionId: sessionId, workspace: $0) },
+            allowedNextActions: pendingAllowedActions(for: workspace),
             captureMode: workspace?.capture?.mode,
             draftState: .empty,
             gateState: .none,
@@ -400,6 +406,17 @@ public actor ScribeFirstSliceAdapter: ScribeFirstSliceFacade {
 
         return ScribeSessionBridgeState(
             sessionId: sessionId,
+            sessionState: completedSessionState(from: result),
+            workspaceContext: makeWorkspaceContext(
+                professionalUserId: result.session.professionalUserId,
+                serviceId: result.session.serviceId,
+                patientUserId: result.session.patientUserId,
+                habilitationId: result.session.habilitationId,
+                sessionId: sessionId,
+                finalidade: "care-context-retrieval",
+                allowedOperations: [.retrieveContext, .composeDraft, .openGate, .resolveGate]
+            ),
+            allowedNextActions: completedAllowedActions(from: result),
             captureMode: result.summary.captureMode,
             draftState: draftState,
             gateState: gateState,
@@ -780,6 +797,88 @@ public actor ScribeFirstSliceAdapter: ScribeFirstSliceFacade {
             objectPath: package.draftRef.objectPath,
             readyForFutureGate: package.document.readyForFutureGate,
             draftOnlyNote: package.document.draftOnlyNote
+        )
+    }
+
+    private func pendingSessionState(for workspace: SessionWorkspace?) -> ScribeProfessionalSessionState {
+        guard let workspace else { return .idle }
+        if workspace.patient == nil { return .professionalValidated }
+        if workspace.capture == nil { return .patientSelected }
+        return .captureReady
+    }
+
+    private func pendingAllowedActions(for workspace: SessionWorkspace?) -> [ScribeWorkspaceOperation] {
+        guard let workspace else { return [.selectPatient] }
+        if workspace.patient == nil { return [.selectPatient] }
+        if workspace.capture == nil { return [.submitCapture] }
+        return [.retrieveContext, .composeDraft, .openGate]
+    }
+
+    private func completedSessionState(from result: FirstSliceRunResult) -> ScribeProfessionalSessionState {
+        if result.finalDocument != nil {
+            return .finalized
+        }
+        if result.gate.approved {
+            return .gateApproved
+        }
+        if result.gate.resolution.resolution == .rejected {
+            return .gateRejected
+        }
+        if result.transcription.status == .degraded || result.transcription.status == .unavailable {
+            return .transcriptionDegraded
+        }
+        if result.retrieval.status == .degraded {
+            return .contextDegraded
+        }
+        return .awaitingGate
+    }
+
+    private func completedAllowedActions(from result: FirstSliceRunResult) -> [ScribeWorkspaceOperation] {
+        if result.finalDocument != nil { return [] }
+        if result.gate.approved { return [.finalizeDocument] }
+        return [.resolveGate]
+    }
+
+    private func makeWorkspaceContext(sessionId: UUID, workspace: SessionWorkspace) -> ProfessionalWorkspaceContext {
+        makeWorkspaceContext(
+            professionalUserId: workspace.professional.id,
+            serviceId: workspace.service.id,
+            patientUserId: workspace.patient?.id,
+            habilitationId: workspace.professional.active ? UUID() : nil,
+            sessionId: sessionId,
+            finalidade: workspace.patient == nil ? nil : "care-context-retrieval",
+            allowedOperations: pendingAllowedActions(for: workspace)
+        )
+    }
+
+    private func makeWorkspaceContext(
+        professionalUserId: UUID,
+        serviceId: UUID,
+        patientUserId: UUID?,
+        habilitationId: UUID?,
+        sessionId: UUID,
+        finalidade: String?,
+        allowedOperations: [ScribeWorkspaceOperation]
+    ) -> ProfessionalWorkspaceContext {
+        let patientRef = patientUserId.map { ScribePatientSelectionRef(patientUserId: $0, patientToken: "patient-token-\($0.uuidString.prefix(8))") }
+        return ProfessionalWorkspaceContext(
+            professionalUserId: professionalUserId,
+            serviceId: serviceId,
+            habilitationId: habilitationId,
+            selectedPatientRef: patientRef,
+            sessionId: sessionId,
+            lawfulContext: [
+                "actorRole": "professional-agent",
+                "scope": "care-context",
+                "serviceId": serviceId.uuidString,
+                "sessionId": sessionId.uuidString
+            ],
+            finalidade: finalidade,
+            allowedOperations: allowedOperations,
+            deniedOperations: ScribeWorkspaceOperation.allCases.filter { !allowedOperations.contains($0) },
+            runtimeStateRefs: ["aaci.session"],
+            provenanceRefs: [],
+            auditRefs: []
         )
     }
 

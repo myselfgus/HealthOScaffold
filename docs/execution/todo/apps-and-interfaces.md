@@ -2,6 +2,19 @@
 
 ## COMPLETED
 
+### SCRIBE-007 Harden Scribe professional workspace and AACI session app-safe contracts
+Outcome:
+- added explicit governed contracts for professional workspace context, Scribe session state machine, capture/transcription surface, retrieval/context surface, draft review surface, human gate review, final-document lineage surface, and aggregate app runtime boundary state
+- hardened Scribe first-slice bridge state to carry runtime-mediated professional session state, workspace context, and allowed next actions without moving consent/habilitation/finality law into app/UI
+- added dedicated Swift XCTest boundary suite (`ScribeProfessionalWorkspaceContractsTests`) covering required negative paths (habilitation/finalidade/patient gating, gate/finalization state-machine guards, degraded honesty, app-boundary leak prevention)
+Files touched:
+- `swift/Sources/HealthOSCore/ScribeProfessionalWorkspaceContracts.swift`
+- `swift/Sources/HealthOSCore/ScribeFirstSliceBridge.swift`
+- `swift/Sources/HealthOSFirstSliceSupport/ScribeFirstSliceAdapter.swift`
+- `swift/Tests/HealthOSTests/ScribeProfessionalWorkspaceContractsTests.swift`
+- `docs/execution/02-status-and-tracking.md`
+- `docs/execution/todo/apps-and-interfaces.md`
+
 ### APP-006 Consolidate architecturalized compliance doctrine for app boundaries
 Outcome:
 - interface doctrine now states compliance as architecturalized in HealthOS seams/contracts

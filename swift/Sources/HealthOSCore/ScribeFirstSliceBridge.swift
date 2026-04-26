@@ -283,6 +283,9 @@ public struct ScribeDerivedDraftBridgeState: Codable, Sendable {
 
 public struct ScribeSessionBridgeState: Codable, Sendable {
     public let sessionId: UUID
+    public let sessionState: ScribeProfessionalSessionState
+    public let workspaceContext: ProfessionalWorkspaceContext?
+    public let allowedNextActions: [ScribeWorkspaceOperation]
     public let captureMode: CaptureMode?
     public let draftState: ScribeDraftState
     public let gateState: ScribeGateState
@@ -299,6 +302,9 @@ public struct ScribeSessionBridgeState: Codable, Sendable {
 
     public init(
         sessionId: UUID,
+        sessionState: ScribeProfessionalSessionState,
+        workspaceContext: ProfessionalWorkspaceContext?,
+        allowedNextActions: [ScribeWorkspaceOperation],
         captureMode: CaptureMode?,
         draftState: ScribeDraftState,
         gateState: ScribeGateState,
@@ -314,6 +320,9 @@ public struct ScribeSessionBridgeState: Codable, Sendable {
         runSummary: SliceRunSummary?
     ) {
         self.sessionId = sessionId
+        self.sessionState = sessionState
+        self.workspaceContext = workspaceContext
+        self.allowedNextActions = allowedNextActions
         self.captureMode = captureMode
         self.draftState = draftState
         self.gateState = gateState

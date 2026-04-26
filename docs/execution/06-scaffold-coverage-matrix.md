@@ -1,5 +1,14 @@
 # Scaffold coverage matrix
 
+
+## Evidence posture
+
+- `[x]` means **implemented + evidence present** (tests and/or executable path cited in-repo).
+- `[~]` means **partial/scaffolded**; do not interpret as production-ready.
+- `[ ]` means missing/not started.
+
+If evidence is uncertain, downgrade status and add a gap note instead of over-claiming completion.
+
 Legend:
 - [x] established in scaffold
 - [~] partially established / needs closure

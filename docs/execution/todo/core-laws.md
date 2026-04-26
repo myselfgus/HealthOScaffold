@@ -36,6 +36,8 @@ Files touched:
 ## READY
 
 ### CL-006 Add shared error-envelope proposal for local service boundaries
+Priority: Medium
+Skill: `docs/execution/skills/core-law-skill.md`
 Objective:
 - define whether denied/failure outputs should share one transport envelope for loopback HTTP seam
 Files:

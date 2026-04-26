@@ -1,35 +1,37 @@
 # AI skills index
 
-This directory contains reusable AI execution skills specific to HealthOS.
+This directory contains domain-specific execution skills for coding agents.
 
-## Available skills
+## How to use
+
+Before editing a domain:
+1. read execution status (`02`, `06`, `10`, `11`)
+2. read relevant TODO
+3. read architecture docs for the domain
+4. open the matching skill below
+
+## Skills (current)
+
+- `core-law-skill.md`
+- `gos-skill.md`
+- `aaci-skill.md`
+- `app-boundary-skill.md`
+- `scribe-professional-workspace-skill.md`
+- `user-agent-sortio-skill.md`
+- `service-operations-cloudclinic-skill.md`
+- `cross-app-surfaces-skill.md`
+- `storage-data-layer-skill.md`
+- `provider-governance-skill.md`
+- `async-runtime-skill.md`
+- `network-fabric-skill.md`
+- `backup-restore-retention-export-skill.md`
+- `regulatory-interoperability-skill.md`
+- `documentation-drift-skill.md`
+
+## Legacy skills kept for compatibility
 
 - `core-governance-skill.md`
-  For identity, consent, habilitation, provenance, gate semantics, and deny/failure discipline.
-
 - `storage-and-deidentification-skill.md`
-  For filesystem/sql/object path design, lawfulContext use, de-identification, re-identification control, and integrity posture.
-
 - `aaci-runtime-skill.md`
-  For AACI session modes, subagent boundaries, provider routing, and draft production.
-
-- `app-boundary-skill.md`
-  For keeping Scribe, Sortio, and CloudClinic aligned with core law instead of leaking logic.
-
 - `ops-mesh-skill.md`
-  For local-first operations, mesh policy, launchd supervision, backup/restore discipline, and remote admin posture.
-
 - `ml-governance-skill.md`
-  For offline evaluation, dataset governance, adapter promotion, rollback, and provider benchmarking.
-
-## Usage rule
-
-Before editing a domain, an AI should read:
-1. the master execution plan
-2. the relevant TODO file
-3. the architecture file(s)
-4. the matching skill file in this directory
-
-## Purpose
-
-Skills are meant to preserve architecture under repeated AI execution. They are not generic coding tips; they are domain-specific operating constraints.

@@ -214,6 +214,20 @@ Files touched:
 
 ## READY
 
+### APP-008 Propagate cross-app shared envelope consumption into non-Scribe adapters
+Priority: High
+Skill: `docs/execution/skills/cross-app-surfaces-skill.md` + `docs/execution/skills/app-boundary-skill.md`
+Definition of done:
+- Sortio/CloudClinic adapter seams consume shared envelope contracts without raw payload leaks
+- boundary tests added/updated for app-kind + role mismatch and safe-ref enforcement
+
+### APP-009 Documentation drift check for app-boundary claims
+Priority: Medium
+Skill: `docs/execution/skills/documentation-drift-skill.md`
+Definition of done:
+- app docs and execution tracking agree on current maturity (no final-UI claims)
+
+
 ## TESTS / VALIDATION
 
 - no app owns core law logic

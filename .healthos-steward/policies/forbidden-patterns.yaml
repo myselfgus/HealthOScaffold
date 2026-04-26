@@ -1,0 +1,8 @@
+version: 0.1.0
+forbidden:
+  - hardcoded-secrets
+  - fake-provider-integration-claims
+  - fake-regulatory-signature-integration
+  - direct-identifier-leakage-to-app-surfaces
+  - gate-bypass-finalization
+  - autonomous-merge-or-branch-deletion

@@ -1,0 +1,6 @@
+{
+  "invariants_ref": ".healthos-steward/policies/invariant-policy.yaml",
+  "status": "active",
+  "owner": "repository governance",
+  "last_reviewed_at": "2026-04-26T00:00:00Z"
+}

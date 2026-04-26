@@ -95,3 +95,14 @@ When ontology/contracts change, align in the same work unit:
 - one coherent work chunk per commit
 - docs + contracts + tests together when they govern same change
 - do not leave tracking stale after code/doc updates
+
+
+## Project steward usage (engineering continuity)
+
+Use `healthos-steward` for deterministic repository state scans, next-task scaffolding, validation orchestration, and handoff prompt generation.
+
+Location:
+- CLI: `ts/packages/healthos-steward/`
+- versioned memory/policies/prompts: `.healthos-steward/`
+
+Do not treat steward memory as canonical truth; treat it as derived index over official docs.

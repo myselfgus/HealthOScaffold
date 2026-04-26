@@ -185,6 +185,34 @@ Files touched:
 - `docs/execution/06-scaffold-coverage-matrix.md`
 - `docs/execution/10-invariant-matrix.md`
 
+
+### RT-010 Add Project Steward repository engineering scaffold
+Outcome:
+- introduced a local TypeScript CLI package (`@healthos/steward`) with deterministic engineering commands: status, scan, next-task, validate, review-pr, memory, prompt, handoff
+- added versioned steward memory/policies/prompts under `.healthos-steward/` with explicit non-secret and derived-index posture
+- documented steward architecture and skill guidance for future agents without turning it into a clinical or autonomous merge agent
+Files touched:
+- `ts/packages/healthos-steward/*`
+- `.healthos-steward/*`
+- `docs/architecture/44-project-steward-agent.md`
+- `docs/execution/skills/project-steward-skill.md`
+- `README.md`, `AGENTS.md`, `CLAUDE.md`
+- `docs/execution/02-status-and-tracking.md`
+- `docs/execution/todo/runtimes-and-aaci.md`
+
+### RT-011 Add real GitHub integration to Project Steward
+Outcome:
+- `healthos-steward review-pr` now reads PR metadata, status checks, issue comments, and review comments through authenticated `gh` CLI
+- `healthos-steward comment-pr` and `healthos-steward comment-issue` now post comments to GitHub targets through `gh`
+- removed steward-local mock/test artifacts to keep the implementation fully live and non-simulated
+Files touched:
+- `ts/packages/healthos-steward/src/steward.ts`
+- `ts/packages/healthos-steward/package.json`
+- `docs/architecture/44-project-steward-agent.md`
+- `docs/execution/skills/project-steward-skill.md`
+- `docs/execution/02-status-and-tracking.md`
+- `docs/execution/todo/runtimes-and-aaci.md`
+
 ## READY
 
 ### RT-008 Extend runtime-boundary tests for user-agent and service-runtime adapters
@@ -227,4 +255,3 @@ Files touched:
 - `docs/execution/11-current-maturity-map.md`
 - `docs/execution/12-next-agent-handoff.md`
 - `docs/execution/todo/runtimes-and-aaci.md`
-

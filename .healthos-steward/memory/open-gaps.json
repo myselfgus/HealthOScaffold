@@ -1,0 +1,6 @@
+{
+  "derived_from": "docs/execution/14-final-gap-register.md",
+  "last_refresh_at": "2026-04-26T00:00:00Z",
+  "active_focus": ["GAP-001", "GAP-002"],
+  "warning": "Derived index only; do not treat as source of truth."
+}

@@ -1,0 +1,15 @@
+version: 0.1.0
+checklist:
+  - question: PR moved law into app surface?
+  - question: PR moved law into GOS?
+  - question: PR moved law into AACI?
+  - question: PR allows gate bypass?
+  - question: PR exposes raw CPF?
+  - question: PR exposes reidentification mapping?
+  - question: PR invents fictitious clinical data/examples?
+  - question: PR claims false maturity/production readiness?
+  - question: PR updated docs/execution/02-status-and-tracking.md?
+  - question: PR updated relevant docs/execution/todo/*.md?
+  - question: PR updated tests/contracts together when required?
+  - question: PR executed validation harness (make validate-all)?
+  - question: PR kept Swift/TS/schema/SQL contracts synchronized when changed?

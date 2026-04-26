@@ -1,0 +1,19 @@
+{
+  "project": "HealthOScaffold",
+  "steward_version": "0.1.0",
+  "mode": "controlled implementation / scaffold hardening",
+  "source_of_truth": [
+    "README.md",
+    "AGENTS.md",
+    "CLAUDE.md",
+    "docs/execution/*"
+  ],
+  "last_synced_at": "2026-04-26T00:00:00Z",
+  "stale_after_days": 7,
+  "notes": "Operational index only. Official docs remain canonical.",
+  "github_integration": {
+    "mode": "gh-cli",
+    "status": "implemented",
+    "notes": "Requires gh auth login for live repository operations"
+  }
+}

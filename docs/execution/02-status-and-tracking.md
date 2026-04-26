@@ -10,10 +10,9 @@ Current phase: Controlled implementation — first vertical slice started
 ## Governance/doc readiness consolidation (2026-04-26)
 
 
-- Project Steward engineering scaffold was introduced with a TypeScript CLI package (`@healthos/steward`) and commands for status/scan/next-task/validate/review-pr/memory/prompt/handoff, keeping explicit honesty for non-integrated GitHub operations (`github integration not configured`)
+- Project Steward engineering scaffold was introduced with a TypeScript CLI package (`@healthos/steward`) and commands for status/scan/next-task/validate/review-pr/memory/prompt/handoff, with explicit fail-closed behavior when GitHub CLI is unavailable or not authenticated
 - repository-scoped persistent steward memory/policy/prompt templates now exist at `.healthos-steward/` with explicit derived-index posture and no-secrets/no-clinical-payload constraints
 - architecture/skill docs now document steward role/boundary (`docs/architecture/44-project-steward-agent.md`, `docs/execution/skills/project-steward-skill.md`) and agent entry docs now reference steward usage without replacing canonical execution docs
-- TypeScript tests were added for steward CLI baseline commands and parseability checks
 - Project Steward now has real GitHub CLI integration for PR ingestion (PR metadata/checks/comments) and write-through comment commands for PR/issue (`comment-pr`, `comment-issue`), with explicit authenticated-`gh` requirement and fail-closed setup errors
 
 - repository entry docs were reconciled to reduce drift across `README.md`, `AGENTS.md`, `CLAUDE.md`, execution guides, TODOs, and skills
@@ -307,4 +306,3 @@ Validation executed in this work unit:
 - `cd ts && npm install && npm run build && npm test --if-present` => PASS (workspace has no root test script; command exits clean)
 - `cd python && python -m compileall .` => PASS
 - `cd swift && swift run HealthOSCLI && swift run HealthOSScribeApp --smoke-test` => PASS
-

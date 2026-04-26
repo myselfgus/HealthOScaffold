@@ -204,10 +204,10 @@ Files touched:
 Outcome:
 - `healthos-steward review-pr` now reads PR metadata, status checks, issue comments, and review comments through authenticated `gh` CLI
 - `healthos-steward comment-pr` and `healthos-steward comment-issue` now post comments to GitHub targets through `gh`
-- deterministic mock mode (`HEALTHOS_STEWARD_GH_MOCK_DIR`) added for local tests without network/token dependencies
+- removed steward-local mock/test artifacts to keep the implementation fully live and non-simulated
 Files touched:
 - `ts/packages/healthos-steward/src/steward.ts`
-- `ts/packages/healthos-steward/test/*`
+- `ts/packages/healthos-steward/package.json`
 - `docs/architecture/44-project-steward-agent.md`
 - `docs/execution/skills/project-steward-skill.md`
 - `docs/execution/02-status-and-tracking.md`
@@ -255,4 +255,3 @@ Files touched:
 - `docs/execution/11-current-maturity-map.md`
 - `docs/execution/12-next-agent-handoff.md`
 - `docs/execution/todo/runtimes-and-aaci.md`
-

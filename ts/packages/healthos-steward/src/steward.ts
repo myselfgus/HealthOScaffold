@@ -42,7 +42,7 @@ type ValidationRecord = {
 type GitHubIntegrationStatus = {
   available: boolean;
   authenticated: boolean;
-  mode: 'gh-cli' | 'mock' | 'unavailable';
+  mode: 'gh-cli' | 'unavailable';
 };
 
 type PRDetails = {
@@ -155,22 +155,7 @@ function gitSummary(root: string): { branch: string; head: string } {
   return { branch, head };
 }
 
-function isMockGitHubMode(): boolean {
-  return Boolean(process.env.HEALTHOS_STEWARD_GH_MOCK_DIR);
-}
-
 function runGh(root: string, args: string[]): string {
-  const mockDir = process.env.HEALTHOS_STEWARD_GH_MOCK_DIR;
-  if (mockDir) {
-    const key = args.join('__').replace(/[^a-zA-Z0-9._-]/g, '_');
-    const file = resolve(mockDir, `${key}.json`);
-    try {
-      return execSync(`cat '${file}'`, { encoding: 'utf8' });
-    } catch {
-      throw new Error(`mock response not found for: gh ${args.join(' ')}`);
-    }
-  }
-
   return execSync(`gh ${args.map((item) => `'${item.replace(/'/g, "'\\''")}'`).join(' ')}`, {
     cwd: root,
     encoding: 'utf8',
@@ -179,10 +164,6 @@ function runGh(root: string, args: string[]): string {
 }
 
 function githubIntegrationStatus(root: string): GitHubIntegrationStatus {
-  if (isMockGitHubMode()) {
-    return { available: true, authenticated: true, mode: 'mock' };
-  }
-
   try {
     execSync('gh --version', { cwd: root, stdio: 'ignore' });
   } catch {

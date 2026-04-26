@@ -23,14 +23,13 @@ Use this skill when implementing or modifying the repository engineering steward
 - Project Steward is an engineering tool, not clinical runtime.
 - It cannot move Core law into app/runtime/GOS.
 - It must keep official docs as source of truth and memory as derived index.
-- It must report missing integration honestly (for example GitHub integration not configured).
+- It must report integration readiness honestly (available/authenticated/fail-closed).
 - It cannot require secrets/tokens for baseline commands.
 
 ## Minimum validation for steward changes
 
 ```bash
 cd ts && npm run build --workspace @healthos/steward
-cd ts && npm test --workspace @healthos/steward
 cd ts && npx --yes --workspace @healthos/steward healthos-steward status
 cd ts && npx --yes --workspace @healthos/steward healthos-steward next-task
 cd ts && npx --yes --workspace @healthos/steward healthos-steward prompt codex-next

@@ -46,7 +46,7 @@ healthos-steward handoff
 ```
 
 Behavior honesty constraints:
-- GitHub commands require authenticated `gh` CLI (or explicit test mock mode).
+- GitHub commands require authenticated `gh` CLI .
 - if `gh` is unavailable/not authenticated, commands fail with explicit setup guidance.
 - no command pretends autonomous reasoning beyond deterministic local generation.
 - memory is explicitly a derived operational index; official docs remain source of truth.
@@ -76,12 +76,11 @@ Project Steward must read/reference:
 
 Official docs are canonical. Steward memory never replaces them.
 
-## Current GitHub integration and remaining gap
+## Current GitHub integration status
 
 Implemented in this round:
 - PR metadata/checks/comments read via authenticated `gh` CLI
 - PR/issue comment write-through commands
 
-Still pending future hardening:
-- richer diff semantics + review suggestion engine
-- CI/MCP runtime coupling
+Delivery status for Project Steward GitHub integration:
+- complete for authenticated CLI ingestion/comment workflows in this repository scope

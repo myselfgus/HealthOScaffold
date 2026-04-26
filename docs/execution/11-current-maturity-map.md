@@ -21,3 +21,25 @@ Ladder: doctrine-only → scaffolded contract → implemented seam → tested op
 | Apps/UI overall | scaffolded contract / implemented seam (Scribe minimal) | app-boundary doctrine and contracts exist | mainly boundary tests | no final UX for three apps | continue adapter-first without moving law to UI |
 | Validation harness | tested operational path (local) | fail-closed make/script gates for docs/schema/contracts/build/test/smoke + summary artifact | validate-all exercised locally | no CI/distributed gate yet | wire same harness into CI without inflating maturity claims |
 | Operations | scaffolded contract | runbooks/launchd/network docs + observability taxonomy | mostly docs + smoke | no production ops automation | incident command set and operator tooling |
+
+## Scaffold RC closure classification (audit sync)
+
+| Layer | Closure classification |
+|---|---|
+| Core law | ready-for-scaffold-closure |
+| Data/storage/identity | partial-but-acceptable-with-explicit-gap |
+| GOS | ready-for-scaffold-closure |
+| AACI | partial-but-acceptable-with-explicit-gap |
+| Providers/ML | partial-but-acceptable-with-explicit-gap |
+| Retrieval/memory/index | partial-but-acceptable-with-explicit-gap |
+| Async runtime/jobs | ready-for-scaffold-closure |
+| Network/mesh/fabric | needs-small-closure |
+| Backup/restore/retention/export/DR | partial-but-acceptable-with-explicit-gap |
+| Regulatory/signature/interoperability/emergency | partial-but-acceptable-with-explicit-gap |
+| User Agent/Sortio | partial-but-acceptable-with-explicit-gap |
+| Service Ops/CloudClinic | partial-but-acceptable-with-explicit-gap |
+| Scribe | ready-for-scaffold-closure |
+| Cross-app shared surfaces | needs-small-closure |
+| Repository governance/validation | ready-for-scaffold-closure |
+
+Source of truth for open blockers: `docs/execution/14-final-gap-register.md`.

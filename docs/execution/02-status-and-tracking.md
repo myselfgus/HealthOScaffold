@@ -206,6 +206,11 @@ Current phase: Controlled implementation — first vertical slice started
 - service-operations / CloudClinic core-governance contract set is now formalized in Swift/TS/schema with explicit fail-closed validators for service context, membership roles, professional habilitation surface, patient-service relationship, operational queue, document/draft surface, gate worklist, and administrative task allowlist boundaries
 - Swift XCTest coverage now includes dedicated Service Operations governance negatives/positives (`ServiceOperationsGovernanceTests`) covering lawfulContext/finalidade requirements, role/membership denials, habilitation expiry/inactive denials, patient-service non-bypass of consent, queue non-authorization semantics, draft/final gate protections, admin gate-resolution denials, and administrative-task governance guards
 
+- cross-app coordination shared-surface contracts are now formalized in Swift Core with a common `AppSurfaceEnvelope`, typed app-safe safe-reference taxonomy, role/app-aware allowed-denied action contracts, redaction/deidentification posture contract, and app-safe notification/obligation surfaces
+- cross-app boundary validator now fail-closes non-mediated actions, app/role mismatches, navigation-ref access grants, direct-identifier/reidentification defaults, sensitive notification payload leaks, and unrecorded patient-notification completion claims
+- Swift XCTest coverage now includes dedicated cross-app boundary negatives/positives (`CrossAppCoordinationContractsTests`) for shared envelope safety, safe refs, role-aware action isolation across Scribe/Sortio/CloudClinic, redaction posture defaults, notification payload minimization, and obligation-record integrity
+- TypeScript contract workspace and JSON Schema now mirror the cross-app shared-surface vocabulary (`AppSurfaceEnvelope`, safe refs, app actions, notifications/obligations)
+
 ## In progress
 
 - Scribe-first-slice runtime remains scaffold-level for partial flows: draft refresh still degrades honestly before full spine execution/gate resolution, and microphone capture remains placeholder-only

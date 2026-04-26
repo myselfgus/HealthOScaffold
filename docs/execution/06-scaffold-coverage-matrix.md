@@ -157,6 +157,10 @@ Legend:
 - [x] Swift XCTest coverage now includes explicit patient sovereignty negative tests for consent revocation policy acknowledgements, cross-patient audit view denial, reidentification export denial-by-default, direct-identifier policy gates, and Sortio app-safe payload boundaries
 - [x] service-operations/CloudClinic core contracts now exist in Swift+TS+schema for service context, membership roles, habilitation surface, patient-service relationship, operational queue, document/draft surface, gate worklist, and administrative task governance
 - [x] Swift XCTest coverage now includes service-operations governance negatives/positives (lawfulContext/finality guards, role/membership denials, habilitation expiry/inactive denials, queue non-authorization, draft/final gate protections, admin gate-resolution denial, and admin-task allowlist enforcement)
+- [x] cross-app shared app-surface envelope contract now exists (`AppSurfaceEnvelope`) with typed app kind, actor role, safe refs, allowed/denied actions, degraded issues, provenance/audit refs, redaction posture, and explicit `legalAuthorizing = false`
+- [x] shared safe-reference taxonomy now exists across apps (`SafeUserRef`, `SafePatientRef`, `SafeProfessionalRef`, `SafeServiceRef`, `SafeSessionRef`, `SafeDraftRef`, `SafeGateRef`, `SafeArtifactRef`, `SafeExportRef`, `SafeAuditRef`, `SafeProvenanceRef`) with navigation-only/access-capability signaling
+- [x] cross-app role/app-aware action policy guards now fail-closed on app mismatch, role mismatch, and non-core-mediated action refs
+- [x] shared app-safe notification/obligation surface now exists with typed notification kinds and explicit obligation completion-record requirements
 - [~] CloudClinic runtime adapter and persisted service-ops projections remain scaffold-level (contracts/validators only in this wave)
 
 ## 8. Networking / operations

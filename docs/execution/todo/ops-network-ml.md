@@ -106,6 +106,8 @@ Files touched:
 ## READY
 
 ### OPS-003 Define incident-response command set for first operator tools
+Priority: High
+Skill: `docs/execution/skills/network-fabric-skill.md` + `docs/execution/skills/backup-restore-retention-export-skill.md`
 Objective:
 - list canonical operator actions for runtime failure, queue saturation, backup concern, and integrity incident handling
 Files:

@@ -3,6 +3,12 @@
 This matrix records **real enforcement currently present in-repo**.
 It is not a formal proof claim; it is a pragmatic invariant-enforcement posture.
 
+
+## Scope note (2026-04-26)
+
+This matrix tracks enforced scaffold invariants with tests/contracts currently present in-repo.
+It must not be interpreted as production certification or external regulatory qualification.
+
 ## Invariant matrix
 
 | Invariant | Layer | Why it matters | Current enforcement | Test coverage | Gap | Next hardening step |

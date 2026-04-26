@@ -165,6 +165,19 @@ Files touched:
 
 ## READY
 
+### RT-008 Extend runtime-boundary tests for user-agent and service-runtime adapters
+Priority: High
+Skill: `docs/execution/skills/async-runtime-skill.md` + `docs/execution/skills/aaci-skill.md`
+Definition of done:
+- boundary denials tested across app/aaci/gos/runtime surfaces where currently contract-only
+
+### AACI-009 Harden non-fake capability signaling for transcription/retrieval modes
+Priority: Medium
+Skill: `docs/execution/skills/aaci-skill.md` + `docs/execution/skills/provider-governance-skill.md`
+Definition of done:
+- docs/contracts/tests align on unavailable/degraded truth without semantic/provider over-claims
+
+
 ## TESTS / VALIDATION
 
 - no AACI path bypasses gate

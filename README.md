@@ -1,125 +1,97 @@
 # HealthOScaffold
 
-HealthOS is the full platform. AACI is one runtime inside HealthOS.
+HealthOS is the full platform. **AACI is one runtime inside HealthOS**. **GOS is a governed operational layer subordinate to Core law**. **Scribe, Sortio, and CloudClinic are app/interfaces that consume mediated surfaces; they never define constitutional law**.
 
-This scaffold establishes a single-node, Apple-Silicon-first architecture for a sovereign health operations environment with:
-- a canonical core for identity, consent, habilitation, provenance, gates, and storage
-- a Governed Operational Spec (GOS) layer for compiling human-authored operational language into runtime-consumable structure
-- an AACI runtime for ambient, agentic, bureaucratic automation
-- an async runtime for deferred jobs and reprocessing
-- a user-agent runtime for patient/user interactions
-- three interface apps: Scribe, Sortio, and CloudClinic
-- a private-drive/private-cloud behavior built from canonical directories plus governance metadata
+## Current repository posture (April 2026)
+
+This repository is in **controlled implementation / scaffold hardening**:
+- multiple cross-language contracts (Swift/TS/JSON Schema/SQL) are executable
+- Swift governance and boundary suites are present and runnable
+- TypeScript workspace builds; GOS tooling has automated tests
+- first-slice execution exists (CLI + minimal Scribe validation surface)
+
+It is **not**:
+- a production-ready product
+- a complete EHR
+- a final UI delivery of Scribe/Sortio/CloudClinic
+- a real regulatory-signature/interoperability integration
+- a real semantic retrieval stack with embeddings/vector index
+- a real external provider deployment (LM/STT/embedding remain scaffold/stub posture)
 
 ## Canonical hierarchy
 
 ```text
 Material substrate
-  └─ Apple Silicon host(s), macOS, disk, networking, backups
+  └─ host, storage, private network/mesh, backups
 HealthOS Core
-  └─ identity, storage, governance, schemas, actor/agent/runtime contracts
+  └─ law/governance (identity, consent, habilitation, storage, provenance, gate, audit)
 Governed Operational Spec (GOS)
-  └─ operational translation layer from human-authored rules to executable runtime structure
+  └─ operational translation layer subordinate to Core
 HealthOS Runtimes
-  ├─ AACI Runtime
-  ├─ Async Runtime
-  └─ User-Agent Runtime
+  ├─ AACI runtime
+  ├─ Async runtime
+  └─ User-Agent runtime
 Actors / Agents
-  ├─ professional/user agents
-  └─ AACI subagents
+  └─ bounded actors and role-governed agents
 Apps / Interfaces
-  ├─ Scribe
-  ├─ Sortio
-  └─ CloudClinic
+  ├─ Scribe (professional workspace)
+  ├─ Sortio (patient sovereignty)
+  └─ CloudClinic (service operations)
 Artifacts / Effects
-  ├─ transcripts
-  ├─ drafts
-  ├─ gate requests/resolutions
-  ├─ audit/provenance records
-  └─ derived AI outputs
+  └─ drafts, gate records, final artifacts, provenance/audit traces
 ```
-
-## Stack
-
-- Swift: core domain libraries, local runtime integration, providers, app-facing contracts
-- TypeScript: async/runtime services, orchestration, local HTTP APIs, MCP adapters, GOS tooling
-- Python: offline ML/fine-tuning pipelines only
-- PostgreSQL: canonical metadata and governance store
-- Filesystem: canonical encrypted/pseudonymized object/document store
-- launchd: local service supervision
-- mesh/VPN: private node-to-node and device-to-node connectivity
-
-## What this scaffold is
-
-A deliberate foundation for the whole HealthOS system.
-
-## What this scaffold is not
-
-- not a full product implementation
-- not a zero-knowledge vault
-- not a complete EHR
-- not a finished multi-node cloud
-- not a clinically autonomous system
-
-## First vertical slice
-
-This scaffold is arranged to support the first end-to-end slice:
-
-1. professional starts a service session
-2. habilitation is validated
-3. patient is selected
-4. session input is captured
-5. transcription is produced
-6. context is retrieved
-7. SOAP draft is composed
-8. human gate is presented
-9. approval/rejection is recorded
-10. provenance is appended
-11. artifacts are persisted
-
-## Start here for execution
-
-If you are continuing the build of this repository, begin with the execution layer:
-
-- `docs/execution/README.md`
-- `docs/execution/00-master-plan.md`
-- `docs/execution/01-agent-operating-protocol.md`
-- `docs/execution/02-status-and-tracking.md`
-- `docs/execution/phases/phase-map.md`
-- `docs/execution/todo/`
-
-These files define:
-- execution order
-- phase dependencies
-- TODOs by domain
-- definition of done
-- how an AI should choose and complete the next task
-
-## Repository guide
-
-- `docs/architecture`: canonical definitions and system design
-- `docs/adr`: architectural decision records
-- `docs/execution`: execution order, tracking, and AI operating protocol
-- `schemas`: JSON Schemas for core entities and contracts
-- `gos`: GOS authoring workspace and generic templates
-- `sql/migrations`: canonical DB migrations
-- `swift`: Swift packages for core/runtime/providers/app contracts
-- `ts`: TypeScript workspace for async, user-agent, and GOS tooling packages
-- `python`: ML/fine-tuning scaffolds
-- `apps`: interface app scaffolds
-- `scripts`: local bootstrap and dev scripts
-- `ops`: launchd, network, backup, health checks
 
 ## Quick start
 
 ```bash
-./scripts/bootstrap-local.sh
+make bootstrap
+make swift-build
+make swift-test
+make ts-build
+make ts-test
+make python-compile
 ```
 
-Then inspect:
-- `docs/execution/README.md`
-- `docs/architecture/01-overview.md`
-- `docs/architecture/02-modules.md`
-- `docs/architecture/03-first-slice.md`
-- `docs/architecture/29-governed-operational-spec.md`
-- `docs/architecture/30-gos-authoring-and-compiler.md`
+Optional local smoke path:
+
+```bash
+cd swift
+swift run HealthOSCLI
+swift run HealthOSScribeApp --smoke-test
+```
+
+## Where agents should start
+
+Read in order before coding:
+1. `README.md`
+2. `docs/execution/README.md`
+3. `docs/execution/00-master-plan.md`
+4. `docs/execution/01-agent-operating-protocol.md`
+5. `docs/execution/02-status-and-tracking.md`
+6. `docs/execution/06-scaffold-coverage-matrix.md`
+7. `docs/execution/10-invariant-matrix.md`
+8. `docs/execution/11-current-maturity-map.md`
+9. relevant `docs/execution/todo/*.md`
+10. matching `docs/execution/skills/*.md`
+
+## Repository map (real, current)
+
+- `docs/architecture/` — canonical architecture/doctrine docs (including GOS, app-boundary, regulatory, and cross-app waves)
+- `docs/execution/` — governed execution protocol, status tracking, coverage, invariants, TODOs, maturity/handoff
+- `schemas/` — JSON Schema contracts/entities and GOS schemas
+- `swift/` — Core, AACI, Providers, first-slice support, CLI, minimal Scribe app, XCTest suites
+- `ts/` — workspace packages (`contracts`, `runtime-async`, `runtime-user-agent`, `mcp-local`, `healthos-gos-tooling`)
+- `python/` — offline ML governance scaffolds only
+- `sql/migrations/001_init.sql` — canonical metadata schema scaffold
+- `ops/` and `scripts/` — local operational scaffolding, bootstrap, network and backup notes
+- `apps/` — interface boundary scaffolds/documentation
+
+## Maturity snapshot by layer
+
+Use `docs/execution/11-current-maturity-map.md` for full detail. Short view:
+- Core law + storage governance: **implemented seam / tested operational path (local scaffold)**
+- GOS authoring/compiler/lifecycle: **implemented seam / tested operational path (scaffold hardening)**
+- AACI + first slice orchestration: **implemented seam / tested operational path (bounded scope)**
+- Providers/ML/retrieval semantic: **scaffolded contract to implemented seam only**
+- Apps/UI: **contract-first + minimal Scribe validation UI, no final product UI**
+- Ops/network/backup/regulatory: **governed scaffold with tests; not production-hardened**

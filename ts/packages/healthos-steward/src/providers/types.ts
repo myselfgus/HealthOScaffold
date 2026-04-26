@@ -3,6 +3,7 @@ export type StewardLLMProviderKind =
   | 'anthropic'
   | 'xai'
   | 'disabled'
+  // Compatibility-only. Local command execution is not part of the primary Steward Agent runtime.
   | 'local-command';
 
 export type StewardLLMEndpointMode = 'responses' | 'chatCompletions' | 'messages' | 'localCommand';
@@ -43,7 +44,9 @@ export type StewardLLMProviderConfig = {
   supportsToolUse: boolean;
   notes?: string;
   anthropicVersion?: string;
+  /** Deprecated/compatibility-only. Do not use local-command as a primary Steward Agent provider. */
   command?: string[];
+  /** Deprecated/compatibility-only. Do not use local-command as a primary Steward Agent provider. */
   commandAllowlist?: string[][];
   metadata?: Record<string, string | number | boolean>;
 };
@@ -62,7 +65,19 @@ export type StewardLLMRequest = {
 };
 
 export type StewardLLMFailure = {
-  errorKind: 'networkDenied' | 'httpError' | 'missingSecret' | 'providerDisabled' | 'misconfigured' | 'timeout' | 'unsupported' | 'localCommandDenied' | 'unknown';
+  errorKind:
+    | 'networkDenied'
+    | 'httpError'
+    | 'rateLimited'
+    | 'badRequest'
+    | 'missingSecret'
+    | 'providerDisabled'
+    | 'misconfigured'
+    | 'timeout'
+    | 'unsupported'
+    | 'localCommandDenied'
+    | 'parseError'
+    | 'unknown';
   errorMessage: string;
 };
 

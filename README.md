@@ -123,3 +123,12 @@ For final scaffold-closure auditing and handoff discipline, use:
 - `docs/execution/15-scaffold-finalization-plan.md`
 
 A scaffold RC decision is about architectural/coding-foundation completion, not product or compliance completion.
+
+## Project Steward provider orchestration (model-agnostic)
+
+`@healthos/steward` now supports optional provider adapters (OpenAI, Anthropic, xAI, local-command) with secure defaults:
+- providers disabled by default
+- dry-run first behavior
+- no secrets committed
+- explicit `--post-comment` required for PR comment write
+- deterministic operation still works without any provider configured

@@ -106,3 +106,9 @@ Location:
 - versioned memory/policies/prompts: `.healthos-steward/`
 
 Do not treat steward memory as canonical truth; treat it as derived index over official docs.
+
+## Project Steward provider safety
+
+- Provider usage in steward is optional and must remain fail-closed.
+- Never commit provider local config with secrets.
+- PR review posting is never default; requires explicit operator flag.

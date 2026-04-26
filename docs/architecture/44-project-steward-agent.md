@@ -84,3 +84,14 @@ Implemented in this round:
 
 Delivery status for Project Steward GitHub integration:
 - complete for authenticated CLI ingestion/comment workflows in this repository scope
+
+## Provider orchestration extension (April 2026)
+
+Steward now includes a model-agnostic provider layer for optional OpenAI/Anthropic/xAI/local-command execution with dry-run-safe defaults.
+
+Safety constraints:
+- no provider required for deterministic commands
+- provider configs disabled by default
+- credentials only via env vars
+- invocation logs omit secrets and keep hashes
+- GitHub writes remain explicit (`--post-comment`)

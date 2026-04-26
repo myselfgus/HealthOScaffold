@@ -45,3 +45,11 @@ make validate-all
 - memory/policies/prompts are versioned and parseable
 - docs/tracking/todo updates are included in same work unit
 - no false maturity or fake integration claims
+
+## Provider-aware extension checks
+
+When touching steward provider orchestration, validate:
+- `providers list/check/explain`
+- `ask --dry-run`
+- `review-pr --dry-run` with diff payload generation
+- no secret leakage in logs/config

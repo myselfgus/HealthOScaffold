@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["version", "providers"],
+  "properties": {
+    "version": { "type": "string" },
+    "providers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id", "kind", "enabled", "model", "endpointMode", "timeoutMs",
+          "dryRunDefault", "supportsPrReview", "supportsNextTask", "supportsHandoff",
+          "supportsStructuredJson", "supportsToolUse"
+        ],
+        "properties": {
+          "id": { "type": "string" },
+          "kind": { "enum": ["openai", "anthropic", "xai", "codex-cli", "claude-code-cli", "local-command", "disabled"] },
+          "enabled": { "type": "boolean" },
+          "model": { "type": "string" },
+          "apiKeyEnv": { "type": "string" },
+          "baseUrl": { "type": "string" },
+          "endpointMode": { "enum": ["responses", "chatCompletions", "messages", "localCommand"] },
+          "timeoutMs": { "type": "integer", "minimum": 1 },
+          "maxOutputTokens": { "type": "integer", "minimum": 1 },
+          "temperature": { "type": "number" },
+          "dryRunDefault": { "type": "boolean" },
+          "supportsPrReview": { "type": "boolean" },
+          "supportsNextTask": { "type": "boolean" },
+          "supportsHandoff": { "type": "boolean" },
+          "supportsStructuredJson": { "type": "boolean" },
+          "supportsToolUse": { "type": "boolean" },
+          "notes": { "type": "string" }
+        }
+      }
+    }
+  }
+}

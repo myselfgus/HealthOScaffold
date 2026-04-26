@@ -11,6 +11,7 @@ This plan defines the exact final sequence to reach scaffold closure without pre
 3. Confirm `06-scaffold-coverage-matrix.md`, `10-invariant-matrix.md`, `11-current-maturity-map.md`, and `12-next-agent-handoff.md` are synchronized.
 4. Keep TODO files organized with only actionable remaining tasks.
 5. Run mandatory local validation gates and record outcomes.
+6. steward memory/index reviewed and synchronized (`healthos-steward scan`, `healthos-steward handoff`) without overriding official docs.
 
 ## Merge criteria for closure PR
 

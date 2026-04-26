@@ -1,0 +1,14 @@
+version: 0.1.0
+owner: repository-governance
+classification: scaffold-policy
+invariants:
+  - HealthOS is the whole platform; AACI is one runtime inside HealthOS.
+  - GOS is an operational layer subordinate to Core law.
+  - Apps are interfaces, never constitutional law engines.
+  - Scribe/Sortio/CloudClinic never bypass mediated surfaces and never define Core law.
+  - Human gate is mandatory for regulated/final effects.
+  - Draft is not final artifact; final artifact requires approved gate.
+  - Consent, habilitation, finalidade, lawfulContext, storage law, provenance and audit remain in Core.
+  - Direct identifiers and reidentification mappings are sensitive layers.
+  - Provider output is not clinical act; GOS/network/user-agent are not legal authorization.
+  - Never fabricate clinical examples, fake integrations, or production readiness claims.

@@ -1,0 +1,6 @@
+version: 0.1.0
+rules:
+  - memory_is_derived_index_only
+  - official_docs_are_canonical
+  - update_tracking_and_todo_same_work_unit
+  - report_drift_instead_of_silent_override

@@ -89,6 +89,21 @@ Read in order before coding:
 - `ops/` and `scripts/` — local operational scaffolding, bootstrap, network and backup notes
 - `apps/` — interface boundary scaffolds/documentation
 
+
+## Project Steward (engineering agent scaffold)
+
+The repository now includes a scaffolded engineering steward CLI at `ts/packages/healthos-steward/` with persistent policy/memory templates under `.healthos-steward/`.
+
+Use it for repository diagnostics/planning/handoff (not clinical runtime behavior):
+
+```bash
+cd ts && npx --yes --workspace @healthos/steward healthos-steward status
+cd ts && npx --yes --workspace @healthos/steward healthos-steward next-task
+cd ts && npx --yes --workspace @healthos/steward healthos-steward prompt codex-next
+```
+
+The steward memory is a **derived operational index**. Canonical truth remains in `README.md`, `AGENTS.md`, `CLAUDE.md`, and `docs/execution/*`.
+
 ## Maturity snapshot by layer
 
 Use `docs/execution/11-current-maturity-map.md` for full detail. Short view:

@@ -27,6 +27,7 @@ Before editing a domain:
 - `backup-restore-retention-export-skill.md`
 - `regulatory-interoperability-skill.md`
 - `documentation-drift-skill.md`
+- `project-steward-skill.md`
 
 ## Legacy skills kept for compatibility
 

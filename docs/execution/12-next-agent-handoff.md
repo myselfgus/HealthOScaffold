@@ -7,6 +7,7 @@ Repository is in controlled implementation/scaffold hardening with strong govern
 ## How to choose next task
 
 1. Open `docs/execution/02-status-and-tracking.md`.
+- run steward snapshot before task selection: `cd ts && npx --yes --workspace @healthos/steward healthos-steward status`
 2. Confirm closure criteria and blockers in `docs/execution/13-scaffold-release-candidate-criteria.md` and `docs/execution/14-final-gap-register.md`.
 3. Pick highest-priority `READY` task in `docs/execution/todo/*.md`.
 4. Load matching skill in `docs/execution/skills/`.

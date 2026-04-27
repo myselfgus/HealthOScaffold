@@ -351,3 +351,4 @@ Validation executed in this work unit:
 - AACI-009: Capability honesty signaling in AACI/Retrieval (GAP-009) [COMPLETED]
 - CL-006: Shared error envelope for local service boundaries [COMPLETED]
 - APP-008: Cross-app envelope propagation [COMPLETED]
+- Scaffold RC 1 final validation: COMPLETED

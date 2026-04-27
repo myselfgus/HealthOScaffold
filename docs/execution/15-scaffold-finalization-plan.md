@@ -75,3 +75,4 @@ After scaffold closure, prioritize:
 ## Steward-specific safeguard
 
 Steward provider integrations must stay optional, dry-run capable, and explicit for any network/GitHub write operation.
+Gate sequence finalized: seg 27 abr 2026 10:21:18 -03

@@ -11,6 +11,10 @@ function setup(config) {
   return root;
 }
 
+function writeProviderFile(root, name, config) {
+  writeFileSync(join(root, `.healthos-steward/providers/${name}`), JSON.stringify(config, null, 2));
+}
+
 function freshFetchTracker() {
   const calls = [];
   const reset = () => { calls.length = 0; };
@@ -34,6 +38,15 @@ test('providers.example.json parseable and disabled listed', async () => {
   rmSync(root, { recursive: true, force: true });
 });
 
+test('providers.json is used when local config is absent', async () => {
+  const root = setup({ version: '0.1.0', providers: [baseProvider] });
+  writeProviderFile(root, 'providers.json', { version: '0.1.0', providers: [{ ...baseProvider, id: 'xai-default', kind: 'xai', enabled: true }] });
+  const { createProviderRouter } = await import('../dist/providers/router.js');
+  const router = await createProviderRouter(root);
+  assert.equal(router.listProviders()[0].id, 'xai-default');
+  rmSync(root, { recursive: true, force: true });
+});
+
 test('enabled provider without env returns missingSecret', async () => {
   const root = setup({ version: '0.1.0', providers: [{ ...baseProvider, enabled: true }] });
   delete process.env.OPENAI_API_KEY;
@@ -51,6 +64,18 @@ test('unknown provider id throws typed error', async () => {
   await assert.rejects(
     () => router.invoke({ providerId: 'nope', templateId: 'x', systemPrompt: '', userPrompt: '', inputKind: 'freeform', repoContextRefs: [], dryRun: true, allowNetwork: false, allowGitHubWrite: false }),
     /unknown provider/,
+  );
+  rmSync(root, { recursive: true, force: true });
+});
+
+test('disabled provider kind is fail-closed and not replaced by local echo fallback', async () => {
+  const root = setup({ version: '0.1.0', providers: [{ ...baseProvider, id: 'disabled-default', kind: 'disabled', model: 'none' }] });
+  const { createProviderRouter } = await import('../dist/providers/router.js');
+  const router = await createProviderRouter(root);
+  assert.equal(router.checkProviders()[0].status, 'disabled');
+  await assert.rejects(
+    () => router.invoke({ providerId: 'disabled-default', templateId: 'x', systemPrompt: '', userPrompt: '', inputKind: 'freeform', repoContextRefs: [], dryRun: false, allowNetwork: false, allowGitHubWrite: false }),
+    /not invokable/,
   );
   rmSync(root, { recursive: true, force: true });
 });

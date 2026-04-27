@@ -130,6 +130,50 @@ Files touched:
 - `docs/execution/skills/project-steward-skill.md`
 - `docs/execution/02-status-and-tracking.md`
 
+### ML-011 Create Xcode Agent initiative tracker and land first runtime-core code
+Outcome:
+- dedicated initiative tracker added at `docs/execution/18-healthos-xcode-agent-task-tracker.md` with streams, active queue, open decisions, and per-work-unit continuity rules
+- first runtime-centric TypeScript files landed under `ts/packages/healthos-steward/src/agent/` defining session, surface, tool, backend, policy, and runtime contracts
+- package root now exports the first agent runtime API surface, keeping the implementation additive and compatible with the current steward scaffold
+- minimal runtime helpers landed for session creation, policy evaluation, and non-provider-centric request handling
+- initial test scaffold added for future package build/test validation
+Files touched:
+- `docs/execution/18-healthos-xcode-agent-task-tracker.md`
+- `ts/packages/healthos-steward/src/agent/*`
+- `ts/packages/healthos-steward/src/index.ts`
+- `ts/packages/healthos-steward/test/agent-runtime.test.mjs`
+- `docs/execution/02-status-and-tracking.md`
+- `docs/execution/todo/ops-network-ml.md`
+
+### ML-010 Define target architecture for HealthOS Xcode Agent and migration path
+Outcome:
+- target architecture documented for evolving Project Steward into a repository-aware engineering agent centered on runtime, sessions, tools, and conversation surfaces instead of provider invocation
+- explicit migration plan added for runtime extraction, model-backend reframing, CLI conversation mode, Xcode-native conversation surface, and optional frontend surface
+- current steward docs and handoff entrypoints updated so future work does not accidentally keep reinforcing the old provider-centric abstraction
+Files touched:
+- `docs/architecture/44-project-steward-agent.md`
+- `docs/architecture/45-healthos-xcode-agent.md`
+- `docs/execution/12-next-agent-handoff.md`
+- `docs/execution/17-healthos-xcode-agent-migration-plan.md`
+- `.healthos-steward/README.md`
+- `docs/execution/02-status-and-tracking.md`
+- `docs/execution/todo/ops-network-ml.md`
+
+### ML-009 De-alias steward agent commands and restore provider config precedence
+Outcome:
+- `providers.json` is now part of the real config resolution chain instead of being skipped when no local override exists
+- disabled/unsupported non-invokable provider kinds no longer masquerade as a runnable local `echo` fallback
+- `agent handoff`, `agent generate-codex-prompt`, and `agent sync-memory` now run distinct prompt/template paths instead of silently delegating to `plan-next`
+- deterministic Codex prompt surfaces now read `codex-next-task.md` rather than the generic model next-task prompt
+- coverage added for config precedence, fail-closed disabled provider behavior, and command de-aliasing in dry-run mode
+Files touched:
+- `ts/packages/healthos-steward/src/providers/router.ts`
+- `ts/packages/healthos-steward/src/steward.ts`
+- `ts/packages/healthos-steward/test/cli.test.mjs`
+- `ts/packages/healthos-steward/test/providers.test.mjs`
+- `docs/execution/02-status-and-tracking.md`
+- `docs/execution/todo/ops-network-ml.md`
+
 ### ML-008 Steward provider error taxonomy and review comment formatting
 Outcome:
 - expanded `StewardLLMFailure['errorKind']` union with operator-actionable HTTP categories (`auth`, `notFound`, `serverError`, `rateLimited`, `badRequest`), pre-response transport categories (`networkUnavailable`, `timeout`), and payload categories (`parseError`, `payloadEmpty`); kept the existing union members backward-compatible

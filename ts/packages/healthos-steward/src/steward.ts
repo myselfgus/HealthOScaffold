@@ -98,7 +98,7 @@ class StewardCore {
     const current = (await exists(path)) ? await readJson<Record<string, unknown>>(path) : {};
     await writeJson(path, { ...current, ...patch, updated_at: new Date().toISOString() });
   }
-  async promptCodexNext() { return readFile(resolve(this.root, '.healthos-steward/prompts/model-next-task.md'), 'utf8'); }
+  async promptCodexNext() { return readFile(resolve(this.root, '.healthos-steward/prompts/codex-next-task.md'), 'utf8'); }
   private async appendValidation(record: ValidationRecord) {
     const file = resolve(stewardRoot(this.root), 'memory/validation-history.json');
     const existing = (await exists(file)) ? await readJson<ValidationRecord[]>(file) : [];
@@ -114,6 +114,9 @@ class StewardAgentRuntime {
     if (!this.routerPromise) this.routerPromise = createProviderRouter(this.root);
     return this.routerPromise;
   }
+  private async readPrompt(file: string): Promise<string> {
+    return readFile(resolve(this.root, `.healthos-steward/prompts/${file}`), 'utf8');
+  }
   private async invoke(command: string, request: StewardLLMRequest, prNumber?: number): Promise<StewardLLMResponse> {
     const router = await this.getRouter();
     const providerKind = router.explainProvider(request.providerId).kind;
@@ -127,12 +130,27 @@ class StewardAgentRuntime {
     return response.status === 'ok' || response.status === 'dryRun' ? 0 : 2;
   }
   async planNext(providerId: string, dryRun: boolean, allowNetwork: boolean) {
-    const prompt = await readFile(resolve(this.root, '.healthos-steward/prompts/model-next-task.md'), 'utf8');
+    const prompt = await this.readPrompt('model-next-task.md');
     const response = await this.invoke('agent plan-next', { providerId, templateId: 'model-next-task', systemPrompt: 'HealthOS steward agent runtime', userPrompt: prompt, inputKind: 'nextTask', repoContextRefs: REQUIRED_DOCS as unknown as string[], dryRun, allowNetwork, allowGitHubWrite: false });
     return this.responseExitCode(response);
   }
+  async handoff(providerId: string, dryRun: boolean, allowNetwork: boolean) {
+    const prompt = await this.readPrompt('model-handoff.md');
+    const response = await this.invoke('agent handoff', { providerId, templateId: 'model-handoff', systemPrompt: 'HealthOS steward handoff generator', userPrompt: prompt, inputKind: 'handoff', repoContextRefs: ['docs/execution/12-next-agent-handoff.md', '.healthos-steward/memory/next-agent-handoff.md'], dryRun, allowNetwork, allowGitHubWrite: false });
+    return this.responseExitCode(response);
+  }
+  async generateCodexPrompt(providerId: string, dryRun: boolean, allowNetwork: boolean) {
+    const prompt = await this.readPrompt('codex-next-task.md');
+    const response = await this.invoke('agent generate-codex-prompt', { providerId, templateId: 'codex-next-task', systemPrompt: 'HealthOS steward Codex prompt generator', userPrompt: prompt, inputKind: 'nextTask', repoContextRefs: ['docs/execution/12-next-agent-handoff.md', 'docs/execution/14-final-gap-register.md'], dryRun, allowNetwork, allowGitHubWrite: false });
+    return this.responseExitCode(response);
+  }
+  async syncMemory(providerId: string, dryRun: boolean, allowNetwork: boolean) {
+    const prompt = await this.readPrompt('repository-audit.md');
+    const response = await this.invoke('agent sync-memory', { providerId, templateId: 'repository-audit', systemPrompt: 'HealthOS steward memory sync auditor', userPrompt: prompt, inputKind: 'memorySync', repoContextRefs: ['.healthos-steward/memory/project-state.json', '.healthos-steward/memory/open-gaps.json', '.healthos-steward/memory/next-agent-handoff.md'], dryRun, allowNetwork, allowGitHubWrite: false });
+    return this.responseExitCode(response);
+  }
   async architectureReview(providerId: string, dryRun: boolean, allowNetwork: boolean) {
-    const prompt = await readFile(resolve(this.root, '.healthos-steward/prompts/model-architecture-review.md'), 'utf8');
+    const prompt = await this.readPrompt('model-architecture-review.md');
     const response = await this.invoke('agent architecture-review', { providerId, templateId: 'model-architecture-review', systemPrompt: 'HealthOS steward architecture reviewer', userPrompt: prompt, inputKind: 'architectureReview', repoContextRefs: ['docs/architecture/44-project-steward-agent.md'], dryRun, allowNetwork, allowGitHubWrite: false });
     return this.responseExitCode(response);
   }
@@ -210,9 +228,9 @@ export async function runStewardCLI(argv: string[]): Promise<number> {
       const pr = String(parsed.pr ?? ''); if (!pr) return 2;
       return agent.reviewPr(providerId, pr, String(parsed.repo ?? getRepoSlug(root)), parsed['dry-run'] === true, true, parsed['post-comment'] === true);
     }
-    if (subcommand === 'handoff' || subcommand === 'generate-codex-prompt' || subcommand === 'sync-memory') {
-      return agent.planNext(providerId, parsed['dry-run'] === true, true);
-    }
+    if (subcommand === 'handoff') return agent.handoff(providerId, parsed['dry-run'] === true, true);
+    if (subcommand === 'generate-codex-prompt') return agent.generateCodexPrompt(providerId, parsed['dry-run'] === true, true);
+    if (subcommand === 'sync-memory') return agent.syncMemory(providerId, parsed['dry-run'] === true, true);
     return 2;
   }
 

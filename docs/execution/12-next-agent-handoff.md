@@ -58,4 +58,10 @@ make smoke-scribe
 
 ## Steward provider follow-up
 
-Project Steward now has optional provider adapters and dry-run orchestration; next iterations should improve adapter-specific error typing and richer output formatting without introducing autonomy creep.
+Project Steward now has optional provider adapters and dry-run orchestration; however, the next strategic step is no longer incremental provider growth.
+
+Use these docs as the target source of truth for future steward work:
+- `docs/architecture/45-healthos-xcode-agent.md`
+- `docs/execution/17-healthos-xcode-agent-migration-plan.md`
+
+The intended evolution is an Xcode-native engineering agent with conversational surfaces, session continuity, tool runtime, and model backends subordinate to the agent runtime.

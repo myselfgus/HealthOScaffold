@@ -11,14 +11,30 @@ function providerFactory(config: StewardLLMProviderConfig): StewardLLMProvider {
   if (config.kind === 'anthropic') return createAnthropicProvider(config);
   if (config.kind === 'xai') return createXAIProvider(config);
   if (config.kind === 'local-command') return createLocalCommandProvider(config);
-  return createLocalCommandProvider({ ...config, command: ['echo', 'provider disabled'], commandAllowlist: [['echo']] });
+  return {
+    health() {
+      return {
+        providerId: config.id,
+        enabled: false,
+        status: 'disabled',
+        detail: 'provider is disabled',
+      };
+    },
+    async invoke(request: StewardLLMRequest): Promise<StewardLLMResponse> {
+      void request;
+      throw new Error(`provider kind ${config.kind} is not invokable`);
+    },
+  };
 }
 
 export async function loadProviderConfigs(repoRoot: string): Promise<StewardLLMProviderConfig[]> {
   const localPath = resolve(repoRoot, '.healthos-steward/providers/providers.local.json');
+  const primaryPath = resolve(repoRoot, '.healthos-steward/providers/providers.json');
   const examplePath = resolve(repoRoot, '.healthos-steward/providers/providers.example.json');
-  const primaryPath = await readFile(localPath, 'utf8').then(() => localPath).catch(() => examplePath);
-  const parsed = JSON.parse(await readFile(primaryPath, 'utf8')) as ProviderConfigFile;
+  const configPath = await readFile(localPath, 'utf8')
+    .then(() => localPath)
+    .catch(() => readFile(primaryPath, 'utf8').then(() => primaryPath).catch(() => examplePath));
+  const parsed = JSON.parse(await readFile(configPath, 'utf8')) as ProviderConfigFile;
   return parsed.providers;
 }
 

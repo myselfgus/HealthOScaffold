@@ -6,6 +6,57 @@ Current phase: Controlled implementation — first vertical slice started
 
 ## Completed recently
 
+## ML-011 — HealthOS Xcode Agent initiative tracker and first runtime-core implementation (2026-04-27)
+
+- created a dedicated multi-turn initiative tracker at `docs/execution/18-healthos-xcode-agent-task-tracker.md` to keep architecture, streams, queue, and open decisions synchronized across future work units
+- introduced the first concrete runtime-centric TypeScript implementation under `ts/packages/healthos-steward/src/agent/` with explicit contracts for runtime mode, conversation surface, session snapshot, action record, policy guard, tool runtime, and model backend
+- added minimal executable helpers for session creation, session message append, policy evaluation, request summarization, and a first compatibility `runAgentRuntime` flow that no longer depends on provider CLI paths as the sole entry model
+- exported the new agent runtime API surface from the package root and added a first validation test file for future `npm test` execution
+- updated the initiative tracker to mark XA-002 complete and XA-003 in progress
+- validation status: no build/test run in this environment; TypeScript compilation remains to be executed in a future validated shell/build step
+Files touched:
+- `docs/execution/18-healthos-xcode-agent-task-tracker.md`
+- `ts/packages/healthos-steward/src/agent/types.ts`
+- `ts/packages/healthos-steward/src/agent/runtime.ts`
+- `ts/packages/healthos-steward/src/agent/guards.ts`
+- `ts/packages/healthos-steward/src/agent/index.ts`
+- `ts/packages/healthos-steward/src/index.ts`
+- `ts/packages/healthos-steward/test/agent-runtime.test.mjs`
+- `docs/execution/02-status-and-tracking.md`
+- `docs/execution/todo/ops-network-ml.md`
+
+## ML-010 — HealthOS Xcode Agent target architecture and migration documentation (2026-04-27)
+
+- documented the target evolution of Project Steward into a repository-aware engineering agent with conversation surfaces, sessions, tool runtime, policy guards, and model backends subordinate to the runtime
+- established an explicit separation between current steward scaffold (`44-project-steward-agent.md`) and target architecture (`45-healthos-xcode-agent.md`)
+- added a concrete migration plan covering runtime extraction, session model, CLI conversation surface, Xcode-native surface, optional frontend surface, and compatibility strategy
+- updated steward entry docs and handoff docs so future work does not continue reinforcing the provider-centric model by accident
+- validation status: documentation work only; no code build/test run as part of this work unit
+Files touched:
+- `docs/architecture/44-project-steward-agent.md`
+- `docs/architecture/45-healthos-xcode-agent.md`
+- `docs/execution/12-next-agent-handoff.md`
+- `docs/execution/17-healthos-xcode-agent-migration-plan.md`
+- `.healthos-steward/README.md`
+- `docs/execution/02-status-and-tracking.md`
+- `docs/execution/todo/ops-network-ml.md`
+
+## ML-009 — Steward agent command de-aliasing and provider config selection hardening (2026-04-27)
+
+- `healthos-steward` now loads provider config in the expected precedence order: `providers.local.json` -> `providers.json` -> `providers.example.json`, so real repository config is no longer skipped when local overrides are absent
+- provider kind fallback no longer silently degrades into a local `echo` command; disabled/unknown non-invokable kinds now fail closed instead of masquerading as runnable adapters
+- agent subcommands `handoff`, `generate-codex-prompt`, and `sync-memory` now execute distinct prompt/template flows instead of aliasing to `plan-next`
+- deterministic `prompt codex-next` / `next-task` now read the Codex-specific prompt file rather than the model-planning prompt
+- TypeScript tests expanded to cover provider-config precedence, fail-closed disabled provider behavior, and non-aliased agent dry-run command outputs
+- validation status: source/test edits completed, but build/test execution was not run in this environment because shell execution was interrupted and Xcode diagnostics are unavailable for these TypeScript files
+Files touched:
+- `ts/packages/healthos-steward/src/providers/router.ts`
+- `ts/packages/healthos-steward/src/steward.ts`
+- `ts/packages/healthos-steward/test/cli.test.mjs`
+- `ts/packages/healthos-steward/test/providers.test.mjs`
+- `docs/execution/02-status-and-tracking.md`
+- `docs/execution/todo/ops-network-ml.md`
+
 ## APP-009 — Documentation drift check for app-boundary claims (2026-04-27)
 
 - app architecture docs now carry explicit "Scaffold posture / non-claims" sections for Scribe, Sortio, and CloudClinic

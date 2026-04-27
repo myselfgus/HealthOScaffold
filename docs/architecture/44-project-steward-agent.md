@@ -4,6 +4,12 @@
 
 HealthOS Project Steward is an **engineering tool** in this repository. It is not a clinical runtime, not AACI, not a user agent, and not a law engine.
 
+This document describes the current scaffold/runtime that exists today.
+
+Target evolution beyond this scaffold is defined in:
+- `docs/architecture/45-healthos-xcode-agent.md`
+- `docs/execution/17-healthos-xcode-agent-migration-plan.md`
+
 It exists to:
 - maintain a versioned operational memory index
 - inspect repository status and required docs presence
@@ -89,6 +95,8 @@ Delivery status for Project Steward GitHub integration:
 ## Provider orchestration extension (April 2026)
 
 Steward now includes a model-agnostic provider layer for optional OpenAI/Anthropic/xAI/disabled (with local-command only as deprecated compatibility) execution with dry-run-safe defaults.
+
+This provider layer should now be treated as a transitional scaffold, not the long-term architectural center. The target design moves repository intelligence into an agent runtime with conversation surfaces, tools, sessions, and model backends.
 
 Safety constraints:
 - no provider required for deterministic commands

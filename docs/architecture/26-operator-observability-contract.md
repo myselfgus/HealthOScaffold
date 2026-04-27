@@ -64,13 +64,15 @@ Event payload rule:
 - critical
 - informational
 
-## Suggested alert mapping
-- runtime degraded -> warning
-- runtime failed -> critical
-- backup stale -> critical
-- restore untested -> warning
-- integrity mismatch -> critical
-- gate backlog saturation -> warning
+## Incident → event kind → action mapping
+
+| Incident Class | Canonical Event Kind(s) | Action Vocabulary |
+| :--- | :--- | :--- |
+| **Runtime failure** | `runtime.unhealthy`, `runtime.degraded` | `runtime.restart.requested` |
+| **Queue saturation** | `job.queue.saturated` | `job.ingest.paused`, `job.dead-letter.inspect`, `job.requeue.requested` |
+| **Backup concern** | `backup.integrity.mismatch`, `retention.legal_hold.conflict`, `backup.manifest.missing` | `restore.dry-run.only`, `retention.review.requested` |
+| **Integrity incident** | `storage.hash.mismatch`, `deidentification.access.denied`, `reidentification.denial` | `storage.partition.frozen`, `export.audit.requested` |
+
 
 ## Backup / restore / export / retention / DR governance events (implemented scaffold)
 - `backup.created`

@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "SequentialThinking": {
+      "url": "https://sequential-thinking-mcp.voither.workers.dev/sse",
+      "type": "sse"
+    }
+  }
+}

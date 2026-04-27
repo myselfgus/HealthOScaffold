@@ -130,6 +130,31 @@ Files touched:
 - `docs/execution/skills/project-steward-skill.md`
 - `docs/execution/02-status-and-tracking.md`
 
+### ML-008 Steward provider error taxonomy and review comment formatting
+Outcome:
+- expanded `StewardLLMFailure['errorKind']` union with operator-actionable HTTP categories (`auth`, `notFound`, `serverError`, `rateLimited`, `badRequest`), pre-response transport categories (`networkUnavailable`, `timeout`), and payload categories (`parseError`, `payloadEmpty`); kept the existing union members backward-compatible
+- replaced fragile `error.message` substring matching with `error.name`-based classification (`TimeoutError`/`AbortError` for timeout; `instanceof TypeError` for pre-response fetch failure)
+- added mode-aware response extractors: OpenAI Responses walks `output[].content[]` filtered by `type === 'output_text'` (with `output_text` shortcut still preferred); Anthropic Messages walks `content[]` filtered by `type === 'text'` so tool_use/tool_result blocks no longer leak into review text; chatCompletions handles both string and array `message.content`
+- 200 OK responses with no extractable assistant text now surface as `errorKind: 'payloadEmpty'` and `status: 'providerError'` instead of pretending to be a successful empty completion
+- HTTP error responses now extract the provider-supplied human-readable message (`error.message` for OpenAI/xAI shape; nested `error.message` for Anthropic shape) and surface it as `errorMessage`
+- added `formatStewardReviewComment` that produces a deterministic PR review body with HTML marker (`<!-- healthos-steward review -->`), provider/model/timestamp/policy-version header, and an explicit non-authority footer; refuses empty body so no placeholder comment is ever posted
+- `agent review-pr --post-comment` now wraps provider output through `formatStewardReviewComment` and reads policy versions from `.healthos-steward/policies/*.yaml` at post time
+- `StewardAgentRuntime` now memoizes the provider router instead of recreating it per invocation
+- `node:test` coverage increased from 12 to 33 cases without live network, asserting every new errorKind branch and the formatter contract
+Files touched:
+- `ts/packages/healthos-steward/src/providers/types.ts`
+- `ts/packages/healthos-steward/src/providers/utils.ts`
+- `ts/packages/healthos-steward/src/providers/openai.ts`
+- `ts/packages/healthos-steward/src/providers/anthropic.ts`
+- `ts/packages/healthos-steward/src/providers/xai.ts`
+- `ts/packages/healthos-steward/src/steward.ts`
+- `ts/packages/healthos-steward/test/providers.test.mjs`
+- `docs/architecture/44-project-steward-agent.md`
+- `docs/execution/02-status-and-tracking.md`
+- `docs/execution/16-next-10-actions-plan.md`
+- `docs/execution/todo/ops-network-ml.md`
+- `.healthos-steward/memory/project-state.json`
+
 ## READY
 
 ### OPS-003 Define incident-response command set for first operator tools

@@ -7,6 +7,18 @@ Current phase: Controlled implementation — first vertical slice started
 ## Completed recently
 
 
+## Steward provider hardening — typed errors and review comment formatter (2026-04-27)
+
+- Steward provider `errorKind` union widened from 12 to 17 cases with documented operator-actionable categories: HTTP semantics now distinguish `auth` (401/403), `notFound` (404), `serverError` (5xx) and `rateLimited` (429); transport-layer failures now distinguish `networkUnavailable` (pre-response fetch failure) from `timeout` (`AbortSignal.timeout`/`AbortError`); payload-layer failures now distinguish `parseError` (JSON parse failure) from `payloadEmpty` (200 OK without extractable text)
+- network-error classification no longer relies on substring matching of `error.message`; uses `error.name` (`TimeoutError`/`AbortError`) and `instanceof TypeError` to identify timeouts and `fetch failed` cases
+- provider HTTP error responses now surface the provider-supplied human-readable message (`error.message` for OpenAI/xAI; nested `error.message` for Anthropic) instead of a generic status label
+- response payload extraction now uses mode-aware extractors: OpenAI Responses walks `output_text` shortcut and `output[].content[].type === 'output_text'`; Anthropic Messages filters `content[]` to `type === 'text'` and ignores tool_use blocks; chatCompletions handles both string and array `message.content`
+- payload-empty detection added: 200 OK with no extractable assistant text is reported as `errorKind: 'payloadEmpty'` rather than masquerading as a successful empty completion
+- new `formatStewardReviewComment` produces a deterministic PR review comment body with HTML marker (`<!-- healthos-steward review -->`), provider/model/timestamp/policy-version header, and an explicit non-authority footer; throws on empty body so the steward never posts placeholder comments under any code path
+- `agent review-pr --post-comment` now wraps the provider output through `formatStewardReviewComment` before posting; policy versions are read at post time from `.healthos-steward/policies/invariant-policy.yaml` and `pr-review-rubric.yaml`
+- Steward agent runtime now memoizes the provider router instead of recreating it per invocation, removing redundant config reads on multi-step `agent review-pr` flows
+- `node:test` coverage increased from 12 to 33 cases without live network: typed assertions for every new errorKind branch, mode-specific extractor shapes (OpenAI walked output, Anthropic content-block filtering, xAI chat completions), `formatStewardReviewComment` empty-body refusal and metadata header, and the `classifyHttpError`/`classifyNetworkError`/`extractProviderErrorMessage` helpers
+
 ## Governance/doc readiness consolidation (2026-04-26)
 
 

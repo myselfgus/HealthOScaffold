@@ -1,6 +1,6 @@
 {
   "project": "HealthOScaffold",
-  "steward_version": "0.1.0",
+  "steward_version": "0.1.1",
   "mode": "controlled implementation / scaffold hardening",
   "source_of_truth": [
     "README.md",
@@ -8,12 +8,17 @@
     "CLAUDE.md",
     "docs/execution/*"
   ],
-  "last_synced_at": "2026-04-26T00:00:00Z",
+  "last_synced_at": "2026-04-27T00:00:00Z",
   "stale_after_days": 7,
   "notes": "Operational index only. Official docs remain canonical.",
   "github_integration": {
     "mode": "gh-cli",
     "status": "implemented",
     "notes": "Requires gh auth login for live repository operations"
+  },
+  "provider_layer": {
+    "error_taxonomy_version": "0.2.0",
+    "review_comment_format_version": "0.1.0",
+    "notes": "Provider errors are classified across policy, transport, HTTP semantic, payload, and unknown categories. PR review comments carry a fixed marker/header/footer; empty bodies are refused at format time."
   }
 }

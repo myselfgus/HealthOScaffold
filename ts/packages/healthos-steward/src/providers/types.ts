@@ -64,19 +64,37 @@ export type StewardLLMRequest = {
   metadata?: Record<string, string | number | boolean>;
 };
 
+/**
+ * Typed error vocabulary for Steward provider invocations.
+ *
+ * Categories progress from configuration/policy denial through transport
+ * problems to provider-side semantic failures. Consumers should treat this as
+ * an open union and use a `default` arm in any switch — new kinds may be
+ * added as the provider surface grows.
+ */
 export type StewardLLMFailure = {
   errorKind:
+    // policy / configuration
     | 'networkDenied'
-    | 'httpError'
-    | 'rateLimited'
-    | 'badRequest'
     | 'missingSecret'
     | 'providerDisabled'
     | 'misconfigured'
-    | 'timeout'
     | 'unsupported'
     | 'localCommandDenied'
+    // transport
+    | 'networkUnavailable'
+    | 'timeout'
+    | 'httpError'
+    // HTTP semantic categories
+    | 'auth'
+    | 'rateLimited'
+    | 'badRequest'
+    | 'notFound'
+    | 'serverError'
+    // payload / parsing
     | 'parseError'
+    | 'payloadEmpty'
+    // catch-all
     | 'unknown';
   errorMessage: string;
 };
@@ -128,4 +146,19 @@ export type StewardLLMInvocationLog = {
 export type ProviderConfigFile = {
   version: string;
   providers: StewardLLMProviderConfig[];
+};
+
+/**
+ * Metadata header carried with every Steward-authored PR review comment so a
+ * human reader can identify the provider/model/policy version that produced
+ * it without trusting commit-time context alone.
+ */
+export type StewardReviewMetadata = {
+  providerId: string;
+  providerKind: StewardLLMProviderKind;
+  model: string;
+  generatedAt: string;
+  prRef: string;
+  invariantPolicyVersion: string;
+  rubricVersion: string;
 };

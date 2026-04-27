@@ -97,3 +97,27 @@ Safety constraints:
 - invocation logs omit secrets and keep hashes
 - GitHub writes remain explicit (`--post-comment`)
 - PR review comment posting uses real provider output only; no placeholder comment is posted on provider failure.
+
+## Provider error taxonomy (April 2026 hardening)
+
+`StewardLLMResponse.errorKind` is a typed union covering the operator-actionable categories observed across OpenAI/Anthropic/xAI:
+
+| category | errorKind | trigger |
+|---|---|---|
+| policy / configuration | `networkDenied`, `missingSecret`, `providerDisabled`, `misconfigured`, `unsupported`, `localCommandDenied` | failed pre-flight checks before any HTTP call |
+| transport | `networkUnavailable`, `timeout`, `httpError` | DNS/TLS/socket failures, `AbortSignal.timeout` deadlines, status codes outside the documented HTTP categories below |
+| HTTP semantic | `auth` (401/403), `rateLimited` (429), `badRequest` (400/422 and other 4xx), `notFound` (404), `serverError` (5xx) | provider returned a non-2xx response |
+| payload / parsing | `parseError`, `payloadEmpty` | response body was not valid JSON, or returned 200 OK without any extractable assistant text |
+| catch-all | `unknown` | thrown error did not match any known shape; preserves the original message for diagnostics |
+
+When a provider returns a non-2xx response, the adapter prefers the human-readable message from the provider body (`error.message` for OpenAI/xAI; nested `error.message` for Anthropic) over a generic status label, so operator logs surface what the provider actually said.
+
+## PR review comment format (April 2026 hardening)
+
+Steward-authored PR comments now carry a fixed header and footer assembled from `formatStewardReviewComment` so a human reviewer can verify provenance without reading log files:
+
+- HTML marker `<!-- healthos-steward review -->` for greppable detection of Steward-authored comments
+- provider id and kind, model, generation timestamp, PR ref, and policy versions (`invariant-policy.yaml`, `pr-review-rubric.yaml`)
+- explicit footer reasserting non-authority: the comment is a draft review and does not approve, merge, or replace human gate resolution
+
+`formatStewardReviewComment` throws on empty body — the steward never posts placeholder text under any code path.

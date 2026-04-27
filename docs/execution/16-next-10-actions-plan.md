@@ -388,6 +388,8 @@ Each task block uses the same fields so an agent can execute deterministically.
 
 ### T10 — Steward provider follow-up: typed errors and output formatting
 
+**Status: completed 2026-04-27** (tracked as `ML-008` in `docs/execution/todo/ops-network-ml.md`).
+
 - TODO id: not a single TODO; derived from `12-next-agent-handoff.md`
   (`Steward provider follow-up`).
 - Closure mapping: post-scaffold hardening (non-blocking).
@@ -417,6 +419,9 @@ Each task block uses the same fields so an agent can execute deterministically.
   - `make ts-test` (or workspace-scoped `npm test --workspace @healthos/steward`)
 - Anti-overclaim:
   - No autonomy creep; no default network calls; no PR posting by default.
+
+**Closure summary (2026-04-27):**
+- `errorKind` union expanded from 12 to 17 typed cases; `formatStewardReviewComment` added with marker/header/footer and empty-body refusal; mode-aware extractors per provider (Responses/Messages/chatCompletions); `node:test` raised from 12 to 33 cases without live network. Cross-language documentation synchronized (architecture 44, status, todo ops-network-ml ML-008, project-state.json).
 
 ## Validation discipline that applies to every task
 

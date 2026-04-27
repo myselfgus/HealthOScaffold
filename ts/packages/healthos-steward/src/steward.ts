@@ -5,7 +5,14 @@ import { execSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { createProviderRouter } from './providers/router.js';
 import { appendInvocationLog } from './providers/invocation-log.js';
-import type { StewardLLMInvocationLog, StewardLLMRequest, StewardLLMResponse } from './providers/types.js';
+import { formatStewardReviewComment } from './providers/utils.js';
+import type {
+  StewardLLMInvocationLog,
+  StewardLLMRequest,
+  StewardLLMResponse,
+  StewardLLMRouter,
+  StewardReviewMetadata,
+} from './providers/types.js';
 
 export const REQUIRED_DOCS = [
   'README.md', 'AGENTS.md', 'CLAUDE.md', 'docs/execution/02-status-and-tracking.md', 'docs/execution/06-scaffold-coverage-matrix.md',
@@ -57,6 +64,18 @@ function getRepoSlug(root: string): string { const remote = execSync('git remote
 function loadPRDetails(root: string, prNumber: string, repo: string): PRDetails { return JSON.parse(runGh(root, ['pr', 'view', prNumber, '--repo', repo, '--json', 'number,title,url,mergeStateStatus,reviewDecision,comments,reviews,statusCheckRollup'])) as PRDetails; }
 function loadPRDiff(root: string, prNumber: string, repo: string): string { return runGh(root, ['pr', 'diff', prNumber, '--repo', repo]); }
 
+/**
+ * Best-effort extraction of `version: <value>` from a YAML policy file.
+ * Steward policies are simple top-level YAML documents; we deliberately
+ * avoid pulling in a YAML parser dependency for one field.
+ */
+async function readPolicyVersion(path: string): Promise<string> {
+  if (!(await exists(path))) return 'unknown';
+  const text = await readFile(path, 'utf8');
+  const match = text.match(/^version:\s*['"]?([^\s'"]+)['"]?\s*$/m);
+  return match ? match[1] : 'unknown';
+}
+
 class StewardCore {
   constructor(private readonly root: string) {}
   async status() {
@@ -89,9 +108,14 @@ class StewardCore {
 }
 
 class StewardAgentRuntime {
+  private routerPromise?: Promise<StewardLLMRouter>;
   constructor(private readonly root: string) {}
+  private getRouter(): Promise<StewardLLMRouter> {
+    if (!this.routerPromise) this.routerPromise = createProviderRouter(this.root);
+    return this.routerPromise;
+  }
   private async invoke(command: string, request: StewardLLMRequest, prNumber?: number): Promise<StewardLLMResponse> {
-    const router = await createProviderRouter(this.root);
+    const router = await this.getRouter();
     const providerKind = router.explainProvider(request.providerId).kind;
     const response = await router.invoke(request);
     console.log(response.text || JSON.stringify(response, null, 2));
@@ -119,11 +143,23 @@ class StewardAgentRuntime {
   }
   async reviewPr(providerId: string, pr: string, repo: string, dryRun: boolean, allowNetwork: boolean, postComment: boolean) {
     if (!githubReady(this.root)) throw new Error('GitHub integration unavailable: gh CLI missing or unauthenticated.');
+    const router = await this.getRouter();
+    const providerKind = router.explainProvider(providerId).kind;
     const data = loadPRDetails(this.root, pr, repo);
     const payload = `PR #${data.number}: ${data.title}\n${loadPRDiff(this.root, pr, repo).slice(0, 20000)}`;
     const response = await this.invoke('agent review-pr', { providerId, templateId: 'model-pr-review', systemPrompt: 'HealthOS steward PR reviewer', userPrompt: payload, inputKind: 'prReview', repoContextRefs: ['.healthos-steward/policies/invariant-policy.yaml', '.healthos-steward/policies/pr-review-rubric.yaml'], dryRun, allowNetwork, allowGitHubWrite: postComment });
     if (postComment && !dryRun && response.status === 'ok' && response.text.trim()) {
-      runGh(this.root, ['pr', 'comment', pr, '--repo', repo, '--body', response.text]);
+      const metadata: StewardReviewMetadata = {
+        providerId: response.providerId,
+        providerKind,
+        model: response.model,
+        generatedAt: new Date().toISOString(),
+        prRef: `#${data.number} ${data.title}`,
+        invariantPolicyVersion: await readPolicyVersion(resolve(this.root, '.healthos-steward/policies/invariant-policy.yaml')),
+        rubricVersion: await readPolicyVersion(resolve(this.root, '.healthos-steward/policies/pr-review-rubric.yaml')),
+      };
+      const body = formatStewardReviewComment(response.text, metadata);
+      runGh(this.root, ['pr', 'comment', pr, '--repo', repo, '--body', body]);
     }
     return this.responseExitCode(response);
   }

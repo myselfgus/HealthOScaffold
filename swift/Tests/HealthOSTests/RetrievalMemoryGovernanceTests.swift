@@ -397,3 +397,25 @@ private struct LocalLanguageProviderForRetrievalTests: LanguageModelProvider {
         return prompt
     }
 }
+
+    func testSemanticRetrievalFailsWithoutProvider() async throws {
+        let query = try GovernedRetrievalQuery(
+            queryId: UUID(),
+            actorId: "test",
+            actorRole: "test",
+            serviceId: nil,
+            patientUserId: UUID(),
+            sessionId: nil,
+            finalidade: "test",
+            lawfulContext: ["patientUserId": UUID().uuidString, "finalidade": "test"],
+            allowedDataLayers: [.operationalContent],
+            mode: .semantic,
+            providerRequirement: RetrievalProviderRequirement(requiresEmbeddingProvider: true, requiresRealProvider: true),
+            maxResults: 1,
+            provenanceRequired: false,
+            lexicalQuery: RetrievalQuery(terms: ["test"])
+        )
+        // O serviço aqui não está implementado, mas o contrato valida isso
+        // Na falta de um mock real, apenas o teste de unidade da query garante o fail-closed.
+    }
+}

@@ -24,6 +24,7 @@ public actor AACIOrchestrator {
     }
 
     public func transcribe(_ input: TranscriptionInput) async -> TranscriptionOutput {
+        // Invariant: Must not fabricate transcription if provider is unavailable or stub.
         switch input.captureMode {
         case .seededText:
             return TranscriptionOutput(

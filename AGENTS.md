@@ -24,9 +24,10 @@ Guidance for coding agents working in HealthOScaffold.
 10. `docs/execution/13-scaffold-release-candidate-criteria.md`
 11. `docs/execution/14-final-gap-register.md`
 12. `docs/execution/15-scaffold-finalization-plan.md`
-13. relevant `docs/execution/todo/*.md`
-14. relevant `docs/architecture/*.md`
-15. matching `docs/execution/skills/*.md`
+13. `docs/execution/16-next-10-actions-plan.md`
+14. relevant `docs/execution/todo/*.md`
+15. relevant `docs/architecture/*.md`
+16. matching `docs/execution/skills/*.md`
 
 Task selection order:
 1. `READY` task in current phase

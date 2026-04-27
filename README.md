@@ -121,6 +121,7 @@ For final scaffold-closure auditing and handoff discipline, use:
 - `docs/execution/13-scaffold-release-candidate-criteria.md`
 - `docs/execution/14-final-gap-register.md`
 - `docs/execution/15-scaffold-finalization-plan.md`
+- `docs/execution/16-next-10-actions-plan.md`
 
 A scaffold RC decision is about architectural/coding-foundation completion, not product or compliance completion.
 

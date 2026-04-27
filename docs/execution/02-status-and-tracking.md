@@ -6,6 +6,28 @@ Current phase: Controlled implementation — first vertical slice started
 
 ## Completed recently
 
+## ML-012 — HealthOS steward hard reset and new clean runtime baseline (2026-04-27)
+
+- removed the previous `ts/packages/healthos-steward` implementation entirely instead of preserving compatibility layers or a `legacy` path inside the package
+- recreated `@healthos/steward` from scratch as a minimal runtime baseline centered on runtime requests, sessions, surface identity, and file-backed session persistence
+- added `.healthos-steward/memory/sessions/` as the first real runtime-owned state directory for the new steward
+- new package baseline now exposes only `status`, `runtime`, and `session` flows; old provider/prompt/review command implementation is no longer present in the package runtime
+- dedicated initiative tracker remains at `docs/execution/18-healthos-xcode-agent-task-tracker.md` and was rewritten to reflect the hard reset rather than an incremental migration fiction
+- validation status: no build/test run in this environment after the reset; a minimal runtime test file exists for future package validation
+Files touched:
+- `ts/packages/healthos-steward/package.json`
+- `ts/packages/healthos-steward/README.md`
+- `ts/packages/healthos-steward/src/cli.ts`
+- `ts/packages/healthos-steward/src/index.ts`
+- `ts/packages/healthos-steward/src/steward.ts`
+- `ts/packages/healthos-steward/src/runtime/types.ts`
+- `ts/packages/healthos-steward/src/runtime/session-store.ts`
+- `ts/packages/healthos-steward/src/runtime/runtime.ts`
+- `ts/packages/healthos-steward/test/runtime.test.mjs`
+- `docs/execution/18-healthos-xcode-agent-task-tracker.md`
+- `docs/execution/02-status-and-tracking.md`
+- `docs/execution/todo/ops-network-ml.md`
+
 ## ML-011 — HealthOS Xcode Agent initiative tracker and first runtime-core implementation (2026-04-27)
 
 - created a dedicated multi-turn initiative tracker at `docs/execution/18-healthos-xcode-agent-task-tracker.md` to keep architecture, streams, queue, and open decisions synchronized across future work units

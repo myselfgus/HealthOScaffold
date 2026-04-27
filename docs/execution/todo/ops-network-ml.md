@@ -130,6 +130,21 @@ Files touched:
 - `docs/execution/skills/project-steward-skill.md`
 - `docs/execution/02-status-and-tracking.md`
 
+### ML-012 Hard reset `@healthos/steward` and recreate the package baseline from scratch
+Outcome:
+- deleted the prior package implementation (`src`, `test`, `dist`) instead of carrying forward compatibility or `legacy` layers inside the package
+- rebuilt `ts/packages/healthos-steward/` from zero with a new minimal baseline around runtime requests, sessions, session persistence, and CLI surface identity
+- created `.healthos-steward/memory/sessions/` as the first runtime-owned state location for the new steward
+- rewrote the initiative tracker so future work continues from the clean reset rather than from the removed provider-centric runtime
+Files touched:
+- `ts/packages/healthos-steward/src/*`
+- `ts/packages/healthos-steward/test/runtime.test.mjs`
+- `ts/packages/healthos-steward/package.json`
+- `ts/packages/healthos-steward/README.md`
+- `docs/execution/18-healthos-xcode-agent-task-tracker.md`
+- `docs/execution/02-status-and-tracking.md`
+- `docs/execution/todo/ops-network-ml.md`
+
 ### ML-011 Create Xcode Agent initiative tracker and land first runtime-core code
 Outcome:
 - dedicated initiative tracker added at `docs/execution/18-healthos-xcode-agent-task-tracker.md` with streams, active queue, open decisions, and per-work-unit continuity rules

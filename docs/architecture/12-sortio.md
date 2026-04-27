@@ -52,3 +52,13 @@ See:
 
 ## Boundary
 Sortio is user-facing. It does not behave as a professional workspace.
+
+## Scaffold posture / non-claims
+
+Sortio is a scaffold contract and documentation-only surface:
+- no final Sortio app/UI shell has been implemented
+- no user-agent runtime chatbot behavior is wired
+- no clinical act pathways are implemented
+- Sortio does not own consent/habilitation/gate/finality law; it consumes mediated surfaces from HealthOS Core
+- patient sovereignty surfaces are contract-first only (no production retention/export automation)
+- User Agent capability guards exist as scaffold contracts (`UserSovereigntyContracts.swift`) with fail-closed negatives tested, but no final runtime adapter is wired

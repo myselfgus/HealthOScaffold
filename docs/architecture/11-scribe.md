@@ -66,9 +66,20 @@ See:
 - Scribe may display degraded or denied states
 - Scribe may not invent authorization success or finalize documents without gate resolution
 
+## Scaffold posture / non-claims
+
+Scribe is a scaffold contract and minimal validation surface only:
+- no final production UI has been implemented
+- no design system or navigation architecture has been introduced
+- local audio currently uses file selection/import rather than a full microphone-recording pipeline
+- transcription remains stubbed (degraded/unavailable honesty preserved)
+- retrieval is bounded lexical/tag/recency only (no semantic/embedding pipeline)
+- draft refresh remains preview-only until full spine execution with gate resolution
+- Scribe does not own consent/habilitation/gate/finality law; it consumes mediated surfaces from HealthOS Core
+
 ## Current minimal SwiftUI surface
 
-The scaffold now includes a minimal macOS SwiftUI validation surface in:
+The scaffold includes a minimal macOS SwiftUI validation surface in:
 - `swift/Sources/HealthOSScribeApp/`
 
 This surface is intentionally narrow:
@@ -81,11 +92,9 @@ This surface is intentionally narrow:
 - final-document state now stays separate from draft state, including explicit finalized vs withheld truth
 - referral and prescription derivatives are shown explicitly as `draft_only` outputs tied to the same document spine, without claiming issuance or prescription effect
 
-This surface is intentionally not the final Scribe UI:
-- no design system or navigation architecture has been introduced
-- no core law has been moved into the app
-- local audio currently uses file selection/import rather than a full microphone-recording pipeline
-- draft refresh remains preview-only/degraded until the existing executable spine reaches gate resolution
+This surface is explicitly scaffold-only, not the final Scribe UI:
+- no core law has been moved into the app (consent/habilitation/gate/finality remain in Core)
+- draft refresh remains preview-only/degraded until the executable spine reaches gate resolution
 
 ## First-slice command/result envelopes backed by shared HealthOS envelope vocabulary
 
@@ -115,6 +124,11 @@ Every result carries a `disposition` (`HealthOSCommandDisposition`) that keeps d
 This improves UI readiness while preserving law ownership in core services (consent, habilitation, gate, and document finalization remain outside app ownership).
 Derived referral/prescription previews also remain app-consumed state only; Scribe still does not own referral/prescription law or effectuation.
 
-
 ## First slice relevance
-Scribe is the primary interface for the first end-to-end slice.
+
+Scribe is the primary interface for the first end-to-end slice. This remains scaffold-level:
+- the slice demonstrates contract wiring and provenance separation
+- it does not claim production readiness or real provider integration
+- microphone capture, real transcription, and semantic retrieval remain deferred
+
+

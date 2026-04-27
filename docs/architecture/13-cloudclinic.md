@@ -56,3 +56,12 @@ See:
 
 ## Boundary
 CloudClinic is service-facing. It must not absorb patient sovereignty functions from Sortio or professional session functions from Scribe.
+
+## Scaffold posture / non-claims
+
+CloudClinic is a scaffold contract and documentation-only surface:
+- no final CloudClinic UI shell has been implemented
+- no persisted queue/task projection service is wired
+- service operations contracts exist in Swift Core + TypeScript + JSON Schema with fail-closed validators, but no runtime adapter is implemented
+- CloudClinic does not own service access law or membership policy; it consumes mediated surfaces from HealthOS Core
+- operational queue visibility is contract-first only (no production workflow engine)

@@ -212,6 +212,22 @@ Files touched:
 - `docs/execution/10-invariant-matrix.md`
 - `docs/execution/todo/apps-and-interfaces.md`
 
+## COMPLETED (continued)
+
+### APP-009 Documentation drift check for app-boundary claims
+Outcome:
+- added explicit "Scaffold posture / non-claims" sections to Scribe, Sortio, and CloudClinic architecture docs
+- interface doctrine doc now includes scaffold-honest summary clarifying Scribe as minimal SwiftUI validation surface and Sortio/CloudClinic as contract-first only
+- wording hardened to avoid implying final UI, production readiness, or real provider integration
+- execution tracking updated with APP-009 completion entry
+Files touched:
+- `docs/architecture/11-scribe.md`
+- `docs/architecture/12-sortio.md`
+- `docs/architecture/13-cloudclinic.md`
+- `docs/architecture/19-interface-doctrine.md`
+- `docs/execution/02-status-and-tracking.md`
+- `docs/execution/todo/apps-and-interfaces.md`
+
 ## READY
 
 ### APP-008 Propagate cross-app shared envelope consumption into non-Scribe adapters
@@ -220,12 +236,6 @@ Skill: `docs/execution/skills/cross-app-surfaces-skill.md` + `docs/execution/ski
 Definition of done:
 - Sortio/CloudClinic adapter seams consume shared envelope contracts without raw payload leaks
 - boundary tests added/updated for app-kind + role mismatch and safe-ref enforcement
-
-### APP-009 Documentation drift check for app-boundary claims
-Priority: Medium
-Skill: `docs/execution/skills/documentation-drift-skill.md`
-Definition of done:
-- app docs and execution tracking agree on current maturity (no final-UI claims)
 
 
 ## TESTS / VALIDATION

@@ -80,3 +80,12 @@ This boundary does not weaken the central rule that app-layer compliance logic s
 No app should be treated as the definition of the platform.
 No platform law should depend on an app-specific UI assumption.
 No app should become an independent interpreter of operational policy outside the contracts surfaced by HealthOS runtimes.
+
+## Scaffold posture / non-claims
+
+All three app interfaces (Scribe, Sortio, CloudClinic) are currently scaffold-level:
+- Scribe has a minimal macOS SwiftUI validation surface for first-slice wiring only; it is not a final production UI
+- Sortio and CloudClinic remain contract-first documentation surfaces with no UI shells implemented
+- no app owns or reimplements consent/habilitation/gate/finality law; all governance remains in HealthOS Core
+- app-facing surfaces are explicitly mediated (no raw direct identifiers, no reidentification mappings, no storage path leakage by default)
+- cross-app coordination envelope (`AppSurfaceEnvelope`) exists as a scaffold contract with tested boundary validators, but no production multi-app workflow is wired

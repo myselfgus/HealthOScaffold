@@ -6,6 +6,22 @@ Current phase: Controlled implementation — first vertical slice started
 
 ## Completed recently
 
+## APP-009 — Documentation drift check for app-boundary claims (2026-04-27)
+
+- app architecture docs now carry explicit "Scaffold posture / non-claims" sections for Scribe, Sortio, and CloudClinic
+- interface doctrine doc (`19-interface-doctrine.md`) now includes scaffold-honest summary of all three app surfaces (Scribe minimal SwiftUI, Sortio/CloudClinic contract-first only)
+- wording hardened across app docs to avoid implying final UI, production readiness, or real provider integration
+- Scribe doc now clarifies scaffold-only status for microphone capture, transcription, semantic retrieval, and draft refresh
+- Sortio doc now clarifies no final UI shell, no user-agent runtime wiring, and contract-first patient sovereignty surfaces
+- CloudClinic doc now clarifies no final UI shell, no persisted queue/projection service, and contract-first service operations
+- execution tracking (`02-status-and-tracking.md`) updated with APP-009 completion entry
+Files touched:
+- `docs/architecture/11-scribe.md`
+- `docs/architecture/12-sortio.md`
+- `docs/architecture/13-cloudclinic.md`
+- `docs/architecture/19-interface-doctrine.md`
+- `docs/execution/02-status-and-tracking.md`
+- `docs/execution/todo/apps-and-interfaces.md`
 
 ## Steward provider hardening — typed errors and review comment formatter (2026-04-27)
 
@@ -330,3 +346,5 @@ Validation executed in this work unit:
 - OPS-003: Incident-response command set for first operator tools (GAP-002) [COMPLETED]
 - RT-008: Runtime-boundary tests for user-agent and service-runtime adapters (GAP-009) [COMPLETED]
 - DS-007: LawfulContext and layer-guard parity beyond first-slice (GAP-003) [COMPLETED]
+- APP-009: Documentation drift check for app-boundary maturity claims (T05) [COMPLETED]
+- APP-009: Correct documentation drift for app-boundary maturity claims (GAP-006) [COMPLETED]

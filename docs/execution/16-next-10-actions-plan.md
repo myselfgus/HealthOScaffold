@@ -1,5 +1,8 @@
 # Next 10 actions plan (2026-04-26)
 
+**⚠️ AVISO: ESTE PLANO DE AÇÕES FOI CONCLUÍDO. NÃO SEGUIR ESTAS AÇÕES.**
+Este documento registra um histórico de planejamento concluído.
+
 This document enumerates the next 10 prioritized actions for HealthOScaffold,
 in order of execution. It is written to be read by a coding agent (human or AI)
 without prior chat context.

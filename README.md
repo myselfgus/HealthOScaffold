@@ -44,9 +44,12 @@ This repository is in **controlled implementation / scaffold hardening**:
 - first-slice execution exists (CLI + minimal Scribe validation surface)
 
 It is **not**:
-- a production-ready product | a complete EHR | a final UI delivery
+- a production-ready product
+- a complete EHR
+- a final UI delivery of Scribe/Sortio/CloudClinic
 - a real regulatory-signature/interoperability integration
-- a real semantic retrieval stack or real provider deployment
+- a real semantic retrieval stack with embeddings/vector index
+- a real external provider deployment (LM/STT/embedding remain scaffold/stub posture)
 
 ## 📊 Current Maturity Dashboard
 
@@ -103,6 +106,7 @@ mindmap
     ts
       steward
       runtime-async
+      runtime-user-agent
     apps
       scribe
       sortio
@@ -117,3 +121,33 @@ mindmap
 - providers disabled by default | dry-run first behavior
 - no secrets committed | explicit `--post-comment` required for PR comment write
 
+## Canonical hierarchy
+
+```text
+Material substrate
+  └─ host, storage, private network/mesh, backups
+HealthOS Core
+  └─ law/governance (identity, consent, habilitation, storage, provenance, gate, audit)
+Governed Operational Spec (GOS)
+  └─ operational translation layer subordinate to Core
+HealthOS Runtimes
+  ├─ AACI runtime
+  ├─ Async runtime
+  └─ User-Agent runtime
+Actors / Agents
+  └─ bounded actors and role-governed agents
+Apps / Interfaces
+  ├─ Scribe (professional workspace)
+  ├─ Sortio (patient sovereignty)
+  └─ CloudClinic (service operations)
+Artifacts / Effects
+  └─ drafts, gate records, final artifacts, provenance/audit traces
+```
+
+## Scaffold RC closure references
+
+For final scaffold-closure auditing and handoff discipline, use:
+- `docs/execution/13-scaffold-release-candidate-criteria.md`
+- `docs/execution/14-final-gap-register.md`
+- `docs/execution/15-scaffold-finalization-plan.md`
+- `docs/execution/16-next-10-actions-plan.md`

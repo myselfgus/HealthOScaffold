@@ -35,6 +35,19 @@ graph TD
     G & H & I & J --> K & L
 ```
 
+## 📋 Current repository posture (April 2026)
+
+This repository is in **controlled implementation / scaffold hardening**:
+- multiple cross-language contracts (Swift/TS/JSON Schema/SQL) are executable
+- Swift governance and boundary suites are present and runnable
+- TypeScript workspace builds; GOS tooling has automated tests
+- first-slice execution exists (CLI + minimal Scribe validation surface)
+
+It is **not**:
+- a production-ready product | a complete EHR | a final UI delivery
+- a real regulatory-signature/interoperability integration
+- a real semantic retrieval stack or real provider deployment
+
 ## 📊 Current Maturity Dashboard
 
 | Layer | Status | Focus |
@@ -72,7 +85,7 @@ graph TD
 cd ts && npx --yes --workspace @healthos/steward healthos-steward next-task
 ```
 
-*Note: Canonical truth resides in `docs/` and project manifests. Steward memory is derived operational state.*
+*Note: Canonical truth resides in `docs/` and project manifests.*
 
 ## 📂 Repository Structure
 
@@ -90,7 +103,6 @@ mindmap
     ts
       steward
       runtime-async
-      runtime-user-agent
     apps
       scribe
       sortio
@@ -98,3 +110,10 @@ mindmap
     ops
     sql
 ```
+
+## ⚙️ Provider Orchestration (Model-Agnostic)
+
+`@healthos/steward` supports optional provider adapters (OpenAI, Anthropic, xAI, disabled) with secure defaults:
+- providers disabled by default | dry-run first behavior
+- no secrets committed | explicit `--post-comment` required for PR comment write
+

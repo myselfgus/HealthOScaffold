@@ -88,3 +88,35 @@ public struct StorageLayerValidationResult: Sendable, Equatable {
         self.metadataValidated = metadataValidated
     }
 }
+
+public enum StorageLayerFailure: Error, LocalizedError, Sendable, Equatable {
+    case missingLawfulContext(StorageLayer)
+    case unauthorizedLayerAccess(StorageLayer)
+    case contextValidationFailed(String)
+
+    public var errorDescription: String? {
+        switch self {
+        case .missingLawfulContext(let layer):
+            return "Storage layer \(layer.rawValue) requires lawfulContext."
+        case .unauthorizedLayerAccess(let layer):
+            return "Access to storage layer \(layer.rawValue) is unauthorized."
+        case .contextValidationFailed(let msg):
+            return "Lawful context validation failed: \(msg)"
+        }
+    }
+}
+
+public struct StorageLayerValidator {
+    public static func validate(layer: StorageLayer, lawfulContext: [String: String]?) throws {
+        if layer.requiresGovernedContextOnWrite {
+            guard let context = lawfulContext, !context.isEmpty else {
+                throw StorageLayerFailure.missingLawfulContext(layer)
+            }
+            do {
+                _ = try LawfulContextValidator.validate(context, requirements: .init(requirePatientUserId: true, requireFinalidade: true))
+            } catch {
+                throw StorageLayerFailure.contextValidationFailed(error.localizedDescription)
+            }
+        }
+    }
+}

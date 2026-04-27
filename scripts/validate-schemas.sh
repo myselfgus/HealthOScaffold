@@ -25,7 +25,7 @@ done
 
 validated=0
 while IFS= read -r schema_file; do
-  python -m json.tool "$schema_file" >/dev/null
+  python3 -m json.tool "$schema_file" >/dev/null
   validated=$((validated + 1))
 done < <(rg --files schemas -g '*.json' | sort)
 

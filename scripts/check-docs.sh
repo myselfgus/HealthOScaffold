@@ -28,13 +28,24 @@ done
 [[ -f "docs/execution/11-current-maturity-map.md" ]] || fail "missing maturity map: docs/execution/11-current-maturity-map.md"
 [[ -f "docs/execution/12-next-agent-handoff.md" ]] || fail "missing handoff: docs/execution/12-next-agent-handoff.md"
 
-mapfile -t referenced_docs < <(rg -o --no-filename "docs/[A-Za-z0-9_./-]+\\.md" README.md AGENTS.md CLAUDE.md | sort -u)
+referenced_docs=()
+while IFS= read -r line; do
+    referenced_docs+=("$line")
+done < <(rg -o --no-filename "docs/[A-Za-z0-9_./-]+\\.md" README.md AGENTS.md CLAUDE.md | sort -u)
+
 for doc in "${referenced_docs[@]}"; do
   [[ -f "$doc" ]] || fail "referenced doc not found: $doc"
 done
 
-mapfile -t make_targets_in_docs < <(rg -o --no-filename "make [a-zA-Z0-9_-]+" README.md AGENTS.md CLAUDE.md docs/execution/12-next-agent-handoff.md | awk '{print $2}' | sort -u)
-mapfile -t make_targets_defined < <(awk -F: '/^[a-zA-Z0-9_.-]+:/ {print $1}' Makefile | sort -u)
+make_targets_in_docs=()
+while IFS= read -r line; do
+    make_targets_in_docs+=("$line")
+done < <(rg -o --no-filename "make [a-zA-Z0-9_-]+" README.md AGENTS.md CLAUDE.md docs/execution/12-next-agent-handoff.md | awk '{print $2}' | sort -u)
+
+make_targets_defined=()
+while IFS= read -r line; do
+    make_targets_defined+=("$line")
+done < <(awk -F: '/^[a-zA-Z0-9_.-]+:/ {print $1}' Makefile | sort -u)
 
 for target in "${make_targets_in_docs[@]}"; do
   if ! printf '%s\n' "${make_targets_defined[@]}" | grep -qx "$target"; then

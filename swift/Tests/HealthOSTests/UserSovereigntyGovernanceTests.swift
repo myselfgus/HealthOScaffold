@@ -336,4 +336,31 @@ final class UserSovereigntyGovernanceTests: XCTestCase {
             "sessionId": UUID().uuidString
         ]
     }
+
+    func testUserAgentProhibitedCapabilityDenied() {
+        let scope = UserAgentScope(userId: UUID(), cpfHashRef: "hash", actorId: "actor", runtimeId: "runtime", dataLayersAllowed: [], dataLayersDenied: [])
+        let request = UserAgentRequest(scope: scope, requestedCapability: .diagnose, lawfulContext: ["patientUserId": UUID().uuidString, "finalidade": "treatment"])
+        
+        XCTAssertThrowsError(try UserAgentGovernanceValidator.validateRequest(request)) { error in
+            XCTAssertEqual(error as? UserAgentFailure, .prohibitedCapability(.diagnose))
+        }
+    }
+
+    func testUserAgentMissingLawfulContextDenied() {
+        let scope = UserAgentScope(userId: UUID(), cpfHashRef: "hash", actorId: "actor", runtimeId: "runtime", dataLayersAllowed: [], dataLayersDenied: [])
+        let request = UserAgentRequest(scope: scope, requestedCapability: .explainOwnData, lawfulContext: [:])
+        
+        XCTAssertThrowsError(try UserAgentGovernanceValidator.validateRequest(request)) { error in
+            XCTAssertEqual(error as? UserAgentFailure, .missingLawfulContext)
+        }
+    }
+
+    func testUserAgentRawCPFLeakDenied() {
+        let scope = UserAgentScope(userId: UUID(), cpfHashRef: "hash", actorId: "actor", runtimeId: "runtime", dataLayersAllowed: [.directIdentifiers], dataLayersDenied: [], allowDirectIdentifiersFlowExplicit: false)
+        let request = UserAgentRequest(scope: scope, requestedCapability: .explainOwnData, lawfulContext: ["patientUserId": UUID().uuidString, "finalidade": "treatment"])
+        
+        XCTAssertThrowsError(try UserAgentGovernanceValidator.validateRequest(request)) { error in
+            XCTAssertEqual(error as? UserAgentFailure, .directIdentifierFlowRequiresExplicitPolicy)
+        }
+    }
 }

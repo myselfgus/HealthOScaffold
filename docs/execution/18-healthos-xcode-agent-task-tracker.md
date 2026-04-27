@@ -2,7 +2,8 @@
 
 Date baseline: April 27, 2026.
 
-This file exists to keep the Xcode Agent initiative coherent across multiple work units.
+Tracker location for future work units:
+- `docs/execution/18-healthos-xcode-agent-task-tracker.md`
 
 Canonical architecture docs:
 - `docs/architecture/45-healthos-xcode-agent.md`
@@ -11,136 +12,122 @@ Canonical architecture docs:
 Current implementation root:
 - `ts/packages/healthos-steward/`
 
-## Objective
+## Current truth
 
-Evolve Project Steward into a repository-aware engineering agent with:
-- Xcode-native conversation surface
-- CLI conversational surface
-- session continuity
-- explicit tool runtime
-- model backends subordinate to an agent runtime
+The previous provider-centric `healthos-steward` implementation was removed.
+
+The package was reset from scratch and now contains only a new baseline centered on:
+- runtime requests/responses
+- session persistence
+- surface identity
+- future tool/backend expansion
+
+There is no legacy runtime preserved inside the package.
+
+## Active baseline
+
+Implemented now:
+- minimal CLI with `status`, `runtime`, and `session`
+- runtime request/session model in TypeScript
+- file-backed session store at `.healthos-steward/memory/sessions/`
+- package reset README and fresh package exports
+
+Not implemented yet:
+- tool runtime
+- model backend integration
+- conversational CLI loop
+- Xcode surface bridge
+- session resume/list ergonomics beyond direct id lookup
 
 ## Working rules
 
 - official docs remain canonical
 - memory remains derived
-- no false claims of autonomy or production readiness
-- every work unit must update this tracker and `02-status-and-tracking.md`
-- keep compatibility with current steward commands until replacement paths exist
+- no false autonomy/production claims
+- every work unit must update this tracker and `docs/execution/02-status-and-tracking.md`
+- do not reintroduce provider-centric architecture into the package
 
 ## Streams
 
 ### Stream A — Runtime core
 Status: IN PROGRESS
-Target:
-- define `AgentRuntime`, `AgentSession`, `PolicyGuard`, `ActionRecord`
 Next steps:
-- introduce initial TS contracts
-- add minimal runtime orchestration helpers
-- map deterministic steward operations into runtime-compatible shapes
+- expand runtime beyond simple request acceptance
+- add stronger action/state transitions
+- add explicit policy guard layer into the new baseline
 
-### Stream B — Model backends
-Status: TODO
-Target:
-- reframe provider layer as model backend layer
+### Stream B — Session model
+Status: IN PROGRESS
 Next steps:
-- define backend-neutral contract
-- adapt current provider types to backend compatibility model
-- preserve explicit network/error/dry-run behavior
+- support session listing
+- support session resume ergonomics
+- define handoff generation from persisted session state
 
 ### Stream C — Tool runtime
 Status: TODO
-Target:
-- define structured tool capabilities for read/search/edit/build/test/review
 Next steps:
-- create tool contract set
-- represent Xcode-aware capabilities explicitly
-- attach tool action logging model
+- define structured tool contracts
+- add file/read/search/build/test capability model
+- add Xcode-aware tool capability vocabulary
 
-### Stream D — Session memory
+### Stream D — Model backend layer
 Status: TODO
-Target:
-- persist session state and resumable handoff
 Next steps:
-- define session snapshot format
-- create `.healthos-steward/memory/sessions/` layout
-- connect session state to handoff generation
+- define backend contract subordinate to runtime
+- integrate backend invocation without reviving old provider architecture
 
 ### Stream E — CLI conversation surface
 Status: TODO
-Target:
-- interactive CLI over shared runtime
 Next steps:
-- define REPL command shape
-- wire one-shot and interactive paths to same runtime
+- add interactive conversation mode
+- share session lifecycle with one-shot commands
 
 ### Stream F — Xcode conversation surface
 Status: TODO
-Target:
-- workspace-aware surface comparable to the current coding assistant interaction
 Next steps:
-- define context envelope for active file/selection/diagnostics
-- define surface-to-runtime bridge
-- attach session rendering expectations
-
-### Stream G — Optional frontend
-Status: TODO
-Target:
-- local frontend using same runtime/session API
-Next steps:
-- decide if this follows CLI/Xcode surface or remains optional
-
-## Open decisions
-
-1. Keep package name `@healthos/steward` during migration or introduce `@healthos/agent-*` split first.
-2. Decide whether the first live conversational surface should be CLI or Xcode-first.
-3. Decide when to create persistent session directories under `.healthos-steward/memory/`.
-4. Decide whether compatibility commands stay in the same package or move to facade layer.
+- define Xcode context envelope
+- bridge active file, selection, and diagnostics into runtime requests
 
 ## Active queue
 
-### XA-001 Create dedicated initiative tracker and target docs linkage
+### XA-001 Hard reset package from scratch
 Status: DONE
 Outcome:
-- tracker created
-- architecture and migration docs already linked here
+- removed old `src`, `test`, and `dist`
+- removed old provider-centric implementation from package runtime
+- recreated clean baseline files only
 
-### XA-002 Introduce initial runtime-centric TypeScript contracts
+### XA-002 Establish minimal runtime/session baseline
 Status: DONE
-Goal:
-- land the first concrete code entities for runtime/session/surface/tool/backend
-Primary files:
-- `ts/packages/healthos-steward/src/agent/*`
-- `ts/packages/healthos-steward/src/index.ts`
-Definition of done:
-- package exports initial agent runtime contracts
-- implementation is additive and compatible with current steward
-Notes:
-- initial types, default guards, session snapshot helpers, and minimal runtime executor created
-- package root now exports the first agent runtime API surface
+Outcome:
+- `src/runtime/types.ts`
+- `src/runtime/session-store.ts`
+- `src/runtime/runtime.ts`
+- `src/steward.ts`
+- `src/index.ts`
+- `src/cli.ts`
+- `test/runtime.test.mjs`
 
-### XA-003 Introduce first minimal runtime implementation helpers
-Status: IN PROGRESS
+### XA-003 Add session lifecycle ergonomics
+Status: NEXT
 Goal:
-- create non-provider-centric runtime assembly path
-Definition of done:
-- a caller can construct runtime configuration and session state without going through provider CLI commands
+- add list/resume-friendly commands and richer session summaries
 
-### XA-004 Reframe current provider layer as backend compatibility layer
-Status: TODO
+### XA-004 Add tool runtime contracts
+Status: NEXT
 Goal:
-- stop treating provider types as the central architecture in new code
+- introduce explicit tool model for file/xcode/build/test actions
 
-### XA-005 Define session persistence layout
-Status: TODO
+### XA-005 Add first conversational CLI mode
+Status: NEXT
 Goal:
-- choose file structure and compatibility story for session continuity
+- move beyond one-shot runtime requests into continuous conversation
 
 ## Change log
 
 ### 2026-04-27
-- initiative tracker created
-- migration effort formally split into streams and queued tasks
-- first implementation work started under XA-002
-- initial runtime-centric TS code landed under `src/agent/` with exported contracts and minimal executor helpers
-- validation scaffold test file added for future build/test execution
+- tracker created
+- target architecture and migration docs created
+- package `ts/packages/healthos-steward/` hard-reset from scratch
+- new runtime/session baseline created
+- session storage directory established at `.healthos-steward/memory/sessions/`

@@ -350,3 +350,4 @@ Validation executed in this work unit:
 - APP-009: Correct documentation drift for app-boundary maturity claims (GAP-006) [COMPLETED]
 - AACI-009: Capability honesty signaling in AACI/Retrieval (GAP-009) [COMPLETED]
 - CL-006: Shared error envelope for local service boundaries [COMPLETED]
+- APP-008: Cross-app envelope propagation [COMPLETED]

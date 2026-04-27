@@ -2,6 +2,8 @@
 
 HealthOS is a sovereign computational environment for health data and clinical operations. This repository is in **controlled implementation / scaffold hardening** phase, establishing foundational architecture.
 
+HealthOS is the full platform. **AACI is one runtime inside HealthOS**. **GOS is a governed operational layer subordinate to Core law**. **Scribe, Sortio, and CloudClinic are app/interfaces that consume mediated surfaces; they never define constitutional law**.
+
 ## 🏗️ Canonical Architecture
 
 HealthOS mediates all clinical acts through a strictly layered, governance-first fabric.
@@ -71,6 +73,13 @@ It is **not**:
 | **Validate** | `make validate-all` |
 | **Smoke** | `make smoke-cli`, `make smoke-scribe` |
 
+Optional local smoke path:
+
+```bash
+make smoke-cli
+make smoke-scribe
+```
+
 ## 🧠 Developer Protocol (Read in Order)
 
 1. `README.md`
@@ -88,7 +97,7 @@ It is **not**:
 cd ts && npx --yes --workspace @healthos/steward healthos-steward next-task
 ```
 
-*Note: Canonical truth resides in `docs/` and project manifests.*
+*Note: Canonical truth resides in `docs/` and project manifests. Steward memory is derived operational state.*
 
 ## 📂 Repository Structure
 
@@ -151,3 +160,4 @@ For final scaffold-closure auditing and handoff discipline, use:
 - `docs/execution/14-final-gap-register.md`
 - `docs/execution/15-scaffold-finalization-plan.md`
 - `docs/execution/16-next-10-actions-plan.md`
+EOF

@@ -201,3 +201,25 @@ final class CrossAppCoordinationContractsTests: XCTestCase {
         )
     }
 }
+
+    func testSortioAdapterRejectRawCPF() {
+        let envelope = AppSurfaceEnvelope(
+            appKind: .sortio,
+            actorRole: .patient,
+            subjectRefs: makeSubjectRefs(),
+            allowedActions: [],
+            deniedActions: [],
+            redaction: RedactionSurfaceStatus(
+                status: .redacted,
+                directIdentifierPresent: true,
+                reidentificationRequired: false,
+                reidentificationAllowed: false,
+                reason: "raw cpf leak",
+                lawfulScopeSummary: "test"
+            )
+        )
+        XCTAssertThrowsError(try CrossAppSurfaceValidator.validateEnvelope(envelope)) { error in
+            XCTAssertEqual(error as? CrossAppSurfaceFailure, .directIdentifierForbidden)
+        }
+    }
+}

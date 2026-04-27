@@ -1,0 +1,23 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "ServiceBoundaryOutcome",
+  "description": "Standardized envelope for cross-boundary service calls (Swift Core <-> TS Runtime)",
+  "type": "object",
+  "required": ["outcome"],
+  "properties": {
+    "outcome": {
+      "type": "string",
+      "enum": ["success", "deny", "failure"]
+    },
+    "payload": { "type": "object" },
+    "denyReason": { "type": "string" },
+    "errorKind": { "type": "string" },
+    "errorMessage": { "type": "string" }
+  },
+  "if": { "properties": { "outcome": { "const": "success" } } },
+  "then": { "required": ["payload"] },
+  "if": { "properties": { "outcome": { "const": "deny" } } },
+  "then": { "required": ["denyReason"] },
+  "if": { "properties": { "outcome": { "const": "failure" } } },
+  "then": { "required": ["errorKind", "errorMessage"] }
+}

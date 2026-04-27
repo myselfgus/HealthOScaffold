@@ -31,31 +31,15 @@
 - review failed async jobs
 - review stale pending gates/drafts
 
-## Incident categories
-- runtime failed
-- storage integrity mismatch
-- database unavailable
-- backup stale or restore failure
-- mesh/VPN access anomaly
-- provider degradation exceeding threshold
+## Incident-response command vocabulary
 
-## Immediate operator responses
-### Runtime failed
-- inspect logs
-- inspect launchd status
-- verify dependency reachability
-- restart only after recording failure context
+| Incident Class | Trigger Condition | Event Kind(s) | Canonical Response Action(s) | Escalation |
+| :--- | :--- | :--- | :--- | :--- |
+| **Runtime failure** | Node unhealthy/degraded | `runtime.unhealthy`, `runtime.degraded` | Isolate node, drain queue, trigger restart, emit `runtime.restart.requested` | Escalation to infrastructure team |
+| **Queue saturation** | Backpressure breach | `job.queue.saturated` | Pause ingestion (`job.ingest.paused`), inspect dead-letter (`job.dead-letter.inspect`), requeue after drain (`job.requeue.requested`) | Escalation to service architecture |
+| **Backup concern** | Integrity/Retention conflict | `backup.integrity.mismatch`, `retention.legal_hold.conflict`, `backup.manifest.missing` | Halt auto-restore (`restore.dry-run.only`), verify hash chain, escalate to policy review (`retention.review.requested`) | Escalation to compliance/legal |
+| **Integrity incident** | Storage/Re-ID breach | `storage.hash.mismatch`, `deidentification.access.denied`, `reidentification.denial` | Freeze partition (`storage.partition.frozen`), audit export (`export.audit.requested`), deny reidentification | Escalation to security officer |
 
-### Storage integrity mismatch
-- stop silent reads of suspect payload
-- record audit/provenance event
-- compare stored hash vs current payload hash
-- isolate object for restore/recovery decision
-
-### Backup problem
-- mark node as reduced safety state
-- verify most recent valid snapshot
-- do not claim recoverability until restore test passes
 
 ## Change discipline
 - prefer staged upgrades

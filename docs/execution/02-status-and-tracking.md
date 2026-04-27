@@ -347,3 +347,4 @@ Validation executed in this work unit:
 - RT-008: Runtime-boundary tests for user-agent and service-runtime adapters (GAP-009) [COMPLETED]
 - DS-007: LawfulContext and layer-guard parity beyond first-slice (GAP-003) [COMPLETED]
 - APP-009: Documentation drift check for app-boundary maturity claims (T05) [COMPLETED]
+- APP-009: Correct documentation drift for app-boundary maturity claims (GAP-006) [COMPLETED]

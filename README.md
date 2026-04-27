@@ -65,13 +65,18 @@ It is **not**:
 
 ## 🚀 Quick Start
 
-| Intent | Commands |
-| :--- | :--- |
-| **Bootstrap** | `make bootstrap` |
-| **Build** | `make swift-build`, `make ts-build` |
-| **Test** | `make swift-test`, `make ts-test` |
-| **Validate** | `make validate-all` |
-| **Smoke** | `make smoke-cli`, `make smoke-scribe` |
+```bash
+make bootstrap
+make swift-build
+make swift-test
+make ts-build
+make ts-test
+make python-check
+make validate-docs
+make validate-schemas
+make validate-contracts
+make validate-all
+```
 
 Optional local smoke path:
 
@@ -80,49 +85,46 @@ make smoke-cli
 make smoke-scribe
 ```
 
-## 🧠 Developer Protocol (Read in Order)
+## 🧠 Where agents should start
 
+Read in order before coding:
 1. `README.md`
 2. `docs/execution/README.md`
 3. `docs/execution/00-master-plan.md`
-4. `docs/execution/02-status-and-tracking.md`
-5. `docs/execution/11-current-maturity-map.md`
-6. `docs/execution/skills/*.md`
+4. `docs/execution/01-agent-operating-protocol.md`
+5. `docs/execution/02-status-and-tracking.md`
+6. `docs/execution/06-scaffold-coverage-matrix.md`
+7. `docs/execution/10-invariant-matrix.md`
+8. `docs/execution/11-current-maturity-map.md`
+9. relevant `docs/execution/todo/*.md`
+10. matching `docs/execution/skills/*.md`
 
-## 🤖 Project Steward Agent
+## 📂 Repository map (real, current)
 
-`@healthos/steward` automates repository diagnostics and planning.
+- `docs/architecture/` — canonical architecture/doctrine docs (including GOS, app-boundary, regulatory, and cross-app waves)
+- `docs/execution/` — governed execution protocol, status tracking, coverage, invariants, TODOs, maturity/handoff
+- `schemas/` — JSON Schema contracts/entities and GOS schemas
+- `swift/` — Core, AACI, Providers, first-slice support, CLI, minimal Scribe app, XCTest suites
+- `ts/` — workspace packages (`contracts`, `runtime-async`, `runtime-user-agent`, `mcp-local`, `healthos-gos-tooling`)
+- `python/` — offline ML governance scaffolds only
+- `sql/migrations/001_init.sql` — canonical metadata schema scaffold
+- `ops/` and `scripts/` — local operational scaffolding, bootstrap, network and backup notes
+- `apps/` — interface boundary scaffolds/documentation
+
+## 🤖 Project Steward (engineering agent scaffold)
+
+The repository now includes a scaffolded engineering steward CLI at `ts/packages/healthos-steward/` with persistent policy/memory templates under `.healthos-steward/`.
+
+Use it for repository diagnostics/planning/handoff (not clinical runtime behavior):
 
 ```bash
+cd ts && npx --yes --workspace @healthos/steward healthos-steward status
 cd ts && npx --yes --workspace @healthos/steward healthos-steward next-task
+cd ts && npx --yes --workspace @healthos/steward healthos-steward prompt codex-next
+cd ts && npx --yes --workspace @healthos/steward healthos-steward review-pr --pr 123
 ```
 
 *Note: Canonical truth resides in `docs/` and project manifests. Steward memory is derived operational state.*
-
-## 📂 Repository Structure
-
-```mermaid
-mindmap
-  root((HealthOScaffold))
-    docs
-      architecture
-      execution
-    schemas
-      contracts
-    swift
-      Core
-      AACI
-    ts
-      steward
-      runtime-async
-      runtime-user-agent
-    apps
-      scribe
-      sortio
-      cloudclinic
-    ops
-    sql
-```
 
 ## ⚙️ Provider Orchestration (Model-Agnostic)
 
@@ -152,6 +154,13 @@ Apps / Interfaces
 Artifacts / Effects
   └─ drafts, gate records, final artifacts, provenance/audit traces
 ```
+
+## Maturity snapshot by layer
+
+Use `docs/execution/11-current-maturity-map.md` for full detail. Short view:
+- Core law + storage governance: **implemented seam / tested operational path (local scaffold)**
+- GOS authoring/compiler/lifecycle: **implemented seam / tested operational path (scaffold hardening)**
+- AACI + first slice orchestration: **implemented seam / tested operational path (bounded scope)**
 
 ## Scaffold RC closure references
 

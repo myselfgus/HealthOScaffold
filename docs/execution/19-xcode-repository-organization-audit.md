@@ -2,81 +2,67 @@
 
 ## Decision
 
-HealthOScaffold should **not** become a single `xcodeproj` for the entire repository.
+HealthOScaffold should not become a single `xcodeproj` for the entire repository.
 
-It should be organized as:
+The correct organization is:
 
-1. one top-level `HealthOS.xcworkspace` as the Apple developer entrypoint
-2. one canonical Swift package at `swift/Package.swift`
-3. optional app-specific Apple targets/projects only for real Apple surfaces
-4. all non-Apple parts (`ts/`, `python/`, `schemas/`, `docs/`, `gos/`, `sql/`, `scripts/`) kept as first-class monorepo folders, not forced into Xcode build ownership
+1. a top-level `HealthOS.xcworkspace` as the Apple/Xcode entrypoint
+2. the existing canonical Swift package at `swift/Package.swift`
+3. optional future dedicated Apple projects only when an app surface outgrows SwiftPM packaging
+4. all non-Apple parts (`ts/`, `python/`, `schemas/`, `docs/`, `gos/`, `sql/`, `scripts/`) kept as first-class monorepo folders with their own native tooling
 
-## Why a single Xcode project is the wrong shape
+## Audit findings
 
-This repository is a real multi-stack monorepo:
+### Finding 1: the Swift package does exist
+
+The repository contains the canonical Swift package at:
+
+- `swift/Package.swift`
+
+Its current products are:
+
+- `HealthOSCore`
+- `HealthOSAACI`
+- `HealthOSProviders`
+- `HealthOSFirstSliceSupport`
+- `HealthOSCLI`
+- `HealthOSScribeApp`
+
+Its current structure includes:
+
+- `swift/Sources/HealthOSCore/`
+- `swift/Sources/HealthOSAACI/`
+- `swift/Sources/HealthOSProviders/`
+- `swift/Sources/HealthOSFirstSliceSupport/`
+- `swift/Sources/HealthOSCLI/`
+- `swift/Sources/HealthOSScribeApp/`
+- `swift/Tests/HealthOSTests/`
+
+### Finding 2: there was no top-level Xcode entrypoint
+
+Before this work unit, the repository had the Swift package, but no root:
+
+- `.xcodeproj`
+- `.xcworkspace`
+
+That meant the Apple layer was buildable through SwiftPM, but the monorepo did not yet expose an obvious Xcode-native entrypoint from repository root.
+
+### Finding 3: a workspace is useful, but Xcode should not own the whole monorepo build
+
+This repository is a multi-stack monorepo:
 
 - Swift runtime and app surfaces
 - TypeScript workspace/tooling
 - Python governance scaffolds
-- JSON Schema, SQL, GOS, operational scripts, and documentation
+- JSON Schema, SQL, GOS, scripts, and docs
 
-Xcode is an appropriate primary surface for the Apple/Swift layer, but it is not the correct build authority for the entire repository.
-
-Forcing the whole monorepo into one `xcodeproj` would:
-
-- blur ownership between Swift and non-Swift build systems
-- create a misleading impression that TypeScript/Python/docs are Xcode-managed deliverables
-- make repo maintenance harder without improving runtime truth
-
-## Current audit findings
-
-### Finding 1: no Xcode entrypoint exists
-
-The repository currently exposes:
-
-- no `.xcodeproj`
-- no `.xcworkspace`
-- no `swift/Package.swift`
-
-So there is no real Xcode-native entrypoint today.
-
-### Finding 2: the repository claims a Swift/Xcode layer that is not present in the current tree
-
-Multiple canonical docs and the `Makefile` reference:
-
-- `swift/Package.swift`
-- `swift/Sources/HealthOSCore/`
-- `swift/Sources/HealthOSFirstSliceSupport/`
-- `swift/Sources/HealthOSCLI/`
-- `swift/Sources/HealthOSScribeApp/`
-
-But the current `swift/` directory is empty in the repository state available to this audit.
-
-This is a repository-truth problem, not just an Xcode-setup problem.
-
-### Finding 3: current tracking/history claims successful Swift validation that cannot be reproduced from the visible tree
-
-`docs/execution/02-status-and-tracking.md` records prior successful runs such as:
-
-- `cd swift && swift build && swift test`
-- `swift run HealthOSCLI`
-- `swift run HealthOSScribeApp --smoke-test`
-
-Given the current visible tree, those claims are not presently reproducible.
-
-This indicates one of:
-
-1. the Swift layer exists elsewhere and is not in the current repository state
-2. files were removed or not checked in
-3. documentation/tracking drift has occurred
+Xcode is the right entry surface for the Swift/macOS layer, but it should not become the build authority for TypeScript, Python, schemas, or documentation.
 
 ## Required target layout
 
-The correct Apple-facing organization for this monorepo is:
-
 ```text
 HealthOScaffold/
-  HealthOS.xcworkspace
+  HealthOS.xcworkspace/
   swift/
     Package.swift
     Sources/
@@ -97,26 +83,21 @@ HealthOScaffold/
   scripts/
 ```
 
-## Xcode ownership rules
+## Workspace rule
 
-The future `HealthOS.xcworkspace` should:
+The top-level workspace should:
 
-- open the Swift package as the canonical buildable unit
-- expose app and CLI schemes derived from that package
-- optionally include supporting Apple-only projects if later needed
-- avoid pretending that TypeScript, Python, or docs are built by Xcode
+- point to `swift/Package.swift`
+- give Xcode users a stable repository entrypoint
+- preserve SwiftPM as the canonical build graph for the Apple layer
+- avoid pretending that non-Swift parts are Xcode-built products
 
-The workspace may show non-Swift folders for navigation convenience, but build/test authority for those layers must remain with their native tooling.
+## Conclusion
 
-## Required next steps before creating the workspace
+The repository should be treated as a monorepo with a SwiftPM-centered Apple layer.
 
-1. locate or restore the missing Swift package contents under `swift/`
-2. confirm whether the current repository state is incomplete or the docs are stale
-3. restore `swift/Package.swift` and the declared `Sources/` + `Tests/` layout
-4. only then create `HealthOS.xcworkspace` as the canonical Xcode entrypoint
+The correct Xcode organization is now:
 
-## Fail-closed conclusion
-
-Creating an Xcode workspace right now would be cosmetic only, because the canonical Swift build graph is missing from the repository state visible to this audit.
-
-The correct immediate action is to fix repository truth first, then add the workspace on top of the restored Swift package.
+- root workspace for entry
+- Swift package for implementation/build/test
+- future dedicated app projects only if the Apple app surfaces later require packaging beyond SwiftPM

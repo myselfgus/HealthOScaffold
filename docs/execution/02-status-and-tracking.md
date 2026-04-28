@@ -8,16 +8,18 @@ Current phase: Controlled implementation — first vertical slice started
 
 ## OPS-004 — Xcode repository organization audit and monorepo entrypoint decision (2026-04-28)
 
-- audited the repository for Apple/Xcode entrypoint readiness and confirmed there is currently no `.xcodeproj`, `.xcworkspace`, or `swift/Package.swift`
-- confirmed a structural contradiction: canonical docs, TODOs, and `Makefile` reference a substantial Swift package layout, but the current visible `swift/` directory is empty
-- recorded the repository-organization decision: HealthOScaffold should remain a multi-stack monorepo, with Xcode as the Apple/Swift entrypoint through a future top-level `HealthOS.xcworkspace`, not as a single build owner for the entire repository
-- documented the fail-closed prerequisite that the missing Swift package contents must be located or restored before creating any real Xcode workspace
-- validation status: repository inspection/documentation only; no build/test run was possible for Swift because the declared Swift package is not present in the current visible tree
+- audited the repository for Apple/Xcode entrypoint readiness and confirmed the canonical Swift package exists at `swift/Package.swift` with core, AACI, providers, first-slice support, CLI, Scribe app, and XCTest targets
+- confirmed the correct repository posture is a multi-stack monorepo, with Xcode as an Apple-layer entrypoint and SwiftPM remaining the canonical build graph for Swift
+- added a root `HealthOS.xcworkspace` that points to `swift/Package.swift`, giving the repository a stable Xcode-native entrypoint without collapsing TypeScript/Python/docs into Xcode build ownership
+- documented the organization decision and target layout in a dedicated repository audit note
+- validation status: repository structure and package manifest verified; no full Xcode build was run in this work unit
 Files touched:
+- `HealthOS.xcworkspace/contents.xcworkspacedata`
 - `docs/execution/19-xcode-repository-organization-audit.md`
 - `docs/execution/02-status-and-tracking.md`
 - `docs/execution/todo/apps-and-interfaces.md`
 - `docs/execution/12-next-agent-handoff.md`
+- `README.md`
 
 ## DOC-001 — HealthOScaffold / HealthOS repository identity vocabulary correction (2026-04-28)
 
@@ -410,7 +412,6 @@ Files touched:
 
 ## Known gaps
 
-- current repository state is missing the Swift package/tree that canonical docs, TODOs, and validation history describe; until that truth mismatch is resolved, a real Xcode workspace cannot be created
 - Sortio and user-agent runtime remain contract-first scaffolds in this wave: no final UI shell, no chatbot behavior, and no clinical act pathways are implemented
 
 - regulatory/interop/signature pathways remain scaffold-only: no RNDS/TISS endpoint delivery, no ICP-Brasil or qualified signature provider integration, and no production compliance claim

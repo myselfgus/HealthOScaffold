@@ -82,6 +82,11 @@ make validate-contracts
 make validate-all
 ```
 
+Xcode entrypoint:
+
+- open `HealthOS.xcworkspace` from repository root
+- the workspace resolves the canonical Swift package at `swift/Package.swift`
+
 Optional local smoke path:
 
 ```bash

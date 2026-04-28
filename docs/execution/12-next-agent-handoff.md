@@ -6,6 +6,8 @@ Repository is in controlled implementation/scaffold hardening with strong govern
 
 HealthOScaffold is the historical repository name and construction repository for HealthOS. Future agents must treat implemented architecture, contracts, runtimes, apps, tests, and docs here as HealthOS work unless explicitly marked experimental or deprecated; scaffold vocabulary describes maturity/foundation phase only.
 
+Repository audit note (2026-04-28): the current visible tree has no `.xcodeproj`, `.xcworkspace`, or `swift/Package.swift`, while canonical docs and tracking still reference a substantial Swift package under `swift/`. Treat this as a repository-truth blocker before attempting Xcode workspace setup.
+
 ## How to choose next task
 
 1. Open `docs/execution/02-status-and-tracking.md`.
@@ -24,10 +26,10 @@ HealthOScaffold is the historical repository name and construction repository fo
 ## Priority gaps now
 
 1. close scaffold blockers listed in `docs/execution/14-final-gap-register.md` (currently GAP-001 cross-app adapter propagation and GAP-002 incident command set)
-2. extend runtime adapter coverage (user-agent/service) with boundary tests
-3. wire `make validate-all` quality gates into CI/distributed execution without declaring production-hardening
-4. continue storage/retrieval/provider parity without fake capability claims
-5. keep regulatory/provider/semantic non-claims explicit while preparing scaffold RC fixes + tag prep
+2. resolve the Swift package / Xcode entrypoint truth mismatch captured in `docs/execution/19-xcode-repository-organization-audit.md`
+3. extend runtime adapter coverage (user-agent/service) with boundary tests
+4. wire `make validate-all` quality gates into CI/distributed execution without declaring production-hardening
+5. continue storage/retrieval/provider parity without fake capability claims
 
 ## Validation command baseline
 

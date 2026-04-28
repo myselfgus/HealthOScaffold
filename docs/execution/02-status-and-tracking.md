@@ -6,6 +6,34 @@ Current phase: Controlled implementation — first vertical slice started
 
 ## Completed recently
 
+## ARCH-001 — Engineering-agent architectural realignment to Apple sovereignty thesis (2026-04-28)
+
+Objective: apply a directional documentation correction to the engineering-agent layer, aligning it with the Apple sovereignty thesis and simplifying the target from a custom TypeScript agent runtime to Xcode Intelligence extension surfaces.
+
+Files touched:
+- `docs/architecture/44-project-steward-agent.md` — historical-reference header added
+- `docs/architecture/45-healthos-xcode-agent.md` — rewritten as Steward for Xcode target architecture: Xcode Intelligence as native runtime surface; HealthOS contributes instructions, healthos-mcp, derived memory, deterministic CLI
+- `docs/architecture/46-apple-sovereignty-architecture.md` — created: Apple sovereignty thesis as unified architectural statement covering data plane, compute plane, and governance plane
+- `docs/execution/17-healthos-xcode-agent-migration-plan.md` — rewritten as Steward for Xcode migration plan: 3 workstreams (WS-1 instructions/skills, WS-2 healthos-mcp, WS-3 deterministic CLI), 3 phases
+- `docs/execution/02-status-and-tracking.md` — this entry
+- `docs/execution/14-final-gap-register.md` — GAP-003 reframed: SQL/object backends are complementary query/index/projection substrates, not parity replacements for file-backed canonical storage
+- `docs/execution/todo/ops-network-ml.md` — WS-1, WS-2, WS-3 added as READY items
+
+Invariants involved: Inv 1 (Core sovereignty), Inv 14/15 (lawfulContext and storage layer enforcement), Inv 17/22 (provider honesty and anti-fake posture), Inv 43 (scaffold closure is not production readiness).
+
+Validation: `make validate-docs`
+
+Done criteria:
+- docs 44, 45, 46, 17 present, voice-consistent, UTF-8 clean
+- cross-references resolve to existing files
+- no false Xcode Intelligence, Apple Private Cloud Compute, MCP, or Codex integration claims
+- maturity ladder uses only canonical levels
+
+Residual gaps:
+- WS-1 (instructions and skills consolidation) is not implemented in this work unit
+- WS-2 (healthos-mcp local MCP server) is not implemented in this work unit
+- WS-3 (deterministic CLI consolidation) is not implemented in this work unit
+
 ## SCRIBE-008 — Minimal GOS runtime visibility in first-slice/Scribe surface (2026-04-28)
 
 - expanded the app-safe `gosRuntimeState` bridge contract to include active workflow title, bound actor/family summaries, reasoning-boundary summaries, and draft-path mediation markers for SOAP/referral/prescription

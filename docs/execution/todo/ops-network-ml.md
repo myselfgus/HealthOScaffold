@@ -216,6 +216,58 @@ Files touched:
 
 ## READY
 
+### WS-1 Instructions and skills consolidation (Steward for Xcode — Phase B)
+Priority: High
+Docs: `docs/execution/17-healthos-xcode-agent-migration-plan.md` (WS-1), `docs/architecture/45-healthos-xcode-agent.md`
+Objective:
+- update `CLAUDE.md`, `AGENTS.md`, and relevant skill files so Xcode Intelligence and compatible agents receive HealthOS-specific instructions and default to non-authoritative posture
+- codify policy guard language, official-doc precedence, anti-overclaim rules, non-clinical boundary statements, and repository identity rule
+Files:
+- `CLAUDE.md`
+- `AGENTS.md`
+- `docs/execution/skills/*.md` (relevant files)
+Dependencies:
+- Phase A (ARCH-001) complete
+Definition of done:
+- instruction files are consistent with docs 45 and 46
+- agent defaults to non-authoritative posture by instruction
+- agent references official docs as source of truth
+- `make validate-docs` passes
+
+### WS-2 Local MCP server (healthos-mcp)
+Priority: Medium
+Docs: `docs/execution/17-healthos-xcode-agent-migration-plan.md` (WS-2), `docs/architecture/45-healthos-xcode-agent.md`
+Objective:
+- build a local MCP server exposing typed HealthOS repository operations to Xcode Intelligence or compatible MCP client
+Files:
+- new package (location TBD, likely under `ts/packages/`)
+Dependencies:
+- Phase A (ARCH-001) complete; WS-1 recommended first
+Definition of done:
+- Xcode Intelligence or compatible MCP client can invoke typed HealthOS repository operations
+- typed errors, dry-run support, fail-closed posture present
+- no secrets in logs, no clinical payloads in operations
+- operations do not move HealthOS Core law into tooling
+
+### WS-3 Deterministic CLI consolidation
+Priority: Medium
+Docs: `docs/execution/17-healthos-xcode-agent-migration-plan.md` (WS-3), `docs/architecture/45-healthos-xcode-agent.md`
+Objective:
+- reduce `ts/packages/healthos-steward` to deterministic CI-safe operations
+- remove provider orchestration as the primary architectural path
+Files:
+- `ts/packages/healthos-steward/src/*`
+- `ts/packages/healthos-steward/package.json`
+- `ts/packages/healthos-steward/README.md`
+Dependencies:
+- Phase A (ARCH-001) complete
+Definition of done:
+- CLI runs deterministic operations without LLM dependency
+- CLI works in CI/GitHub Actions
+- existing deterministic commands (`status`, `validate`, `handoff`, `next-task`, `scan`) preserved or equivalent
+- provider-centric orchestration is no longer the primary entry point
+- `make validate-docs` and `make ts-build` pass
+
 ### OPS-003 Define incident-response command set for first operator tools
 Priority: High
 Skill: `docs/execution/skills/network-fabric-skill.md` + `docs/execution/skills/backup-restore-retention-export-skill.md`

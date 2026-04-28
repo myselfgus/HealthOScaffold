@@ -1,354 +1,325 @@
-# 45) HealthOS Xcode Agent (target architecture)
+# 45) Steward for Xcode (target architecture)
+
+Historical/descriptive names for this component: HealthOS Xcode Agent, Xcode Agent. Canonical name: Steward. Xcode-integration posture: Steward for Xcode.
 
 ## Purpose
 
-HealthOS Xcode Agent is the target evolution of Project Steward from a prompt-and-provider scaffold into a real engineering agent runtime.
+Steward for Xcode is the target engineering-tooling posture for this repository.
 
-It remains:
-- an engineering tool inside this repository
-- subordinate to official repository docs and invariants
-- non-clinical, non-constitutional, and non-authorizing
+It serves HealthOS construction — the work of building HealthOS in this repository. It is not a clinical runtime, not an AACI component, and not a HealthOS Core law engine.
 
-It serves the HealthOS construction repository. Any future migration must preserve that HealthOScaffold is the historical repository name for HealthOS work, with scaffold terminology limited to maturity.
+It is:
+- outside the HealthOS clinical and runtime hierarchy
+- non-clinical
+- non-constitutional
+- non-authorizing
 
-It is intended to provide:
-- repository-aware conversational interaction
-- Xcode-native workspace intelligence
-- deterministic and agentic execution modes
-- tool-mediated inspection, editing, validation, and review
-- persistent session continuity and handoff
+It is not a separate product from HealthOS. "Scaffold" here describes maturity of tooling, not a product identity distinct from HealthOS.
 
-## Why the current steward model is not enough
+## Why Xcode Intelligence is the runtime
 
-The current steward is centered on deterministic CLI commands plus optional LLM provider invocation.
+The prior target in this document assumed HealthOS must build a custom TypeScript agent runtime with custom session orchestration, model routing, and conversation surfaces. That assumption is superseded.
 
-That model is insufficient for the desired system because it treats intelligence as a text provider instead of a workspace-capable agent. The desired runtime must understand:
-- the active file and selection
-- project structure and diagnostics
-- build/test status
-- repository policies and official docs
-- session continuity across engineering work
+Xcode Intelligence provides native workspace-aware engineering-agent capability aligned with the Apple sovereignty thesis in `docs/architecture/46-apple-sovereignty-architecture.md`:
 
-A provider-only model does not accurately represent those capabilities.
+- It is Apple-controlled software on Apple-controlled hardware, consistent with the Apple-first engineering posture.
+- It provides native IDE context: active file, selection, diagnostics, build state, and workspace structure.
+- It reduces the maintenance surface HealthOS must own for conversational engineering capability.
+- It is the canonical engineering intelligence surface for Apple-platform development.
+
+HealthOS should not duplicate what Xcode provides natively. HealthOS contributes extension surfaces to the native runtime: instructions, skills, an MCP server, derived repository memory, and a deterministic CLI.
+
+Language precision:
+
+- Xcode Intelligence is Apple-controlled. It is not a HealthOS runtime. HealthOS does not own, fork, or extend the Xcode Intelligence runtime itself.
+- Claude/Codex integration within Xcode is expected as part of the Xcode Intelligence surface. Specific integration capabilities should be verified from official Apple and Anthropic documentation before being claimed. Describe unverified capabilities as candidate or currently expected integration, not delivered fact.
+- HealthOS does not configure or control Apple Intelligence. Apple Intelligence is a distinct Apple-provided capability layer and is not part of HealthOS Core.
+
+The optional custom surface remains available: if Xcode Intelligence proves insufficient for a specific, documented HealthOS engineering need, a targeted custom surface may be built. That surface is not the primary target.
 
 ## Constitutional boundaries
 
-HealthOS Xcode Agent must never be treated as:
-- Core law
-- AACI runtime
-- GOS authority
+Steward must never be:
+
+- HealthOS Core law
+- GOS authority or GOS compiler
+- AACI runtime or AACI session orchestrator
+- Async runtime
+- User-Agent runtime
 - a clinical actor
-- a merge approver or gate resolver
+- an app runtime (not Scribe, Sortio, or CloudClinic)
+- a merge approver
+- a gate resolver
+- a regulatory authority
 
-It may recommend, inspect, edit, validate, and summarize. It may not redefine constitutional boundaries or claim product/legal maturity that does not exist.
+It may recommend, inspect, edit, validate, and summarize. It may not redefine constitutional boundaries, claim product maturity that does not exist, or relocate Core law into the engineering-agent layer.
 
-## Architectural shift
-
-The architectural center moves from `provider invocation` to `agent runtime`.
-
-Old center:
-- prompt -> provider -> text output
-
-New center:
-- conversation surface -> agent runtime -> model backend + tools + memory + policy guards -> incremental output/actions
-
-## Target runtime model
+## Target relationship
 
 ```text
-Conversation Surface
-  -> Agent Session
-    -> Agent Runtime
-      -> Policy Guards
-      -> Memory / Context Assembly
-      -> Model Backend
-      -> Tool Runtime
-      -> Action Log / Handoff / Validation Trail
+Xcode Intelligence (Apple-controlled engineering runtime surface)
+  ├─ consumes HealthOS instructions and skills
+  │    (CLAUDE.md, AGENTS.md, skill files, policy guard language)
+  ├─ calls HealthOS MCP server for typed repository operations
+  │    (healthos-mcp: validate-all, scan-status, next-task, check-invariants, ...)
+  ├─ reads derived repository memory
+  │    (.healthos-steward/memory/derived/)
+  └─ delegates deterministic CI-safe operations to healthos-steward CLI
+       (validation, status, handoff, next-task without LLM dependency)
 ```
 
-## Core subsystems
+```text
+HealthOS clinical and runtime hierarchy (never collapses into engineering layer)
+  Material substrate
+    └─ HealthOS Core
+      └─ GOS
+        └─ Runtimes (AACI, Async, User-Agent)
+          └─ Apps (Scribe, Sortio, CloudClinic)
+```
 
-### 1. Conversation surfaces
+These two structures never merge. Steward does not enter the clinical/runtime hierarchy. The clinical/runtime hierarchy does not depend on Steward.
 
-A surface is how an operator interacts with the agent.
+## What HealthOS contributes (extension surface)
 
-Required surfaces:
-- Xcode conversation surface
-- CLI conversational surface
+HealthOS does not build the runtime. HealthOS contributes four extension points.
 
-Optional future surface:
-- local web/frontend surface
+### Instructions and skills
 
-A surface is responsible for:
-- collecting user input
-- passing active context (file, selection, diagnostics, diff, phase docs)
-- rendering streaming output, plan state, actions, and results
-- resuming sessions
+Current:
+- `CLAUDE.md` — primary instruction file for Claude Code and compatible agents
+- `AGENTS.md` — repository instruction file for coding agents
+- skill files under `docs/execution/skills/`
 
-A surface is not responsible for repository reasoning or policy evaluation.
+Content requirements for these files:
+- policy guard language: non-authoritative posture, fail-closed behavior, official-doc precedence
+- repository truth hierarchy: official docs are canonical; steward memory is derived
+- anti-overclaim rules: no false maturity claims, no invented capability
+- non-clinical boundary statements
+- HealthOS repository identity: scaffold describes maturity, not separate product identity
+- constitutional boundary reminders
 
-### 2. Agent runtime
+This extension point is the highest-leverage investment. An agent operating inside the HealthOS workspace receives HealthOS-specific posture from these files without requiring custom runtime code.
 
-The runtime is the central orchestrator.
+WS-1 (instructions and skills consolidation) is the follow-up work item for this extension point.
 
-It is responsible for:
-- intent classification
-- context assembly from official docs and active workspace state
-- choosing deterministic vs agentic execution path
-- invoking model backends when needed
-- invoking tools when needed
-- sequencing read/plan/edit/validate/review work
-- updating memory/handoff/action logs
-- enforcing fail-closed behavior
+### MCP server
 
-The runtime becomes the primary system concept. Everything else serves it.
+Candidate name: `healthos-mcp`
 
-### 3. Tool runtime
+A local MCP server exposes typed HealthOS repository operations to Xcode Intelligence or any compatible MCP client. Typed operations allow Steward to invoke HealthOS-specific repository actions as structured tool calls, not free-form shell commands.
 
-Tools are first-class and explicit.
+Target operations (not delivered unless implemented):
+- `validate-all` — run the full repository validation harness
+- `validate-docs` — run documentation drift and presence checks
+- `scan-status` — scan current repository status against execution docs
+- `get-handoff` — retrieve next-agent handoff snapshot
+- `next-task` — identify the highest-priority next task from execution docs
+- `read-gap-register` — read the final gap register
+- `generate-pr-review-draft` — assemble a PR review checklist against invariant policy
+- `check-invariants` — check invariant enforcement posture
+- `check-doc-drift` — check for documentation drift
 
-Required tool groups:
-- Xcode/workspace tools
-- repository read/search tools
-- build/test/validation tools
-- diff/review tools
-- optional GitHub/PR tools
+All operations are target architecture. None are delivered until implemented and verified.
 
-Tool execution must be:
-- capability-declared
-- logged
-- fail-closed on denial/unavailability
-- distinguishable from pure model output
+WS-2 (MCP server implementation) is the follow-up work item for this extension point.
 
-### 4. Model backends
+### Repository memory
 
-Model backends provide intelligence but are no longer the architectural center.
+Location: `.healthos-steward/memory/derived/`
 
-Examples:
-- OpenAI
-- Anthropic
-- xAI
-- future local models
+Memory constraints:
+- derived index over official docs; never canonical truth
+- no secrets, no tokens, no provider credentials
+- no clinical payloads
+- no direct identifiers
+- declare stale or derived state explicitly when applicable
 
-A model backend is only responsible for:
-- inference
-- structured output/tool-call output when supported
-- backend health and error classification
+Official docs (`docs/`, `README.md`, `CLAUDE.md`, `AGENTS.md`) remain canonical. Memory is a speed layer, not an authority layer.
 
-It is not responsible for session memory, repo truth, or workflow orchestration.
+### Deterministic CLI
 
-### 5. Memory and session continuity
+The `healthos-steward` CLI provides deterministic repository operations for CI and non-Xcode automation.
 
-Memory remains derived, never canonical.
+- runs without LLM dependency for deterministic flows
+- produces provenance-friendly output
+- exposes the same repository operations as the MCP server where possible
+- fails closed on validation failures
+- works in GitHub Actions and equivalent CI environments
+- is not a conversational agent runtime
 
-The target system needs two kinds of memory:
-- repository memory: durable derived index over docs, state, gaps, validations, and known constraints
-- session memory: conversational and action continuity for one engineering thread
+WS-3 (deterministic CLI consolidation) is the follow-up work item for this extension point.
 
-Required memory outputs:
-- session transcript or action history
-- next-agent handoff snapshot
-- derived gap/state sync notes
-- validation trail
+## What HealthOS does not contribute
 
-## Target entity model
+HealthOS does not build:
 
-### Model backend
+- a custom agent runtime as the primary engineering-agent target
+- a custom multi-model router as the primary architecture
+- a custom Xcode conversational UI, unless Xcode-native surface proves insufficient for a specific, documented case
+- HealthOS-owned session continuity inside Xcode Intelligence
+- clinical authority of any kind through Steward
+- merge authority or gate resolution authority
+- Core/GOS law relocation into the engineering-agent layer
 
-Represents an inference engine.
+## Operating modes
 
-Example concerns:
-- backend id
-- model id
-- network policy
-- tool-call capability
-- structured output capability
-- timeout and error taxonomy
-
-### Tool runtime
-
-Represents executable workspace capabilities.
-
-Example concerns:
-- xcode diagnostics/build/test
-- file read/search/update
-- git diff/status
-- validation harness
-- GitHub review ingestion/commenting
-
-### Agent session
-
-Represents one conversational work thread.
-
-Example concerns:
-- session id
-- active mode
-- active plan
-- attached context refs
-- action log
-- current handoff state
-
-### Conversation surface
-
-Represents a user-facing interface.
-
-Example kinds:
-- `xcode-conversation`
-- `cli-repl`
-- `web-chat`
-
-### Policy guard
-
-Represents fail-closed repository-level behavioral enforcement.
-
-Must enforce:
-- official docs are source of truth
-- no false production/provider/legal claims
-- no clinical payloads in steward memory/logs
-- no unapproved authority escalation
-- no silent drift over tracking docs
-
-## Required operating modes
+These are expected behaviors when Steward works inside the HealthOS workspace. They describe posture and constraint, not custom runtime modes that HealthOS must implement.
 
 ### Chat mode
 
-Conversational response with repository context and no file mutation by default.
+Allowed:
+- answer questions about HealthOS architecture, contracts, and status
+- reference official docs as source of truth
+- surface maturity caveats and non-claims honestly
+
+Not allowed:
+- invent capability not present in official docs
+- claim production readiness
+- claim PCC, Xcode Intelligence, or MCP integration before end-to-end verification
+- claim clinical or regulatory authority
 
 ### Inspect mode
 
-Repository inspection, doc lookup, architecture reading, and issue explanation.
+Allowed:
+- read repository docs, source, schemas, and contracts
+- explain architecture
+- surface doc drift or maturity inconsistencies
+
+Not allowed:
+- treat steward memory as canonical
+- assert implementation detail from memory without verifying current file state
 
 ### Plan mode
 
-Task selection, migration planning, next-step generation, and handoff creation.
+Allowed:
+- select next task from execution docs
+- generate handoff snapshots
+- produce migration step plans
+
+Not allowed:
+- create new canonical documents that override official docs
+- plan implementation of WS-1, WS-2, or WS-3 inside this work unit without explicit authorization
 
 ### Edit mode
 
-Explicit file changes with action trace.
+Allowed:
+- make explicit file changes with action trace
+- follow the agent operating protocol in `docs/execution/01-agent-operating-protocol.md`
+- update tracking docs in the same work unit as code/doc changes
+
+Not allowed:
+- silent mutation of tracking docs or invariant records
+- bypass of `make validate-docs` or `make validate-all` after changes
+- commit without recording in `02-status-and-tracking.md`
 
 ### Validate mode
 
-Build/test/check execution with summarized outcomes.
+Allowed:
+- run `make validate-docs`, `make validate-schemas`, `make validate-all`
+- summarize outcomes and gaps
+- record validation evidence in tracking docs
+
+Not allowed:
+- claim validation passed without running the harness
+- skip validation after changes
 
 ### Review mode
 
-Diff review, PR review, drift review, and repository audit.
+Allowed:
+- review diffs, PRs, and doc drift against invariant policy
+- produce draft review checklists
+- surface maturity gaps and overclaims
+
+Not allowed:
+- approve or merge PRs autonomously
+- post comments without explicit operator invocation
 
 ### Sync mode
 
-Derived memory synchronization against official docs.
+Allowed:
+- synchronize derived memory under `.healthos-steward/memory/derived/` against official docs
+- mark stale memory entries
 
-## Xcode-native surface requirements
+Not allowed:
+- treat synced memory as superseding official docs
+- sync clinical payloads or direct identifiers into memory
 
-The Xcode surface must be able to attach or infer:
-- active file path
-- selected text
-- workspace or scheme context
-- visible diagnostics/build issues
-- recent build/test output when available
+## Policy guards as instructions
 
-Expected UX:
-- chat-style conversation
-- visible plan and action progression
-- explicit file edits and validation steps
-- resumable context
+PolicyGuard is not a sovereign runtime entity. It is instruction and boundary material consumed by Xcode Intelligence (through CLAUDE.md, AGENTS.md, and skill files), enforced as typed boundaries in the MCP server, and applied as checks in the deterministic CLI.
 
-This surface should feel like a real engineering conversation, not a prompt launcher.
+Policy guard language covers:
 
-## CLI surface requirements
+- fail-closed behavior: deny by default when posture is ambiguous
+- official docs precedence: `docs/`, `README.md`, `CLAUDE.md`, `AGENTS.md` over memory
+- no false maturity claims: use only canonical maturity levels
+- no clinical payloads in memory, logs, or engineering outputs
+- no silent mutation of canonical docs
+- no GitHub write without explicit operator invocation
+- no production-readiness claim
+- no regulatory-compliance claim
 
-The CLI must support both one-shot and interactive modes.
+## MCP boundary
 
-Required CLI patterns:
-- `healthos-agent chat`
-- `healthos-agent task next`
-- `healthos-agent review diff`
-- `healthos-agent validate`
-- `healthos-agent session resume <id>`
+The `healthos-mcp` server, when implemented, must conform to:
 
-CLI should expose the same runtime, not a separate implementation.
+- local server only; no external network exposure required
+- typed operations with explicit input and output contracts
+- typed error taxonomy per operation
+- dry-run support where operations could have side effects
+- no secrets in operation logs or memory
+- no clinical payloads in operation inputs or outputs
+- no direct mutation of HealthOS Core law contracts through MCP
+- no production-readiness claim in operation outputs
+- no silent file edits; every file change is explicit and logged
 
-## Optional local frontend
+## Deterministic CLI boundary
 
-A local frontend is acceptable if it uses the same runtime and session model.
+The deterministic CLI must conform to:
 
-Possible form factors:
-- lightweight local web app
-- desktop shell
-- custom Xcode-adjacent panel if not embedded directly
+- deterministic operations that work without an LLM
+- appropriate for CI and GitHub Actions
+- may share operation implementations with the MCP server
+- not a conversational model runtime
+- fail-closed on validation failures
+- does not claim agentic capability for deterministic operations
 
-The frontend must not invent a second source of truth for repository memory.
-
-## Package/layout direction
-
-Suggested package split:
-- `ts/packages/healthos-agent-core`
-- `ts/packages/healthos-agent-models`
-- `ts/packages/healthos-agent-tools`
-- `ts/packages/healthos-agent-memory`
-- `ts/packages/healthos-agent-cli`
-- `ts/packages/healthos-agent-xcode-surface`
-- optional `ts/packages/healthos-agent-web`
-
-The current `ts/packages/healthos-steward` may be migrated incrementally or retained temporarily as a compatibility shell.
-
-## `.healthos-steward/` evolution
-
-Retain `.healthos-steward/` as the repository-local state root, but evolve structure toward:
-
-```text
-.healthos-steward/
-  memory/
-    derived/
-    sessions/
-    handoffs/
-    state/
-  policies/
-  prompts/
-  schemas/
-  surfaces/
-  models/
-```
-
-Prompts remain helper templates, not the center of the system.
-
-## Observability and audit
-
-The target runtime must record:
-- session id
-- action type
-- tools invoked
-- changed files
-- validation commands
-- model/backend used
-- dry-run vs live execution
-- failures and denials
-
-Logs must stay free of secrets and clinical payloads.
+The CLI is not being retired. It is being reduced to its essential deterministic scope.
 
 ## Compatibility and migration stance
 
-The current steward is still valid as an engineering scaffold, but it should be treated as transitional.
+`docs/architecture/44-project-steward-agent.md` is the historical reference for the Steward scaffold before this architectural realignment. It is preserved as reasoning history.
 
-Near-term compatibility is acceptable when it helps migration, but the end state is not:
-- provider-centric orchestration
-- prompt-only pseudo-agent behavior
-- command aliases that simulate missing agent capabilities
+The old provider-centric steward architecture (`StewardAgentRuntime`, custom provider router, multi-model orchestration) should not be extended as the primary engineering-agent path. It may remain for deterministic operations during transition.
+
+Migration must preserve:
+- validation and fail-closed behavior
+- existing deterministic CLI commands that are still valid
+- `.healthos-steward/memory/derived/` as derived memory location
+- provider error taxonomy for the MCP/CLI typed error surface (reused conceptually, not requiring custom agent runtime)
 
 ## Non-goals
 
 This target architecture does not imply:
-- product UI completion for HealthOS apps
-- external provider maturity claims
-- autonomous merge authority
-- replacement of human gate/review/accountability
-- conversion of repository memory into canonical truth
 
-## Implementation standard
+- implementing Xcode Intelligence (it is Apple-controlled)
+- replacing Xcode IDE
+- creating a clinical agent or clinical runtime
+- building a custom conversational runtime unless future evidence requires it
+- claiming Xcode Intelligence, MCP, or PCC integration before end-to-end verification
+- making repository memory canonical truth
+- granting autonomous merge authority or gate resolution authority
+- production readiness of any HealthOS component
 
-Any implementation of this architecture must preserve:
-- fail-closed behavior
-- explicit capability boundaries
-- repository truthfulness
-- action traceability
-- official docs precedence
-- separation of engineering tooling from constitutional runtime behavior
+## Maturity
+
+| Extension point | Current maturity | Notes |
+|---|---|---|
+| Xcode Intelligence integration | doctrine-only | No end-to-end verification in this work unit; must not be claimed above doctrine-only |
+| Instructions / skills | scaffolded contract (files exist); content consolidation pending | WS-1 follow-up |
+| MCP server (healthos-mcp) | doctrine-only | WS-2 follow-up; not implemented |
+| Derived repository memory | scaffolded contract (.healthos-steward/memory/ exists) | Official docs remain canonical source |
+| Deterministic CLI | implemented seam / tested operational path for existing commands | CI and non-Xcode path; WS-3 consolidation pending |
+| Optional custom surface | doctrine-only | Only if Xcode-native surface proves insufficient for a documented case |
+
+Maturity levels used: doctrine-only, scaffolded contract, implemented seam, tested operational path, production-hardened (per canonical ladder in `docs/execution/README.md`). Inv 43 applies: scaffold or foundation phase closure is not production readiness.

@@ -1,5 +1,7 @@
 # 44) HealthOS Project Steward Agent (engineering scaffold)
 
+> **Status (as of 2026-04-28):** Historical reference. This document describes the Project Steward scaffold before the architectural realignment defined in `docs/architecture/45-healthos-xcode-agent.md` and `docs/architecture/46-apple-sovereignty-architecture.md`. The current target treats Xcode Intelligence as the native engineering-agent runtime surface and reduces HealthOS-specific contribution to instructions, an MCP server, derived repository memory, and a deterministic CLI. This document is preserved to retain the engineering reasoning that produced the simplified target. Do not implement net-new functionality from this document; consult docs 45 and 17 for current direction.
+
 ## Purpose
 
 HealthOS Project Steward is an **engineering tool** in this repository. It is not a clinical runtime, not AACI, not a user agent, and not a law engine.

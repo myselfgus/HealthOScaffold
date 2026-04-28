@@ -28,7 +28,7 @@ O HealthOS é uma plataforma soberana para dados de saúde e operações clínic
 ## 3. Protocolo de Trabalho
 Antes de qualquer codificação, siga rigorosamente:
 1. **Leitura de Contexto:** `README.md` -> `docs/execution/README.md` -> `docs/execution/00-master-plan.md` -> `docs/execution/11-current-maturity-map.md`.
-2. **Uso de Skills:** Consulte os arquivos em `docs/execution/skills/` específicos para o seu domínio (ex: `aaci-skill.md`, `core-law-skill.md`).
+2. **Uso de Skills:** Consulte os arquivos em `docs/execution/skills/` específicos para o seu domínio (ex: `aaci-skill.md`, `core-law-skill.md`). Para trabalho em Swift/SwiftUI/Xcode ou Apple platform, leia também as macOS skills em `docs/execution/skills/<nome>/SKILL.md` — o índice completo está em `docs/execution/skills/README.md`.
 3. **Validação:** Use o conjunto de comandos `make validate-all`.
 4. **Steward Agent:** Utilize `@healthos/steward` para diagnósticos e planos, mantendo a documentação em `docs/` como fonte da verdade.
 

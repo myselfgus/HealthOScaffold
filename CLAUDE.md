@@ -33,7 +33,8 @@ Use "scaffold" only to describe maturity or bootstrap/foundation phase, never to
 13. `docs/execution/16-next-10-actions-plan.md`
 14. relevant `docs/execution/todo/*.md`
 15. relevant `docs/architecture/*.md`
-16. matching `docs/execution/skills/*.md`
+16. matching `docs/execution/skills/*.md` (HealthOS domain skills)
+17. if touching Swift/SwiftUI/Xcode/Apple platform code: matching `docs/execution/skills/<name>/SKILL.md` (macOS skills — see `docs/execution/skills/README.md` for index)
 
 Task selection order:
 1. `READY` task in current phase

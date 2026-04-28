@@ -1,6 +1,26 @@
 # TODO — Runtimes and AACI
 
+Repository identity note: HealthOScaffold is the HealthOS construction repository. Use "scaffold" only for maturity or foundation-phase status, not to deny that implemented runtime/AACI work here is HealthOS work.
+
 ## COMPLETED
+
+### DOC-001 Correct HealthOScaffold / HealthOS repository identity vocabulary
+Outcome:
+- added an accepted ADR clarifying that HealthOScaffold is the historical repository name and construction repository for HealthOS
+- aligned entry docs, execution docs, architecture docs, maturity maps, steward/Xcode Agent docs, TODO/skill guidance, and handoff language so scaffold means maturity/foundation phase rather than separate product identity
+- preserved non-production, non-EHR, no-real-provider, no-real-signature, no-real-semantic-retrieval, and no-final-UI warnings
+- validation: `make validate-docs` PASS; `make validate-all` FAIL only at `swift-test` due existing Swift test compile errors outside this documentation-only work unit; remaining validate-all steps passed
+Files touched:
+- `docs/adr/0012-healthoscaffold-is-healthos-construction-repository.md`
+- `README.md`
+- `AGENTS.md`
+- `CLAUDE.md`
+- `GEMINI.md`
+- `docs/execution/*`
+- `docs/architecture/*`
+- `.healthos-steward/README.md`
+- `docs/execution/skills/*`
+- `docs/execution/todo/runtimes-and-aaci.md`
 
 ### RT-009 Establish repository validation harness and drift detectors
 Outcome:
@@ -235,10 +255,10 @@ Definition of done:
 - provider routing remains provider-agnostic at contract level
 - actor/agent/runtime vocabulary matches glossary and schemas
 
-### RT-010 Scaffold RC closure audit and final gap classification
+### RT-010 Scaffold/foundation phase RC closure audit and final gap classification
 Outcome:
 - scaffold RC closure criteria now explicit and objective in a dedicated execution doc
-- final residual gap register now classifies blockers, post-scaffold hardening, production, and regulatory requirements with owner/module/validation fields
+- final residual gap register now classifies blockers, next HealthOS maturity hardening, production, and regulatory requirements with owner/module/validation fields
 - scaffold finalization plan now defines last-action ordering, merge/validation criteria, and non-blocking production-phase items
 - entry/handoff/maturity docs were synchronized to avoid drift and false production claims during closure prep
 Files touched:

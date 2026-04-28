@@ -10,6 +10,8 @@ Transform Project Steward from a deterministic CLI plus optional provider orches
 - tool-mediated inspection/edit/validate/review behavior
 - durable session continuity and handoff
 
+This migration is engineering tooling for the HealthOS construction repository. It must preserve that HealthOScaffold is the historical repository name for HealthOS work and that scaffold terminology describes tool/component maturity only.
+
 ## Source architecture
 
 Target architecture is defined in:

@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Describe the first implemented executable path now present in the scaffold.
+Describe the first implemented executable path now present in HealthOS at scaffold/foundation maturity.
 
 ## Current implementation path
 
@@ -73,3 +73,4 @@ The current Swift executable path (CLI plus minimal Scribe SwiftUI surface) exer
 
 ## Why this is acceptable now
 The objective of this wave is to establish a lawful end-to-end executable spine and a minimal app-facing validation surface without prematurely coupling to a full UI architecture or production providers.
+This is HealthOS code in a not-production-ready maturity posture; it is not disposable foundation code to be replaced by another HealthOS later.

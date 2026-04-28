@@ -1,5 +1,6 @@
 # Scaffold coverage matrix
 
+This matrix measures maturity and evidence coverage for HealthOS components in the HealthOScaffold repository. "Scaffold" describes maturity/foundation posture; it does not name a separate product outside HealthOS.
 
 ## Evidence posture
 
@@ -8,6 +9,7 @@
 - `[ ]` means missing/not started.
 
 If evidence is uncertain, downgrade status and add a gap note instead of over-claiming completion.
+An implemented component can be HealthOS code and still be classified as scaffolded contract, implemented seam, or tested operational path.
 
 Legend:
 - [x] established in scaffold
@@ -276,11 +278,10 @@ What remains is mostly optional hardening and procedural refinement, not identit
 - [~] SQL persistence is scaffold-level only for new governance tables; no production RBAC/approval workflow engine is wired yet
 - [~] cross-runtime adoption is partial: contracts and tests are in Core, while runtime/app/operator surfaces still consume previous governance set by default
 
-## 11. Scaffold RC closure audit status (2026-04-26)
+## 11. Scaffold/foundation phase RC closure audit status (2026-04-26)
 
 - [x] objective RC criteria documented (`docs/execution/13-scaffold-release-candidate-criteria.md`)
 - [x] final gap register documented (`docs/execution/14-final-gap-register.md`)
 - [x] scaffold finalization plan documented (`docs/execution/15-scaffold-finalization-plan.md`)
 - [~] strict closure still blocked by open small-closure items tracked as scaffold blockers (GAP-001, GAP-002)
-- [x] non-blocking production-phase gaps are explicitly separated from scaffold closure
-
+- [x] non-blocking future HealthOS maturity/production-phase gaps are explicitly separated from scaffold/foundation phase closure

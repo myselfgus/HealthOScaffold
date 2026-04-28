@@ -6,6 +6,41 @@ Current phase: Controlled implementation — first vertical slice started
 
 ## Completed recently
 
+## DOC-001 — HealthOScaffold / HealthOS repository identity vocabulary correction (2026-04-28)
+
+- added ADR 0012 to establish that HealthOScaffold is the historical repository name and HealthOS construction repository, not a separate scaffold product
+- aligned README, AGENTS, CLAUDE, GEMINI, execution docs, maturity/coverage docs, architecture docs, steward/Xcode Agent docs, TODOs, and skills so "scaffold" means maturity/foundation phase only
+- clarified that implemented architecture, contracts, runtimes, apps, tests, schemas, migrations, and documentation in this repository are HealthOS work unless explicitly experimental or deprecated
+- preserved non-production warnings: not production-ready, not a complete EHR, no real provider/signature/interoperability/semantic retrieval claims, no final UI claim, and no production cloud/fabric claim
+- validation: `make validate-docs` PASS; `make validate-all` FAIL only at `swift-test` due existing Swift test compile errors in `CrossAppCoordinationContractsTests.swift` and `RetrievalMemoryGovernanceTests.swift` (files not changed in this work unit); all other validate-all steps passed
+Files touched:
+- `docs/adr/0012-healthoscaffold-is-healthos-construction-repository.md`
+- `README.md`
+- `AGENTS.md`
+- `CLAUDE.md`
+- `GEMINI.md`
+- `docs/execution/README.md`
+- `docs/execution/00-master-plan.md`
+- `docs/execution/01-agent-operating-protocol.md`
+- `docs/execution/06-scaffold-coverage-matrix.md`
+- `docs/execution/11-current-maturity-map.md`
+- `docs/execution/12-next-agent-handoff.md`
+- `docs/execution/13-scaffold-release-candidate-criteria.md`
+- `docs/execution/14-final-gap-register.md`
+- `docs/execution/15-scaffold-finalization-plan.md`
+- `docs/architecture/01-overview.md`
+- `docs/architecture/19-interface-doctrine.md`
+- `docs/architecture/28-first-slice-executable-path.md`
+- `docs/architecture/44-project-steward-agent.md`
+- `docs/architecture/45-healthos-xcode-agent.md`
+- `docs/execution/17-healthos-xcode-agent-migration-plan.md`
+- `docs/execution/18-healthos-xcode-agent-task-tracker.md`
+- `.healthos-steward/README.md`
+- `docs/execution/skills/README.md`
+- `docs/execution/skills/documentation-drift-skill.md`
+- `docs/execution/skills/project-steward-skill.md`
+- `docs/execution/todo/runtimes-and-aaci.md`
+
 ## ML-012 — HealthOS steward hard reset and new clean runtime baseline (2026-04-27)
 
 - removed the previous `ts/packages/healthos-steward` implementation entirely instead of preserving compatibility layers or a `legacy` path inside the package
@@ -399,11 +434,11 @@ Whenever a work unit ends, update:
 - known gaps
 - open blockers / decisions
 
-## Scaffold RC closure / final gap audit (2026-04-26)
+## Scaffold/foundation phase RC closure / final gap audit (2026-04-26)
 
 - completed full-repo closure audit focused on scaffold readiness (not product readiness) and produced explicit closure criteria doc: `docs/execution/13-scaffold-release-candidate-criteria.md`
 - created final actionable residual gap register with category + impact + owner/module + validation expectation: `docs/execution/14-final-gap-register.md`
-- created explicit finalization plan sequencing last closure actions, merge criteria, validation criteria, and post-scaffold handoff: `docs/execution/15-scaffold-finalization-plan.md`
+- created explicit finalization plan sequencing last closure actions, merge criteria, validation criteria, and next HealthOS maturity handoff: `docs/execution/15-scaffold-finalization-plan.md`
 - synchronized entry/read-order docs (`README.md`, `AGENTS.md`, `CLAUDE.md`, `docs/execution/README.md`) to include scaffold RC closure references and anti-overclaim posture
 - synchronized maturity/handoff docs (`11-current-maturity-map.md`, `12-next-agent-handoff.md`) with closure classification and blocker-aware next task selection
 - current explicit scaffold blockers for strict closure: GAP-001 (cross-app adapter propagation) and GAP-002 (incident command set)
@@ -424,4 +459,4 @@ Validation executed in this work unit:
 - AACI-009: Capability honesty signaling in AACI/Retrieval (GAP-009) [COMPLETED]
 - CL-006: Shared error envelope for local service boundaries [COMPLETED]
 - APP-008: Cross-app envelope propagation [COMPLETED]
-- Scaffold RC 1 final validation: COMPLETED
+- Scaffold/foundation phase RC 1 final validation: COMPLETED

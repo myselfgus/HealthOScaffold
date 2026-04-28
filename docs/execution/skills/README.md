@@ -2,6 +2,8 @@
 
 This directory contains domain-specific execution skills for coding agents.
 
+Treat HealthOScaffold as the HealthOS construction repository. Use scaffold terminology only for maturity or bootstrap/foundation phase, not project identity.
+
 ## How to use
 
 Before editing a domain:

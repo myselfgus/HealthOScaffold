@@ -2,6 +2,8 @@
 
 Use this skill when implementing or modifying the repository engineering steward (`healthos-steward`).
 
+Treat HealthOScaffold as the HealthOS construction repository. Use scaffold terminology only for maturity, not project identity.
+
 ## Scope
 
 - `ts/packages/healthos-steward/`
@@ -25,6 +27,7 @@ Use this skill when implementing or modifying the repository engineering steward
 - It must keep official docs as source of truth and memory as derived index.
 - It must report integration readiness honestly (available/authenticated/fail-closed).
 - It cannot require secrets/tokens for baseline commands.
+- It must not describe HealthOScaffold as separate from HealthOS.
 
 ## Minimum validation for steward changes
 

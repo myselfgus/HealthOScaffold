@@ -1,6 +1,8 @@
 # HealthOScaffold
 
-HealthOS is a sovereign computational environment for health data and clinical operations. This repository is in **controlled implementation / scaffold hardening** phase, establishing foundational architecture.
+HealthOScaffold is the historical repository name and initial scaffolding phase for HealthOS. All implemented architecture, contracts, runtimes, apps, tests, and documentation in this repository are part of HealthOS unless explicitly marked experimental or deprecated. "Scaffold" describes maturity, not project identity.
+
+HealthOS is a sovereign computational environment for health data and clinical operations. This repository is the HealthOS construction repository in **controlled implementation / scaffold hardening** phase, establishing foundational architecture.
 
 HealthOS is the full platform. **AACI is one runtime inside HealthOS**. **GOS is a governed operational layer subordinate to Core law**. **Scribe, Sortio, and CloudClinic are app/interfaces that consume mediated surfaces; they never define constitutional law**.
 
@@ -44,6 +46,8 @@ This repository is in **controlled implementation / scaffold hardening**:
 - Swift governance and boundary suites are present and runnable
 - TypeScript workspace builds; GOS tooling has automated tests
 - first-slice execution exists (CLI + minimal Scribe validation surface)
+
+These are HealthOS components at varied maturity levels. Scaffold-stage components are not a separate product and are not placeholders for another future repository; their maturity must simply be described honestly.
 
 It is **not**:
 - a production-ready product
@@ -113,7 +117,7 @@ Read in order before coding:
 
 ## 🤖 Project Steward (engineering agent scaffold)
 
-The repository now includes a scaffolded engineering steward CLI at `ts/packages/healthos-steward/` with persistent policy/memory templates under `.healthos-steward/`.
+The HealthOS construction repository now includes a scaffolded engineering steward CLI at `ts/packages/healthos-steward/` with persistent policy/memory templates under `.healthos-steward/`.
 
 Use it for repository diagnostics/planning/handoff (not clinical runtime behavior):
 
@@ -162,11 +166,10 @@ Use `docs/execution/11-current-maturity-map.md` for full detail. Short view:
 - GOS authoring/compiler/lifecycle: **implemented seam / tested operational path (scaffold hardening)**
 - AACI + first slice orchestration: **implemented seam / tested operational path (bounded scope)**
 
-## Scaffold RC closure references
+## Scaffold/foundation phase closure references
 
-For final scaffold-closure auditing and handoff discipline, use:
+For final scaffold/foundation phase closure auditing and handoff discipline, use:
 - `docs/execution/13-scaffold-release-candidate-criteria.md`
 - `docs/execution/14-final-gap-register.md`
 - `docs/execution/15-scaffold-finalization-plan.md`
 - `docs/execution/16-next-10-actions-plan.md`
-EOF

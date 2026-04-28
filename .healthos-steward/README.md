@@ -2,6 +2,10 @@
 
 This folder stores **derived** operational memory, policies, prompts, and provider config for the engineering steward.
 
+HealthOScaffold is the historical repository name and initial scaffolding phase for HealthOS. All implemented architecture, contracts, runtimes, apps, tests, and documentation in this repository are part of HealthOS unless explicitly marked experimental or deprecated. "Scaffold" describes maturity, not project identity.
+
+Steward data indexes HealthOS work in this repository; it does not define canonical truth.
+
 ## Canonical truth
 Official docs remain canonical (`README.md`, `AGENTS.md`, `CLAUDE.md`, `docs/execution/*`). Steward memory does not replace official docs.
 
@@ -13,7 +17,7 @@ Official docs remain canonical (`README.md`, `AGENTS.md`, `CLAUDE.md`, `docs/exe
 All providers are disabled by default and use dry-run posture unless you explicitly enable and configure credentials.
 
 ## Architectural direction
-Current steward/provider files describe the scaffold that exists today.
+Current steward/provider files describe the engineering scaffold maturity that exists today.
 
 Target direction is now documented in:
 - `docs/architecture/45-healthos-xcode-agent.md`

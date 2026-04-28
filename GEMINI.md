@@ -1,9 +1,15 @@
 # GEMINI.md
 
-Este documento serve como o manual de instrução central para a colaboração entre humanos e IA no projeto **HealthOScaffold**.
+Este documento serve como o manual de instrução central para a colaboração entre humanos e IA no repositório **HealthOScaffold**.
+
+## Identidade do repositório e vocabulário de scaffold
+
+HealthOScaffold é o nome histórico do repositório e a fase inicial de andaime/fundação do HealthOS. Ele não é um produto separado do HealthOS. Toda arquitetura, contrato, runtime, app, teste e documentação implementados neste repositório são trabalho do HealthOS, salvo marcação explícita como experimental ou deprecated.
+
+Use "scaffold" apenas para descrever maturidade ou fase de bootstrap/fundação, nunca para sugerir que este repositório está fora do HealthOS ou que outro HealthOS será criado fora daqui.
 
 ## 1. Visão Geral do Projeto
-O HealthOS é uma plataforma soberana para dados de saúde e operações clínicas. O repositório encontra-se em fase de **"scaffold hardening"** (fortalecimento da estrutura base), com foco em arquitetura canônica, contratos de governança e validação de invariantes, não sendo um produto pronto para produção ou EHR completo.
+O HealthOS é uma plataforma soberana para dados de saúde e operações clínicas. Este repositório é o repositório de construção do HealthOS e encontra-se em fase de **"scaffold hardening"** (fortalecimento da estrutura base), com foco em arquitetura canônica, contratos de governança e validação de invariantes, não sendo um produto pronto para produção ou EHR completo.
 
 ### Hierarquia Canônica
 - **Substrato Material:** Host, armazenamento, rede privada/mesh, backups.
@@ -15,7 +21,7 @@ O HealthOS é uma plataforma soberana para dados de saúde e operações clínic
 
 ## 2. Princípios de Execução (Mandatos)
 - **Constitucionalidade:** HealthOS é o sistema completo; apps são apenas consumidores de superfícies mediadas. O Core define a lei; as apps/GOS nunca definem leis constitucionais.
-- **Honestidade de Maturidade:** Jamais finja prontidão de produção para integrações (ex: FHIR, ICP-Brasil, busca semântica, provedores externos). Mantenha a distinção entre scaffold e realidade.
+- **Honestidade de Maturidade:** Jamais finja prontidão de produção para integrações (ex: FHIR, ICP-Brasil, busca semântica, provedores externos). Mantenha a distinção entre componentes HealthOS em maturidade de scaffold e capacidades realmente implementadas/endurecidas.
 - **Falha Confiável (Fail-Closed):** A governança (consentimento, gate, habilitação) deve sempre falhar de forma segura.
 - **Segurança de Dados:** Identificadores diretos (CPF, nomes) são estritamente separados do conteúdo operacional.
 

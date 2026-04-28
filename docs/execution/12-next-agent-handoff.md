@@ -4,6 +4,8 @@
 
 Repository is in controlled implementation/scaffold hardening with strong governance contracts, substantial Swift tests, TS build + GOS tooling tests, and updated anti-drift entry docs.
 
+HealthOScaffold is the historical repository name and construction repository for HealthOS. Future agents must treat implemented architecture, contracts, runtimes, apps, tests, and docs here as HealthOS work unless explicitly marked experimental or deprecated; scaffold vocabulary describes maturity/foundation phase only.
+
 ## How to choose next task
 
 1. Open `docs/execution/02-status-and-tracking.md`.
@@ -54,6 +56,7 @@ make smoke-scribe
 - no fictitious examples/demo stories
 - no production-ready claims
 - no false claims for provider/signature/interoperability/semantic retrieval
+- no wording that treats HealthOScaffold as a separate product or points to another HealthOS repository
 - explicitly record residual gaps/failures
 
 ## Steward provider follow-up

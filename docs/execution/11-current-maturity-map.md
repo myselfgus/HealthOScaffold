@@ -2,6 +2,8 @@
 
 Ladder: doctrine-only → scaffolded contract → implemented seam → tested operational path → production-hardened.
 
+This map measures maturity of HealthOS components in the HealthOScaffold repository. "Scaffolded contract" is a maturity level, not a separate identity; a component can be HealthOS code and still remain scaffolded or local-only.
+
 | Layer | Current maturity | Enforcement status | Test status | Production gap | Next logical work |
 |---|---|---|---|---|---|
 | Core law | tested operational path | fail-closed contracts for consent/habilitation/gate/finality/lawfulContext | Swift governance suites active | no multi-actor/RBAC workflow engine | propagate same guards to all runtime entrypoints |
@@ -22,7 +24,7 @@ Ladder: doctrine-only → scaffolded contract → implemented seam → tested op
 | Validation harness | tested operational path (local) | fail-closed make/script gates for docs/schema/contracts/build/test/smoke + summary artifact | validate-all exercised locally | no CI/distributed gate yet | wire same harness into CI without inflating maturity claims |
 | Operations | scaffolded contract | runbooks/launchd/network docs + observability taxonomy | mostly docs + smoke | no production ops automation | incident command set and operator tooling |
 
-## Scaffold RC closure classification (audit sync)
+## Scaffold/foundation phase RC closure classification (audit sync)
 
 | Layer | Closure classification |
 |---|---|

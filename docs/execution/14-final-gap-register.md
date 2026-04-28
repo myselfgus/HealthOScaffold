@@ -1,14 +1,16 @@
-# Final gap register (Scaffold RC closure audit)
+# Final gap register (scaffold/foundation phase RC closure audit)
 
 Date baseline: April 26, 2026.
 
-This register is the canonical list of remaining gaps after scaffold-closure audit.
+This register is the canonical list of remaining gaps after the HealthOS scaffold/foundation phase closure audit in the HealthOScaffold repository.
 It is intentionally finite and actionable.
+
+Post-scaffold gaps are work items for the next maturity phase of the same HealthOS project in this repository. Production requirements are future HealthOS hardening phases, not another product or repository.
 
 ## Gap categories
 
 - `scaffold blocker`
-- `post-scaffold hardening`
+- `post-scaffold hardening` (next HealthOS maturity phase)
 - `production requirement`
 - `regulatory/legal requirement`
 - `optional enhancement`
@@ -30,6 +32,5 @@ It is intentionally finite and actionable.
 
 ## Closure interpretation
 
-- GAP-001 and GAP-002 are current **scaffold blockers** for strict RC closure.
-- Remaining gaps are explicitly accepted for post-scaffold/product phases and must remain non-claims in all entry docs.
-
+- GAP-001 and GAP-002 are current **scaffold/foundation phase blockers** for strict RC closure.
+- Remaining gaps are explicitly accepted for later HealthOS maturity/product hardening phases and must remain non-claims in all entry docs.

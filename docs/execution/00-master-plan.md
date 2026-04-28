@@ -2,7 +2,7 @@
 
 ## Objective
 
-Advance the scaffold through controlled implementation while preserving constitutional architecture and honest maturity claims.
+Advance HealthOS through its scaffold/foundation phase using controlled implementation while preserving constitutional architecture and honest maturity claims.
 
 ## Current program mode
 
@@ -10,6 +10,8 @@ Advance the scaffold through controlled implementation while preserving constitu
 - **Date baseline:** April 26, 2026
 - **Success shape:** executable seams + tests + truthful governance docs
 - **Not in scope:** product-final UI, production cloud fabric, full regulatory/provider integrations
+
+HealthOScaffold is the historical repository name and construction repository for HealthOS. "Scaffold" in this plan names the current maturity/foundation posture, not a separate project identity.
 
 ## Canonical hierarchy to preserve
 

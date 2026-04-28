@@ -6,6 +6,8 @@ HealthOS is not the end-user UX layer.
 HealthOS is the governed platform.
 Apps/interfaces are the human-facing UX layer.
 
+The HealthOScaffold repository is where HealthOS is being built. App/interface docs in this repository describe HealthOS components at varying maturity levels; "scaffold" does not mean the apps are outside HealthOS.
+
 HealthOS also remains health-exclusive by ontology.
 Apps do not convert it into generic workflow infrastructure.
 
@@ -81,9 +83,9 @@ No app should be treated as the definition of the platform.
 No platform law should depend on an app-specific UI assumption.
 No app should become an independent interpreter of operational policy outside the contracts surfaced by HealthOS runtimes.
 
-## Scaffold posture / non-claims
+## Scaffold-stage HealthOS posture / non-claims
 
-All three app interfaces (Scribe, Sortio, CloudClinic) are currently scaffold-level:
+All three app interfaces (Scribe, Sortio, CloudClinic) are HealthOS interfaces currently at scaffold-stage maturity:
 - Scribe has a minimal macOS SwiftUI validation surface for first-slice wiring only; it is not a final production UI
 - Sortio and CloudClinic remain contract-first documentation surfaces with no UI shells implemented
 - no app owns or reimplements consent/habilitation/gate/finality law; all governance remains in HealthOS Core

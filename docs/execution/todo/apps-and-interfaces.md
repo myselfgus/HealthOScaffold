@@ -1,18 +1,5 @@
 # TODO — Apps and interfaces
 
-## READY
-
-### OPS-004 Restore canonical Swift package tree before Xcode workspace creation
-Outcome required:
-- reconcile repository truth so the Swift package described across docs and tracking actually exists in the tree
-- restore or locate `swift/Package.swift` plus the declared `Sources/` and `Tests/` layout
-- only after that, create a top-level `HealthOS.xcworkspace` as the Apple entrypoint for the monorepo
-References:
-- `docs/execution/19-xcode-repository-organization-audit.md`
-- `README.md`
-- `AGENTS.md`
-- `Makefile`
-
 ## COMPLETED
 
 ### SCRIBE-007 Harden Scribe professional workspace and AACI session app-safe contracts

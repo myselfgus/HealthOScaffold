@@ -105,25 +105,38 @@ When ontology/contracts change, align in the same work unit:
 - do not leave tracking stale after code/doc updates
 
 
-## Project steward usage (engineering continuity)
+## Steward usage (engineering continuity)
 
-Use `healthos-steward` for deterministic repository state scans, next-task scaffolding, validation orchestration, and handoff prompt generation.
+Steward is the canonical engineering agent for this repository. `healthos-steward` is the CLI, package, and repository-local state root.
 
-Location:
-- CLI: `ts/packages/healthos-steward/`
-- versioned memory/policies/prompts: `.healthos-steward/`
+- CLI and package: `ts/packages/healthos-steward/`
+- Derived memory, sessions, handoffs, policies, state: `.healthos-steward/`
 
-Do not treat steward memory as canonical truth; treat it as derived index over official docs.
+Steward for Xcode is the Xcode-integration posture for Steward. Steward for Xcode integrates with Xcode Intelligence as an Apple-controlled engineering runtime surface, while HealthOS contributes instructions, `healthos-mcp`, derived repository memory, and deterministic CLI operations. See `docs/architecture/45-healthos-xcode-agent.md` and `docs/architecture/46-apple-sovereignty-architecture.md`.
 
-Steward has two explicitly separated layers:
-- `StewardCore` — deterministic, offline, no provider/network required (status, scan, next-task, validate, memory, prompt, handoff).
-- `StewardAgentRuntime` — model-backed planning/review; requires explicit `--provider` and `--allow-network` and never runs by default.
+Do not treat Steward memory as canonical truth; official docs are canonical. Steward memory is a derived index.
 
-Codex/Claude Code are external executors, not internal steward providers. Internal LLM provider surface is OpenAI/Anthropic/xAI/disabled only.
+Current deterministic baseline (hard-reset posture):
+```bash
+cd ts && npx --yes --workspace @healthos/steward healthos-steward status
+cd ts && npx --yes --workspace @healthos/steward healthos-steward runtime
+cd ts && npx --yes --workspace @healthos/steward healthos-steward session
+```
 
-## Project Steward provider safety
+Codex, Claude Code, and other external coding assistants are external executors operating on this repository. They are not internal Steward providers.
 
-- Provider usage in steward is optional and must remain fail-closed.
+## Steward and healthos-mcp boundary
+
+`healthos-mcp` is the repository-maintenance MCP server for Steward. It exposes typed operations for maintaining the HealthOS construction repository: `validate-all`, `validate-docs`, `scan-status`, `next-task`, `read-gap-register`, `get-handoff`, `check-invariants`, `check-doc-drift`, `generate-pr-review-draft`, and others.
+
+`healthos-mcp` is outside the HealthOS clinical/runtime hierarchy. It is used by Steward for Xcode, Xcode Intelligence where available, CI tools, or external coding assistants operating on this repository. It must never be described as a clinical automation server, AACI tool server, GOS runtime server, or Core law server.
+
+If HealthOS later uses MCP servers internally for clinical, operational, or runtime automation, those are separate Core-governed runtime MCP servers. They must obey HealthOS Core invariants: lawfulContext, consent, habilitation, finality, storage layer policy, provenance, audit, and gate. They are not `healthos-mcp`. Do not collapse these two MCP families.
+
+`healthos-mcp` is doctrine-only in this work unit. It is not yet implemented.
+
+Steward provider safety:
+- Provider usage is optional and must remain fail-closed.
 - Never commit provider local config with secrets.
 - PR review posting is never default; requires explicit operator flag.
-- PR review posting only sends real provider output; placeholder/error text is never posted as a comment.
+- PR review posting only sends real provider output; placeholder/error text is never posted.

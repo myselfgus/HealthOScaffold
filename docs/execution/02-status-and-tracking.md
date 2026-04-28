@@ -6,6 +6,36 @@ Current phase: Controlled implementation — first vertical slice started
 
 ## Completed recently
 
+## WS-1 — Steward naming consolidation and healthos-mcp boundary doctrine (2026-04-28)
+
+Objective: execute WS-1 (instructions and skills consolidation) and codify healthos-mcp boundary doctrine in all instruction and architecture files.
+
+Files touched:
+- `CLAUDE.md` — Steward section: canonical naming, Steward for Xcode posture, healthos-mcp boundary, deterministic baseline commands; removed stale StewardCore/StewardAgentRuntime references
+- `AGENTS.md` — same updates as CLAUDE.md
+- `README.md` — Steward section updated to canonical naming and Steward for Xcode posture
+- `docs/execution/skills/project-steward-skill.md` — renamed to Steward, added canonical naming table, updated scope/reads/invariants/validation for current hard-reset baseline, added healthos-mcp boundary doctrine
+- `docs/architecture/45-healthos-xcode-agent.md` — MCP boundary section: two-family boundary distinction added
+- `docs/execution/17-healthos-xcode-agent-migration-plan.md` — WS-2 boundary constraint added
+- `docs/execution/02-status-and-tracking.md` — this entry
+- `docs/execution/todo/ops-network-ml.md` — WS-1 marked COMPLETED
+
+Invariants involved: Inv 1 (Core sovereignty), Inv 17/22 (provider honesty and anti-fake posture), Inv 43 (scaffold closure is not production readiness).
+
+Validation: `make validate-docs`
+
+Done criteria:
+- CLAUDE.md, AGENTS.md, README.md use canonical Steward naming
+- healthos-mcp boundary doctrine present in instruction files, skill file, docs 45 and 17
+- no false healthos-mcp implementation claims
+- no collapse of healthos-mcp into clinical/runtime domain
+- WS-1 marked COMPLETED in ops-network-ml.md
+- `make validate-docs` passes
+
+Residual gaps:
+- WS-2 (healthos-mcp) not yet implemented
+- WS-3 (deterministic CLI consolidation) not yet implemented
+
 ## ARCH-001 — Engineering-agent architectural realignment to Apple sovereignty thesis (2026-04-28)
 
 Objective: apply a directional documentation correction to the engineering-agent layer, aligning it with the Apple sovereignty thesis and simplifying the target from a custom TypeScript agent runtime to Xcode Intelligence extension surfaces.

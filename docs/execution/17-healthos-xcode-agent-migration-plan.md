@@ -52,7 +52,9 @@ Constraint: this work unit (the architectural realignment documenting docs 45, 4
 
 ### WS-2: Local MCP server (healthos-mcp)
 
-Objective: expose typed HealthOS repository operations to Xcode Intelligence or any compatible MCP client, so Steward can invoke HealthOS-specific operations as structured tool calls.
+Objective: expose typed HealthOS repository-maintenance operations to Xcode Intelligence or any compatible MCP client, so Steward can invoke HealthOS-specific operations as structured tool calls.
+
+Boundary constraint: `healthos-mcp` is the repository-maintenance MCP server only. It is outside the HealthOS clinical/runtime hierarchy. If HealthOS later uses MCP servers for clinical, operational, or runtime automation, those are separate Core-governed runtime MCP servers and must not be named `healthos-mcp`. Do not collapse these two MCP families.
 
 Actions:
 - build a local MCP server under a new or existing TS package

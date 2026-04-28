@@ -261,7 +261,11 @@ Policy guard language covers:
 
 ## MCP boundary
 
-The `healthos-mcp` server, when implemented, must conform to:
+`healthos-mcp` is the repository-maintenance MCP server for Steward. It is outside the HealthOS clinical/runtime hierarchy. It must never be described as a clinical automation server, AACI tool server, GOS runtime server, or Core law server.
+
+If HealthOS later uses MCP servers internally for clinical, operational, or runtime automation, those are separate Core-governed runtime MCP servers. They must obey HealthOS Core invariants: lawfulContext, consent, habilitation, finality, storage layer policy, provenance, audit, and gate. They are not `healthos-mcp`. Do not collapse these two MCP families.
+
+When implemented, `healthos-mcp` must conform to:
 
 - local server only; no external network exposure required
 - typed operations with explicit input and output contracts

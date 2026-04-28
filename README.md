@@ -179,13 +179,16 @@ Read in order before coding:
 - `ops/` and `scripts/` — local operational scaffolding, bootstrap, network and backup notes
 - `apps/` — interface boundary scaffolds/documentation
 
-## 🤖 HealthOS Xcode Agent (engineering agent — in rework)
+## Steward (engineering agent)
 
-The engineering agent scaffold lives at `ts/packages/healthos-steward/` with persistent memory/session templates under `.healthos-steward/`.
+Steward is the canonical engineering agent for this repository. `healthos-steward` is the CLI, package, and repository-local state root.
 
-The steward is currently in a **hard-reset baseline** (`status`, `runtime`, `session` commands only) and is being rearchitected as the **HealthOS Xcode Agent** — a workspace-aware engineering agent with conversation surfaces, session continuity, tool-mediated inspection/editing, and Xcode-native intelligence. See `docs/architecture/45-healthos-xcode-agent.md` for the target architecture and `docs/execution/17-healthos-xcode-agent-migration-plan.md` for the migration plan.
+- CLI and package: `ts/packages/healthos-steward/`
+- Derived memory, sessions, handoffs, policies, state: `.healthos-steward/`
 
-Current minimal baseline:
+**Steward for Xcode** is the Xcode-integration posture. Steward for Xcode integrates with Xcode Intelligence as an Apple-controlled engineering runtime surface, while HealthOS contributes instructions, `healthos-mcp`, derived repository memory, and deterministic CLI operations. See `docs/architecture/45-healthos-xcode-agent.md` for target architecture and `docs/execution/17-healthos-xcode-agent-migration-plan.md` for the migration plan.
+
+Current deterministic baseline (hard-reset posture — `status`, `runtime`, `session` only):
 
 ```bash
 cd ts && npx --yes --workspace @healthos/steward healthos-steward status
@@ -193,7 +196,9 @@ cd ts && npx --yes --workspace @healthos/steward healthos-steward runtime
 cd ts && npx --yes --workspace @healthos/steward healthos-steward session
 ```
 
-*Note: Canonical truth resides in `docs/` and project manifests. Steward memory is derived operational state. The agent is non-clinical, non-constitutional, and non-authorizing.*
+`healthos-mcp` is the repository-maintenance MCP server for Steward (doctrine-only; not yet implemented). It is distinct from any future Core-governed runtime MCP servers for clinical/operational automation.
+
+Canonical truth resides in `docs/` and project manifests. Steward memory is derived operational state. Steward is non-clinical, non-constitutional, and non-authorizing.
 
 ## Canonical hierarchy
 

@@ -214,25 +214,24 @@ Files touched:
 - `docs/execution/todo/ops-network-ml.md`
 - `.healthos-steward/memory/project-state.json`
 
-## READY
+## COMPLETED (WS-1)
 
 ### WS-1 Instructions and skills consolidation (Steward for Xcode — Phase B)
-Priority: High
-Docs: `docs/execution/17-healthos-xcode-agent-migration-plan.md` (WS-1), `docs/architecture/45-healthos-xcode-agent.md`
-Objective:
-- update `CLAUDE.md`, `AGENTS.md`, and relevant skill files so Xcode Intelligence and compatible agents receive HealthOS-specific instructions and default to non-authoritative posture
-- codify policy guard language, official-doc precedence, anti-overclaim rules, non-clinical boundary statements, and repository identity rule
-Files:
+Outcome:
+- CLAUDE.md and AGENTS.md updated: canonical Steward naming, Steward for Xcode posture, healthos-mcp boundary doctrine, deterministic baseline commands, stale StewardCore/StewardAgentRuntime references removed
+- README.md Steward section updated to canonical naming and Steward for Xcode posture
+- docs/execution/skills/project-steward-skill.md rewritten: canonical naming table, updated scope/reads/invariants/validation, healthos-mcp two-family boundary doctrine
+- docs/architecture/45-healthos-xcode-agent.md: MCP two-family boundary note added to MCP section
+- docs/execution/17-healthos-xcode-agent-migration-plan.md: WS-2 boundary constraint added
+Files touched:
 - `CLAUDE.md`
 - `AGENTS.md`
-- `docs/execution/skills/*.md` (relevant files)
-Dependencies:
-- Phase A (ARCH-001) complete
-Definition of done:
-- instruction files are consistent with docs 45 and 46
-- agent defaults to non-authoritative posture by instruction
-- agent references official docs as source of truth
-- `make validate-docs` passes
+- `README.md`
+- `docs/execution/skills/project-steward-skill.md`
+- `docs/architecture/45-healthos-xcode-agent.md`
+- `docs/execution/17-healthos-xcode-agent-migration-plan.md`
+- `docs/execution/02-status-and-tracking.md`
+- `docs/execution/todo/ops-network-ml.md`
 
 ### WS-2 Local MCP server (healthos-mcp)
 Priority: Medium

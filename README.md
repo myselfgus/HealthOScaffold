@@ -11,32 +11,86 @@ HealthOS is the full platform. **AACI is one runtime inside HealthOS**. **GOS is
 HealthOS mediates all clinical acts through a strictly layered, governance-first fabric.
 
 ```mermaid
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#f0f9ff', 'primaryBorderColor': '#bae6fd', 'primaryTextColor': '#0c4a6e', 'clusterBkg': '#fafafa', 'clusterBorder': '#e2e8f0', 'titleColor': '#0f172a', 'edgeLabelBackground': '#f8fafc', 'fontFamily': 'ui-sans-serif, system-ui, -apple-system'}}}%%
 graph TD
-    subgraph "Sovereign Fabric"
-        subgraph "Interfaces"
-            A[Scribe]
-            B[Sortio]
-            C[CloudClinic]
-        end
-        subgraph "Runtimes"
-            D[AACI Runtime]
-            E[Async Runtime]
-            F[User-Agent Runtime]
-        end
-        subgraph "Core Law"
-            G[Identity]
-            H[Consent]
-            I[Provenance/Audit]
-            J[Gate]
-        end
-        subgraph "Material Substrate"
-            K[Storage / SQL]
-            L[Mesh/VPN]
-        end
+    classDef iface    fill:#dbeafe,stroke:#60a5fa,stroke-width:2px,color:#1e3a8a
+    classDef gos      fill:#fef9c3,stroke:#f59e0b,stroke-width:2px,color:#78350f
+    classDef runtime  fill:#e0f2fe,stroke:#0ea5e9,stroke-width:2px,color:#0c4a6e
+    classDef core     fill:#dcfce7,stroke:#22c55e,stroke-width:2px,color:#14532d
+    classDef substrate fill:#f1f5f9,stroke:#94a3b8,stroke-width:2px,color:#334155
+
+    subgraph IFACE["  Interfaces  "]
+        SC[Scribe\nProfessional Workspace]
+        SO[Sortio\nPatient Sovereignty]
+        CC[CloudClinic\nService Operations]
     end
-    A & B & C --> D & E & F
-    D & E & F --> G & H & I & J
-    G & H & I & J --> K & L
+
+    subgraph GOS_L["  GOS — Governed Operational Spec  "]
+        GOS[Compiler · Validator · Lifecycle\nRuntime Mediation · Bundle Binding]
+    end
+
+    subgraph RT["  Runtimes  "]
+        AACI[AACI Runtime\nSession · First Slice · Subagents]
+        ASYNC[Async Runtime\nJobs · Retry · Backpressure]
+        UA[User-Agent Runtime\nPatient-Facing Interactions]
+    end
+
+    subgraph CORE_L["  Core Law  "]
+        ID[Identity &\nHabilitation]
+        CO[Consent &\nFinalidade]
+        PR[Provenance &\nAudit]
+        GA[Gate &\nFinalization]
+    end
+
+    subgraph SUB["  Material Substrate  "]
+        ST[Storage · SQL · File-Backed]
+        NE[Mesh · VPN · Network]
+    end
+
+    SC & SO & CC -->|mediated surfaces| GOS
+    GOS -->|runtime binding| AACI & ASYNC & UA
+    AACI & ASYNC & UA -->|lawful-context required| ID & CO & PR & GA
+    ID & CO & PR & GA --> ST & NE
+
+    class SC,SO,CC iface
+    class GOS gos
+    class AACI,ASYNC,UA runtime
+    class ID,CO,PR,GA core
+    class ST,NE substrate
+```
+
+### First Slice — Executable Orchestration Path
+
+The current scaffold-level executable path, consumed by `HealthOSCLI` and `HealthOSScribeApp`.
+
+```mermaid
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#f0f9ff', 'primaryBorderColor': '#bae6fd', 'primaryTextColor': '#0c4a6e', 'edgeLabelBackground': '#fafafa', 'fontFamily': 'ui-sans-serif, system-ui, -apple-system'}}}%%
+flowchart LR
+    classDef govern   fill:#dcfce7,stroke:#22c55e,stroke-width:2px,color:#14532d
+    classDef capture  fill:#dbeafe,stroke:#60a5fa,stroke-width:2px,color:#1e3a8a
+    classDef gos      fill:#fef9c3,stroke:#f59e0b,stroke-width:2px,color:#78350f
+    classDef draft    fill:#ede9fe,stroke:#a78bfa,stroke-width:2px,color:#3b0764
+    classDef gate     fill:#fce7f3,stroke:#f472b6,stroke-width:2px,color:#831843
+    classDef final    fill:#d1fae5,stroke:#34d399,stroke-width:2px,color:#065f46
+    classDef terminal fill:#f1f5f9,stroke:#94a3b8,stroke-width:2px,color:#475569
+
+    HAB[Habilitation\nValidate]:::govern
+    CON[Consent\nValidate]:::govern
+    SES[Session\nStart]:::capture
+    CAP[Capture\nAudio · Text]:::capture
+    TRA[Transcription\nready · degraded · unavailable]:::capture
+    GOS_ACT[GOS Activation\nBundle · Binding Plan]:::gos
+    RET[Retrieval\nContext Package]:::capture
+    SOAP[SOAP Draft\nCompose]:::draft
+    DER[Referral · Prescription\nDerived Drafts]:::draft
+    GR[Gate Request]:::gate
+    GV[Gate Resolve\napproved · rejected]:::gate
+    FIN[Final SOAP\n+ Provenance]:::final
+    STOP([withheld]):::terminal
+
+    HAB --> CON --> SES --> CAP --> TRA --> GOS_ACT --> RET --> SOAP --> DER --> GR --> GV
+    GV -->|approved| FIN
+    GV -->|rejected| STOP
 ```
 
 ## 📋 Current repository posture (April 2026)
@@ -63,7 +117,7 @@ It is **not**:
 | :--- | :--- | :--- |
 | **Core Law** | ✅ Implemented Seam | Invariant-based governance |
 | **GOS Layer** | ✅ Operational Path | Stabilization & Binding |
-| **AACI First Slice** | 🚧 Scaffold Hardening | Boundary enforcement |
+| **AACI First Slice** | 🚧 Scaffold Hardening | Boundary enforcement + GOS-mediated derived drafts |
 | **Provider/ML** | ⚠️ Stub/Contract | Deterministic safety |
 | **Apps/UI** | 🧩 Contract-First | Minimal validation surface |
 
@@ -105,8 +159,13 @@ Read in order before coding:
 6. `docs/execution/06-scaffold-coverage-matrix.md`
 7. `docs/execution/10-invariant-matrix.md`
 8. `docs/execution/11-current-maturity-map.md`
-9. relevant `docs/execution/todo/*.md`
-10. matching `docs/execution/skills/*.md`
+9. `docs/execution/12-next-agent-handoff.md`
+10. `docs/execution/13-scaffold-release-candidate-criteria.md`
+11. `docs/execution/14-final-gap-register.md`
+12. `docs/execution/15-scaffold-finalization-plan.md`
+13. `docs/execution/16-next-10-actions-plan.md`
+14. relevant `docs/execution/todo/*.md`
+15. matching `docs/execution/skills/*.md`
 
 ## 📂 Repository map (real, current)
 
@@ -120,26 +179,21 @@ Read in order before coding:
 - `ops/` and `scripts/` — local operational scaffolding, bootstrap, network and backup notes
 - `apps/` — interface boundary scaffolds/documentation
 
-## 🤖 Project Steward (engineering agent scaffold)
+## 🤖 HealthOS Xcode Agent (engineering agent — in rework)
 
-The HealthOS construction repository now includes a scaffolded engineering steward CLI at `ts/packages/healthos-steward/` with persistent policy/memory templates under `.healthos-steward/`.
+The engineering agent scaffold lives at `ts/packages/healthos-steward/` with persistent memory/session templates under `.healthos-steward/`.
 
-Use it for repository diagnostics/planning/handoff (not clinical runtime behavior):
+The steward is currently in a **hard-reset baseline** (`status`, `runtime`, `session` commands only) and is being rearchitected as the **HealthOS Xcode Agent** — a workspace-aware engineering agent with conversation surfaces, session continuity, tool-mediated inspection/editing, and Xcode-native intelligence. See `docs/architecture/45-healthos-xcode-agent.md` for the target architecture and `docs/execution/17-healthos-xcode-agent-migration-plan.md` for the migration plan.
+
+Current minimal baseline:
 
 ```bash
 cd ts && npx --yes --workspace @healthos/steward healthos-steward status
-cd ts && npx --yes --workspace @healthos/steward healthos-steward next-task
-cd ts && npx --yes --workspace @healthos/steward healthos-steward prompt codex-next
-cd ts && npx --yes --workspace @healthos/steward healthos-steward review-pr --pr 123
+cd ts && npx --yes --workspace @healthos/steward healthos-steward runtime
+cd ts && npx --yes --workspace @healthos/steward healthos-steward session
 ```
 
-*Note: Canonical truth resides in `docs/` and project manifests. Steward memory is derived operational state.*
-
-## ⚙️ Provider Orchestration (Model-Agnostic)
-
-`@healthos/steward` supports optional provider adapters (OpenAI, Anthropic, xAI, disabled) with secure defaults:
-- providers disabled by default | dry-run first behavior
-- no secrets committed | explicit `--post-comment` required for PR comment write
+*Note: Canonical truth resides in `docs/` and project manifests. Steward memory is derived operational state. The agent is non-clinical, non-constitutional, and non-authorizing.*
 
 ## Canonical hierarchy
 

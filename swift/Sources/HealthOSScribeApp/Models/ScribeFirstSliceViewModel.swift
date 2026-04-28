@@ -144,6 +144,53 @@ final class ScribeFirstSliceViewModel {
         .joined(separator: "\n")
     }
 
+    var gosRuntimeSummaryText: String {
+        guard let gos = bridgeState?.gosRuntimeState else {
+            return "GOS runtime ainda nao observado nesta sessao."
+        }
+
+        var lines = [
+            "lifecycle: \(gos.lifecycle.rawValue)",
+            "spec_id: \(gos.specId ?? "none")",
+            "bundle_id: \(gos.bundleId ?? "none")",
+            "workflow: \(gos.workflowTitle ?? "none")",
+            "binding_plan_source: \(gos.bindingPlanSource?.rawValue ?? "none")",
+            "legal_authorizing: \(gos.legalAuthorizing)",
+            "gate_still_required: \(gos.gateStillRequired)",
+            "draft_only: \(gos.draftOnly)"
+        ]
+
+        guard let mediation = gos.mediationSummary else {
+            lines.append("mediation: inactive")
+            return lines.joined(separator: "\n")
+        }
+
+        lines.append("bound_actors:")
+        if mediation.boundActors.isEmpty {
+            lines.append("  none")
+        } else {
+            lines.append(contentsOf: mediation.boundActors.map {
+                "  \($0.actorId) [\($0.semanticRole)] families=\($0.primitiveFamilies.joined(separator: ","))"
+            })
+        }
+
+        lines.append("draft_mediation:")
+        if mediation.draftMediations.isEmpty {
+            lines.append("  none")
+        } else {
+            lines.append(contentsOf: mediation.draftMediations.map {
+                "  \($0.draftKind.rawValue): actor=\($0.runtimeActorId) op=\($0.provenanceOperation ?? "none") mediated=\($0.mediated) gate=\($0.gateStillRequired) draft_only=\($0.draftOnly)"
+            })
+        }
+
+        if !mediation.reasoningBoundaries.isEmpty {
+            lines.append("reasoning_boundaries:")
+            lines.append(contentsOf: mediation.reasoningBoundaries.map { "  \($0)" })
+        }
+
+        return lines.joined(separator: "\n")
+    }
+
     func loadIfNeeded() async {
         guard !didLoad else { return }
 
@@ -350,6 +397,11 @@ final class ScribeFirstSliceViewModel {
         print("referral_draft_status=\(state.referralDraft.draftStatus?.rawValue ?? "none")")
         print("prescription_draft_state=\(state.prescriptionDraft.state.rawValue)")
         print("prescription_draft_status=\(state.prescriptionDraft.draftStatus?.rawValue ?? "none")")
+        print("gos_runtime_lifecycle=\(state.gosRuntimeState.lifecycle.rawValue)")
+        print("gos_runtime_spec=\(state.gosRuntimeState.specId ?? "none")")
+        print("gos_runtime_bundle=\(state.gosRuntimeState.bundleId ?? "none")")
+        print("gos_runtime_bound_actors=\(state.gosRuntimeState.mediationSummary?.boundActors.map(\.actorId).joined(separator: ",") ?? "none")")
+        print("gos_runtime_draft_mediations=\(state.gosRuntimeState.mediationSummary?.draftMediations.map { $0.draftKind.rawValue + ":" + ($0.provenanceOperation ?? "none") }.joined(separator: ",") ?? "none")")
         print("final_document_state=\(state.finalDocument.state.rawValue)")
         print("final_document=\(summary.finalDocumentObjectPath ?? "<not effectuated>")")
         print("issues=\(displayIssues)")

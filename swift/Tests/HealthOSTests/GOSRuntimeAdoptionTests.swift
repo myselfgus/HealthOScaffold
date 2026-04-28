@@ -1033,6 +1033,7 @@ final class GOSRuntimeAdoptionTests: XCTestCase {
         XCTAssertEqual(state.gosRuntimeState.lifecycle, .active)
         XCTAssertEqual(state.gosRuntimeState.specId, "aaci.first-slice")
         XCTAssertEqual(state.gosRuntimeState.bundleId, bundle.manifest.bundleId)
+        XCTAssertEqual(state.gosRuntimeState.workflowTitle, "AACI First Slice Governed Workflow")
         XCTAssertEqual(state.gosRuntimeState.bindingPlanSource, .bundleProvided)
         XCTAssertEqual(state.gosRuntimeState.gateStillRequired, true)
         XCTAssertEqual(state.gosRuntimeState.draftOnly, true)
@@ -1041,6 +1042,21 @@ final class GOSRuntimeAdoptionTests: XCTestCase {
         XCTAssertEqual(state.gosRuntimeState.informationalOnly, true)
         XCTAssertTrue(state.gosRuntimeState.mediationSummary?.provenanceOperations.contains("gos.use.compose.soap") == true)
         XCTAssertNotNil(state.gosRuntimeState.mediationSummary)
+        let boundActors = try XCTUnwrap(state.gosRuntimeState.mediationSummary?.boundActors)
+        XCTAssertTrue(boundActors.contains { actor in
+            actor.actorId == "aaci.draft-composer"
+                && actor.primitiveFamilies.contains("draft_output_spec")
+                && actor.primitiveFamilies.contains("human_gate_requirement_spec")
+        })
+        let draftMediations = try XCTUnwrap(state.gosRuntimeState.mediationSummary?.draftMediations)
+        XCTAssertEqual(Set(draftMediations.map { $0.draftKind.rawValue }), Set(["soap", "referral", "prescription"]))
+        XCTAssertTrue(draftMediations.allSatisfy { $0.mediated && $0.gateStillRequired && $0.draftOnly })
+        XCTAssertTrue(draftMediations.contains { mediation in
+            mediation.draftKind == .referral
+                && mediation.runtimeActorId == "aaci.referral-draft"
+                && mediation.provenanceOperation == "gos.use.derive.referral"
+                && mediation.reasoningBoundary.contains("draft-only under human gate")
+        })
     }
 
     func testScribeBridgeStateDoesNotExposeDirectIdentifiers() async throws {
@@ -1108,6 +1124,7 @@ final class GOSRuntimeAdoptionTests: XCTestCase {
         XCTAssertEqual(state.gosRuntimeState.lifecycle, .inactive)
         XCTAssertNil(state.gosRuntimeState.specId)
         XCTAssertNil(state.gosRuntimeState.bundleId)
+        XCTAssertNil(state.gosRuntimeState.workflowTitle)
         XCTAssertNil(state.gosRuntimeState.bindingPlanSource)
         XCTAssertNil(state.gosRuntimeState.mediationSummary)
         XCTAssertEqual(state.gosRuntimeState.gateStillRequired, true)

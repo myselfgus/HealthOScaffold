@@ -2,6 +2,26 @@
 
 ## COMPLETED
 
+### SCRIBE-008 Surface minimal honest GOS runtime mediation in Scribe
+Outcome:
+- expanded `ScribeSessionBridgeState.gosRuntimeState` from coarse active/inactive status into an app-safe audit surface with active workflow title, bundle/spec identity, bound actors/families, reasoning boundaries, and SOAP/referral/prescription mediation markers
+- updated CLI and minimal SwiftUI Scribe output so the executable slice shows where AACI consumed GOS (`gos.use.compose.soap`, `gos.use.derive.referral`, `gos.use.derive.prescription`) while keeping app law ownership out of Scribe
+- preserved raw-spec boundary: no compiled GOS spec JSON or runtime-binding JSON is exposed to the app surface, and GOS remains `legalAuthorizing=false`, gate-required, and draft-only for referral/prescription
+- validation: `swift build`, `swift run HealthOSCLI`, `swift run HealthOSCLI --reject-gate`, `swift run HealthOSScribeApp --smoke-test`, and `swift run HealthOSScribeApp --smoke-test-audio` passed; `swift test` remains blocked by pre-existing compile errors in unrelated test files
+Files touched:
+- `swift/Sources/HealthOSCore/ScribeFirstSliceBridge.swift`
+- `swift/Sources/HealthOSFirstSliceSupport/ScribeFirstSliceAdapter.swift`
+- `swift/Sources/HealthOSScribeApp/Models/ScribeFirstSliceViewModel.swift`
+- `swift/Sources/HealthOSScribeApp/Views/ScribeFirstSliceView.swift`
+- `swift/Sources/HealthOSCLI/CLIEntrypoint.swift`
+- `swift/Tests/HealthOSTests/GOSRuntimeAdoptionTests.swift`
+- `docs/architecture/22-runtime-state-surfaces.md`
+- `docs/architecture/23-scribe-screen-contracts.md`
+- `docs/architecture/33-gos-app-consumption-patterns.md`
+- `docs/execution/02-status-and-tracking.md`
+- `docs/execution/06-scaffold-coverage-matrix.md`
+- `docs/execution/todo/apps-and-interfaces.md`
+
 ### SCRIBE-007 Harden Scribe professional workspace and AACI session app-safe contracts
 Outcome:
 - added explicit governed contracts for professional workspace context, Scribe session state machine, capture/transcription surface, retrieval/context surface, draft review surface, human gate review, final-document lineage surface, and aggregate app runtime boundary state

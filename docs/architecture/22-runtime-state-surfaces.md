@@ -30,12 +30,17 @@ Must surface:
 - AACI runtime health
 - transcription degraded state
 - retrieval degraded state
+- active GOS bundle/workflow identity when AACI actually consumed it
+- GOS-bound actor/family summaries needed to audit AACI mediation
+- reasoning-boundary summaries and provenance operations for SOAP/referral/prescription draft mediation
 - draft pending/retry state
 - explicit deny states for context access or gate eligibility
 
 Must never imply:
 - degraded transcription means consent failure
 - healthy runtime means gate is satisfied
+- active GOS means consent, habilitation, gate, or finality is satisfied
+- GOS draft mediation means referral/prescription effectuation occurred
 
 ## Sortio
 Must surface:

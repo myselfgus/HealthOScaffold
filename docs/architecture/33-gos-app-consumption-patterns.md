@@ -37,6 +37,9 @@ Apps may not consume GOS in order to independently decide:
 
 Scribe may show:
 - active workflow stage
+- active GOS bundle/workflow identity as runtime audit context
+- actors and primitive families bound by the AACI resolved runtime view
+- bounded reasoning summaries and provenance operations for mediated SOAP/referral/prescription draft paths
 - what the runtime is trying to extract or prepare
 - degraded transcription/retrieval state
 - draft previews prepared under GOS-driven runtime work
@@ -47,6 +50,7 @@ Scribe may not:
 - parse GOS and decide that a document no longer needs human gate
 - infer consent or habilitation from GOS declarations alone
 - effectuate a document merely because the GOS spec prepared it
+- expose raw compiled spec or runtime-binding JSON as app-facing policy input
 
 ## Sortio patterns
 

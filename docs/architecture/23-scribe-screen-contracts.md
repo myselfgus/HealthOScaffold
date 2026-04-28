@@ -136,6 +136,7 @@ Every result returns:
 - prescription draft preview/state/object path/draft-only note
 - gate review summary (state, review type, target, rationale, reviewer role/timestamp)
 - final-document summary/path/state that stays distinct from draft approval state
+- GOS runtime state limited to active/inactive lifecycle, spec/bundle/workflow identity, binding-plan source, bound actor/family summaries, reasoning-boundary summaries, provenance-facing `gos.use.*` operations, and SOAP/referral/prescription mediation markers
 
 In the current executable spine, `requestDraftRefresh` intentionally returns degraded when only preview state is available; full retrieval/draft-final snapshots still become complete at gate resolution execution. The bridge now still exposes honest preview-only gate/document state during this step so the app can distinguish "awaiting human review" from "finalized".
 
@@ -150,6 +151,7 @@ The current macOS validation surface in `HealthOSScribeApp` maps these contracts
 
 The UI consumes:
 - `ScribeSessionBridgeState` for capture mode, transcription preview/status, retrieval summary/highlights/source hints, SOAP draft preview, derived referral/prescription draft previews, gate review state/summary, and final document summary/path
+- `gosRuntimeState` as runtime-mediated audit context only, including active bundle, bound actors/families, reasoning boundaries, and exact draft-path mediation operations without exposing raw compiled spec JSON
 - `HealthOSCommandDisposition` + typed `HealthOSIssue` for degraded, deny, and operational-failure rendering
 
 The UI does not own:
@@ -158,3 +160,4 @@ The UI does not own:
 - gate law
 - final document effectuation
 - referral/prescription effectuation
+- GOS interpretation or policy execution

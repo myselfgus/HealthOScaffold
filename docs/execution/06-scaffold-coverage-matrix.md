@@ -170,6 +170,7 @@ Legend:
 - [x] Scribe bridge runtime-state boundary now has automated coverage confirming app state stays runtime-mediated and does not expose raw compiled GOS spec payloads
 - [x] Scribe bridge now includes a dedicated runtime-mediated GOS app surface (`gosRuntimeState`) limited to lifecycle/spec-id/bundle-id/binding-source summaries plus provenance-facing/informational-only flags (no raw compiled spec or binding-plan payload exposure)
 - [x] Scribe bridge GOS runtime app surface now carries an explicit non-authorizing flag (`legalAuthorizing = false`) so bundle/spec identifiers remain informational and provenance-facing only
+- [x] Scribe bridge/UI/CLI now expose minimal active GOS bundle/workflow visibility, bound actor/family summaries, reasoning-boundary summaries, and SOAP/referral/prescription `gos.use.*` mediation markers without exposing raw compiled spec/runtime-binding JSON
 - [x] Swift XCTest app-boundary coverage now verifies both active-GOS and no-active-GOS Scribe bridge paths return only safe GOS runtime surfaces while preserving gate-required + draft-only app semantics
 - [x] user-agent/patient-sovereignty contracts now exist in Swift Core + TS contracts for capability scope, consent surface, patient audit surface, export request/status surface, visibility-vs-retention summaries, and Sortio interaction envelope boundaries
 - [x] User Agent guard layer now fail-closes prohibited clinical/regulatory capabilities (`diagnose`, `prescribe`, `issue-referral`, `finalize-record`, `sign-document`, retention/habilitation bypass attempts), missing lawfulContext, denied sensitive layers, and non-informational outputs
@@ -240,6 +241,7 @@ Legend:
 - [x] first slice now distinguishes and records GOS bundle activation separately from concrete draft-path usage in provenance
 - [x] first slice now persists runtime-mediated GOS actor/family/reasoning-boundary metadata on SOAP/referral/prescription draft records when an active bundle exists
 - [x] first slice now persists and records runtime-mediated GOS actor/family/reasoning-boundary context for transcription and context retrieval when an active bundle exists
+- [x] first slice executable surfaces now report active GOS bundle/spec/workflow, bound AACI actors, and exact draft mediation operations in CLI and minimal Scribe smoke output
 - [x] minimal Scribe surface now reflects draft review, gate review, and finalized-document state separately
 - [x] minimal Scribe surface now reflects referral/prescription draft-only previews separately from SOAP draft and finalized SOAP document state
 - [~] local-audio transcription remains stubbed; a real Apple-first local provider is still deferred

@@ -9,6 +9,8 @@ It remains:
 - subordinate to official repository docs and invariants
 - non-clinical, non-constitutional, and non-authorizing
 
+It serves the HealthOS construction repository. Any future migration must preserve that HealthOScaffold is the historical repository name for HealthOS work, with scaffold terminology limited to maturity.
+
 It is intended to provide:
 - repository-aware conversational interaction
 - Xcode-native workspace intelligence

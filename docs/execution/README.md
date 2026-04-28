@@ -1,6 +1,8 @@
 # Execution layer
 
-This directory governs implementation order and anti-drift behavior for HealthOScaffold.
+This directory governs implementation order and anti-drift behavior for the HealthOScaffold repository, the HealthOS construction repository.
+
+HealthOScaffold is the historical repository name and initial scaffolding phase for HealthOS. All implemented architecture, contracts, runtimes, apps, tests, and documentation in this repository are part of HealthOS unless explicitly marked experimental or deprecated. "Scaffold" describes maturity, not project identity.
 
 ## Current phase posture
 
@@ -8,6 +10,7 @@ As of April 26, 2026, repository posture is:
 - **controlled implementation / scaffold hardening**
 - executable contracts and tests across multiple domains
 - no production-hardening claim
+- HealthOS components at varied maturity levels, not a separate scaffold product
 
 ## Read in this order
 
@@ -35,6 +38,8 @@ Use only this ladder when updating status/coverage/todo:
 5. production-hardened
 
 Never skip levels in claims. If uncertain, downgrade to the lower level and record the gap.
+
+"Scaffolded contract" is a maturity level for HealthOS components, not a statement that the component is outside HealthOS.
 
 ## Rules
 

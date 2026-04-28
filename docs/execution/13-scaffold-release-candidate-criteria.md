@@ -2,12 +2,14 @@
 
 Date baseline: April 26, 2026.
 
-This document defines when **HealthOScaffold is ready for scaffold closure**.
-It does **not** define product launch readiness.
+This document defines when the **HealthOS scaffold/foundation phase in the HealthOScaffold repository is ready for closure**.
+It does **not** define product launch readiness, production release, or a repository handoff away from HealthOS construction here.
+
+HealthOScaffold is the historical repository name and initial scaffolding phase for HealthOS. All implemented architecture, contracts, runtimes, apps, tests, and documentation in this repository are part of HealthOS unless explicitly marked experimental or deprecated. "Scaffold" describes maturity, not project identity.
 
 ## Scaffold Done (objective criteria)
 
-A scaffold can be considered RC-closure-ready only when all of the following are true:
+The foundation/scaffold phase can be considered RC-closure-ready only when all of the following are true:
 
 1. Canonical architecture is coherent across `README.md`, `AGENTS.md`, `CLAUDE.md`, `docs/architecture/*`, and `docs/execution/*`.
 2. Core constitutional contracts exist and are executable (Swift/TS/schema) for consent, habilitation, lawfulContext, gate, finalization, provenance, and deny/failure semantics.
@@ -16,12 +18,12 @@ A scaffold can be considered RC-closure-ready only when all of the following are
 5. Contract drift and doc drift checks exist and are runnable locally.
 6. App boundaries are contract-protected (Scribe, Sortio, CloudClinic, cross-app shared surfaces) and do not absorb Core law.
 7. Maturity map is honest and uses the canonical ladder (`doctrine-only`, `scaffolded contract`, `implemented seam`, `tested operational path`, `production-hardened`).
-8. Open gaps are explicitly classified (scaffold blocker vs post-scaffold vs production requirement) in `14-final-gap-register.md`.
+8. Open gaps are explicitly classified (scaffold/foundation blocker vs next HealthOS maturity hardening vs production requirement) in `14-final-gap-register.md`.
 9. Next-agent handoff is current and sufficient for continuity without reconstructing prior chat context.
 
 ## Product Not Done (explicit non-claims)
 
-Even with scaffold closure, HealthOS is **not** yet:
+Even with scaffold/foundation phase closure, HealthOS is **not** yet:
 
 - final product release
 - complete EHR
@@ -55,7 +57,7 @@ Even with scaffold closure, HealthOS is **not** yet:
 | Retrieval/memory | partial-but-acceptable-with-explicit-gap | governed lexical path exists; no real semantic infra | keep semantic unavailable posture explicit |
 | Async runtime/jobs | ready-for-scaffold-closure | local executor and negative guards are tested | preserve local-scope claim only |
 | Network/mesh/fabric | needs-small-closure | doctrine is clear but incident command surface still thin | finish ops command vocabulary docs |
-| Backup/restore/retention/export/DR | partial-but-acceptable-with-explicit-gap | contracts/tests exist; operational automation missing | classify as post-scaffold hardening |
+| Backup/restore/retention/export/DR | partial-but-acceptable-with-explicit-gap | contracts/tests exist; operational automation missing | classify as next HealthOS maturity hardening |
 | Regulatory/signature/interoperability/emergency | partial-but-acceptable-with-explicit-gap | fail-closed scaffold contracts/tests exist | keep non-integration claims explicit |
 | User Agent/Sortio | partial-but-acceptable-with-explicit-gap | boundary contracts/tests exist; adapter/UI incomplete | keep adapter tasks explicit |
 | Service Ops/CloudClinic | partial-but-acceptable-with-explicit-gap | core service boundary contracts/tests exist | keep persistence/runtime adapter gap explicit |
@@ -65,9 +67,8 @@ Even with scaffold closure, HealthOS is **not** yet:
 
 ## RC closure decision rule
 
-Scaffold RC closure is allowed when:
+Scaffold/foundation phase RC closure is allowed when:
 
 - no layer remains `blocker-for-scaffold-closure`
 - every `needs-small-closure` item has either been completed or explicitly accepted with owner and milestone in `14-final-gap-register.md`
 - validation harness is green locally, or failures are explicitly classified with impact and next action
-

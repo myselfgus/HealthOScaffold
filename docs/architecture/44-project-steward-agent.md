@@ -4,7 +4,7 @@
 
 HealthOS Project Steward is an **engineering tool** in this repository. It is not a clinical runtime, not AACI, not a user agent, and not a law engine.
 
-This document describes the current scaffold/runtime that exists today.
+This document describes the current engineering scaffold/runtime that exists today for the HealthOS construction repository. "Scaffold" here describes maturity of the tool, not a separate product identity.
 
 Target evolution beyond this scaffold is defined in:
 - `docs/architecture/45-healthos-xcode-agent.md`
@@ -17,6 +17,8 @@ It exists to:
 - scaffold PR review checklists using invariant policy
 - generate handoff and prompt context for external tools (Codex/Claude Code/ChatGPT)
 - execute local validation harness (`make validate-all`)
+
+It supports engineering continuity for HealthOS work in this repository; it is not part of HealthOS Core law and must not treat HealthOScaffold as separate from HealthOS.
 
 ## What it is not
 

@@ -2,9 +2,11 @@
 
 Date baseline: April 26, 2026.
 
-This plan defines the exact final sequence to reach scaffold closure without pretending product completion.
+This plan defines the exact final sequence to close the HealthOS scaffold/foundation phase in this repository without pretending product completion.
 
-## Last actions for scaffold closure
+Finalizing the scaffold means finalizing the bootstrap/foundation phase of HealthOS construction. The next phase is progressive implementation and maturity hardening of the same HealthOS project in this repository.
+
+## Last actions for scaffold/foundation phase closure
 
 1. Close or explicitly accept current scaffold blockers listed in `14-final-gap-register.md` (GAP-001, GAP-002).
 2. Keep entry docs aligned (`README.md`, `AGENTS.md`, `CLAUDE.md`) with the same maturity truth.
@@ -17,7 +19,7 @@ This plan defines the exact final sequence to reach scaffold closure without pre
 
 A closure PR is mergeable when:
 
-- all changed docs agree on scaffold posture (no production-ready claim)
+- all changed docs agree on scaffold/foundation posture (no production-ready claim and no separate-project implication)
 - gap register is updated with owner, impact, and milestone for each open gap
 - maturity map and coverage matrix use the canonical ladder and honest status
 - validate-all and required language-specific checks are executed and reported
@@ -47,9 +49,9 @@ cd swift && swift run HealthOSCLI && swift run HealthOSScribeApp --smoke-test
 - `docs/execution/14-final-gap-register.md`
 - `docs/execution/15-scaffold-finalization-plan.md`
 
-## Explicitly does NOT block scaffold closure
+## Explicitly does NOT block scaffold/foundation phase closure
 
-As long as they remain explicitly classified as gaps (not hidden), the following do not block scaffold closure:
+As long as they remain explicitly classified as gaps (not hidden), the following do not block scaffold/foundation phase closure:
 
 - final app UI delivery
 - real STT provider
@@ -62,9 +64,9 @@ As long as they remain explicitly classified as gaps (not hidden), the following
 - production disaster recovery drills and SLO evidence
 - full legal/compliance certification
 
-## Post-scaffold/product phase handoff
+## Post-scaffold HealthOS maturity handoff
 
-After scaffold closure, prioritize:
+After scaffold/foundation phase closure, prioritize the next maturity phase of the same HealthOS project:
 
 1. provider and semantic retrieval real integrations with unchanged fail-closed governance
 2. runtime adapter propagation for Sortio/CloudClinic and cross-app shared envelope usage

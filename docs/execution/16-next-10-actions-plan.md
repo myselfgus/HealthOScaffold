@@ -7,6 +7,8 @@ This document enumerates the next 10 prioritized actions for HealthOScaffold,
 in order of execution. It is written to be read by a coding agent (human or AI)
 without prior chat context.
 
+Repository identity note: HealthOScaffold is the historical repository name and construction repository for HealthOS. Scaffold terminology in this historical plan describes maturity/foundation phase, not a separate product identity.
+
 It does **not** alter scaffold posture. It does **not** declare production
 readiness. It does **not** override `01-agent-operating-protocol.md`,
 `13-scaffold-release-candidate-criteria.md`, `14-final-gap-register.md`,
@@ -31,7 +33,7 @@ on top of those.
    so closure tag prep has full app/aaci/gos/runtime negative coverage.
 3. Storage parity beyond first-slice (T04) closes the highest-risk
    `READY` task in `core-laws`/`data-storage` even though SQL/object
-   parity remains an explicit post-scaffold gap (GAP-003).
+   parity remains an explicit next-maturity HealthOS gap (GAP-003).
 4. Doc and capability honesty passes (T05, T06) protect anti-overclaim
    posture before tagging.
 5. Local service envelope hygiene (T07) is medium-priority cleanup
@@ -40,7 +42,7 @@ on top of those.
    without inflating maturity claims.
 7. Tag prep + closure (T09) only runs after blockers close and gates pass.
 8. Steward provider follow-up (T10) is intentionally last because it is
-   non-blocking and explicitly classified as post-scaffold hardening.
+   non-blocking and explicitly classified as next-maturity HealthOS hardening.
 
 ## Per-task spec
 
@@ -52,7 +54,7 @@ Each task block uses the same fields so an agent can execute deterministically.
 
 - TODO id: `APP-008` in `docs/execution/todo/apps-and-interfaces.md`
 - Closure mapping: `GAP-001` (scaffold blocker) in `14-final-gap-register.md`
-- Phase: Scaffold RC Fixes + Tag Prep
+- Phase: Scaffold/Foundation RC Fixes + Tag Prep
 - Priority: High
 - Skills: `docs/execution/skills/cross-app-surfaces-skill.md` +
   `docs/execution/skills/app-boundary-skill.md`
@@ -106,8 +108,8 @@ this entire prompt before touching any file.
 HealthOS is the whole platform. AACI is one runtime inside it. GOS is subordinate
 to Core law. Scribe/Sortio/CloudClinic are app-layer interfaces consuming mediated
 surfaces. Core law (consent, habilitation, gate, finality, provenance) never moves
-into AACI, GOS, or apps. This repo is a scaffold — not production-ready, not a
-full EHR, not a real regulatory integration.
+into AACI, GOS, or apps. This repo contains HealthOS work at scaffold/foundation
+maturity — not production-ready, not a full EHR, not a real regulatory integration.
 
 **Required reading before writing any code**
 
@@ -206,7 +208,7 @@ Title format: `feat(cross-app): propagate AppSurfaceEnvelope into Sortio/CloudCl
 
 - TODO id: `OPS-003` in `docs/execution/todo/ops-network-ml.md`
 - Closure mapping: `GAP-002` (scaffold blocker)
-- Phase: Scaffold RC Fixes + Tag Prep
+- Phase: Scaffold/Foundation RC Fixes + Tag Prep
 - Priority: High
 - Skills: `docs/execution/skills/network-fabric-skill.md` +
   `docs/execution/skills/backup-restore-retention-export-skill.md`
@@ -252,8 +254,8 @@ this entire prompt before touching any file.
 
 **Repository identity (never collapse)**
 
-HealthOS is the whole platform. This repo is a scaffold — not production-ready,
-not a real operator console, not a deployed system. All observability event kinds
+HealthOS is the whole platform. This repo contains HealthOS work at scaffold/foundation
+maturity — not production-ready, not a real operator console, not a deployed system. All observability event kinds
 referenced here are contract vocabulary, not live telemetry streams.
 
 **Required reading before writing anything**
@@ -354,7 +356,7 @@ Title format: `docs(ops): define incident-response command vocabulary for operat
 
 - TODO id: `RT-008` in `docs/execution/todo/runtimes-and-aaci.md`
 - Closure mapping: `GAP-009`
-- Phase: Scaffold RC Fixes + Tag Prep
+- Phase: Scaffold/Foundation RC Fixes + Tag Prep
 - Priority: High
 - Skills: `docs/execution/skills/async-runtime-skill.md` +
   `docs/execution/skills/aaci-skill.md`
@@ -400,8 +402,8 @@ adapter boundaries. Read this entire prompt before touching any file.
 
 **Repository identity (never collapse)**
 
-HealthOS Core is sovereign. AACI/GOS/apps are subordinate. This repo is a
-scaffold — not production-ready. Every stub must signal `unavailable`/`degraded`
+HealthOS Core is sovereign. AACI/GOS/apps are subordinate. This repo contains
+HealthOS work at scaffold/foundation maturity — not production-ready. Every stub must signal `unavailable`/`degraded`
 honestly. Tests never fabricate provider output or simulate production calls.
 
 **Required reading before writing any code**
@@ -494,9 +496,9 @@ Title format: `test(runtime-boundary): expand negative coverage for user-agent a
 ### T04 — DS-007 LawfulContext and layer-guard parity beyond first-slice
 
 - TODO id: `DS-007` in `docs/execution/todo/data-storage.md`
-- Closure mapping: `GAP-003` (post-scaffold hardening; SQL/object backend
+- Closure mapping: `GAP-003` (next-maturity HealthOS hardening; SQL/object backend
   parity remains explicit future work and stays a non-claim)
-- Phase: Scaffold RC Fixes + Tag Prep (file-backed parity only)
+- Phase: Scaffold/Foundation RC Fixes + Tag Prep (file-backed parity only)
 - Priority: High
 - Skill: `docs/execution/skills/storage-data-layer-skill.md`
 - Owner modules:
@@ -539,7 +541,7 @@ entrypoints. Read this entire prompt before touching any file.
 
 HealthOS Core is sovereign. Storage law (lawfulContext, layer guards,
 fail-closed denials) stays in Core and never moves to app or runtime layers.
-SQL/object backend parity is explicitly post-scaffold work and must remain a
+SQL/object backend parity is explicitly next-maturity HealthOS work and must remain a
 non-claim. File-backed first-slice is the reference implementation.
 
 **Required reading before writing any code**
@@ -549,7 +551,7 @@ In order:
 2. `docs/execution/01-agent-operating-protocol.md`
 3. `docs/execution/02-status-and-tracking.md`
 4. `docs/execution/10-invariant-matrix.md` (invariants 14, 15, 21, 23, 26)
-5. `docs/execution/14-final-gap-register.md` (GAP-003 — note post-scaffold
+5. `docs/execution/14-final-gap-register.md` (GAP-003 — note next-maturity
    scope; file-backed parity is in-scope, SQL/object is not)
 6. `docs/execution/todo/data-storage.md` (find DS-007)
 7. `docs/execution/skills/storage-data-layer-skill.md`
@@ -621,7 +623,7 @@ Title format: `feat(storage): propagate lawfulContext and layer-guard parity bey
 
 - TODO id: `APP-009` in `docs/execution/todo/apps-and-interfaces.md`
 - Closure mapping: scaffold cleanup (no separate gap row)
-- Phase: Scaffold RC Fixes + Tag Prep
+- Phase: Scaffold/Foundation RC Fixes + Tag Prep
 - Priority: Medium
 - Blocked by: T01 (claims must reflect actual adapter posture).
 - Skill: `docs/execution/skills/documentation-drift-skill.md`
@@ -662,7 +664,7 @@ In order:
 3. `docs/execution/02-status-and-tracking.md`
 4. `docs/execution/06-scaffold-coverage-matrix.md` — current maturity table
 5. `docs/execution/11-current-maturity-map.md`
-6. `docs/execution/10-invariant-matrix.md` (invariant 43: scaffold closure ≠
+6. `docs/execution/10-invariant-matrix.md` (invariant 43: foundation closure ≠
    product readiness)
 7. `docs/execution/todo/apps-and-interfaces.md` (find APP-009)
 8. `docs/execution/skills/documentation-drift-skill.md`
@@ -734,7 +736,7 @@ Title format: `docs(apps): correct documentation drift for app-boundary maturity
 
 - TODO id: `AACI-009` in `docs/execution/todo/runtimes-and-aaci.md`
 - Closure mapping: scaffold cleanup
-- Phase: Scaffold RC Fixes + Tag Prep
+- Phase: Scaffold/Foundation RC Fixes + Tag Prep
 - Priority: Medium
 - Skills: `docs/execution/skills/aaci-skill.md` +
   `docs/execution/skills/provider-governance-skill.md`
@@ -877,8 +879,8 @@ Title format: `fix(aaci): enforce unavailable/degraded signaling for stub STT an
 ### T07 — CL-006 Shared error envelope for local service boundaries
 
 - TODO id: `CL-006` in `docs/execution/todo/core-laws.md`
-- Closure mapping: post-scaffold hardening (acceptable to land before tag)
-- Phase: Scaffold RC Fixes + Tag Prep (optional inclusion)
+- Closure mapping: next-maturity HealthOS hardening (acceptable to land before tag)
+- Phase: Scaffold/Foundation RC Fixes + Tag Prep (optional inclusion)
 - Priority: Medium
 - Skill: `docs/execution/skills/core-law-skill.md`
 - Scope:
@@ -1123,13 +1125,13 @@ Title format: `ci: wire validate-all gates into GitHub Actions (GAP-010)`
 
 ---
 
-### T09 — Scaffold RC tag prep and closure
+### T09 — Scaffold/foundation RC tag prep and closure
 
 - TODO id: not a single TODO; orchestrates closure per
   `15-scaffold-finalization-plan.md`.
-- Closure mapping: scaffold closure decision rule from
+- Closure mapping: scaffold/foundation closure decision rule from
   `13-scaffold-release-candidate-criteria.md`.
-- Phase: Scaffold RC Fixes + Tag Prep
+- Phase: Scaffold/Foundation RC Fixes + Tag Prep
 - Priority: High once T01–T03 close
 - Blocked by: T01, T02, T03 (blockers must close or be explicitly accepted).
 - Scope:
@@ -1240,7 +1242,7 @@ Step 3: Commit the final doc sync to `main`.
 
 Step 4: Create the git tag.
 ```bash
-git tag -a scaffold-rc-1 -m "Scaffold RC 1: all planned governance contracts coherent and honestly classified (not a product release)"
+git tag -a scaffold-rc-1 -m "Scaffold/foundation RC 1: all planned HealthOS governance contracts coherent and honestly classified (not a product release)"
 git push origin scaffold-rc-1
 ```
 
@@ -1252,7 +1254,7 @@ What not to do:
 - Do not use tag names that imply product release (`v1.0`, `release-1`, etc.).
 - Do not suppress validation failures with `--no-verify` or by commenting
   out checks.
-- Do not mark GAP-004 through GAP-009 as resolved — they are post-scaffold
+- Do not mark GAP-004 through GAP-009 as resolved — they are next-maturity
   and must remain as non-claims.
 
 **Files to change (minimum)**
@@ -1282,7 +1284,7 @@ Title format: `chore(closure): sync entry and execution docs for scaffold-rc-1 t
 
 - TODO id: not a single TODO; derived from `12-next-agent-handoff.md`
   (`Steward provider follow-up`).
-- Closure mapping: post-scaffold hardening (non-blocking).
+- Closure mapping: next-maturity HealthOS hardening (non-blocking).
 - Phase: Post-scaffold hardening
 - Priority: Low
 - Skill: `docs/execution/skills/project-steward-skill.md`

@@ -4,6 +4,8 @@
 
 Operate as a governance-preserving implementer, not as a feature improviser.
 
+HealthOScaffold is the historical repository name and construction repository for HealthOS. Treat implemented code/docs/contracts here as HealthOS work at explicit maturity levels; never imply that HealthOS starts only after foundation-phase closure.
+
 ## Before any task
 
 1. Read `00-master-plan.md`.
@@ -34,6 +36,7 @@ Operate as a governance-preserving implementer, not as a feature improviser.
 Never:
 - generate fictitious clinical stories, synthetic demo narratives, or fake production evidence
 - present stub/scaffold behavior as real provider/signature/interoperability/semantic retrieval capability
+- use "scaffold" to deny that implemented repository components are HealthOS components
 - move core law into AACI/GOS/apps
 - let draft become final without approved gate
 

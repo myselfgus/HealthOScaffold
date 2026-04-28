@@ -1,6 +1,12 @@
 # CLAUDE.md
 
-Guidance for coding agents working in HealthOScaffold.
+Guidance for coding agents working in the HealthOScaffold repository.
+
+## Repository identity and scaffold vocabulary
+
+HealthOScaffold is the historical repository name and initial scaffolding phase for HealthOS. It is not a separate product from HealthOS. All implemented architecture, contracts, runtimes, apps, tests, and documentation in this repository are HealthOS work unless explicitly marked experimental or deprecated.
+
+Use "scaffold" only to describe maturity or bootstrap/foundation phase, never to imply that this repository sits outside HealthOS or that another HealthOS must be built elsewhere.
 
 ## Constitutional identity (never collapse)
 
@@ -8,7 +14,7 @@ Guidance for coding agents working in HealthOScaffold.
 - **AACI is one runtime inside HealthOS**.
 - **GOS is subordinate to Core law** (operational mediation, never constitutional authority).
 - **Scribe/Sortio/CloudClinic are app/interfaces** consuming mediated surfaces, not law engines.
-- This repo is an advanced scaffold, **not production-ready**, **not a full EHR**, and **not a real regulatory/provider integration**.
+- This repository contains HealthOS components at scaffold/foundation maturity, **not production-ready**, **not a full EHR**, and **not a real regulatory/provider integration**.
 
 ## Required reading order before coding
 

@@ -5,6 +5,11 @@ Date baseline: April 27, 2026.
 Tracker location for future work units:
 - `docs/execution/18-healthos-xcode-agent-task-tracker.md`
 
+Repository identity note:
+- HealthOScaffold is the historical repository name for HealthOS construction.
+- This tracker governs engineering tooling for HealthOS work in this repository.
+- Scaffold terminology in this tracker describes maturity only; it must not imply HealthOS work lives in another repository.
+
 Canonical architecture docs:
 - `docs/architecture/45-healthos-xcode-agent.md`
 - `docs/execution/17-healthos-xcode-agent-migration-plan.md`
@@ -44,6 +49,7 @@ Not implemented yet:
 - official docs remain canonical
 - memory remains derived
 - no false autonomy/production claims
+- no wording that treats the steward/Xcode Agent scaffold as outside the HealthOS construction repository
 - every work unit must update this tracker and `docs/execution/02-status-and-tracking.md`
 - do not reintroduce provider-centric architecture into the package
 

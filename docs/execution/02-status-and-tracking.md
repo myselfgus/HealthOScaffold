@@ -47,6 +47,7 @@ Files touched:
 - `docs/execution/todo/runtimes-and-aaci.md`
 - `docs/execution/todo/gos-and-compilers.md`
 
+
 ## OPS-004 — Xcode repository organization audit and monorepo entrypoint decision (2026-04-28)
 
 - audited the repository for Apple/Xcode entrypoint readiness and confirmed the canonical Swift package exists at `swift/Package.swift` with core, AACI, providers, first-slice support, CLI, Scribe app, and XCTest targets

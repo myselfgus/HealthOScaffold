@@ -140,6 +140,22 @@ export interface DerivedDraftSpineLink {
   sourceSOAPDraftObjectPath: string;
   sourceContextStatus: "ready" | "partial" | "empty" | "degraded";
   sourceContextSummary: string;
+  operationalGuidance?: DerivedDraftOperationalGuidance;
+}
+
+export interface DerivedDraftOperationalGuidance {
+  specId: string;
+  bundleId: string;
+  workflowTitle: string;
+  actorId: string;
+  semanticRole: string;
+  primitiveFamilies: string[];
+  reasoningBoundary: string;
+  mediationOperation?: string;
+  draftOnly: boolean;
+  gateStillRequired: boolean;
+  legalAuthorizing: boolean;
+  summary: string;
 }
 
 export interface ReferralDraftDocument {

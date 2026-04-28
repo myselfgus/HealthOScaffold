@@ -6,6 +6,48 @@ Current phase: Controlled implementation — first vertical slice started
 
 ## Completed recently
 
+## SCRIBE-008 — Minimal GOS runtime visibility in first-slice/Scribe surface (2026-04-28)
+
+- expanded the app-safe `gosRuntimeState` bridge contract to include active workflow title, bound actor/family summaries, reasoning-boundary summaries, and draft-path mediation markers for SOAP/referral/prescription
+- kept the Scribe/CLI surface informational and provenance-facing only: no raw compiled spec/runtime-binding JSON is exposed, and `legalAuthorizing=false`, `gateStillRequired=true`, and draft-only semantics remain explicit
+- updated the minimal SwiftUI Scribe validation surface and Scribe smoke output to show active bundle/spec, bound actors, and exact `gos.use.*` mediation operations
+- updated runtime-state/app-consumption docs so apps can audit GOS-mediated AACI work without interpreting GOS as sovereign policy
+- validation: `swift build` PASS; `swift run HealthOSCLI` PASS; `swift run HealthOSCLI --reject-gate` PASS; `swift run HealthOSScribeApp --smoke-test` PASS; `swift run HealthOSScribeApp --smoke-test-audio` PASS; `swift test` still FAILS on pre-existing compile errors in `CrossAppCoordinationContractsTests.swift` and `RetrievalMemoryGovernanceTests.swift`
+Files touched:
+- `swift/Sources/HealthOSCore/ScribeFirstSliceBridge.swift`
+- `swift/Sources/HealthOSFirstSliceSupport/ScribeFirstSliceAdapter.swift`
+- `swift/Sources/HealthOSScribeApp/Models/ScribeFirstSliceViewModel.swift`
+- `swift/Sources/HealthOSScribeApp/Views/ScribeFirstSliceView.swift`
+- `swift/Sources/HealthOSCLI/CLIEntrypoint.swift`
+- `swift/Tests/HealthOSTests/GOSRuntimeAdoptionTests.swift`
+- `docs/architecture/22-runtime-state-surfaces.md`
+- `docs/architecture/23-scribe-screen-contracts.md`
+- `docs/architecture/33-gos-app-consumption-patterns.md`
+- `docs/execution/02-status-and-tracking.md`
+- `docs/execution/06-scaffold-coverage-matrix.md`
+- `docs/execution/todo/apps-and-interfaces.md`
+
+## AACI-009 / GOS runtime guidance for derived drafts (2026-04-28)
+
+- linked the referral and prescription draft derivatives to the active GOS resolved runtime view through an explicit `DerivedDraftOperationalGuidance` contract carried on the existing same-session/SOAP/context spine link
+- derived draft payloads, persisted metadata, session-event attributes, and note summaries now surface bounded operational guidance: actor id, semantic role, primitive families, reasoning boundary, `gos.use.derive.*` operation, draft-only flag, gate-required flag, and non-authorizing posture
+- kept derivation intentionally low-authority: no new clinical semantics, no GOS mini-language, no referral/prescription effectuation path, and both derivatives remain `DraftStatus.draft`
+- validation status: `swift build` PASS; `swift test` still FAILS before running this suite due pre-existing compile errors in `CrossAppCoordinationContractsTests.swift` and `RetrievalMemoryGovernanceTests.swift`; `cd ts && npm run build` PASS; `make validate-schemas` PASS; `swift run HealthOSCLI` PASS; `swift run HealthOSCLI --reject-gate` PASS; `swift run HealthOSScribeApp --smoke-test` PASS; `swift run HealthOSScribeApp --smoke-test-audio` PASS
+Files touched:
+- `swift/Sources/HealthOSCore/FirstSliceContracts.swift`
+- `swift/Sources/HealthOSAACI/AACI.swift`
+- `swift/Sources/HealthOSFirstSliceSupport/FirstSliceRunner.swift`
+- `swift/Tests/HealthOSTests/GOSRuntimeAdoptionTests.swift`
+- `ts/packages/contracts/src/index.ts`
+- `schemas/contracts/referral-draft-document.schema.json`
+- `schemas/contracts/prescription-draft-document.schema.json`
+- `docs/architecture/28-first-slice-executable-path.md`
+- `docs/architecture/31-gos-runtime-binding.md`
+- `docs/execution/02-status-and-tracking.md`
+- `docs/execution/todo/runtimes-and-aaci.md`
+- `docs/execution/todo/gos-and-compilers.md`
+
+
 ## OPS-004 — Xcode repository organization audit and monorepo entrypoint decision (2026-04-28)
 
 - audited the repository for Apple/Xcode entrypoint readiness and confirmed the canonical Swift package exists at `swift/Package.swift` with core, AACI, providers, first-slice support, CLI, Scribe app, and XCTest targets

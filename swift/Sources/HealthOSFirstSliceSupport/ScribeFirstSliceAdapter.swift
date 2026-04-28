@@ -453,6 +453,7 @@ public actor ScribeFirstSliceAdapter: ScribeFirstSliceFacade {
         let eventAttributes = result.events.map(\.payload.attributes)
         let specId = eventAttributes.compactMap { $0["gosSpecId"] }.first
         let bundleId = eventAttributes.compactMap { $0["gosBundleId"] }.first
+        let workflowTitle = eventAttributes.compactMap { $0["gosWorkflowTitle"] }.first
         let actorIds = Array(
             Set(eventAttributes.compactMap { $0["gosRuntimeActorId"] })
         )
@@ -475,6 +476,28 @@ public actor ScribeFirstSliceAdapter: ScribeFirstSliceFacade {
             )
         )
         .sorted()
+        let boundActors = gosBoundActors(from: eventAttributes)
+        let reasoningBoundaries = Array(
+            Set(eventAttributes.compactMap { $0["gosReasoningBoundary"] }.filter { !$0.isEmpty })
+        )
+        .sorted()
+        let draftMediations = [
+            gosDraftMediation(
+                kind: .soap,
+                runtimePath: "compose_soap",
+                payload: result.draft.draft.payload
+            ),
+            gosDraftMediation(
+                kind: .referral,
+                runtimePath: "derive_referral",
+                payload: result.referralDraft.draft.payload
+            ),
+            gosDraftMediation(
+                kind: .prescription,
+                runtimePath: "derive_prescription",
+                payload: result.prescriptionDraft.draft.payload
+            )
+        ].compactMap { $0 }
 
         let usedDefaultBindingPlan = eventAttributes
             .compactMap { $0["gosUsedDefaultBindingPlan"] }
@@ -503,11 +526,15 @@ public actor ScribeFirstSliceAdapter: ScribeFirstSliceFacade {
             lifecycle: .active,
             specId: specId,
             bundleId: bundleId,
+            workflowTitle: workflowTitle,
             bindingPlanSource: bindingPlanSource,
             mediationSummary: GOSMediationSummaryView(
                 mediatedActorIds: actorIds,
                 mediatedPrimitiveFamilyCount: primitiveFamilyCount,
-                provenanceOperations: provenanceOperations
+                provenanceOperations: provenanceOperations,
+                boundActors: boundActors,
+                reasoningBoundaries: reasoningBoundaries,
+                draftMediations: draftMediations
             ),
             legalAuthorizing: false,
             gateStillRequired: true,
@@ -515,6 +542,60 @@ public actor ScribeFirstSliceAdapter: ScribeFirstSliceFacade {
             provenanceFacingOnly: true,
             informationalOnly: true
         )
+    }
+
+    private func gosBoundActors(
+        from eventAttributes: [[String: String]]
+    ) -> [GOSBoundActorRuntimeView] {
+        var actors: [String: GOSBoundActorRuntimeView] = [:]
+        for attributes in eventAttributes {
+            guard let actorId = attributes["gosRuntimeActorId"],
+                  attributes["gosActorBound"].flatMap(Bool.init) == true else {
+                continue
+            }
+            actors[actorId] = GOSBoundActorRuntimeView(
+                actorId: actorId,
+                semanticRole: attributes["gosActorSemanticRole"] ?? "unknown",
+                primitiveFamilies: splitGOSList(attributes["gosPrimitiveFamilies"])
+            )
+        }
+        return actors.values.sorted { lhs, rhs in
+            lhs.actorId < rhs.actorId
+        }
+    }
+
+    private func gosDraftMediation(
+        kind: DraftKind,
+        runtimePath: String,
+        payload: [String: String]
+    ) -> GOSDraftMediationRuntimeView? {
+        guard let actorId = payload["gosRuntimeActorId"] else {
+            return nil
+        }
+        return GOSDraftMediationRuntimeView(
+            draftKind: kind,
+            runtimePath: runtimePath,
+            runtimeActorId: actorId,
+            primitiveFamilies: splitGOSList(payload["gosPrimitiveFamilies"]),
+            reasoningBoundary: payload["gosReasoningBoundary"] ?? "GOS mediation boundary not recorded for this draft path.",
+            provenanceOperation: nonEmpty(payload["gosMediationOperation"]),
+            mediated: payload["gosSpecId"] != nil,
+            gateStillRequired: payload["gosGateRequiredByBinding"].flatMap(Bool.init) ?? true,
+            draftOnly: payload["gosDraftOnly"].flatMap(Bool.init) ?? true
+        )
+    }
+
+    private func splitGOSList(_ value: String?) -> [String] {
+        value?
+            .split(separator: ",")
+            .map { String($0).trimmingCharacters(in: .whitespacesAndNewlines) }
+            .filter { !$0.isEmpty }
+            ?? []
+    }
+
+    private func nonEmpty(_ value: String?) -> String? {
+        guard let value, !value.isEmpty else { return nil }
+        return value
     }
 
     private func pendingTranscriptionState(

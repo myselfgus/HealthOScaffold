@@ -46,19 +46,78 @@ public enum GOSBindingPlanSourceView: String, Codable, Sendable {
     case runtimeDefault = "runtime_default"
 }
 
+public struct GOSBoundActorRuntimeView: Codable, Sendable {
+    public let actorId: String
+    public let semanticRole: String
+    public let primitiveFamilies: [String]
+
+    public init(
+        actorId: String,
+        semanticRole: String,
+        primitiveFamilies: [String]
+    ) {
+        self.actorId = actorId
+        self.semanticRole = semanticRole
+        self.primitiveFamilies = primitiveFamilies
+    }
+}
+
+public struct GOSDraftMediationRuntimeView: Codable, Sendable {
+    public let draftKind: DraftKind
+    public let runtimePath: String
+    public let runtimeActorId: String
+    public let primitiveFamilies: [String]
+    public let reasoningBoundary: String
+    public let provenanceOperation: String?
+    public let mediated: Bool
+    public let gateStillRequired: Bool
+    public let draftOnly: Bool
+
+    public init(
+        draftKind: DraftKind,
+        runtimePath: String,
+        runtimeActorId: String,
+        primitiveFamilies: [String],
+        reasoningBoundary: String,
+        provenanceOperation: String? = nil,
+        mediated: Bool,
+        gateStillRequired: Bool,
+        draftOnly: Bool
+    ) {
+        self.draftKind = draftKind
+        self.runtimePath = runtimePath
+        self.runtimeActorId = runtimeActorId
+        self.primitiveFamilies = primitiveFamilies
+        self.reasoningBoundary = reasoningBoundary
+        self.provenanceOperation = provenanceOperation
+        self.mediated = mediated
+        self.gateStillRequired = gateStillRequired
+        self.draftOnly = draftOnly
+    }
+}
+
 public struct GOSMediationSummaryView: Codable, Sendable {
     public let mediatedActorIds: [String]
     public let mediatedPrimitiveFamilyCount: Int
     public let provenanceOperations: [String]
+    public let boundActors: [GOSBoundActorRuntimeView]
+    public let reasoningBoundaries: [String]
+    public let draftMediations: [GOSDraftMediationRuntimeView]
 
     public init(
         mediatedActorIds: [String],
         mediatedPrimitiveFamilyCount: Int,
-        provenanceOperations: [String]
+        provenanceOperations: [String],
+        boundActors: [GOSBoundActorRuntimeView] = [],
+        reasoningBoundaries: [String] = [],
+        draftMediations: [GOSDraftMediationRuntimeView] = []
     ) {
         self.mediatedActorIds = mediatedActorIds
         self.mediatedPrimitiveFamilyCount = mediatedPrimitiveFamilyCount
         self.provenanceOperations = provenanceOperations
+        self.boundActors = boundActors
+        self.reasoningBoundaries = reasoningBoundaries
+        self.draftMediations = draftMediations
     }
 }
 
@@ -66,6 +125,7 @@ public struct GOSRuntimeStateView: Codable, Sendable {
     public let lifecycle: GOSRuntimeLifecycleView
     public let specId: String?
     public let bundleId: String?
+    public let workflowTitle: String?
     public let bindingPlanSource: GOSBindingPlanSourceView?
     public let mediationSummary: GOSMediationSummaryView?
     public let legalAuthorizing: Bool
@@ -78,6 +138,7 @@ public struct GOSRuntimeStateView: Codable, Sendable {
         lifecycle: GOSRuntimeLifecycleView,
         specId: String? = nil,
         bundleId: String? = nil,
+        workflowTitle: String? = nil,
         bindingPlanSource: GOSBindingPlanSourceView? = nil,
         mediationSummary: GOSMediationSummaryView? = nil,
         legalAuthorizing: Bool = false,
@@ -89,6 +150,7 @@ public struct GOSRuntimeStateView: Codable, Sendable {
         self.lifecycle = lifecycle
         self.specId = specId
         self.bundleId = bundleId
+        self.workflowTitle = workflowTitle
         self.bindingPlanSource = bindingPlanSource
         self.mediationSummary = mediationSummary
         self.legalAuthorizing = legalAuthorizing

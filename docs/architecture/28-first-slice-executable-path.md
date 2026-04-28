@@ -56,6 +56,7 @@ The current Swift executable path (CLI plus minimal Scribe SwiftUI surface) exer
 - the first slice now distinguishes typed SOAP draft snapshots from finalized SOAP documents, with explicit source-draft and gate linkage carried into the final persisted payload
 - the executable spine now also materializes typed referral and prescription drafts as draft-only derivatives linked back to the same session/SOAP/context spine
 - referral/prescription drafts are persisted with their own object refs, session events, and provenance records while remaining explicitly non-effective
+- referral/prescription draft lineage now carries bounded active-GOS operational guidance when available: actor, semantic role, primitive families, reasoning boundary, `gos.use.derive.*` operation, draft-only, gate-required, and non-authorizing posture
 - gate request/resolution contracts now carry review type, finalization target, rationale, reviewer role, and reviewed timestamp
 - retrieval bridge state now exposes UI-ready status/source/count/summary/highlight fields including explicit degraded and partial modes
 - a minimal macOS SwiftUI Scribe surface now consumes the same bridge through a small view model instead of touching core/runtime services directly

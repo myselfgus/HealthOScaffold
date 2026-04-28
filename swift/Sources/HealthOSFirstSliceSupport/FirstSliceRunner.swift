@@ -955,15 +955,16 @@ public actor FirstSliceRunner {
         runtimeView: AACIResolvedGOSRuntimeView?,
         actorId: String
     ) -> [String: String] {
-        gosRuntimeMetadata(
-            base: [
+        let base = [
             "sessionId": sessionId.uuidString,
             "draftId": draftId.uuidString,
             "sourceSOAPDraftId": sourceSOAPDraftId.uuidString,
             "draftStatus": draftStatus.rawValue,
             "readyForFutureGate": String(readyForFutureGate),
             "provenanceOperation": actorId == "aaci.referral-draft" ? "draft.compose.referral" : "draft.compose.prescription"
-            ],
+        ]
+        return gosRuntimeMetadata(
+            base: base.merging(derivedDraftGuidanceMetadata(actorId: actorId, runtimeView: runtimeView)) { current, _ in current },
             actorId: actorId,
             runtimeView: runtimeView
         )
@@ -989,14 +990,16 @@ public actor FirstSliceRunner {
         sourceSOAPDraftId: UUID,
         runtimeView: AACIResolvedGOSRuntimeView?
     ) -> [String: String] {
-        gosRuntimeMetadata(
-            base: [
+        let actorId = "aaci.referral-draft"
+        let base = [
             "draftId": referralDraft.draft.id.uuidString,
             "draftStatus": referralDraft.draft.status.rawValue,
             "specialtyTarget": referralDraft.document.specialtyTarget,
             "sourceSOAPDraftId": sourceSOAPDraftId.uuidString
-            ],
-            actorId: "aaci.referral-draft",
+        ]
+        return gosRuntimeMetadata(
+            base: base.merging(derivedDraftGuidanceMetadata(actorId: actorId, runtimeView: runtimeView)) { current, _ in current },
+            actorId: actorId,
             runtimeView: runtimeView
         )
     }
@@ -1006,16 +1009,44 @@ public actor FirstSliceRunner {
         sourceSOAPDraftId: UUID,
         runtimeView: AACIResolvedGOSRuntimeView?
     ) -> [String: String] {
-        gosRuntimeMetadata(
-            base: [
+        let actorId = "aaci.prescription-draft"
+        let base = [
             "draftId": prescriptionDraft.draft.id.uuidString,
             "draftStatus": prescriptionDraft.draft.status.rawValue,
             "medicationSuggestion": prescriptionDraft.document.medicationSuggestion,
             "sourceSOAPDraftId": sourceSOAPDraftId.uuidString
-            ],
-            actorId: "aaci.prescription-draft",
+        ]
+        return gosRuntimeMetadata(
+            base: base.merging(derivedDraftGuidanceMetadata(actorId: actorId, runtimeView: runtimeView)) { current, _ in current },
+            actorId: actorId,
             runtimeView: runtimeView
         )
+    }
+
+    private func derivedDraftGuidanceMetadata(
+        actorId: String,
+        runtimeView: AACIResolvedGOSRuntimeView?
+    ) -> [String: String] {
+        let runtimePath = AACIGOSRuntimeResolver.runtimePath(for: actorId)
+        guard let mediationContext = AACIGOSRuntimeResolver.resolveMediationContext(
+            actorId: actorId,
+            runtimePath: runtimePath,
+            runtimeView: runtimeView
+        ) else {
+            return [:]
+        }
+        let operation = mediationContext.resolvedProvenanceOperation ?? "gos.use.unknown"
+        let families = mediationContext.primitiveFamilies.joined(separator: ",")
+        return [
+            "operationalGuidanceSummary": "Operational GOS guidance: \(actorId) uses families [\(families)] for \(operation); draft-only and human gate remain required.",
+            "operationalGuidanceActorId": actorId,
+            "operationalGuidancePrimitiveFamilies": families,
+            "operationalGuidanceBoundary": mediationContext.mediationSummaryBounded,
+            "operationalGuidanceMediationOperation": operation,
+            "operationalGuidanceDraftOnly": String(mediationContext.draftOnly),
+            "operationalGuidanceGateStillRequired": String(mediationContext.gateStillRequired),
+            "operationalGuidanceLegalAuthorizing": String(mediationContext.legalAuthorizing)
+        ]
     }
 
     private func gosRuntimeMetadata(

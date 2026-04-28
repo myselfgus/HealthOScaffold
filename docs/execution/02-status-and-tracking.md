@@ -6,6 +6,26 @@ Current phase: Controlled implementation — first vertical slice started
 
 ## Completed recently
 
+## AACI-009 / GOS runtime guidance for derived drafts (2026-04-28)
+
+- linked the referral and prescription draft derivatives to the active GOS resolved runtime view through an explicit `DerivedDraftOperationalGuidance` contract carried on the existing same-session/SOAP/context spine link
+- derived draft payloads, persisted metadata, session-event attributes, and note summaries now surface bounded operational guidance: actor id, semantic role, primitive families, reasoning boundary, `gos.use.derive.*` operation, draft-only flag, gate-required flag, and non-authorizing posture
+- kept derivation intentionally low-authority: no new clinical semantics, no GOS mini-language, no referral/prescription effectuation path, and both derivatives remain `DraftStatus.draft`
+- validation status: `swift build` PASS; `swift test` still FAILS before running this suite due pre-existing compile errors in `CrossAppCoordinationContractsTests.swift` and `RetrievalMemoryGovernanceTests.swift`; `cd ts && npm run build` PASS; `make validate-schemas` PASS; `swift run HealthOSCLI` PASS; `swift run HealthOSCLI --reject-gate` PASS; `swift run HealthOSScribeApp --smoke-test` PASS; `swift run HealthOSScribeApp --smoke-test-audio` PASS
+Files touched:
+- `swift/Sources/HealthOSCore/FirstSliceContracts.swift`
+- `swift/Sources/HealthOSAACI/AACI.swift`
+- `swift/Sources/HealthOSFirstSliceSupport/FirstSliceRunner.swift`
+- `swift/Tests/HealthOSTests/GOSRuntimeAdoptionTests.swift`
+- `ts/packages/contracts/src/index.ts`
+- `schemas/contracts/referral-draft-document.schema.json`
+- `schemas/contracts/prescription-draft-document.schema.json`
+- `docs/architecture/28-first-slice-executable-path.md`
+- `docs/architecture/31-gos-runtime-binding.md`
+- `docs/execution/02-status-and-tracking.md`
+- `docs/execution/todo/runtimes-and-aaci.md`
+- `docs/execution/todo/gos-and-compilers.md`
+
 ## OPS-004 — Xcode repository organization audit and monorepo entrypoint decision (2026-04-28)
 
 - audited the repository for Apple/Xcode entrypoint readiness and confirmed the canonical Swift package exists at `swift/Package.swift` with core, AACI, providers, first-slice support, CLI, Scribe app, and XCTest targets

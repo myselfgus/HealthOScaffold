@@ -70,7 +70,17 @@ final class GOSRuntimeAdoptionTests: XCTestCase {
         XCTAssertEqual(referral.draft.payload["gosGateRequiredByBinding"], "true")
         XCTAssertEqual(referral.draft.payload["gosCoreGateRequired"], "true")
         XCTAssertTrue(referral.noteSummary.contains("Human gate remains mandatory"))
+        XCTAssertTrue(referral.noteSummary.contains("Operational GOS guidance: aaci.referral-draft uses families [draft_output_spec,human_gate_requirement_spec]"))
         XCTAssertTrue((referral.draft.payload["gosReasoningBoundary"] ?? "").contains("aaci.referral-draft"))
+        XCTAssertEqual(referral.draft.payload["operationalGuidanceActorId"], "aaci.referral-draft")
+        XCTAssertEqual(referral.draft.payload["operationalGuidanceMediationOperation"], "gos.use.derive.referral")
+        XCTAssertEqual(referral.draft.payload["operationalGuidanceDraftOnly"], "true")
+        XCTAssertEqual(referral.spineLink.operationalGuidance?.actorId, "aaci.referral-draft")
+        XCTAssertEqual(referral.spineLink.operationalGuidance?.primitiveFamilies, ["draft_output_spec", "human_gate_requirement_spec"])
+        XCTAssertEqual(referral.spineLink.operationalGuidance?.mediationOperation, "gos.use.derive.referral")
+        XCTAssertEqual(referral.spineLink.operationalGuidance?.draftOnly, true)
+        XCTAssertEqual(referral.spineLink.operationalGuidance?.gateStillRequired, true)
+        XCTAssertEqual(referral.spineLink.operationalGuidance?.legalAuthorizing, false)
 
         let prescription = await orchestrator.composePrescriptionDraft(
             session: session,
@@ -84,6 +94,12 @@ final class GOSRuntimeAdoptionTests: XCTestCase {
         XCTAssertEqual(prescription.draft.payload["gosGateRequiredByBinding"], "true")
         XCTAssertEqual(prescription.draft.payload["gosCoreGateRequired"], "true")
         XCTAssertTrue(prescription.noteSummary.contains("Human gate remains mandatory"))
+        XCTAssertTrue(prescription.noteSummary.contains("Operational GOS guidance: aaci.prescription-draft uses families [draft_output_spec,human_gate_requirement_spec,task_spec]"))
+        XCTAssertEqual(prescription.draft.payload["operationalGuidanceActorId"], "aaci.prescription-draft")
+        XCTAssertEqual(prescription.draft.payload["operationalGuidanceMediationOperation"], "gos.use.derive.prescription")
+        XCTAssertEqual(prescription.spineLink.operationalGuidance?.actorId, "aaci.prescription-draft")
+        XCTAssertEqual(prescription.spineLink.operationalGuidance?.primitiveFamilies, ["draft_output_spec", "human_gate_requirement_spec", "task_spec"])
+        XCTAssertEqual(prescription.spineLink.operationalGuidance?.mediationOperation, "gos.use.derive.prescription")
     }
 
     func testAACIComposeDraftsWithoutActiveBundleKeepsDraftOnlyAndNoGOSMetadata() async throws {
@@ -102,6 +118,22 @@ final class GOSRuntimeAdoptionTests: XCTestCase {
         XCTAssertNil(soap.draft.payload["gosRuntimeActorId"])
         XCTAssertEqual(soap.draft.status, .awaitingGate)
         XCTAssertFalse(soap.noteSummary.contains("Human gate remains mandatory"))
+
+        let sourceRef = StorageObjectRef(
+            objectPath: "services/demo/soap.json",
+            contentHash: "hash",
+            layer: .derivedArtifacts,
+            kind: "drafts-soap"
+        )
+        let referral = await orchestrator.composeReferralDraft(
+            session: session,
+            transcription: transcription,
+            context: context,
+            sourceSOAPDraft: soap,
+            sourceSOAPDraftRef: sourceRef
+        )
+        XCTAssertNil(referral.spineLink.operationalGuidance)
+        XCTAssertNil(referral.draft.payload["operationalGuidanceActorId"])
     }
 
     func testGOSRuntimeResolverResolvesMediationContextForKnownActor() async throws {
@@ -219,6 +251,8 @@ final class GOSRuntimeAdoptionTests: XCTestCase {
         let referralEvent = try XCTUnwrap(result.events.first { $0.kind == .referralDraftComposed })
         let prescriptionEvent = try XCTUnwrap(result.events.first { $0.kind == .prescriptionDraftComposed })
         let transcriptMetadata = try readStorageMetadata(for: try XCTUnwrap(result.transcription.transcriptRef).objectPath)
+        let referralMetadata = try readStorageMetadata(for: result.referralDraft.draftRef.objectPath)
+        let prescriptionMetadata = try readStorageMetadata(for: result.prescriptionDraft.draftRef.objectPath)
 
         XCTAssertTrue(operations.contains("gos.activate"))
         XCTAssertTrue(operations.contains("gos.use.capture"))
@@ -240,6 +274,12 @@ final class GOSRuntimeAdoptionTests: XCTestCase {
         XCTAssertEqual(soapEvent.payload.attributes["gosRuntimeActorId"], "aaci.draft-composer")
         XCTAssertEqual(referralEvent.payload.attributes["gosRuntimeActorId"], "aaci.referral-draft")
         XCTAssertEqual(prescriptionEvent.payload.attributes["gosRuntimeActorId"], "aaci.prescription-draft")
+        XCTAssertEqual(referralEvent.payload.attributes["operationalGuidanceMediationOperation"], "gos.use.derive.referral")
+        XCTAssertEqual(prescriptionEvent.payload.attributes["operationalGuidanceMediationOperation"], "gos.use.derive.prescription")
+        XCTAssertEqual(referralMetadata["operationalGuidanceActorId"], "aaci.referral-draft")
+        XCTAssertEqual(prescriptionMetadata["operationalGuidanceActorId"], "aaci.prescription-draft")
+        XCTAssertEqual(result.referralDraft.document.spineLink.operationalGuidance?.mediationOperation, "gos.use.derive.referral")
+        XCTAssertEqual(result.prescriptionDraft.document.spineLink.operationalGuidance?.mediationOperation, "gos.use.derive.prescription")
         XCTAssertTrue((soapEvent.payload.attributes["gosReasoningBoundary"] ?? "").contains("draft-only under human gate"))
     }
 

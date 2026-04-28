@@ -100,6 +100,10 @@ In the current first-slice executable path, that resolved runtime view now media
 - referral draft derivation
 - prescription draft derivation
 
+For referral and prescription derivatives, AACI now carries the resolved-view guidance into the draft spine itself as bounded operational lineage.
+That lineage records only actor identity, semantic role, primitive families, reasoning boundary, `gos.use.derive.*` operation, draft-only state, human-gate requirement, and non-authorizing posture.
+It does not execute GOS as a language, does not infer clinical content beyond the existing bounded draft heuristics, and does not make referral or prescription drafts effective.
+
 ### 5. runtime-state surfacing
 Runtimes should surface GOS-driven state to apps only through runtime-state surfaces.
 

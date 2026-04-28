@@ -187,6 +187,26 @@ Files touched:
 - `docs/architecture/09-aaci.md`
 - `docs/architecture/28-first-slice-executable-path.md`
 
+### AACI-009 Reflect active GOS operational guidance in derived draft lineage
+Outcome:
+- referral and prescription draft derivatives now carry a small `DerivedDraftOperationalGuidance` object on their existing spine link when an active resolved GOS runtime view is available
+- summaries, payload metadata, storage metadata, and session events expose only bounded operational facts: actor, semantic role, primitive families, reasoning boundary, `gos.use.derive.*` operation, draft-only, gate-required, and non-authorizing flags
+- no new effectuation path was added; referral and prescription remain draft-only derivatives tied to the same session/SOAP/context spine
+- validation: `swift build`, TS build, schema validation, CLI approved/rejected smokes, and Scribe seeded/audio smokes passed; full `swift test` remains blocked by pre-existing unrelated test compile errors
+Files touched:
+- `swift/Sources/HealthOSCore/FirstSliceContracts.swift`
+- `swift/Sources/HealthOSAACI/AACI.swift`
+- `swift/Sources/HealthOSFirstSliceSupport/FirstSliceRunner.swift`
+- `swift/Tests/HealthOSTests/GOSRuntimeAdoptionTests.swift`
+- `ts/packages/contracts/src/index.ts`
+- `schemas/contracts/referral-draft-document.schema.json`
+- `schemas/contracts/prescription-draft-document.schema.json`
+- `docs/architecture/28-first-slice-executable-path.md`
+- `docs/architecture/31-gos-runtime-binding.md`
+- `docs/execution/02-status-and-tracking.md`
+- `docs/execution/todo/runtimes-and-aaci.md`
+- `docs/execution/todo/gos-and-compilers.md`
+
 ### AACI-008 Harden retrieval/memory/index governance contracts without fake semantic execution
 Outcome:
 - retrieval now has explicit governed contracts for query/scope/policy/failure and an executable governed retrieval entrypoint over bounded lexical retrieval

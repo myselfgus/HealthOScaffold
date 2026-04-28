@@ -697,6 +697,7 @@ public struct DerivedDraftSpineLink: Codable, Sendable {
     public let sourceSOAPDraftObjectPath: String
     public let sourceContextStatus: RetrievalContextStatus
     public let sourceContextSummary: String
+    public let operationalGuidance: DerivedDraftOperationalGuidance?
 
     public init(
         sourceSessionId: UUID,
@@ -704,7 +705,8 @@ public struct DerivedDraftSpineLink: Codable, Sendable {
         sourceSOAPDraftStatus: DraftStatus,
         sourceSOAPDraftObjectPath: String,
         sourceContextStatus: RetrievalContextStatus,
-        sourceContextSummary: String
+        sourceContextSummary: String,
+        operationalGuidance: DerivedDraftOperationalGuidance? = nil
     ) {
         self.sourceSessionId = sourceSessionId
         self.sourceSOAPDraftId = sourceSOAPDraftId
@@ -712,6 +714,50 @@ public struct DerivedDraftSpineLink: Codable, Sendable {
         self.sourceSOAPDraftObjectPath = sourceSOAPDraftObjectPath
         self.sourceContextStatus = sourceContextStatus
         self.sourceContextSummary = sourceContextSummary
+        self.operationalGuidance = operationalGuidance
+    }
+}
+
+public struct DerivedDraftOperationalGuidance: Codable, Sendable, Equatable {
+    public let specId: String
+    public let bundleId: String
+    public let workflowTitle: String
+    public let actorId: String
+    public let semanticRole: String
+    public let primitiveFamilies: [String]
+    public let reasoningBoundary: String
+    public let mediationOperation: String?
+    public let draftOnly: Bool
+    public let gateStillRequired: Bool
+    public let legalAuthorizing: Bool
+    public let summary: String
+
+    public init(
+        specId: String,
+        bundleId: String,
+        workflowTitle: String,
+        actorId: String,
+        semanticRole: String,
+        primitiveFamilies: [String],
+        reasoningBoundary: String,
+        mediationOperation: String?,
+        draftOnly: Bool,
+        gateStillRequired: Bool,
+        legalAuthorizing: Bool,
+        summary: String
+    ) {
+        self.specId = specId
+        self.bundleId = bundleId
+        self.workflowTitle = workflowTitle
+        self.actorId = actorId
+        self.semanticRole = semanticRole
+        self.primitiveFamilies = primitiveFamilies
+        self.reasoningBoundary = reasoningBoundary
+        self.mediationOperation = mediationOperation
+        self.draftOnly = draftOnly
+        self.gateStillRequired = gateStillRequired
+        self.legalAuthorizing = legalAuthorizing
+        self.summary = summary
     }
 }
 

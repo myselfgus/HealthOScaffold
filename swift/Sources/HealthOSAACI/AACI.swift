@@ -239,7 +239,13 @@ public actor AACIOrchestrator {
         sourceSOAPDraftRef: StorageObjectRef
     ) async -> ReferralDraftDocument {
         let gosView = activeGOSRuntimeView()
-        let gosFlags = gosView?.mediationFlags(for: "aaci.referral-draft")
+        let actorId = "aaci.referral-draft"
+        let gosFlags = gosView?.mediationFlags(for: actorId)
+        let operationalGuidance = derivedDraftOperationalGuidance(
+            actorId: actorId,
+            runtimePath: .deriveReferral,
+            gosView: gosView
+        )
         let heuristics = makeDerivedDraftHeuristics(transcription: transcription, context: context)
         let specialtyTarget = referralSpecialtyTarget(from: heuristics)
         let reason = referralReason(from: heuristics)
@@ -253,7 +259,7 @@ public actor AACIOrchestrator {
         let mediatedNoteSummary = enforceDraftOnlyBoundary(
             on: mediatedDerivedDraftText(
                 noteSummary,
-                actorId: "aaci.referral-draft",
+                actorId: actorId,
                 gosView: gosView
             ),
             mediationFlags: gosFlags
@@ -261,10 +267,14 @@ public actor AACIOrchestrator {
         let mediatedDraftOnlyNote = enforceDraftOnlyBoundary(
             on: mediatedDerivedDraftText(
                 draftOnlyNote,
-                actorId: "aaci.referral-draft",
+                actorId: actorId,
                 gosView: gosView
             ),
             mediationFlags: gosFlags
+        )
+        let guidedNoteSummary = appendGuidanceSummary(
+            operationalGuidance,
+            to: mediatedNoteSummary
         )
         let spineLink = DerivedDraftSpineLink(
             sourceSessionId: session.id,
@@ -272,26 +282,30 @@ public actor AACIOrchestrator {
             sourceSOAPDraftStatus: sourceSOAPDraft.draft.status,
             sourceSOAPDraftObjectPath: sourceSOAPDraftRef.objectPath,
             sourceContextStatus: context.status,
-            sourceContextSummary: context.summary
+            sourceContextSummary: context.summary,
+            operationalGuidance: operationalGuidance
         )
         let draft = ArtifactDraft(
             sessionId: session.id,
             kind: .referral,
             status: .draft,
             author: DraftAuthorIdentity(
-                actorId: "aaci.referral-draft",
+                actorId: actorId,
                 semanticRole: "referral-draft-composer"
             ),
             payload: attachResolvedGOSMetadata(
-                to: [
-                "specialtyTarget": specialtyTarget,
-                "reason": reason,
-                "contextSummary": context.summary,
-                "noteSummary": mediatedNoteSummary,
-                "draftOnlyNote": mediatedDraftOnlyNote,
-                "sourceSOAPDraftId": sourceSOAPDraft.draft.id.uuidString
-                ],
-                actorId: "aaci.referral-draft",
+                to: derivedDraftPayload(
+                    base: [
+                    "specialtyTarget": specialtyTarget,
+                    "reason": reason,
+                    "contextSummary": context.summary,
+                    "noteSummary": guidedNoteSummary,
+                    "draftOnlyNote": mediatedDraftOnlyNote,
+                    "sourceSOAPDraftId": sourceSOAPDraft.draft.id.uuidString
+                    ],
+                    operationalGuidance: operationalGuidance
+                ),
+                actorId: actorId,
                 gosView: gosView
             )
         )
@@ -300,7 +314,7 @@ public actor AACIOrchestrator {
             specialtyTarget: specialtyTarget,
             reason: reason,
             contextSummary: context.summary,
-            noteSummary: mediatedNoteSummary,
+            noteSummary: guidedNoteSummary,
             readyForFutureGate: true,
             draftOnlyNote: mediatedDraftOnlyNote,
             spineLink: spineLink
@@ -315,7 +329,13 @@ public actor AACIOrchestrator {
         sourceSOAPDraftRef: StorageObjectRef
     ) async -> PrescriptionDraftDocument {
         let gosView = activeGOSRuntimeView()
-        let gosFlags = gosView?.mediationFlags(for: "aaci.prescription-draft")
+        let actorId = "aaci.prescription-draft"
+        let gosFlags = gosView?.mediationFlags(for: actorId)
+        let operationalGuidance = derivedDraftOperationalGuidance(
+            actorId: actorId,
+            runtimePath: .derivePrescription,
+            gosView: gosView
+        )
         let heuristics = makeDerivedDraftHeuristics(transcription: transcription, context: context)
         let medicationSuggestion = prescriptionMedicationSuggestion(from: heuristics)
         let instructionsDraft = prescriptionInstructions(from: heuristics)
@@ -330,7 +350,7 @@ public actor AACIOrchestrator {
         let mediatedNoteSummary = enforceDraftOnlyBoundary(
             on: mediatedDerivedDraftText(
                 noteSummary,
-                actorId: "aaci.prescription-draft",
+                actorId: actorId,
                 gosView: gosView
             ),
             mediationFlags: gosFlags
@@ -338,10 +358,14 @@ public actor AACIOrchestrator {
         let mediatedDraftOnlyNote = enforceDraftOnlyBoundary(
             on: mediatedDerivedDraftText(
                 draftOnlyNote,
-                actorId: "aaci.prescription-draft",
+                actorId: actorId,
                 gosView: gosView
             ),
             mediationFlags: gosFlags
+        )
+        let guidedNoteSummary = appendGuidanceSummary(
+            operationalGuidance,
+            to: mediatedNoteSummary
         )
         let spineLink = DerivedDraftSpineLink(
             sourceSessionId: session.id,
@@ -349,27 +373,31 @@ public actor AACIOrchestrator {
             sourceSOAPDraftStatus: sourceSOAPDraft.draft.status,
             sourceSOAPDraftObjectPath: sourceSOAPDraftRef.objectPath,
             sourceContextStatus: context.status,
-            sourceContextSummary: context.summary
+            sourceContextSummary: context.summary,
+            operationalGuidance: operationalGuidance
         )
         let draft = ArtifactDraft(
             sessionId: session.id,
             kind: .prescription,
             status: .draft,
             author: DraftAuthorIdentity(
-                actorId: "aaci.prescription-draft",
+                actorId: actorId,
                 semanticRole: "prescription-draft-composer"
             ),
             payload: attachResolvedGOSMetadata(
-                to: [
-                "medicationSuggestion": medicationSuggestion,
-                "instructionsDraft": instructionsDraft,
-                "rationale": rationale,
-                "contextSummary": context.summary,
-                "noteSummary": mediatedNoteSummary,
-                "draftOnlyNote": mediatedDraftOnlyNote,
-                "sourceSOAPDraftId": sourceSOAPDraft.draft.id.uuidString
-                ],
-                actorId: "aaci.prescription-draft",
+                to: derivedDraftPayload(
+                    base: [
+                    "medicationSuggestion": medicationSuggestion,
+                    "instructionsDraft": instructionsDraft,
+                    "rationale": rationale,
+                    "contextSummary": context.summary,
+                    "noteSummary": guidedNoteSummary,
+                    "draftOnlyNote": mediatedDraftOnlyNote,
+                    "sourceSOAPDraftId": sourceSOAPDraft.draft.id.uuidString
+                    ],
+                    operationalGuidance: operationalGuidance
+                ),
+                actorId: actorId,
                 gosView: gosView
             )
         )
@@ -379,7 +407,7 @@ public actor AACIOrchestrator {
             instructionsDraft: instructionsDraft,
             rationale: rationale,
             contextSummary: context.summary,
-            noteSummary: mediatedNoteSummary,
+            noteSummary: guidedNoteSummary,
             readyForFutureGate: true,
             draftOnlyNote: mediatedDraftOnlyNote,
             spineLink: spineLink
@@ -401,6 +429,62 @@ public actor AACIOrchestrator {
     ) -> String {
         guard let gosView else { return base }
         return gosView.mediationText(base: base, actorId: actorId)
+    }
+
+    private func derivedDraftOperationalGuidance(
+        actorId: String,
+        runtimePath: AACIGOSRuntimePath,
+        gosView: AACIResolvedGOSRuntimeView?
+    ) -> DerivedDraftOperationalGuidance? {
+        guard let mediationContext = AACIGOSRuntimeResolver.resolveMediationContext(
+            actorId: actorId,
+            runtimePath: runtimePath,
+            runtimeView: gosView
+        ) else {
+            return nil
+        }
+        let families = mediationContext.primitiveFamilies.joined(separator: ",")
+        let operation = mediationContext.resolvedProvenanceOperation ?? "gos.use.unknown"
+        let summary = "Operational GOS guidance: \(actorId) uses families [\(families)] for \(operation); draft-only and human gate remain required."
+        return DerivedDraftOperationalGuidance(
+            specId: mediationContext.specId,
+            bundleId: mediationContext.bundleId,
+            workflowTitle: mediationContext.workflowTitle,
+            actorId: actorId,
+            semanticRole: mediationContext.semanticRole,
+            primitiveFamilies: mediationContext.primitiveFamilies,
+            reasoningBoundary: mediationContext.mediationSummaryBounded,
+            mediationOperation: mediationContext.resolvedProvenanceOperation,
+            draftOnly: mediationContext.draftOnly,
+            gateStillRequired: mediationContext.gateStillRequired,
+            legalAuthorizing: mediationContext.legalAuthorizing,
+            summary: summary
+        )
+    }
+
+    private func appendGuidanceSummary(
+        _ guidance: DerivedDraftOperationalGuidance?,
+        to summary: String
+    ) -> String {
+        guard let guidance else { return summary }
+        return summary + " " + guidance.summary
+    }
+
+    private func derivedDraftPayload(
+        base: [String: String],
+        operationalGuidance: DerivedDraftOperationalGuidance?
+    ) -> [String: String] {
+        guard let operationalGuidance else { return base }
+        return base.merging([
+            "operationalGuidanceSummary": operationalGuidance.summary,
+            "operationalGuidanceActorId": operationalGuidance.actorId,
+            "operationalGuidancePrimitiveFamilies": operationalGuidance.primitiveFamilies.joined(separator: ","),
+            "operationalGuidanceBoundary": operationalGuidance.reasoningBoundary,
+            "operationalGuidanceMediationOperation": operationalGuidance.mediationOperation ?? "",
+            "operationalGuidanceDraftOnly": String(operationalGuidance.draftOnly),
+            "operationalGuidanceGateStillRequired": String(operationalGuidance.gateStillRequired),
+            "operationalGuidanceLegalAuthorizing": String(operationalGuidance.legalAuthorizing)
+        ]) { current, _ in current }
     }
 
     private func attachResolvedGOSMetadata(

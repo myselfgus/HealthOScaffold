@@ -42,7 +42,45 @@
           "type": "string",
           "enum": ["ready", "partial", "empty", "degraded"]
         },
-        "sourceContextSummary": {"type": "string"}
+        "sourceContextSummary": {"type": "string"},
+        "operationalGuidance": {
+          "$ref": "#/$defs/derivedDraftOperationalGuidance"
+        }
+      }
+    }
+  },
+  "$defs": {
+    "derivedDraftOperationalGuidance": {
+      "type": "object",
+      "required": [
+        "specId",
+        "bundleId",
+        "workflowTitle",
+        "actorId",
+        "semanticRole",
+        "primitiveFamilies",
+        "reasoningBoundary",
+        "draftOnly",
+        "gateStillRequired",
+        "legalAuthorizing",
+        "summary"
+      ],
+      "properties": {
+        "specId": {"type": "string"},
+        "bundleId": {"type": "string"},
+        "workflowTitle": {"type": "string"},
+        "actorId": {"type": "string"},
+        "semanticRole": {"type": "string"},
+        "primitiveFamilies": {
+          "type": "array",
+          "items": {"type": "string"}
+        },
+        "reasoningBoundary": {"type": "string"},
+        "mediationOperation": {"type": "string"},
+        "draftOnly": {"type": "boolean"},
+        "gateStillRequired": {"type": "boolean"},
+        "legalAuthorizing": {"type": "boolean"},
+        "summary": {"type": "string"}
       }
     }
   }

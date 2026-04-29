@@ -442,10 +442,63 @@ If any open questions arise during execution, record them here and in the releva
 
 ---
 
+## Artefatos de suporte criados
+
+Os seguintes artefatos foram criados para apoiar a execução deste plano. Eles não são tarefas do plano — são ferramentas de execução.
+
+### Prompts de fase (engenharia avançada de prompt)
+
+Prompts auto-contidos prontos para execução por qualquer agente de IA, um por fase:
+
+| Arquivo | Fase | Tarefas |
+|---|---|---|
+| `docs/execution/prompts/phase-1-settler-territory.md` | Phase 1 | ST-006, ST-002, ST-003 |
+| `docs/execution/prompts/phase-2-architecture-proposals.md` | Phase 2 | CL-006, OPS-003, ST-004 |
+| `docs/execution/prompts/phase-3-xcode-agent-streams.md` | Phase 3 | Stream C, D, F |
+
+Cada prompt contém: identidade, invariantes absolutas, branch setup, leitura obrigatória, specs por tarefa, tracking requirements, workflow git, e definição de done.
+
+### Automações Claude Code registradas
+
+| Automação | Schedule | Arquivo de definição | O que faz |
+|---|---|---|---|
+| `update-claude-md` | Seg 09:03 | `.claude/automations/update-claude-md.md` | Atualiza CLAUDE.md com padrões descobertos |
+| `daily-todo-tracker` | Diário 08:07 | `.claude/automations/daily-todo-tracker.md` | Digest diário de TODOs e status |
+| `sync-work-plan` | Seg/Qua/Sex 08:47 | `.claude/automations/sync-work-plan.md` | Mantém este plano sincronizado com o estado real |
+
+---
+
+## Itens descobertos após criação do plano
+
+### GAP-001 e GAP-002 — Resolução de contexto
+
+**Fonte**: `docs/execution/14-final-gap-register.md`
+
+GAP-001 (APP-008 — cross-app adapter propagation) e GAP-002 (OPS-003 — incident command set) estão marcados como `RESOLVED` no gap register para fins de scaffold RC closure. Isso **não significa** que as tarefas correspondentes no plano (Task 1/Phase 1 não relacionada; Task 5/Phase 2 — OPS-003) estão concluídas. Significa que o gap foi aceito como não-bloqueante para o RC do scaffold.
+
+> **Impacto na prioridade**: OPS-003 (Task 5 deste plano) permanece valiosa para completude
+> documental, mas já não bloqueia o scaffold RC. Pode ser executada depois de CL-006.
+
+### DS-007, RT-008, AACI-009, APP-008 — Tarefas READY fora do escopo documental
+
+**Fonte**: `docs/execution/todo/data-storage.md`, `runtimes-and-aaci.md`, `apps-and-interfaces.md`
+
+Estas tarefas estão READY nos todo files mas **não fazem parte deste plano** por requererem código além de documentação. Estão registradas aqui para referência cruzada:
+
+| ID | Domínio | Natureza |
+|---|---|---|
+| DS-007 | Data/storage | código Swift + docs |
+| RT-008 | Runtimes/AACI | código Swift + docs |
+| AACI-009 | Runtimes/AACI | código + docs |
+| APP-008 | Apps | código Swift + docs |
+
+---
+
 ## Status
 
-This work plan is: **READY — not started**.
+Este plano está: **READY — não iniciado**.
 
-Tasks completed: 0 of 9.
+Tarefas concluídas: 0 de 9.
 
-Last updated: 2026-04-28.
+Última sincronização: 2026-04-28 (primeira execução de sync-work-plan).
+Próxima sincronização: automática — segunda/quarta/sexta 08:47.

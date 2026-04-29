@@ -83,3 +83,11 @@ The scaffold now implements the normalization stage in the first slice:
 - Scribe receives a mediated `MentalSpaceRuntimeStateView`
 
 ASL, VDLP, and GEM are scaffolded contracts/job kinds only in this wave.
+
+## Module structure
+
+The `HealthOSMentalSpace` Swift module (`swift/Sources/HealthOSMentalSpace/`) is the designated home for the pipeline orchestrator and stage executors. It is registered in `Package.swift` and depends on `HealthOSCore` for contracts.
+
+Current state: placeholder module only (`MentalSpacePipeline.swift`). Implementation begins in RT-MSR-001 when the ASL executor is built.
+
+Contracts and types remain in `HealthOSCore`. Normalization executor remains in `HealthOSAACI`. The orchestrator and future stage executors (ASL, VDLP, GEM) will live in `HealthOSMentalSpace`.

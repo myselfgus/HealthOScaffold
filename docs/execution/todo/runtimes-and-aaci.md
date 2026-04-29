@@ -284,6 +284,17 @@ Files touched:
 
 ## READY
 
+### RT-MSR-001 Implement ASL executor and MentalSpacePipelineOrchestrator in HealthOSMentalSpace
+Priority: Medium
+Skill: `docs/execution/skills/mental-space-runtime-skill.md`
+Definition of done:
+- `swift/Sources/HealthOSMentalSpace/` contains a real `MentalSpacePipelineOrchestrator` that sequences normalization → ASL → VDLP → GEM using `MentalSpacePipelineValidator` fail-closed rules
+- `ASLExecutor` wraps the existing prompt-engineered ASL scripts behind an adapter boundary (no rewrite)
+- `HealthOSFirstSliceSupport` imports `HealthOSMentalSpace` and delegates pipeline orchestration to it
+- existing normalization executor in `HealthOSAACI` may stay or move here — decide at implementation time
+- tests cover stage sequencing, fail-closed upstream dependency, and ASL degraded-output handling
+- `make swift-build && make swift-test` PASS
+
 ### RT-008 Extend runtime-boundary tests for user-agent and service-runtime adapters
 Priority: High
 Skill: `docs/execution/skills/async-runtime-skill.md` + `docs/execution/skills/aaci-skill.md`

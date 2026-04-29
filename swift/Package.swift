@@ -8,6 +8,7 @@ let package = Package(
         .library(name: "HealthOSCore", targets: ["HealthOSCore"]),
         .library(name: "HealthOSAACI", targets: ["HealthOSAACI"]),
         .library(name: "HealthOSProviders", targets: ["HealthOSProviders"]),
+        .library(name: "HealthOSMentalSpace", targets: ["HealthOSMentalSpace"]),
         .library(name: "HealthOSFirstSliceSupport", targets: ["HealthOSFirstSliceSupport"]),
         .executable(name: "HealthOSCLI", targets: ["HealthOSCLI"]),
         .executable(name: "HealthOSScribeApp", targets: ["HealthOSScribeApp"])
@@ -16,12 +17,13 @@ let package = Package(
         .target(name: "HealthOSCore"),
         .target(name: "HealthOSProviders", dependencies: ["HealthOSCore"]),
         .target(name: "HealthOSAACI", dependencies: ["HealthOSCore", "HealthOSProviders"]),
+        .target(name: "HealthOSMentalSpace", dependencies: ["HealthOSCore"]),
         .target(name: "HealthOSFirstSliceSupport", dependencies: ["HealthOSCore", "HealthOSAACI", "HealthOSProviders"]),
         .executableTarget(name: "HealthOSCLI", dependencies: ["HealthOSCore", "HealthOSFirstSliceSupport"]),
         .executableTarget(name: "HealthOSScribeApp", dependencies: ["HealthOSCore", "HealthOSFirstSliceSupport"]),
         .testTarget(
             name: "HealthOSTests",
-            dependencies: ["HealthOSCore", "HealthOSAACI", "HealthOSProviders", "HealthOSFirstSliceSupport"]
+            dependencies: ["HealthOSCore", "HealthOSAACI", "HealthOSProviders", "HealthOSMentalSpace", "HealthOSFirstSliceSupport"]
         )
     ]
 )

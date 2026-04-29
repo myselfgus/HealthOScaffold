@@ -6,6 +6,30 @@ Current phase: Controlled implementation — first vertical slice started
 
 ## Completed recently
 
+## DOC-002 — README entry-surface expansion and visual atlas pass (2026-04-28)
+
+Objective: strengthen `README.md` as the primary entry surface for HealthOS by adding clearer reading paths, repository/document maps, and more visually structured diagrams without removing existing constitutional content.
+
+Files touched:
+- `README.md` — added audience-based reading paths, visual reading map, repository atlas, next-step routes, cross-language contract diagram, and code-to-doc orientation table
+- `docs/execution/02-status-and-tracking.md` — this entry
+- `docs/execution/todo/apps-and-interfaces.md` — documentation-entrypoint note updated for this work unit
+
+Invariants involved: Inv 42 (validation/drift sensitivity), Inv 43 (scaffold closure is not product readiness), plus repository identity and anti-overclaim doctrine.
+
+Validation:
+- README expansion reviewed against `docs/architecture/01-overview.md`, `docs/architecture/28-first-slice-executable-path.md`, and `docs/execution/README.md`
+- Liquid Glass guidance checked against Apple documentation and applied as documentation-design principles only: hierarchy, grouping, restrained emphasis, no false UI-capability claim
+
+Done criteria:
+- README remains constitutionally accurate while becoming a better navigation surface
+- no existing README content removed
+- diagrams improve visibility of system structure, reading order, and cross-language contract alignment
+
+Residual gaps:
+- markdown can only approximate a more expressive visual design; no actual Apple UI material/system behavior exists in repository docs rendering
+- broader doc-site level visual system would require a dedicated publishing surface beyond plain README markdown
+
 ## WS-3-docs — Steward documentation precision pass (2026-04-28)
 
 Objective: align canonical docs with the real post-reset `healthos-steward` baseline so the repository stops implying deterministic commands and Xcode-agent capabilities that are still only target architecture.

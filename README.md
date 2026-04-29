@@ -121,6 +121,109 @@ It is **not**:
 | **Provider/ML** | ⚠️ Stub/Contract | Deterministic safety |
 | **Apps/UI** | 🧩 Contract-First | Minimal validation surface |
 
+## ✨ Reading Paths
+
+Use the README as the entry surface, then branch by intent.
+
+| If you want to... | Start here | Then go to |
+| :--- | :--- | :--- |
+| understand what HealthOS is | `docs/architecture/01-overview.md` | `docs/architecture/19-interface-doctrine.md`, `docs/architecture/46-apple-sovereignty-architecture.md` |
+| understand the executable slice | `docs/architecture/28-first-slice-executable-path.md` | `swift/Sources/HealthOSFirstSliceSupport/FirstSliceRunner.swift`, `swift/Sources/HealthOSCore/FirstSliceContracts.swift` |
+| understand GOS | `docs/architecture/29-governed-operational-spec.md` | `30-gos-authoring-and-compiler.md`, `31-gos-runtime-binding.md`, `32-gos-bundles-and-lifecycle.md`, `33-gos-app-consumption-patterns.md` |
+| understand apps and boundaries | `docs/architecture/11-scribe.md` | `12-sortio.md`, `13-cloudclinic.md`, `23-scribe-screen-contracts.md`, `24-sortio-screen-contracts.md`, `25-cloudclinic-screen-contracts.md`, `43-cross-app-coordination-shared-surfaces.md` |
+| understand current maturity and gaps | `docs/execution/11-current-maturity-map.md` | `13-scaffold-release-candidate-criteria.md`, `14-final-gap-register.md` |
+| start coding safely | `docs/execution/README.md` | `01-agent-operating-protocol.md`, `02-status-and-tracking.md`, relevant `todo/*.md`, relevant `skills/*.md` |
+| understand Steward for Xcode | `docs/architecture/45-healthos-xcode-agent.md` | `docs/execution/17-healthos-xcode-agent-migration-plan.md`, `.healthos-steward/README.md`, `ts/packages/healthos-steward/README.md` |
+
+### Visual Reading Map
+
+Liquid Glass guidance from Apple emphasizes hierarchy, grouping, and restrained use of visual emphasis. This README follows that spirit with grouped diagrams and reading paths rather than trying to mimic UI effects in plain markdown.
+
+```mermaid
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#eef6ff', 'primaryBorderColor': '#b8d7f5', 'primaryTextColor': '#11324d', 'clusterBkg': '#fbfdff', 'clusterBorder': '#d7e7f5', 'titleColor': '#0f172a', 'edgeLabelBackground': '#f8fbff', 'fontFamily': 'ui-rounded, -apple-system, BlinkMacSystemFont, sans-serif'}}}%%
+flowchart TD
+    classDef entry fill:#e8f3ff,stroke:#7db7e8,stroke-width:2px,color:#12324a
+    classDef arch fill:#ecfdf5,stroke:#6fcf97,stroke-width:2px,color:#14532d
+    classDef exec fill:#fff7ed,stroke:#f59e0b,stroke-width:2px,color:#7c2d12
+    classDef code fill:#f5f3ff,stroke:#a78bfa,stroke-width:2px,color:#4c1d95
+    classDef steward fill:#fdf2f8,stroke:#ec4899,stroke-width:2px,color:#831843
+
+    R[README.md\nEntry Surface]:::entry
+
+    A1[Architecture\n01 overview · 19 doctrine · 46 sovereignty]:::arch
+    A2[Execution\nREADME · protocol · status · maturity · gaps]:::exec
+    A3[Code Surfaces\nswift · ts · schemas · sql]:::code
+    A4[Steward\n45 architecture · 17 migration · package readmes]:::steward
+
+    R --> A1
+    R --> A2
+    R --> A3
+    R --> A4
+
+    A1 --> A11[Core law]
+    A1 --> A12[GOS]
+    A1 --> A13[Apps and interfaces]
+    A2 --> A21[What is ready now]
+    A2 --> A22[What is blocked]
+    A2 --> A23[What to do next]
+    A3 --> A31[Executable first slice]
+    A3 --> A32[Cross-language contracts]
+    A4 --> A41[Current baseline]
+    A4 --> A42[Target architecture]
+```
+
+## 🗺️ Repository Atlas
+
+The repository is easier to understand if you read it as four synchronized surfaces: doctrine, execution discipline, executable code, and cross-language contracts.
+
+```mermaid
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#f5faff', 'primaryBorderColor': '#c6ddf5', 'primaryTextColor': '#17324d', 'clusterBkg': '#ffffff', 'clusterBorder': '#dbeafe', 'titleColor': '#0f172a', 'edgeLabelBackground': '#f8fbff', 'fontFamily': 'ui-rounded, -apple-system, BlinkMacSystemFont, sans-serif'}}}%%
+graph LR
+    classDef docs fill:#e0f2fe,stroke:#38bdf8,stroke-width:2px,color:#0c4a6e
+    classDef exec fill:#fef3c7,stroke:#f59e0b,stroke-width:2px,color:#78350f
+    classDef code fill:#ede9fe,stroke:#8b5cf6,stroke-width:2px,color:#4c1d95
+    classDef data fill:#dcfce7,stroke:#22c55e,stroke-width:2px,color:#14532d
+
+    D[docs/architecture\nCanonical doctrine]:::docs
+    E[docs/execution\nProtocol · status · TODO · handoff]:::exec
+    S[schemas + sql\nContract and metadata shape]:::data
+    W[swift/\nCore · AACI · apps · tests]:::code
+    T[ts/\ncontracts · runtimes · tooling · steward]:::code
+    P[python/\nOffline ML governance scaffolds]:::code
+
+    D -->|defines boundaries for| W
+    D -->|defines boundaries for| T
+    E -->|governs work order for| W
+    E -->|governs work order for| T
+    S -->|align with| W
+    S -->|align with| T
+    W -->|first executable slice| T
+    P -->|offline-only support posture| W
+```
+
+## 🔎 What To Read Next
+
+### If you are new to HealthOS
+
+1. Read `docs/architecture/01-overview.md`.
+2. Read `docs/architecture/19-interface-doctrine.md`.
+3. Read `docs/architecture/46-apple-sovereignty-architecture.md`.
+4. Return here and then continue into the execution docs.
+
+### If you want the runnable system first
+
+1. Read `docs/architecture/28-first-slice-executable-path.md`.
+2. Open `swift/Sources/HealthOSFirstSliceSupport/FirstSliceRunner.swift`.
+3. Run `make smoke-cli` and `make smoke-scribe`.
+4. Then inspect `docs/execution/10-invariant-matrix.md` to understand what the slice is protecting.
+
+### If you want governance first
+
+1. Read `docs/execution/10-invariant-matrix.md`.
+2. Read `docs/execution/06-scaffold-coverage-matrix.md`.
+3. Read `docs/execution/11-current-maturity-map.md`.
+4. Read `docs/execution/14-final-gap-register.md`.
+
 ## 🚀 Quick Start
 
 ```bash
@@ -146,6 +249,36 @@ Optional local smoke path:
 ```bash
 make smoke-cli
 make smoke-scribe
+```
+
+## 🧩 Cross-Language Contract Discipline
+
+HealthOS is intentionally not “just a Swift app” or “just a TypeScript workspace”. The same doctrine is carried through schemas, Swift, TypeScript, SQL shape, and execution docs.
+
+```mermaid
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#f8fbff', 'primaryBorderColor': '#cadcf0', 'primaryTextColor': '#17324d', 'clusterBkg': '#ffffff', 'clusterBorder': '#dbeafe', 'titleColor': '#0f172a', 'edgeLabelBackground': '#f8fbff', 'fontFamily': 'ui-rounded, -apple-system, BlinkMacSystemFont, sans-serif'}}}%%
+flowchart LR
+    classDef source fill:#ecfeff,stroke:#06b6d4,stroke-width:2px,color:#164e63
+    classDef schema fill:#dcfce7,stroke:#22c55e,stroke-width:2px,color:#14532d
+    classDef swift fill:#ede9fe,stroke:#8b5cf6,stroke-width:2px,color:#4c1d95
+    classDef ts fill:#fff7ed,stroke:#f59e0b,stroke-width:2px,color:#7c2d12
+    classDef sql fill:#fce7f3,stroke:#ec4899,stroke-width:2px,color:#831843
+
+    C[Canonical doctrine\narchitecture + execution docs]:::source
+    J[schemas/\nJSON Schema]:::schema
+    SW[swift/\nCore contracts + services + tests]:::swift
+    TS[ts/\ncontracts + runtimes + tooling]:::ts
+    SQL[sql/migrations/\nmetadata shape]:::sql
+
+    C --> J
+    C --> SW
+    C --> TS
+    C --> SQL
+    J <--> SW
+    J <--> TS
+    SW <--> TS
+    SQL -. when relevant .-> SW
+    SQL -. when relevant .-> TS
 ```
 
 ## 🧠 Where agents should start
@@ -178,6 +311,16 @@ Read in order before coding:
 - `sql/migrations/001_init.sql` — canonical metadata schema scaffold
 - `ops/` and `scripts/` — local operational scaffolding, bootstrap, network and backup notes
 - `apps/` — interface boundary scaffolds/documentation
+
+### Code-to-doc orientation
+
+| Surface | Primary docs | Primary code |
+| :--- | :--- | :--- |
+| Core law | `docs/architecture/06-core-services.md`, `05-data-layers.md`, `07-storage-and-sql.md` | `swift/Sources/HealthOSCore/` |
+| AACI and first slice | `docs/architecture/09-aaci.md`, `28-first-slice-executable-path.md` | `swift/Sources/HealthOSAACI/`, `swift/Sources/HealthOSFirstSliceSupport/` |
+| GOS | `29-governed-operational-spec.md` to `34-gos-review-and-activation-policy.md` | `ts/packages/healthos-gos-tooling/`, `swift/Sources/HealthOSCore/` |
+| Apps/interfaces | `11-scribe.md`, `12-sortio.md`, `13-cloudclinic.md`, `43-cross-app-coordination-shared-surfaces.md` | `swift/Sources/HealthOSScribeApp/`, app boundary contracts in `swift/Sources/HealthOSCore/` |
+| Steward | `45-healthos-xcode-agent.md`, `46-apple-sovereignty-architecture.md` | `ts/packages/healthos-steward/`, `.healthos-steward/` |
 
 ## Steward (engineering agent)
 

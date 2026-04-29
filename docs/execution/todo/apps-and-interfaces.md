@@ -2,6 +2,14 @@
 
 ## COMPLETED
 
+### DOC-002 README entry-surface expansion and visual atlas pass
+Outcome:
+- `README.md` now functions more clearly as the repository entry surface with reading-path tables, visual repository/document maps, and cross-language contract orientation
+- visual additions remain documentation-only and do not claim product UI maturity or Apple runtime behavior
+Files touched:
+- `README.md`
+- `docs/execution/02-status-and-tracking.md`
+
 ### SCRIBE-008 Surface minimal honest GOS runtime mediation in Scribe
 Outcome:
 - expanded `ScribeSessionBridgeState.gosRuntimeState` from coarse active/inactive status into an app-safe audit surface with active workflow title, bundle/spec identity, bound actors/families, reasoning boundaries, and SOAP/referral/prescription mediation markers

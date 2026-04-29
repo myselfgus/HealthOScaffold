@@ -17,7 +17,7 @@ let package = Package(
         .target(name: "HealthOSCore"),
         .target(name: "HealthOSProviders", dependencies: ["HealthOSCore"]),
         .target(name: "HealthOSAACI", dependencies: ["HealthOSCore", "HealthOSProviders"]),
-        .target(name: "HealthOSMentalSpace", dependencies: ["HealthOSCore"],
+        .target(name: "HealthOSMentalSpace", dependencies: ["HealthOSCore", "HealthOSProviders"],
                 resources: [.copy("Prompts")]),
         .target(name: "HealthOSFirstSliceSupport", dependencies: ["HealthOSCore", "HealthOSAACI", "HealthOSProviders"]),
         .executableTarget(name: "HealthOSCLI", dependencies: ["HealthOSCore", "HealthOSFirstSliceSupport"]),

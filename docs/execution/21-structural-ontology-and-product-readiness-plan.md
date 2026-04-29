@@ -23,7 +23,7 @@ Read this document **before** reading the per-domain TODO files. The priority ti
 
 | Task ID | Priority | Status | Title | Prerequisite |
 |---------|----------|--------|-------|-------------|
-| STR-001 | **P0** | READY | Wire `HealthOSProviders` into `HealthOSMentalSpace` in Package.swift | — |
+| STR-001 | **P0** | DONE | Wire `HealthOSProviders` into `HealthOSMentalSpace` in Package.swift | — |
 | RT-MSR-001 | **P0** | READY | Implement `ASLExecutor` with real Claude API adapter | STR-001 |
 | RT-MSR-002 | **P0** | BLOCKED | Implement `VDLPExecutor` with real Claude API adapter | RT-MSR-001 |
 | RT-MSR-003 | **P0** | BLOCKED | Implement `GEMArtifactBuilder` with real Claude API adapter | RT-MSR-002 |
@@ -130,7 +130,7 @@ Do P0 tasks before any P1/P2/P3/P4 task. They must be executed in order (STR-001
 
 ### STR-001: Wire `HealthOSProviders` into `HealthOSMentalSpace`
 
-**Priority:** P0 | **Status:** READY | **Branch:** `feat/str-001-mentlspace-providers-dep`
+**Priority:** P0 | **Status:** DONE | **Branch:** `feat/str-001-mentlspace-providers-dep`
 
 **Why this first:** `HealthOSMentalSpace` cannot call Claude API without `HealthOSProviders`. This is a one-line Package.swift change that unblocks RT-MSR-001.
 
@@ -168,6 +168,8 @@ make validate-all
 **Invariants:** Inv 1 (Core sovereignty), Inv 17 (provider honesty), Inv 43 (scaffold is not production)
 
 **Residual gaps after this task:** Executors still throw `.providerUnavailable`; only the dependency graph is fixed.
+
+**Completion note (2026-04-29):** Dependency graph wired. `HealthOSMentalSpace` now declares `HealthOSProviders` alongside `HealthOSCore`. Residual gap remains explicit: ASL/VDLP/GEM executors still throw `.providerUnavailable` until RT-MSR-001/002/003; no provider call was implemented in STR-001.
 
 ---
 

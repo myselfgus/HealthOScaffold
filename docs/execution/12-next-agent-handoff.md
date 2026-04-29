@@ -1,41 +1,70 @@
-# Next agent handoff (2026-04-28)
+# Next agent handoff (2026-04-29)
 
 ## Current state
 
-Repository is in controlled implementation/scaffold hardening with strong governance contracts, substantial Swift tests, TS build + GOS tooling tests, and updated anti-drift entry docs.
+Repository is in controlled implementation/scaffold hardening. Governance contracts, Swift tests (246 passing), TS build, GOS tooling, and the Mental Space Runtime normalization stage are all in place. A full structural ontology and product-readiness analysis was performed on 2026-04-29 and produced a canonical priority-ordered work plan.
 
 HealthOScaffold is the historical repository name and construction repository for HealthOS. Future agents must treat implemented architecture, contracts, runtimes, apps, tests, and docs here as HealthOS work unless explicitly marked experimental or deprecated; scaffold vocabulary describes maturity/foundation phase only.
 
-Repository audit note (2026-04-29): the canonical Swift package exists at `swift/Package.swift`, targets macOS 26.0 via PackageDescription 6.2, and the repository exposes a root `HealthOS.xcworkspace` that points to it. Treat SwiftPM as the canonical Apple build graph; the workspace is the Xcode entrypoint, not a replacement for TS/Python native tooling.
+## CRITICAL: Read the master plan first
 
-Native UI note: `docs/architecture/48-native-macos-ui-design-system-and-app-shells.md` defines scaffold scope for macOS 26+ Liquid Glass app-shell work across Scribe, Sortio, CloudClinic, and a future HealthOS control panel. Future UI implementation should use `docs/execution/skills/native-macos-ui/SKILL.md` plus the relevant app-boundary skill and must not move Core law into SwiftUI.
+**Before selecting any task, read:**
 
-Mental Space Runtime note: `docs/architecture/49-mental-space-runtime.md` defines the staged derived-artifact runtime for transcript normalization, ASL, VDLP, and GEM. The current executable slice implements only local-first transcript normalization after persisted transcription; ASL/VDLP/GEM are contracts/job kinds only until adapters wrap the existing scripts in order. Use `docs/execution/skills/mental-space-runtime-skill.md` for follow-up work and keep outputs derived/gated, app-safe, and non-authorizing.
+```
+docs/execution/21-structural-ontology-and-product-readiness-plan.md
+```
+
+This document is the authoritative priority-ordered work plan as of 2026-04-29. It supersedes the ordering in individual TODO files. It contains:
+
+- A priority grid (P0 → P4) with task IDs, status, prerequisites, and branch names
+- Full task specs with exact files to touch, implementation notes, and definitions of done
+- The canonical Git + PR workflow every task must follow
+- Ontology invariants that must never be violated
+
+**The priority order is:**
+
+| Tier | What | Why |
+|------|------|-----|
+| **P0** | STR-001 → RT-MSR-001 → RT-MSR-002 → RT-MSR-003 | Activates the 400-patient validated clinical pipeline (ASL/VDLP/GEM) — highest clinical value, currently all stubs |
+| **P1** | STR-002, STR-003, STR-004 (independent, can parallel) | Corrects product/build/agent ontology at the filesystem level; eliminates structural confusion |
+| **P2** | STR-005, APP-011, APP-012 | Adds missing Sortio and CloudClinic Swift targets to the product graph |
+| **P3** | RT-PROVIDER-001, RT-ASYNC-001, RT-RETRIEVAL-001 | Runtime hardening (real providers, SQL-backed executor, semantic retrieval) |
+| **P4** | CI-001 | GitHub Actions CI integration |
 
 ## How to choose next task
 
-1. Open `docs/execution/02-status-and-tracking.md`.
-   Use the current deterministic Steward baseline before task selection:
+1. Read `docs/execution/21-structural-ontology-and-product-readiness-plan.md` → Priority Grid.
+2. Find highest-priority task with Status = `READY` and all prerequisites `DONE`.
+3. Read that task's full spec in doc 21 (branch name, files, DoD, validation, git workflow).
+4. Use the deterministic Steward baseline for repository state context:
    `cd ts && npx --yes --workspace @healthos/steward healthos-steward status`
-2. Confirm closure criteria and blockers in `docs/execution/13-scaffold-release-candidate-criteria.md` and `docs/execution/14-final-gap-register.md`.
-3. Pick highest-priority `READY` task in `docs/execution/todo/*.md`.
-4. Load matching skill in `docs/execution/skills/`.
-5. Validate dependencies before coding.
+5. Validate all prerequisites before writing any code.
+6. Load the matching skill from `docs/execution/skills/` if one exists.
 
 ## Do not touch without explicit reason
 
 - constitutional wording that separates Core vs GOS vs AACI vs apps
 - fail-closed guards around lawfulContext / consent / habilitation / gate / finalization
 - append-only provenance assumptions
+- `HealthOSCore` sovereignty — nothing in P0–P4 moves consent/habilitation/gate law out of Core
 
-## Priority gaps now
+## Repository structure notes (from 2026-04-29 analysis)
 
-1. close scaffold blockers listed in `docs/execution/14-final-gap-register.md` (currently GAP-001 cross-app adapter propagation and GAP-002 incident command set)
-2. extend runtime adapter coverage (user-agent/service) with boundary tests
-3. wire `make validate-all` quality gates into CI/distributed execution without declaring production-hardening
-4. continue storage/retrieval/provider parity without fake capability claims
-5. wrap Mental Space ASL, then VDLP, then GEM behind governed adapters without treating them as automatic diagnosis
-6. keep regulatory/provider/semantic non-claims explicit while preparing scaffold RC fixes + tag prep
+- Swift Package: `swift/Package.swift` targets macOS 26.0, Swift tools 6.2. Canonical Apple build graph.
+- Xcode workspace: `HealthOS.xcworkspace` → points to `swift/Package.swift`. Not a replacement for TS/Python tooling.
+- `HealthOSFirstSliceSupport` is a scaffold module, not a product concept. STR-004 renames it to `HealthOSSessionRuntime`.
+- `Skill macOS/` TS scripts are reference implementations, not the active pipeline. STR-002 archives them.
+- `ts/packages/` conflates PRODUCT, BUILD, and AGENT packages. STR-003 separates them.
+- Sortio and CloudClinic have no Swift executable targets. STR-005 adds them.
+- `HealthOSMentalSpace` depends only on `HealthOSCore`, blocking real Claude API calls. STR-001 fixes this.
+
+## Native UI note
+
+`docs/architecture/48-native-macos-ui-design-system-and-app-shells.md` defines scaffold scope for macOS 26+ Liquid Glass app-shell work. Use `docs/execution/skills/native-macos-ui/SKILL.md` for UI work. Do not move Core law into SwiftUI.
+
+## Mental Space Runtime note
+
+`docs/architecture/49-mental-space-runtime.md` and `docs/execution/skills/mental-space-runtime-skill.md` are the canonical refs. P0 tasks implement ASL, VDLP, and GEM executors in order. Keep outputs derived/gated/app-safe/non-authorizing at all times.
 
 ## Validation command baseline
 

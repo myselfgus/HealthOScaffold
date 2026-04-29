@@ -284,19 +284,67 @@ Files touched:
 
 ## READY
 
-### RT-MSR-001 Implement ASL executor and MentalSpacePipelineOrchestrator in HealthOSMentalSpace
-Priority: Medium
-Skill: `docs/execution/skills/mental-space-runtime-skill.md`
+### STR-001 Wire HealthOSProviders into HealthOSMentalSpace (Package.swift)
+Priority: **P0 — DO FIRST**
+Plan: `docs/execution/21-structural-ontology-and-product-readiness-plan.md` → STR-001
 Definition of done:
-- `swift/Sources/HealthOSMentalSpace/` contains a real `MentalSpacePipelineOrchestrator` that sequences normalization → ASL → VDLP → GEM using `MentalSpacePipelineValidator` fail-closed rules
-- `ASLExecutor` wraps the existing prompt-engineered ASL scripts behind an adapter boundary (no rewrite)
-- `HealthOSFirstSliceSupport` imports `HealthOSMentalSpace` and delegates pipeline orchestration to it
-- existing normalization executor in `HealthOSAACI` may stay or move here — decide at implementation time
-- tests cover stage sequencing, fail-closed upstream dependency, and ASL degraded-output handling
+- `swift/Package.swift` — `HealthOSMentalSpace` dependencies include `"HealthOSProviders"`
+- `swift build` PASS; `swift test` PASS; `make validate-all` PASS
+Branch: `feat/str-001-mentlspace-providers-dep`
+
+### RT-MSR-001 Implement ASLExecutor with real Claude API adapter
+Priority: **P0 — after STR-001**
+Prerequisite: STR-001 DONE
+Plan: `docs/execution/21-structural-ontology-and-product-readiness-plan.md` → RT-MSR-001
+Skill: `docs/execution/skills/mental-space-runtime-skill.md`
+Reference: `docs/reference/mental-space-legacy/4-asl.ts` (after STR-002) or `Skill macOS/4-asl.ts`
+Definition of done:
+- `ASLExecutor` loads `Prompts/asl-system.md`, calls Claude Sonnet via `HealthOSProviders`, chunks at 10k tokens (parallel batches of 3), parses JSON → `ASLArtifact`, records provenance `mental-space.asl`
+- prompt caching headers: `anthropic-beta: prompt-caching-2024-07-31,extended-cache-ttl-2025-04-11`
+- temperature 0, max_tokens 60_000
+- stub provider → `.providerUnavailable`; empty transcription → `.upstreamMissing`
+- `MentalSpacePipelineOrchestrator` sequences normalization → ASL with fail-closed dependency
+- tests: empty input, stub provider, valid mock input, provenance verification
+- `make swift-build && make swift-test && make validate-all` PASS
+Branch: `feat/rt-msr-001-asl-executor`
+
+### RT-MSR-002 Implement VDLPExecutor with real Claude API adapter
+Priority: **P0 — after RT-MSR-001**
+Prerequisite: RT-MSR-001 DONE
+Plan: `docs/execution/21-structural-ontology-and-product-readiness-plan.md` → RT-MSR-002
+Reference: `Skill macOS/5-vdlp.ts`
+Definition of done:
+- Requires ready ASL blob + non-empty patient speech; chunk at 10k tokens, speech-only split
+- Claude Sonnet, temp 0, max_tokens 60k, same caching headers
+- output: 15 dimensions v₁–v₁₅ → `VDLPArtifact`; provenance: `mental-space.vdlp`
+- `.triadIncomplete` if ASL missing; `.providerUnavailable` if stub
+- all tests pass; `make validate-all` PASS
+Branch: `feat/rt-msr-002-vdlp-executor`
+
+### RT-MSR-003 Implement GEMArtifactBuilder with real Claude API adapter
+Priority: **P0 — after RT-MSR-002**
+Prerequisite: RT-MSR-002 DONE
+Plan: `docs/execution/21-structural-ontology-and-product-readiness-plan.md` → RT-MSR-003
+Reference: `Skill macOS/6-gem.ts`
+Definition of done:
+- Requires normalization + ASL + VDLP; chunk at 50k tokens, transcription-only split
+- Claude Sonnet, **temperature 0.2**, max_tokens 60k, same caching headers
+- output: 4-layer graph `.aje/.ire/.e/.epe` → `GEMArtifact`; provenance: `mental-space.gem`
+- `.triadIncomplete` if any upstream missing; `.providerUnavailable` if stub
+- all tests pass; `make validate-all` PASS
+Branch: `feat/rt-msr-003-gem-builder`
+
+### RT-PROVIDER-001 Real Apple Foundation Models integration for normalization
+Priority: **P3** (after P0 complete)
+Plan: `docs/execution/21-structural-ontology-and-product-readiness-plan.md` → RT-PROVIDER-001
+Note: search Apple docs for `FoundationModels` API before implementing (macOS 26+ new framework)
+Definition of done:
+- normalization produces real normalized transcript when Foundation Models available locally
+- stub path remains active and honest when unavailable
 - `make swift-build && make swift-test` PASS
 
 ### RT-008 Extend runtime-boundary tests for user-agent and service-runtime adapters
-Priority: High
+Priority: **P2** (parallel with STR-005)
 Skill: `docs/execution/skills/async-runtime-skill.md` + `docs/execution/skills/aaci-skill.md`
 Definition of done:
 - boundary denials tested across app/aaci/gos/runtime surfaces where currently contract-only

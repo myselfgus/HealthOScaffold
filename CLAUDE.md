@@ -31,10 +31,11 @@ Use "scaffold" only to describe maturity or bootstrap/foundation phase, never to
 11. `docs/execution/14-final-gap-register.md`
 12. `docs/execution/15-scaffold-finalization-plan.md`
 13. `docs/execution/16-next-10-actions-plan.md`
-14. relevant `docs/execution/todo/*.md`
-15. relevant `docs/architecture/*.md`
-16. matching `docs/execution/skills/*.md` (HealthOS domain skills)
-17. if touching Swift/SwiftUI/Xcode/Apple platform code: matching `docs/execution/skills/<name>/SKILL.md` (macOS skills — see `docs/execution/skills/README.md` for index)
+14. `docs/execution/20-documental-todos-work-plan.md` — living plan for open documentation tasks (auto-synced)
+15. relevant `docs/execution/todo/*.md`
+16. relevant `docs/architecture/*.md`
+17. matching `docs/execution/skills/*.md` (HealthOS domain skills)
+18. if touching Swift/SwiftUI/Xcode/Apple platform code: matching `docs/execution/skills/<name>/SKILL.md` (macOS skills — see `docs/execution/skills/README.md` for index)
 
 Task selection order:
 1. `READY` task in current phase
@@ -140,3 +141,15 @@ Steward provider safety:
 - Never commit provider local config with secrets.
 - PR review posting is never default; requires explicit operator flag.
 - PR review posting only sends real provider output; placeholder/error text is never posted.
+
+## Claude Code Automations
+
+Three durable Claude Code automations maintain repository state automatically. All push to `origin/main` after each run, including the memory file even on no-change runs.
+
+| Automation | Schedule | Definition | Function |
+| :--- | :--- | :--- | :--- |
+| `daily-todo-tracker` | Daily 08:07 | `.claude/automations/daily-todo-tracker.md` | Digest of all TODO/READY/BLOCKED tasks by domain |
+| `sync-work-plan` | Mon/Wed/Fri 08:47 | `.claude/automations/sync-work-plan.md` | Keeps `20-documental-todos-work-plan.md` live and synced |
+| `update-claude-md` | Mon 09:03 | `.claude/automations/update-claude-md.md` | Reviews CLAUDE.md for stale commands or missing docs |
+
+Latest digest: `.healthos-steward/memory/automations/daily-todo-tracker/latest.md`

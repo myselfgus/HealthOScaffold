@@ -2,8 +2,8 @@
 
 ## Último run
 
-**Data**: 2026-04-28
-**Executado por**: primeira execução manual (criação da automação)
+**Data**: 2026-04-28 (segundo run — execução manual)
+**Executado por**: Claude Code (Sonnet 4.6), execução manual solicitada pelo usuário
 
 ## Tabela de verdade construída
 
@@ -21,11 +21,10 @@
 
 ## Mudanças feitas no plano
 
-- Adicionada seção `## Artefatos de suporte criados` com refs aos 3 prompts de fase e 3 automações
-- Adicionada seção `## Itens descobertos após criação do plano` com:
-  - Contexto GAP-001/GAP-002 RESOLVED e impacto na prioridade de OPS-003
-  - Registro de DS-007, RT-008, AACI-009, APP-008 como READY mas fora do escopo documental
-- Atualizado bloco `## Status` com data de sincronização e schedule da próxima
+**Nenhuma.** Plano já estava sincronizado com o estado real:
+- Status block mostra 0 de 9, data 2026-04-28 (correto)
+- Artefatos de suporte já listados (run anterior)
+- Itens descobertos / GAP context já registrados (run anterior)
 
 ## Itens UNCERTAIN
 
@@ -42,4 +41,5 @@ Executar Phase 1 (`docs/execution/prompts/phase-1-settler-territory.md`) na bran
 
 | Data | Tarefas done | Mudanças no plano |
 |---|---|---|
-| 2026-04-28 | 0 de 9 | Artefatos de suporte + contexto de gaps adicionados |
+| 2026-04-28 (1º) | 0 de 9 | Artefatos de suporte + contexto de gaps adicionados |
+| 2026-04-28 (2º) | 0 de 9 | Nenhuma mudança — plano já sincronizado |

@@ -248,3 +248,83 @@ private extension XCTestCase {
         }
     }
 }
+
+
+extension MentalSpaceRuntimeTests {
+    func testVDLPExecutorFailsWhenASLMissing() async throws {
+        let router = ProviderRouter()
+        try await router.register(MockVDLPProvider(isStub: false))
+        let executor = try VDLPExecutor(router: router)
+        await XCTAssertThrowsErrorAsync(try await executor.execute(patientId: "p", aslData: Data(), patientSpeech: "fala", sourceTranscriptRef: "src", lawfulContext: [:])) { error in
+            XCTAssertEqual(error as? VDLPExecutorError, .triadIncomplete)
+        }
+    }
+
+    func testVDLPExecutorFailsOnEmptySpeech() async throws {
+        let router = ProviderRouter()
+        try await router.register(MockVDLPProvider(isStub: false))
+        let executor = try VDLPExecutor(router: router)
+        await XCTAssertThrowsErrorAsync(try await executor.execute(patientId: "p", aslData: Data(MockASLProvider.rawPayload.utf8), patientSpeech: "   ", sourceTranscriptRef: "src", lawfulContext: [:])) { error in
+            XCTAssertEqual(error as? VDLPExecutorError, .emptyPatientSpeech)
+        }
+    }
+
+    func testVDLPExecutorFailsWhenProviderIsStubOnly() async throws {
+        let router = ProviderRouter()
+        try await router.register(MockVDLPProvider(isStub: true))
+        let executor = try VDLPExecutor(router: router)
+        await XCTAssertThrowsErrorAsync(try await executor.execute(patientId: "p", aslData: Data(MockASLProvider.rawPayload.utf8), patientSpeech: "fala", sourceTranscriptRef: "src", lawfulContext: [:])) { error in
+            XCTAssertEqual(error as? VDLPExecutorError, .providerUnavailable)
+        }
+    }
+
+    func testVDLPExecutorReturnsArtifactWith15DimensionsAndProvenance() async throws {
+        let router = ProviderRouter()
+        try await router.register(MockVDLPProvider(isStub: false))
+        let executor = try VDLPExecutor(router: router)
+        let result = try await executor.execute(patientId: "p", aslData: Data(MockASLProvider.rawPayload.utf8), patientSpeech: "fala longa", sourceTranscriptRef: "src", lawfulContext: ["finalidade": "care-context"])
+        XCTAssertEqual(result.provenanceOperation, "mental-space.vdlp")
+        XCTAssertEqual(result.artifact.metadata.stage, .vdlp)
+        XCTAssertEqual(result.artifact.dimensionRefs.count, 15)
+        XCTAssertEqual(Set(result.artifact.dimensionRefs), Set((1...15).map { "v\($0)" }))
+        XCTAssertFalse(result.artifact.metadata.legalAuthorizing)
+        XCTAssertTrue(result.artifact.metadata.gateStillRequired)
+        XCTAssertFalse(result.artifact.dimensionalSummary.contains("dimensoes_espaco_mental"))
+    }
+
+    func testVDLPPipelineRefusesWhenASLMissing() async throws {
+        let router = ProviderRouter()
+        try await router.register(MockASLProvider(validJSON: true, isStub: false))
+        let aslExecutor = try ASLExecutor(router: router)
+        let vdlpExecutor = try VDLPExecutor(router: router)
+        let orchestrator = MentalSpacePipelineOrchestrator(aslExecutor: aslExecutor, vdlpExecutor: vdlpExecutor)
+        await XCTAssertThrowsErrorAsync(try await orchestrator.runVDLP(patientId: "p", aslData: Data(MockASLProvider.rawPayload.utf8), patientSpeech: "fala", sourceTranscriptRef: "src", lawfulContext: [:], state: MentalSpaceRunArtifacts())) { error in
+            XCTAssertEqual(error as? MentalSpacePipelineError, .aslRequired)
+        }
+    }
+}
+
+private struct MockVDLPProvider: LanguageModelProvider {
+    let isStub: Bool
+    let providerName = "anthropic-claude"
+    let modelId: String? = "claude-sonnet-4"
+    let modelVersion: String? = "2025-05-14"
+
+    var capabilityProfile: ProviderCapabilityProfile {
+        ProviderCapabilityProfile(providerId: "anthropic-claude", providerKind: .remote, supportedTaskClasses: [.languageModel], allowedDataLayers: [.derivedArtifacts], allowsPHI: true, allowsIdentifiableData: false, requiresNetwork: true, latencyClass: .batch, supportsCostReporting: false, supportsProvenanceReporting: true, isStub: isStub)
+    }
+
+    func generate(prompt: String, context: [String : String]) async throws -> String {
+        XCTAssertEqual(context["temperature"], "0")
+        XCTAssertEqual(context["max_tokens"], "60000")
+        XCTAssertEqual(context["anthropic-beta"], "prompt-caching-2024-07-31,extended-cache-ttl-2025-04-11")
+        XCTAssertTrue(prompt.contains("VDLP"))
+        let dims = (1...15).reduce(into: [String: Any]()) { $0["v\($1)"] = ["score": 0.5] }
+        let payload: [String: Any] = [
+            "dimensoes_espaco_mental": dims,
+            "perfil_dimensional_integrativo": ["sintese_global": "Resumo VDLP", "evidencias": ["E1", "E2"]]
+        ]
+        let data = try JSONSerialization.data(withJSONObject: payload)
+        return String(decoding: data, as: UTF8.self)
+    }
+}

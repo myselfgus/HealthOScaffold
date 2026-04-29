@@ -937,3 +937,37 @@ Residual gaps:
 - VDLP remains scaffolded
 - GEM remains scaffolded
 - remote provider hardening/production concerns remain out of scope
+
+
+## RT-MSR-002 — Implement VDLPExecutor with real Claude API adapter (2026-04-29)
+
+Objective: implement provider-backed VDLP stage through `HealthOSProviders` with fail-closed ASL prerequisite checks, speech-only chunking, typed artifact output, and VDLP provenance marker.
+
+Files touched:
+- `swift/Sources/HealthOSMentalSpace/Executors/VDLPExecutor.swift`
+- `swift/Sources/HealthOSMentalSpace/MentalSpacePipeline.swift`
+- `swift/Tests/HealthOSTests/MentalSpaceRuntimeTests.swift`
+- `docs/execution/21-structural-ontology-and-product-readiness-plan.md`
+- `docs/execution/todo/runtimes-and-aaci.md`
+- `docs/execution/02-status-and-tracking.md`
+
+Validation:
+- `cd swift && swift build`
+- `cd swift && swift test --filter MentalSpaceRuntimeTests`
+- `cd swift && swift test --filter AsyncRuntimeGovernanceTests`
+- `cd swift && swift test`
+- `make validate-docs`
+- `make validate-schemas`
+- `make validate-contracts`
+- `make validate-all`
+
+Invariants involved:
+- Inv 1 — Core sovereignty
+- Inv 17/22 — provider honesty / anti-fake posture
+- Inv 25a — Mental Space artifacts are derived/gated
+- Inv 43 — implementation progress is not production readiness
+
+Residual gaps:
+- GEM still scaffolded
+- Remote provider use remains explicit and governed
+- Production hardening remains out of scope

@@ -1,66 +1,145 @@
-// VDLPExecutor — Vetores-Dimensão do Espaço-Campo Mental stage executor (scaffold)
-//
-// Wraps the VDLP prompt-engineered adapter. The 15-dimension framework (v₁–v₁₅) and all
-// formulas live entirely in Prompts/vdlp-system.md — this file is dispatch and boundary only.
-//
-// Input contract:
-//   patientId    — opaque identifier
-//   aslData      — ASL JSON blob from ASLExecutor (must be ready, not degraded)
-//   patientSpeech — filtered transcript (patient turns only; extracted from aslData
-//                   at asl.transcricao_filtrada.fala_falante_completa)
-//
-// Output contract:
-//   VDLP JSON blob: metadata + dimensoes_espaco_mental (v1–v15) + mapeamento_global
-//   + validacao_cruzada + perfil_dimensional_integrativo
-//   See Prompts/vdlp-system.md Part 3 for full schema.
-//
-// Chunking: split at 10k tokens (ASL + speech combined); ASL is a summary and stays whole;
-//   only speech is split. First chunk scores are authoritative (derived from full ASL);
-//   subsequent chunks contribute additional textual evidence only.
-//   See Prompts/vdlp-system.md Implementation Notes.
-//
-// Dependency: requires a ready ASL artifact. Throws .upstreamNotReady if ASL is absent
-//   or marked degraded — never falls through with partial input.
-//
-// Provider posture: same as ASL — remote only, explicit, lawful-context checked, provenance recorded.
-//
-// See: RT-MSR-001 in docs/execution/todo/runtimes-and-aaci.md
-
 import Foundation
 import HealthOSCore
+import HealthOSProviders
 
-// MARK: - Public API
+public struct VDLPExecutionResult: Sendable {
+    public let artifact: VDLPArtifact
+    public let provenanceOperation: String
 
-public protocol VDLPExecuting: Sendable {
-    func execute(patientId: String, aslData: Data, patientSpeech: String) async throws -> Data
+    public init(artifact: VDLPArtifact, provenanceOperation: String = "mental-space.vdlp") {
+        self.artifact = artifact
+        self.provenanceOperation = provenanceOperation
+    }
 }
 
-// MARK: - Errors
+public protocol VDLPExecuting: Sendable {
+    func execute(
+        patientId: String,
+        aslData: Data,
+        patientSpeech: String,
+        sourceTranscriptRef: String,
+        lawfulContext: [String: String]
+    ) async throws -> VDLPExecutionResult
+}
 
-public enum VDLPExecutorError: Error, Sendable {
-    case upstreamNotReady
+public enum VDLPExecutorError: Error, Sendable, Equatable {
+    case triadIncomplete
     case providerUnavailable
     case emptyPatientSpeech
     case invalidResponse(String)
     case chunkConsolidationFailed
 }
 
-// MARK: - Scaffold placeholder
-
-/// Scaffold placeholder — replace body with real implementation in RT-MSR-001.
-/// Do not call this in production paths; it always throws `.providerUnavailable`.
 public struct VDLPExecutor: VDLPExecuting {
+    public static let chunkTokenThreshold = 10_000
 
-    public init() {}
+    private let router: ProviderRouter
+    private let promptTemplate: String
+    private let model: String
 
-    public func execute(patientId: String, aslData: Data, patientSpeech: String) async throws -> Data {
-        guard !aslData.isEmpty else {
-            throw VDLPExecutorError.upstreamNotReady
+    public init(router: ProviderRouter, useHaikuModel: Bool = false) throws {
+        self.router = router
+        self.promptTemplate = try Self.loadPromptTemplate()
+        self.model = useHaikuModel ? "claude-3-5-haiku-latest" : "claude-sonnet-4-20250514"
+    }
+
+    public func execute(
+        patientId: String,
+        aslData: Data,
+        patientSpeech: String,
+        sourceTranscriptRef: String,
+        lawfulContext: [String: String]
+    ) async throws -> VDLPExecutionResult {
+        guard !aslData.isEmpty else { throw VDLPExecutorError.triadIncomplete }
+        let aslJSON = try parseProviderJSON(String(decoding: aslData, as: UTF8.self))
+        guard isASLReady(aslJSON) else { throw VDLPExecutorError.triadIncomplete }
+        let trimmedSpeech = patientSpeech.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmedSpeech.isEmpty else { throw VDLPExecutorError.emptyPatientSpeech }
+
+        let request = ProviderRoutingRequest(taskClass: .languageModel, dataLayer: .derivedArtifacts, lawfulContext: lawfulContext, finalidade: "mental-space-vdlp", allowsRemoteFallback: true, fallbackAllowed: true, preferLocal: false)
+        let decision = await router.routeLanguage(request: request)
+        let selection: ProviderSelection
+        switch decision {
+        case .selected(let s), .degradedFallback(let s, _): selection = s
+        case .stubOnly, .deniedByPolicy, .unavailable: throw VDLPExecutorError.providerUnavailable
         }
-        guard !patientSpeech.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
-            throw VDLPExecutorError.emptyPatientSpeech
+        guard let provider = await router.languageProvider(for: selection), !selection.isStub else { throw VDLPExecutorError.providerUnavailable }
+
+        let speechChunks = chunkSpeech(trimmedSpeech)
+        var chunkOutputs: [[String: Any]] = []
+        for speechChunk in speechChunks {
+            let prompt = buildPrompt(patientId: patientId, aslJSON: String(decoding: aslData, as: UTF8.self), patientSpeech: speechChunk)
+            let response = try await provider.generate(prompt: prompt, context: ["task": "mental-space-vdlp", "model": model, "temperature": "0", "max_tokens": "60000", "anthropic-beta": "prompt-caching-2024-07-31,extended-cache-ttl-2025-04-11"])
+            chunkOutputs.append(try parseProviderJSON(response))
         }
-        // Scaffold: no provider wired. Fail closed.
-        throw VDLPExecutorError.providerUnavailable
+
+        guard let consolidated = consolidate(chunkOutputs) else { throw VDLPExecutorError.chunkConsolidationFailed }
+        let dimensionRefs = (1...15).map { "v\($0)" }
+        let dimensionKeys = Set((consolidated["dimensoes_espaco_mental"] as? [String: Any])?.keys.map { $0 } ?? [])
+        guard Set(dimensionRefs).isSubset(of: dimensionKeys) else {
+            throw VDLPExecutorError.invalidResponse("Missing one or more mental-space dimensions v1-v15")
+        }
+
+        let outputData = try JSONSerialization.data(withJSONObject: consolidated, options: [.sortedKeys])
+        let artifact = VDLPArtifact(
+            metadata: MentalSpaceArtifactMetadata(stage: .vdlp, sourceTranscriptRef: sourceTranscriptRef, stageVersion: "rt-msr-002", promptVersion: "vdlp-system.md", modelProvider: selection.providerId, modelId: provider.modelId ?? model, inputHash: MentalSpaceContentHasher.sha256Hex(for: trimmedSpeech), outputHash: MentalSpaceContentHasher.sha256Hex(for: String(decoding: outputData, as: UTF8.self)), lawfulContextSummary: lawfulContext["finalidade"] ?? "mental-space-vdlp", limitations: ["Derived artifact only", "Non-authorizing", "Gate required"]),
+            dimensionalSummary: ((consolidated["perfil_dimensional_integrativo"] as? [String: Any])?["sintese_global"] as? String) ?? "VDLP dimensions available.",
+            dimensionRefs: dimensionRefs
+        )
+        return VDLPExecutionResult(artifact: artifact)
+    }
+
+    private func isASLReady(_ aslJSON: [String: Any]) -> Bool {
+        (aslJSON["sintese_interpretativa"] as? [String: Any]) != nil
+    }
+
+    private func chunkSpeech(_ speech: String) -> [String] {
+        let words = speech.split(whereSeparator: \.isWhitespace)
+        guard words.count > Self.chunkTokenThreshold else { return [speech] }
+        var chunks: [String] = []
+        var index = 0
+        while index < words.count {
+            let end = min(index + Self.chunkTokenThreshold, words.count)
+            chunks.append(words[index..<end].joined(separator: " "))
+            index = end
+        }
+        return chunks
+    }
+
+    private func buildPrompt(patientId: String, aslJSON: String, patientSpeech: String) -> String {
+        promptTemplate
+            .replacingOccurrences(of: "{{patientId}}", with: patientId)
+            .replacingOccurrences(of: "{{aslData}}", with: aslJSON)
+            .replacingOccurrences(of: "{{patientSpeech}}", with: patientSpeech)
+    }
+
+    private func parseProviderJSON(_ response: String) throws -> [String: Any] {
+        guard let data = response.data(using: .utf8), let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else {
+            throw VDLPExecutorError.invalidResponse("Provider did not return a valid JSON object")
+        }
+        return json
+    }
+
+    private func consolidate(_ chunks: [[String: Any]]) -> [String: Any]? {
+        guard let first = chunks.first else { return nil }
+        if chunks.count == 1 { return first }
+        var merged = first
+        var evidence: [String] = []
+        for chunk in chunks {
+            if let e = ((chunk["perfil_dimensional_integrativo"] as? [String: Any])?["evidencias"] as? [String]) {
+                evidence.append(contentsOf: e)
+            }
+        }
+        var profile = (merged["perfil_dimensional_integrativo"] as? [String: Any]) ?? [:]
+        if !evidence.isEmpty { profile["evidencias"] = Array(NSOrderedSet(array: evidence)) }
+        merged["perfil_dimensional_integrativo"] = profile
+        return merged
+    }
+
+    private static func loadPromptTemplate() throws -> String {
+        guard let url = Bundle.module.url(forResource: "vdlp-system", withExtension: "md", subdirectory: "Prompts") else {
+            throw VDLPExecutorError.invalidResponse("Missing VDLP prompt template")
+        }
+        return try String(contentsOf: url, encoding: .utf8)
     }
 }

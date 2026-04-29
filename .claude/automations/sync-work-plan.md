@@ -4,7 +4,7 @@ automation-id: sync-work-plan
 schedule: segunda, quarta e sexta — 08:47 local
 memory: .healthos-steward/memory/automations/sync-work-plan/memory.md
 target-agent: Claude Code
-git-target: origin/main (sempre trabalha sobre main, faz push para main)
+git-target: origin/main (sempre trabalha sobre main; push para main a cada run — inclui memory file mesmo sem mudanças no plano)
 last-run: 2026-04-28 (primeira execução manual)
 ---
 

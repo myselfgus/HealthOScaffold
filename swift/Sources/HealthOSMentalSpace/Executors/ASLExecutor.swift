@@ -1,56 +1,179 @@
-// ASLExecutor — Análise Sistêmica da Linguagem stage executor (scaffold)
-//
-// Wraps the ASL prompt-engineered adapter. The clinical logic lives entirely in
-// Prompts/asl-system.md — this file is dispatch, provenance, and fail-closed boundary only.
-//
-// Input contract:
-//   patientId        — opaque identifier (no direct PII in this layer)
-//   transcriptionText — full raw transcript (all speakers)
-//
-// Output contract:
-//   ASL JSON blob matching the 80+ field schema in Prompts/asl-system.md Part 2
-//   Provenance record written by caller via HealthOSCore artifacts layer
-//
-// Chunking: split at 10k tokens; parallel batches of 3; consolidate by summing counts,
-//   concatenating examples, averaging scores — see Prompts/asl-system.md Implementation Notes.
-//
-// Provider posture: remote only for this stage (no local model supports the 8-domain schema);
-//   must be explicit, lawful-context checked, and provenance recorded.
-//   Unavailable provider → throws ASLExecutorError.providerUnavailable (never silently degrades).
-//
-// See: RT-MSR-001 in docs/execution/todo/runtimes-and-aaci.md
-
 import Foundation
 import HealthOSCore
+import HealthOSProviders
 
-// MARK: - Public API
+public struct ASLExecutionResult: Sendable {
+    public let artifact: ASLArtifact
+    public let provenanceOperation: String
 
-public protocol ASLExecuting: Sendable {
-    func execute(patientId: String, transcriptionText: String) async throws -> Data
+    public init(artifact: ASLArtifact, provenanceOperation: String = "mental-space.asl") {
+        self.artifact = artifact
+        self.provenanceOperation = provenanceOperation
+    }
 }
 
-// MARK: - Errors
+public protocol ASLExecuting: Sendable {
+    func execute(
+        patientId: String,
+        transcriptionText: String,
+        sourceTranscriptRef: String,
+        lawfulContext: [String: String]
+    ) async throws -> ASLExecutionResult
+}
 
-public enum ASLExecutorError: Error, Sendable {
+public enum ASLExecutorError: Error, Sendable, Equatable {
     case providerUnavailable
     case emptyTranscription
     case invalidResponse(String)
     case chunkConsolidationFailed
 }
 
-// MARK: - Scaffold placeholder
-
-/// Scaffold placeholder — replace body with real implementation in RT-MSR-001.
-/// Do not call this in production paths; it always throws `.providerUnavailable`.
 public struct ASLExecutor: ASLExecuting {
+    public static let chunkTokenThreshold = 10_000
+    public static let maxParallelBatchSize = 3
 
-    public init() {}
+    private let router: ProviderRouter
+    private let promptTemplate: String
+    private let model: String
 
-    public func execute(patientId: String, transcriptionText: String) async throws -> Data {
-        guard !transcriptionText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
-            throw ASLExecutorError.emptyTranscription
+    public init(router: ProviderRouter, useHaikuModel: Bool = false) throws {
+        self.router = router
+        self.promptTemplate = try ASLExecutor.loadPromptTemplate()
+        self.model = useHaikuModel ? "claude-3-5-haiku-latest" : "claude-sonnet-4-20250514"
+    }
+
+    public func execute(
+        patientId: String,
+        transcriptionText: String,
+        sourceTranscriptRef: String,
+        lawfulContext: [String: String]
+    ) async throws -> ASLExecutionResult {
+        let trimmed = transcriptionText.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { throw ASLExecutorError.emptyTranscription }
+
+        let request = ProviderRoutingRequest(
+            taskClass: .languageModel,
+            dataLayer: .derivedArtifacts,
+            lawfulContext: lawfulContext,
+            finalidade: "mental-space-asl",
+            allowsRemoteFallback: true,
+            fallbackAllowed: true,
+            preferLocal: false
+        )
+        let decision = await router.routeLanguage(request: request)
+        let selection: ProviderSelection
+        switch decision {
+        case .selected(let s), .degradedFallback(let s, _): selection = s
+        case .stubOnly, .deniedByPolicy, .unavailable: throw ASLExecutorError.providerUnavailable
         }
-        // Scaffold: no provider wired. Fail closed.
-        throw ASLExecutorError.providerUnavailable
+        guard let provider = await router.languageProvider(for: selection), !selection.isStub else {
+            throw ASLExecutorError.providerUnavailable
+        }
+
+        let chunks = chunk(transcript: trimmed)
+        let rawResults = try await processChunks(chunks, patientId: patientId, provider: provider)
+        guard let consolidated = consolidate(rawResults) else {
+            throw ASLExecutorError.chunkConsolidationFailed
+        }
+
+        let outputData = try JSONSerialization.data(withJSONObject: consolidated, options: [.sortedKeys])
+        let artifact = ASLArtifact(
+            metadata: MentalSpaceArtifactMetadata(
+                stage: .asl,
+                sourceTranscriptRef: sourceTranscriptRef,
+                stageVersion: "rt-msr-001",
+                promptVersion: "asl-system.md",
+                modelProvider: selection.providerId,
+                modelId: provider.modelId ?? model,
+                inputHash: MentalSpaceContentHasher.sha256Hex(for: trimmed),
+                outputHash: MentalSpaceContentHasher.sha256Hex(for: String(data: outputData, encoding: .utf8) ?? ""),
+                lawfulContextSummary: lawfulContext["finalidade"] ?? "mental-space-asl",
+                limitations: ["Derived artifact only", "Non-authorizing", "Gate required"]
+            ),
+            linguisticSummary: (consolidated["sintese_interpretativa"] as? [String: Any])?["perfil_linguistico_geral"] as? String ?? "ASL synthesis available.",
+            evidenceRefs: ((consolidated["sintese_interpretativa"] as? [String: Any])?["achados_mais_salientes"] as? [String]) ?? []
+        )
+        return ASLExecutionResult(artifact: artifact)
+    }
+
+    private func processChunks(
+        _ chunks: [String],
+        patientId: String,
+        provider: any LanguageModelProvider
+    ) async throws -> [[String: Any]] {
+        var outputs: [[String: Any]] = []
+        var index = 0
+        while index < chunks.count {
+            let batch = Array(chunks[index..<min(index + Self.maxParallelBatchSize, chunks.count)])
+            let batchResponses = try await withThrowingTaskGroup(of: String.self) { group in
+                for chunk in batch {
+                    group.addTask {
+                        let prompt = self.buildPrompt(patientId: patientId, transcriptionText: chunk)
+                        return try await provider.generate(prompt: prompt, context: [
+                            "task": "mental-space-asl",
+                            "model": self.model,
+                            "temperature": "0",
+                            "max_tokens": "60000",
+                            "anthropic-beta": "prompt-caching-2024-07-31,extended-cache-ttl-2025-04-11"
+                        ])
+                    }
+                }
+                var responses: [String] = []
+                for try await response in group { responses.append(response) }
+                return responses
+            }
+            for response in batchResponses {
+                outputs.append(try parseProviderJSON(response))
+            }
+            index += Self.maxParallelBatchSize
+        }
+        return outputs
+    }
+
+    private func buildPrompt(patientId: String, transcriptionText: String) -> String {
+        promptTemplate
+            .replacingOccurrences(of: "{{patientId}}", with: patientId)
+            .replacingOccurrences(of: "{{transcriptionText}}", with: transcriptionText)
+    }
+
+    private func chunk(transcript: String) -> [String] {
+        let words = transcript.split(whereSeparator: \ .isWhitespace)
+        if words.count <= Self.chunkTokenThreshold { return [transcript] }
+        var result: [String] = []
+        var start = 0
+        while start < words.count {
+            let end = min(start + Self.chunkTokenThreshold, words.count)
+            result.append(words[start..<end].joined(separator: " "))
+            start = end
+        }
+        return result
+    }
+
+    private func parseProviderJSON(_ response: String) throws -> [String: Any] {
+        guard let data = response.data(using: .utf8),
+              let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else {
+            throw ASLExecutorError.invalidResponse("Provider did not return a valid JSON object")
+        }
+        return json
+    }
+
+    private func consolidate(_ chunks: [[String: Any]]) -> [String: Any]? {
+        guard let first = chunks.first else { return nil }
+        if chunks.count == 1 { return first }
+        var consolidated = first
+        let summaries = chunks.compactMap {
+            (($0["sintese_interpretativa"] as? [String: Any])?["perfil_linguistico_geral"] as? String)
+        }
+        var synth = (consolidated["sintese_interpretativa"] as? [String: Any]) ?? [:]
+        if !summaries.isEmpty { synth["perfil_linguistico_geral"] = summaries.joined(separator: "\n") }
+        consolidated["sintese_interpretativa"] = synth
+        return consolidated
+    }
+
+    private static func loadPromptTemplate() throws -> String {
+        guard let url = Bundle.module.url(forResource: "asl-system", withExtension: "md", subdirectory: "Prompts") else {
+            throw ASLExecutorError.invalidResponse("Missing ASL prompt template")
+        }
+        return try String(contentsOf: url, encoding: .utf8)
     }
 }

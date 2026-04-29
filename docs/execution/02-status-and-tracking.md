@@ -901,3 +901,39 @@ Validation executed in this work unit:
 - CL-006: Shared error envelope for local service boundaries [COMPLETED]
 - APP-008: Cross-app envelope propagation [COMPLETED]
 - Scaffold/foundation phase RC 1 final validation: COMPLETED
+
+
+## RT-MSR-001 — Implement ASLExecutor with real Claude API adapter (2026-04-29)
+
+Objective: implement a provider-backed ASL stage executor in Mental Space Runtime without widening authority beyond derived, gated, non-authorizing artifacts.
+
+Files touched:
+- `swift/Sources/HealthOSMentalSpace/Executors/ASLExecutor.swift`
+- `swift/Sources/HealthOSMentalSpace/MentalSpacePipeline.swift`
+- `swift/Tests/HealthOSTests/MentalSpaceRuntimeTests.swift`
+- `docs/execution/21-structural-ontology-and-product-readiness-plan.md`
+- `docs/execution/todo/runtimes-and-aaci.md`
+- `docs/execution/02-status-and-tracking.md`
+
+Invariants involved:
+- Inv 1 — Core sovereignty
+- Inv 17/22 — provider honesty and anti-fake posture
+- Inv 43 — implementation is not production readiness
+
+Validation:
+- `cd swift && swift build` PASS
+- `cd swift && swift test --filter MentalSpaceRuntimeTests` PASS
+- `cd swift && swift test --filter AsyncRuntimeGovernanceTests` PASS
+- `cd swift && swift test` PASS
+- `make validate-docs` PASS
+- `make validate-schemas` PASS
+- `make validate-contracts` PASS
+- `make validate-all` FAIL (`ts/packages/healthos-steward/tsconfig.json` has no `src/**/*.ts` inputs, causing `npm run build` to fail in `@healthos/steward`; unrelated to RT-MSR-001 Swift/doc changes).
+
+Result:
+- RT-MSR-001 complete for ASL stage: executor now loads canonical prompt resource, uses governed provider routing boundary, enforces fail-closed input/provider/response behavior, applies 10k-token chunking with batch size 3, parses structured JSON into typed `ASLArtifact`, and emits provenance operation marker `mental-space.asl`.
+
+Residual gaps:
+- VDLP remains scaffolded
+- GEM remains scaffolded
+- remote provider hardening/production concerns remain out of scope

@@ -303,7 +303,7 @@ Definition of done:
 - `swift build` PASS; `swift test` PASS; `make validate-all` PASS
 Branch: `feat/str-001-mentlspace-providers-dep`
 
-### RT-MSR-001 Implement ASLExecutor with real Claude API adapter
+### RT-MSR-001 Implement ASLExecutor with real Claude API adapter (DONE 2026-04-29)
 Priority: **P0 — after STR-001**
 Prerequisite: STR-001 DONE
 Plan: `docs/execution/21-structural-ontology-and-product-readiness-plan.md` → RT-MSR-001
@@ -394,3 +394,6 @@ Files touched:
 - `docs/execution/11-current-maturity-map.md`
 - `docs/execution/12-next-agent-handoff.md`
 - `docs/execution/todo/runtimes-and-aaci.md`
+
+
+Update 2026-04-29: ASL stage is now provider-backed through HealthOSProviders with fail-closed validation and provenance marker `mental-space.asl`. VDLP and GEM remain scaffolded; no production-readiness claim.

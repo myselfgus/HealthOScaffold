@@ -43,7 +43,7 @@ git -C $REPO stash pop 2>/dev/null || true
    usando o template abaixo.
 8. Sobrescreva `.healthos-steward/memory/automations/daily-todo-tracker/latest.md`
    com o conteúdo do digest do dia.
-9. **Não commite nada.** Estes arquivos são memória derivada, não docs canônicos.
+9. Commit e push apenas dos arquivos de digest em `.healthos-steward/memory/automations/daily-todo-tracker/`.
 
 ## Template do digest
 

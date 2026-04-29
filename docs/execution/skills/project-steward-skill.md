@@ -13,6 +13,7 @@ Treat HealthOScaffold as the HealthOS construction repository. Use scaffold term
 - `Steward for Xcode`: Xcode-integration posture for Steward.
 - `healthos-mcp`: repository-maintenance MCP server for Steward.
 - `.healthos-steward/`: derived memory, sessions, handoffs, policies, and state.
+- Codex: external executor that may support Steward-scoped Xcode-facing repository maintenance by proposing PRs for automation and instruction drift.
 
 Use `HealthOS Xcode Agent` and `Xcode Agent` only as historical/descriptive references.
 
@@ -25,6 +26,7 @@ Use `HealthOS Xcode Agent` and `Xcode Agent` only as historical/descriptive refe
 - `docs/architecture/45-healthos-xcode-agent.md` (Steward for Xcode target architecture)
 - `docs/architecture/46-apple-sovereignty-architecture.md` (Apple sovereignty thesis)
 - `docs/execution/17-healthos-xcode-agent-migration-plan.md` (migration plan)
+- `.claude/automations/` and `.claude/scheduled_tasks.json` when the work touches Claude Code automation drift
 
 ## Required reads
 
@@ -47,6 +49,7 @@ Use `HealthOS Xcode Agent` and `Xcode Agent` only as historical/descriptive refe
 - Steward must not describe HealthOScaffold as separate from HealthOS.
 - `healthos-mcp` is the repository-maintenance MCP server only. It must not be described as a clinical automation server, AACI tool server, GOS runtime server, or Core law server.
 - Future Core-governed runtime MCP servers for clinical/operational automation are a separate family. Do not collapse them into `healthos-mcp`.
+- External executors such as Codex may propose PRs for Steward-scoped Xcode-facing maintenance surfaces, but they are not internal Steward providers and have no merge, clinical/runtime, or Core-law authority.
 
 ## healthos-mcp boundary
 

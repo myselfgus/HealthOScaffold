@@ -239,6 +239,7 @@ Outcome:
 - docs/execution/skills/project-steward-skill.md rewritten: canonical naming table, updated scope/reads/invariants/validation, healthos-mcp two-family boundary doctrine
 - docs/architecture/45-healthos-xcode-agent.md: MCP two-family boundary note added to MCP section
 - docs/execution/17-healthos-xcode-agent-migration-plan.md: WS-2 boundary constraint added
+- Follow-up (2026-04-29): Codex external executor posture added for Steward-scoped Xcode-facing repository maintenance, with local automation registered at `$CODEX_HOME/automations/steward-xcode-facing-maintenance/`; this is PR-based maintenance only and does not create a new Steward authority category.
 Files touched:
 - `CLAUDE.md`
 - `AGENTS.md`

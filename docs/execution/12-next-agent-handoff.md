@@ -74,6 +74,8 @@ The intended evolution is Steward for Xcode: Xcode Intelligence as the Apple-con
 
 Settler model note: the Steward / Settler / Settlement / Territory model was added as doctrine-only in `docs/architecture/47-steward-settler-engineering-model.md`, with future implementation tracked in `docs/execution/19-settler-model-task-tracker.md`. Future work should use those docs and must not treat Settlers as clinical or runtime agents.
 
+Codex may support Steward-scoped Xcode-facing repository maintenance as an external executor. The local Codex automation is `$CODEX_HOME/automations/steward-xcode-facing-maintenance/`; use it for PR-based review of Claude Code automations, scheduled-task definitions, Xcode/Steward instructions, and automation drift. Do not treat this as a new Steward authority category, merge authority, or clinical/runtime capability.
+
 Repository-local roots now exist for the model:
 - `.healthos-settler/` is a documentation-only root for future Settler profiles and Settlement records.
 - `.healthos-territory/` is a documentation-only root for future Territory records.

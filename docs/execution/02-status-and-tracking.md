@@ -6,6 +6,21 @@ Current phase: Controlled implementation — first vertical slice started
 
 ## Completed recently
 
+## DOC-PLAN-001 — Documentary TODOs work plan (2026-04-28)
+
+Objective: audit the full repository for open documentation TODOs and produce a sequential AI work plan for writing all documental tasks.
+
+Files touched:
+- `docs/execution/20-documental-todos-work-plan.md` — comprehensive plan with 9 tasks across 3 phases
+
+Outcome:
+- 9 documental TODO tasks identified, classified, and ordered
+- Phases: Phase 1 (Settler/Territory docs — ST-006, ST-002, ST-003), Phase 2 (architecture proposals — CL-006, OPS-003, ST-004), Phase 3 (Xcode Agent stream specs — Streams C, D, F)
+- Each task includes: read-before-write list, content prescription, file targets, invariants, and definition of done
+
+Residual gaps:
+- none; plan is READY — not started
+
 ## ST-001a — README and repository roots for Settler/Territory scaffolds (2026-04-29)
 
 Objective: update the main README and repository-local documentation roots after introducing Steward, Settler, Settlement, and Territory vocabulary.

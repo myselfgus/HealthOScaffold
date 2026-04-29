@@ -6,6 +6,35 @@ Current phase: Controlled implementation — first vertical slice started
 
 ## Completed recently
 
+## WS-3-docs — Steward documentation precision pass (2026-04-28)
+
+Objective: align canonical docs with the real post-reset `healthos-steward` baseline so the repository stops implying deterministic commands and Xcode-agent capabilities that are still only target architecture.
+
+Files touched:
+- `README.md` — Steward section reorganized around current baseline vs target architecture; clarified current session store and non-delivered operations
+- `ts/packages/healthos-steward/README.md` — package scope tightened to actual commands and explicit non-scope
+- `.healthos-steward/README.md` — derived-state root clarified; historical provider artifacts reframed as non-canonical and subordinate
+- `docs/execution/12-next-agent-handoff.md` — Steward follow-up rewritten around current baseline and target posture
+- `docs/execution/15-scaffold-finalization-plan.md` — removed false dependence on non-existent `scan`/`handoff` CLI commands
+- `docs/execution/17-healthos-xcode-agent-migration-plan.md` — WS-3 corrected to preserve current baseline while adding future deterministic operations explicitly
+- `docs/execution/todo/ops-network-ml.md` — WS-3 objective/definition of done updated to match the real baseline and documentation needs
+- `docs/execution/02-status-and-tracking.md` — this entry
+
+Invariants involved: Inv 42 (validation/drift sensitivity), Inv 43 (scaffold closure is not product readiness), and repository-level anti-overclaim posture for Steward/`healthos-mcp`.
+
+Validation:
+- documentation consistency pass completed in-repo
+- command surface verified against `ts/packages/healthos-steward/src/steward.ts`
+
+Done criteria:
+- current docs describe only delivered `healthos-steward` commands (`status`, `runtime`, `session`) as implemented
+- planned deterministic operations and `healthos-mcp` remain clearly labeled as target architecture
+- Steward for Xcode stays outside the HealthOS clinical/runtime hierarchy in all touched docs
+
+Residual gaps:
+- WS-2 (`healthos-mcp`) remains doctrine-only/not implemented
+- WS-3 code expansion for deterministic repository-maintenance operations remains pending
+
 ## WS-1 — Steward naming consolidation and healthos-mcp boundary doctrine (2026-04-28)
 
 Objective: execute WS-1 (instructions and skills consolidation) and codify healthos-mcp boundary doctrine in all instruction and architecture files.

@@ -1,4 +1,4 @@
-# Next agent handoff (2026-04-26)
+# Next agent handoff (2026-04-28)
 
 ## Current state
 
@@ -11,7 +11,8 @@ Repository audit note (2026-04-28): the canonical Swift package exists at `swift
 ## How to choose next task
 
 1. Open `docs/execution/02-status-and-tracking.md`.
-- run steward snapshot before task selection: `cd ts && npx --yes --workspace @healthos/steward healthos-steward status`
+   Use the current deterministic Steward baseline before task selection:
+   `cd ts && npx --yes --workspace @healthos/steward healthos-steward status`
 2. Confirm closure criteria and blockers in `docs/execution/13-scaffold-release-candidate-criteria.md` and `docs/execution/14-final-gap-register.md`.
 3. Pick highest-priority `READY` task in `docs/execution/todo/*.md`.
 4. Load matching skill in `docs/execution/skills/`.
@@ -61,12 +62,12 @@ make smoke-scribe
 - no wording that treats HealthOScaffold as a separate product or points to another HealthOS repository
 - explicitly record residual gaps/failures
 
-## Steward provider follow-up
+## Steward follow-up
 
-Project Steward now has optional provider adapters and dry-run orchestration; however, the next strategic step is no longer incremental provider growth.
+Current `healthos-steward` baseline is intentionally narrow: `status`, `runtime`, and `session` only. Treat it as a repository-local continuity and session-persistence seam, not as a complete deterministic operations surface.
 
 Use these docs as the target source of truth for future steward work:
 - `docs/architecture/45-healthos-xcode-agent.md`
 - `docs/execution/17-healthos-xcode-agent-migration-plan.md`
 
-The intended evolution is an Xcode-native engineering agent with conversational surfaces, session continuity, tool runtime, and model backends subordinate to the agent runtime.
+The intended evolution is Steward for Xcode: Xcode Intelligence as the Apple-controlled engineering runtime surface, with HealthOS contributing instructions, `healthos-mcp`, derived repository memory, and an expanded deterministic CLI.

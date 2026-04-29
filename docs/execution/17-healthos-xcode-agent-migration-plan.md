@@ -83,13 +83,14 @@ Constraint: WS-2 is Phase B work. Doc 45 describes the target boundary. This pla
 
 ### WS-3: Deterministic CLI consolidation
 
-Objective: reduce `ts/packages/healthos-steward` to its essential deterministic CI-safe scope, removing provider orchestration as the architectural center.
+Objective: keep `ts/packages/healthos-steward` narrow, deterministic, and CI-safe, while expanding the current hard-reset baseline into explicit repository-maintenance operations over time.
 
 Actions:
+- preserve the current baseline commands (`status`, `runtime`, `session`) until replacement operations are implemented
 - remove or archive provider orchestration as primary architecture
 - remove prompt-template-based pseudo-agent orchestration as primary interface
-- preserve and harden the following operations: `validate`, `status`, `handoff`, `next-task`, `scan`
-- make CLI share operation implementations with MCP server where structurally possible
+- add or restore deterministic repository operations deliberately rather than implying they already exist (`validate-docs`, `validate-all`, `scan-status`, `get-handoff`, `next-task`)
+- make CLI share operation implementations with MCP server where structurally possible once those operations exist
 - ensure CLI works in CI/GitHub Actions without LLM dependency
 
 Definition of done:
@@ -133,6 +134,10 @@ Outputs:
 - deterministic CLI retained, renamed, or absorbed into the MCP server implementation as appropriate
 - `docs/architecture/44-project-steward-agent.md` retained as historical reference; not deleted
 - all active docs updated to reflect the current target (no references to the old 7-workstream custom runtime plan as a pending target)
+
+Until Phase C is complete, documentation must distinguish clearly between:
+- current delivered CLI baseline: `status`, `runtime`, `session`
+- target deterministic repository operations: planned under WS-2 and WS-3, not yet delivered unless implemented and validated
 
 Phase C is complete when the engineering-agent layer is consistent: Xcode Intelligence as the runtime surface, instructions/MCP/memory/CLI as the HealthOS contribution, and no active custom agent runtime work pending.
 

@@ -252,18 +252,23 @@ Definition of done:
 Priority: Medium
 Docs: `docs/execution/17-healthos-xcode-agent-migration-plan.md` (WS-3), `docs/architecture/45-healthos-xcode-agent.md`
 Objective:
-- reduce `ts/packages/healthos-steward` to deterministic CI-safe operations
+- preserve the current hard-reset baseline (`status`, `runtime`, `session`) while expanding it deliberately into deterministic CI-safe repository operations
 - remove provider orchestration as the primary architectural path
 Files:
 - `ts/packages/healthos-steward/src/*`
 - `ts/packages/healthos-steward/package.json`
 - `ts/packages/healthos-steward/README.md`
+- `README.md`
+- `.healthos-steward/README.md`
+- `docs/execution/12-next-agent-handoff.md`
+- `docs/execution/15-scaffold-finalization-plan.md`
 Dependencies:
 - Phase A (ARCH-001) complete
 Definition of done:
 - CLI runs deterministic operations without LLM dependency
 - CLI works in CI/GitHub Actions
-- existing deterministic commands (`status`, `validate`, `handoff`, `next-task`, `scan`) preserved or equivalent
+- docs distinguish current delivered baseline from planned deterministic operations
+- deterministic repository-maintenance commands beyond `status`/`runtime`/`session` are added only when implemented and validated
 - provider-centric orchestration is no longer the primary entry point
 - `make validate-docs` and `make ts-build` pass
 

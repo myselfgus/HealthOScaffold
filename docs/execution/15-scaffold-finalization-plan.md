@@ -13,7 +13,7 @@ Finalizing the scaffold means finalizing the bootstrap/foundation phase of Healt
 3. Confirm `06-scaffold-coverage-matrix.md`, `10-invariant-matrix.md`, `11-current-maturity-map.md`, and `12-next-agent-handoff.md` are synchronized.
 4. Keep TODO files organized with only actionable remaining tasks.
 5. Run mandatory local validation gates and record outcomes.
-6. steward memory/index reviewed and synchronized (`healthos-steward scan`, `healthos-steward handoff`) without overriding official docs.
+6. Review derived Steward memory against official docs without overriding canonical truth. The current hard-reset CLI baseline does not yet expose `scan` or `handoff`; use documented files as the source of truth until those deterministic operations exist.
 
 ## Merge criteria for closure PR
 
@@ -76,5 +76,5 @@ After scaffold/foundation phase closure, prioritize the next maturity phase of t
 
 ## Steward-specific safeguard
 
-Steward provider integrations must stay optional, dry-run capable, and explicit for any network/GitHub write operation.
+Any future Steward provider integration or GitHub/network write path must stay optional, dry-run capable where applicable, and explicit by operator invocation. Current baseline work must not imply those integrations already exist.
 Gate sequence finalized: seg 27 abr 2026 10:21:18 -03

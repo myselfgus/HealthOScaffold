@@ -184,19 +184,27 @@ Read in order before coding:
 Steward is the canonical engineering agent for this repository. `healthos-steward` is the CLI, package, and repository-local state root.
 
 - CLI and package: `ts/packages/healthos-steward/`
-- Derived memory, sessions, handoffs, policies, state: `.healthos-steward/`
+- Repository-local derived state root: `.healthos-steward/`
+- Current persisted runtime state: `.healthos-steward/memory/sessions/`
 
 **Steward for Xcode** is the Xcode-integration posture. Steward for Xcode integrates with Xcode Intelligence as an Apple-controlled engineering runtime surface, while HealthOS contributes instructions, `healthos-mcp`, derived repository memory, and deterministic CLI operations. See `docs/architecture/45-healthos-xcode-agent.md` for target architecture and `docs/execution/17-healthos-xcode-agent-migration-plan.md` for the migration plan.
 
-Current deterministic baseline (hard-reset posture — `status`, `runtime`, `session` only):
+Current deterministic baseline (hard-reset posture — only these CLI commands are implemented today):
 
 ```bash
 cd ts && npx --yes --workspace @healthos/steward healthos-steward status
-cd ts && npx --yes --workspace @healthos/steward healthos-steward runtime
+cd ts && npx --yes --workspace @healthos/steward healthos-steward runtime --message "inspect repository posture" --dry-run
 cd ts && npx --yes --workspace @healthos/steward healthos-steward session
 ```
 
-`healthos-mcp` is the repository-maintenance MCP server for Steward (doctrine-only; not yet implemented). It is distinct from any future Core-governed runtime MCP servers for clinical/operational automation.
+Current baseline semantics:
+- `status` reports package identity, required docs, and the session store location.
+- `runtime` records a minimal request/response turn and persists session state under `.healthos-steward/memory/sessions/`.
+- `session` reads one persisted session by id.
+
+Target future operations such as `scan-status`, `get-handoff`, `next-task`, `validate-docs`, and `validate-all` belong to the planned deterministic CLI and/or `healthos-mcp` workstreams. They must not be described as delivered until implemented.
+
+`healthos-mcp` is the repository-maintenance MCP server for Steward (doctrine-only; not yet implemented). It is distinct from any future Core-governed runtime MCP servers for clinical or operational automation.
 
 Canonical truth resides in `docs/` and project manifests. Steward memory is derived operational state. Steward is non-clinical, non-constitutional, and non-authorizing.
 

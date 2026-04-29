@@ -4,7 +4,8 @@ automation-id: sync-work-plan
 schedule: segunda, quarta e sexta — 08:47 local
 memory: .healthos-steward/memory/automations/sync-work-plan/memory.md
 target-agent: Claude Code
-last-run: never
+git-target: origin/main (sempre trabalha sobre main, faz push para main)
+last-run: 2026-04-28 (primeira execução manual)
 ---
 
 Mantém o plano de trabalho vivo (`docs/execution/20-documental-todos-work-plan.md`) sincronizado
@@ -173,21 +174,29 @@ prompts, automações e outros artefatos criados para apoiar a execução do pla
 
 ---
 
-## WORKFLOW GIT
+## WORKFLOW GIT (main-first)
 
 ```bash
-# Apenas se houver mudanças reais no plano:
-git add docs/execution/20-documental-todos-work-plan.md
-git commit -m "chore(auto): sync work plan — <resumo de 1 linha do que mudou>"
-git push
+# ANTES de qualquer leitura — sincronizar main:
+CURRENT=$(git -C $REPO rev-parse --abbrev-ref HEAD)
+git -C $REPO stash 2>/dev/null || true
+git -C $REPO checkout main
+git -C $REPO pull origin main
 
-# Sempre (independente de haver mudanças):
-# Escreva em .healthos-steward/memory/automations/sync-work-plan/memory.md:
-# - data do run
-# - fontes lidas
-# - o que mudou no plano (ou "nenhuma mudança necessária")
-# - itens UNCERTAIN encontrados (se houver)
-# - próxima ação recomendada de maior impacto
+# --- fazer leitura e edições aqui ---
+
+# Se houver mudanças reais no plano:
+git -C $REPO add docs/execution/20-documental-todos-work-plan.md
+git -C $REPO commit -m "chore(auto): sync work plan — <resumo de 1 linha do que mudou>"
+git -C $REPO push origin main
+
+# SEMPRE ao final — restaurar estado anterior:
+git -C $REPO checkout $CURRENT 2>/dev/null || true
+git -C $REPO stash pop 2>/dev/null || true
+
+# Sempre escrever em .healthos-steward/memory/automations/sync-work-plan/memory.md:
+# - data do run, fontes lidas, o que mudou (ou "nenhuma mudança"),
+#   itens UNCERTAIN, próxima ação recomendada
 ```
 
 ---

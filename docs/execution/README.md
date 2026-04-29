@@ -25,8 +25,22 @@ As of April 26, 2026, repository posture is:
 9. `14-final-gap-register.md`
 10. `15-scaffold-finalization-plan.md`
 11. `16-next-10-actions-plan.md`
-12. relevant `todo/*.md`
-13. matching `skills/*.md`
+12. `20-documental-todos-work-plan.md` — living plan for open documentation tasks (auto-synced)
+13. relevant `todo/*.md`
+14. matching `skills/*.md`
+15. `prompts/` — phase execution prompts for documental tasks (self-contained, AI-executable)
+
+## Automations
+
+Three Claude Code automations maintain this directory automatically. All push to `origin/main` after each run.
+
+| Automation | Schedule | Reads from this dir | Writes |
+| :--- | :--- | :--- | :--- |
+| `daily-todo-tracker` | Daily 08:07 | `todo/` · `02-status-and-tracking.md` · `12-next-agent-handoff.md` · `14-final-gap-register.md` | `.healthos-steward/memory/automations/daily-todo-tracker/` |
+| `sync-work-plan` | Mon/Wed/Fri 08:47 | `todo/` · trackers · `14-final-gap-register.md` + git log | `20-documental-todos-work-plan.md` + memory log |
+| `update-claude-md` | Mon 09:03 | `02-status-and-tracking.md` + Makefile + Steward CLI | `CLAUDE.md` + memory log |
+
+Definitions: `.claude/automations/` · Latest digest: `.healthos-steward/memory/automations/daily-todo-tracker/latest.md`
 
 ## Maturity ladder (required language)
 

@@ -137,6 +137,8 @@ Use the README as the entry surface, then branch by intent.
 | start coding safely | `docs/execution/README.md` | `01-agent-operating-protocol.md`, `02-status-and-tracking.md`, relevant `todo/*.md`, relevant `skills/*.md` |
 | understand Steward for Xcode | `docs/architecture/45-healthos-xcode-agent.md` | `docs/execution/17-healthos-xcode-agent-migration-plan.md`, `.healthos-steward/README.md`, `ts/packages/healthos-steward/README.md` |
 | understand Steward, Settlers, Settlements, and Territories | `docs/architecture/47-steward-settler-engineering-model.md` | `docs/execution/19-settler-model-task-tracker.md`, `.healthos-settler/README.md`, `.healthos-territory/README.md` |
+| see what documentation tasks remain open | `docs/execution/20-documental-todos-work-plan.md` | `docs/execution/prompts/` (phase execution prompts) |
+| see the latest daily status digest | `.healthos-steward/memory/automations/daily-todo-tracker/latest.md` | `docs/execution/02-status-and-tracking.md`, `docs/execution/12-next-agent-handoff.md` |
 
 ### Visual Reading Map
 
@@ -158,10 +160,13 @@ flowchart TD
     A3[Code Surfaces\nswift · ts · schemas · sql]:::code
     A4[Repository Engineering\nSteward · Settlers · Territories]:::steward
 
+    A5[Claude Code Automations\nupdate · digest · sync]:::steward
+
     R --> A1
     R --> A2
     R --> A3
     R --> A4
+    R --> A5
 
     A1 --> A11[Core law]
     A1 --> A12[GOS]
@@ -174,6 +179,9 @@ flowchart TD
     A4 --> A41[Steward baseline]
     A4 --> A42[Settler doctrine]
     A4 --> A43[Territory records]
+    A5 --> A51[update-claude-md]
+    A5 --> A52[daily-todo-tracker]
+    A5 --> A53[sync-work-plan]
 ```
 
 ## 🗺️ Repository Atlas
@@ -196,6 +204,7 @@ graph LR
     T[ts/\ncontracts · runtimes · tooling · steward]:::code
     P[python/\nOffline ML governance scaffolds]:::code
     EG[.healthos-steward\n.healthos-settler\n.healthos-territory]:::agent
+    AU[.claude/automations\nupdate-claude-md\ndaily-todo-tracker · sync-work-plan]:::agent
 
     D -->|defines boundaries for| W
     D -->|defines boundaries for| T
@@ -208,6 +217,8 @@ graph LR
     W -->|first executable slice| T
     P -->|offline-only support posture| W
     EG -. outside clinical/runtime hierarchy .-> D
+    AU -->|reads + syncs| E
+    AU -->|pushes to| D
 ```
 
 ## 🔎 What To Read Next
@@ -321,8 +332,11 @@ Read in order before coding:
 - `ops/` and `scripts/` — local operational scaffolding, bootstrap, network and backup notes
 - `apps/` — interface boundary scaffolds/documentation
 - `.healthos-steward/` — derived Steward state, policies, prompts, and session memory
+- `.healthos-steward/memory/automations/` — automation run logs and daily TODO digests (committed to remote after each run)
 - `.healthos-settler/` — documentation-only Settler profile and Settlement record scaffolds
 - `.healthos-territory/` — documentation-only Territory record scaffolds
+- `.claude/automations/` — Claude Code automation definitions (schedule, prompt, git pattern)
+- `.claude/scheduled_tasks.json` — durable cron job registry
 
 ### Code-to-doc orientation
 
@@ -352,16 +366,20 @@ Settlers are specialized engineering agent profiles. Settlements are bounded eng
 
 Current deterministic baseline (hard-reset posture — only these CLI commands are implemented today):
 
+`dist/` is not committed. Run `make ts-build` once before invoking the CLI:
+
 ```bash
+make ts-build
 cd ts && npx --yes --workspace @healthos/steward healthos-steward status
 cd ts && npx --yes --workspace @healthos/steward healthos-steward runtime --message "inspect repository posture" --dry-run
-cd ts && npx --yes --workspace @healthos/steward healthos-steward session
+# session requires an existing session id: --id <uuid>
+cd ts && npx --yes --workspace @healthos/steward healthos-steward session --id <session-id>
 ```
 
 Current baseline semantics:
 - `status` reports package identity, required docs, and the session store location.
 - `runtime` records a minimal request/response turn and persists session state under `.healthos-steward/memory/sessions/`.
-- `session` reads one persisted session by id.
+- `session` reads one persisted session by id; exits non-zero if `--id` is omitted or no matching session exists.
 
 Target future operations such as `scan-status`, `get-handoff`, `next-task`, `validate-docs`, and `validate-all` belong to the planned deterministic CLI and/or `healthos-mcp` workstreams. They must not be described as delivered until implemented.
 
@@ -394,6 +412,54 @@ flowchart TD
     MCP -. future typed repo operations .-> STEW
     MCP -. future typed repo operations .-> SETT
 ```
+
+## 🤖 Claude Code Automations
+
+Three durable Claude Code automations keep the repository state synchronized and documented. All follow the same **main-first** pattern: pull `origin/main` before reading, write output, then commit and push back to `origin/main`. This means any agent — local or remote — always sees the latest state after a pull.
+
+| Automation | Schedule | What it does | Output pushed to main |
+| :--- | :--- | :--- | :--- |
+| `update-claude-md` | Mon 09:03 | Reviews recent git history, Makefile, and Steward CLI; updates CLAUDE.md with genuinely new commands or patterns | `CLAUDE.md` + memory log |
+| `daily-todo-tracker` | Daily 08:07 | Scans all `todo/*.md`, trackers, and gap register; writes a structured daily status digest | `.healthos-steward/memory/automations/daily-todo-tracker/YYYY-MM-DD.md` + `latest.md` |
+| `sync-work-plan` | Mon/Wed/Fri 08:47 | Builds a truth table for every open documental task; marks completed, unblocks dependencies, surfaces new gaps | `docs/execution/20-documental-todos-work-plan.md` + memory log |
+
+Automation definitions: `.claude/automations/` · Cron registry: `.claude/scheduled_tasks.json`
+
+To run any automation immediately: ask Claude Code directly (e.g. *"rode o daily-todo-tracker agora"*).
+
+```mermaid
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#f0fdf4', 'primaryBorderColor': '#86efac', 'primaryTextColor': '#14532d', 'clusterBkg': '#fafafa', 'clusterBorder': '#e2e8f0', 'titleColor': '#0f172a', 'edgeLabelBackground': '#f8fafc', 'fontFamily': 'ui-sans-serif, system-ui, -apple-system'}}}%%
+flowchart LR
+    classDef trigger  fill:#f0fdf4,stroke:#22c55e,stroke-width:2px,color:#14532d
+    classDef git      fill:#dbeafe,stroke:#3b82f6,stroke-width:2px,color:#1e3a8a
+    classDef read     fill:#fef9c3,stroke:#f59e0b,stroke-width:2px,color:#78350f
+    classDef write    fill:#ede9fe,stroke:#8b5cf6,stroke-width:2px,color:#4c1d95
+    classDef mem      fill:#fce7f3,stroke:#ec4899,stroke-width:2px,color:#831843
+
+    CRON[Cron trigger\nor manual request]:::trigger
+    STASH[stash + checkout main\ngit pull origin main]:::git
+    READ[read sources\ndocs · todo · trackers · gaps · git log]:::read
+    WRITE[write output\ndoc update or digest]:::write
+    COMMIT[git add + commit\ngit push origin main]:::git
+    RESTORE[restore branch\ngit stash pop]:::git
+    MEM[.healthos-steward/memory/\nautomations/]:::mem
+
+    CRON --> STASH --> READ --> WRITE --> COMMIT --> RESTORE
+    WRITE --> MEM
+    MEM --> COMMIT
+```
+
+### Documental work plan
+
+`docs/execution/20-documental-todos-work-plan.md` is the living plan for all open documentation tasks (9 tasks across 3 phases). It is kept synchronized by the `sync-work-plan` automation.
+
+Phase execution prompts (self-contained, ready for any AI agent) live in `docs/execution/prompts/`:
+
+| Prompt file | Phase | Tasks |
+| :--- | :--- | :--- |
+| `phase-1-settler-territory.md` | Phase 1 | ST-006 Territory records · ST-002 Settler profiles · ST-003 Settlement schema |
+| `phase-2-architecture-proposals.md` | Phase 2 | CL-006 Error envelope · OPS-003 Incident command set · ST-004 healthos-mcp spec |
+| `phase-3-xcode-agent-streams.md` | Phase 3 | Stream C tool contracts · Stream D backend contract · Stream F Xcode envelope |
 
 ## Canonical hierarchy
 

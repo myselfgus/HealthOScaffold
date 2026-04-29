@@ -4,7 +4,7 @@ automation-id: update-claude-md
 schedule: weekly — Monday 09:03 local
 memory: .healthos-steward/memory/automations/update-claude-md/memory.md
 target-agent: Claude Code
-git-target: origin/main (sempre trabalha sobre main, faz push para main)
+git-target: origin/main (sempre trabalha sobre main; push para main a cada run — inclui memory file mesmo sem mudanças no CLAUDE.md)
 last-run: never
 ---
 

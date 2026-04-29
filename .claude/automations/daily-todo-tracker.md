@@ -4,18 +4,29 @@ automation-id: daily-todo-tracker
 schedule: daily — 08:07 local
 memory: .healthos-steward/memory/automations/daily-todo-tracker/
 target-agent: Claude Code
-git-target: leitura de origin/main (pull antes de ler); não faz commit nem push
+git-target: origin/main (pull antes de ler, commit + push digest para main após cada run)
 last-run: never
 ---
 
 Varre todos os TODOs, blockers e pendências do repositório e escreve um digest diário de status.
 
-## Padrão git (pull main antes de ler)
+## Padrão git (main-first — commit + push após cada run)
 
 ```bash
-git -C $REPO pull origin main 2>/dev/null || true
+# Antes de ler:
+CURRENT=$(git -C $REPO rev-parse --abbrev-ref HEAD)
+git -C $REPO stash 2>/dev/null || true
+git -C $REPO checkout main && git -C $REPO pull origin main
+
+# Após escrever o digest:
+git -C $REPO add .healthos-steward/memory/automations/daily-todo-tracker/
+git -C $REPO commit -m "chore(auto): daily-todo-tracker digest YYYY-MM-DD"
+git -C $REPO push origin main
+
+# Restaurar estado anterior:
+git -C $REPO checkout $CURRENT 2>/dev/null || true
+git -C $REPO stash pop 2>/dev/null || true
 ```
-Esta automação NÃO commita nem faz push. Apenas lê de main e escreve em memória local.
 
 ## O que fazer
 
@@ -100,7 +111,6 @@ Esta automação NÃO commita nem faz push. Apenas lê de main e escreve em mem�
 - **Não modifique** nenhum arquivo em `docs/execution/`.
 - **Não marque** nenhum TODO como concluído.
 - **Não crie** branches nem PRs.
-- **Não commite** nada.
-- Escreva apenas em `.healthos-steward/memory/automations/daily-todo-tracker/`.
+- Commite e faça push **apenas** de `.healthos-steward/memory/automations/daily-todo-tracker/`.
 - Se um arquivo estiver faltando ou ilegível, registre no digest e continue.
 - O digest é memória derivada — nunca declare production readiness nem altere claims.

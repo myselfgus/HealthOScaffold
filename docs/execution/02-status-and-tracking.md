@@ -6,6 +6,38 @@ Current phase: Controlled implementation — first vertical slice started
 
 ## Completed recently
 
+
+## STR-001 — Wire HealthOSProviders into HealthOSMentalSpace (2026-04-29)
+
+Objective: wire `HealthOSProviders` into `HealthOSMentalSpace` so future provider-backed Mental Space executors can route through the governed provider layer without moving constitutional authority out of Core.
+
+Files touched:
+- `swift/Package.swift`
+- `docs/execution/21-structural-ontology-and-product-readiness-plan.md`
+- `docs/execution/todo/runtimes-and-aaci.md`
+- `docs/execution/02-status-and-tracking.md`
+
+Invariants involved:
+- Inv 1 — Core sovereignty
+- Inv 17 — provider honesty
+- Inv 43 — scaffold/foundation maturity is not production readiness
+
+Validation:
+- `cd swift && swift build` PASS
+- `cd swift && swift test` PASS
+- `cd swift && swift package dump-package | grep -A8 HealthOSMentalSpace` PASS (shows `HealthOSProviders`)
+- `make validate-docs` PASS
+- `make validate-all` PASS
+
+Result:
+- STR-001 complete: `HealthOSMentalSpace` now depends on both `HealthOSCore` and `HealthOSProviders`.
+
+Residual gaps:
+- ASL executor still not implemented
+- VDLP executor still not implemented
+- GEM builder still not implemented
+- no provider call introduced
+
 ## RT-010 — Mental Space Runtime contracts and first normalization slice (2026-04-29)
 
 Objective: establish Mental Space Runtime as a staged HealthOS runtime domain for derived linguistic/cognitive artifacts, then implement the first executable normalization stage after transcription without weakening Core law, provider honesty, or app boundaries.

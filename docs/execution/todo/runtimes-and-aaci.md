@@ -4,6 +4,17 @@ Repository identity note: HealthOScaffold is the HealthOS construction repositor
 
 ## COMPLETED
 
+
+### STR-001 Wire HealthOSProviders into HealthOSMentalSpace
+Outcome:
+- `HealthOSMentalSpace` now declares both `HealthOSCore` and `HealthOSProviders` in SwiftPM target dependencies, unblocking provider-backed runtime executor implementation work.
+- No ASL/VDLP/GEM provider execution was implemented in this work unit; executors remain scaffolded fail-closed boundaries.
+Files touched:
+- `swift/Package.swift`
+- `docs/execution/21-structural-ontology-and-product-readiness-plan.md`
+- `docs/execution/todo/runtimes-and-aaci.md`
+- `docs/execution/02-status-and-tracking.md`
+
 ### RT-010 Establish Mental Space Runtime contracts and first normalization slice
 Outcome:
 - Mental Space Runtime is now defined as a staged derived-artifact runtime domain for transcription normalization, ASL, VDLP, and GEM, separate from the async runtime substrate

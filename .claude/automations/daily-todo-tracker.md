@@ -4,10 +4,18 @@ automation-id: daily-todo-tracker
 schedule: daily — 08:07 local
 memory: .healthos-steward/memory/automations/daily-todo-tracker/
 target-agent: Claude Code
+git-target: leitura de origin/main (pull antes de ler); não faz commit nem push
 last-run: never
 ---
 
 Varre todos os TODOs, blockers e pendências do repositório e escreve um digest diário de status.
+
+## Padrão git (pull main antes de ler)
+
+```bash
+git -C $REPO pull origin main 2>/dev/null || true
+```
+Esta automação NÃO commita nem faz push. Apenas lê de main e escreve em memória local.
 
 ## O que fazer
 

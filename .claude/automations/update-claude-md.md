@@ -4,6 +4,7 @@ automation-id: update-claude-md
 schedule: weekly — Monday 09:03 local
 memory: .healthos-steward/memory/automations/update-claude-md/memory.md
 target-agent: Claude Code
+git-target: origin/main (sempre trabalha sobre main, faz push para main)
 last-run: never
 ---
 
@@ -29,6 +30,23 @@ Atualize o CLAUDE.md com workflows, comandos e padrões descobertos recentemente
    - o que você verificou
    - o que você mudou (ou "nenhuma mudança necessária")
    - próxima verificação sugerida
+
+## Padrão git (main-first)
+
+```bash
+# ANTES de qualquer leitura ou edição:
+CURRENT=$(git -C $REPO rev-parse --abbrev-ref HEAD)
+git -C $REPO stash 2>/dev/null || true
+git -C $REPO checkout main
+git -C $REPO pull origin main
+
+# Após commit:
+git -C $REPO push origin main
+
+# Restaurar estado anterior:
+git -C $REPO checkout $CURRENT 2>/dev/null || true
+git -C $REPO stash pop 2>/dev/null || true
+```
 
 ## Restrições
 

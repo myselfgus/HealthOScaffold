@@ -4,10 +4,12 @@ import HealthOSCore
 public struct MentalSpacePipelineOrchestrator: Sendable {
     private let aslExecutor: any ASLExecuting
     private let vdlpExecutor: (any VDLPExecuting)?
+    private let gemBuilder: (any GEMArtifactBuilding)?
 
-    public init(aslExecutor: any ASLExecuting, vdlpExecutor: (any VDLPExecuting)? = nil) {
+    public init(aslExecutor: any ASLExecuting, vdlpExecutor: (any VDLPExecuting)? = nil, gemBuilder: (any GEMArtifactBuilding)? = nil) {
         self.aslExecutor = aslExecutor
         self.vdlpExecutor = vdlpExecutor
+        self.gemBuilder = gemBuilder
     }
 
     public func runASL(
@@ -45,8 +47,29 @@ public struct MentalSpacePipelineOrchestrator: Sendable {
         )
     }
 
+
+    public func runGEM(
+        patientId: String,
+        normalizedTranscriptText: String,
+        aslData: Data,
+        vdlpData: Data,
+        sourceTranscriptRef: String,
+        lawfulContext: [String: String],
+        state: MentalSpaceRunArtifacts
+    ) async throws -> GEMExecutionResult {
+        try MentalSpacePipelineValidator.validateCanRun(stage: .gem, state: state)
+        guard let gemBuilder else { throw GEMArtifactBuilderError.providerUnavailable }
+        return try await gemBuilder.execute(
+            patientId: patientId,
+            transcriptionText: normalizedTranscriptText,
+            aslData: aslData,
+            vdlpData: vdlpData,
+            sourceTranscriptRef: sourceTranscriptRef,
+            lawfulContext: lawfulContext
+        )
+    }
 }
 
 public enum MentalSpacePipeline {
-    public static let moduleVersion = "rt-msr-001"
+    public static let moduleVersion = "rt-msr-003"
 }

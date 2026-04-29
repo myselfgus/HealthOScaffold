@@ -26,7 +26,7 @@ Read this document **before** reading the per-domain TODO files. The priority ti
 | STR-001 | **P0** | DONE | Wire `HealthOSProviders` into `HealthOSMentalSpace` in Package.swift | — |
 | RT-MSR-001 | **P0** | DONE | Implement `ASLExecutor` with real Claude API adapter | STR-001 |
 | RT-MSR-002 | **P0** | DONE | Implement `VDLPExecutor` with real Claude API adapter | RT-MSR-001 |
-| RT-MSR-003 | **P0** | READY | Implement `GEMArtifactBuilder` with real Claude API adapter | RT-MSR-002 |
+| RT-MSR-003 | **P0** | DONE | Implement `GEMArtifactBuilder` with real Claude API adapter | RT-MSR-002 |
 | STR-002 | **P1** | READY | Archive `Skill macOS/` to `docs/reference/mental-space-legacy/` | — |
 | STR-003 | **P1** | READY | Separate AGENT packages from PRODUCT in `ts/packages/` | — |
 | STR-004 | **P1** | READY | Rename `HealthOSFirstSliceSupport` → `HealthOSSessionRuntime` | — |
@@ -266,7 +266,7 @@ make validate-all
 
 ### RT-MSR-003: Implement `GEMArtifactBuilder` with real Claude API adapter
 
-**Priority:** P0 | **Status:** BLOCKED on RT-MSR-002 | **Branch:** `feat/rt-msr-003-gem-builder`
+**Priority:** P0 | **Status:** DONE (2026-04-29) | **Branch:** `feat/rt-msr-003-gem-builder`
 
 **Prerequisite:** RT-MSR-002 DONE.
 
@@ -680,3 +680,6 @@ When a task is done:
 ---
 
 *Last updated: 2026-04-29 — produced from structural ontology analysis. Supersedes ordering in individual TODO files for priority decisions.*
+
+
+> RT-MSR-003 completion note (2026-04-29): GEM is now provider-backed through HealthOSProviders with fail-closed triad validation (normalized transcript + ASL + VDLP), 50k transcript-only chunking, consolidation, and `mental-space.gem` provenance. Residual gaps remain separate: Apple Foundation Models normalization, semantic retrieval, SQL async runtime, production provider hardening, and STR-002 Skill macOS archival.

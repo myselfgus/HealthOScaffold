@@ -1,80 +1,163 @@
-// GEMArtifactBuilder — Grafo do Espaço-Campo Mental stage executor (scaffold)
-//
-// Wraps the GEM prompt-engineered adapter. The 4-layer graph architecture (.aje, .ire, .e, .epe)
-// and theoretical foundation (Leibniz, Wittgenstein, Spinoza, Euler, Deleuze) live entirely in
-// Prompts/gem-system.md — this file is dispatch, triad validation, and provenance boundary only.
-//
-// Input contract (triad — all three required, none optional):
-//   transcriptionText — full normalized transcript
-//   aslData           — ASL JSON blob from ASLExecutor (ready)
-//   vdlpData          — VDLP JSON blob from VDLPExecutor (ready)
-//
-// Output contract:
-//   GEM JSON blob: gem (.aje, .ire, .e, .epe) + statistics + cross_references
-//   + key_insights (5 strings) + validation_score (float)
-//   Validation thresholds (enforced by prompt, verified here):
-//     global coherence >0.85 | .aje coherence >0.8 | .ire density >0.75 | .e causal_strength >0.8
-//   See Prompts/gem-system.md for full schema and alignment requirements.
-//
-// Chunking: threshold 50k tokens (combined input); split transcription only (ASL+VDLP are
-//   summaries and stay whole). Chunk consolidation: concatenate .aje, .ire, .e, .epe arrays.
-//   See Prompts/gem-system.md Implementation Notes.
-//
-// Dependency: requires ready transcript + ASL + VDLP triad. Any missing upstream artifact
-//   throws .triadIncomplete — the GEM is meaningless without all three inputs.
-//
-// Temperature: 0.2 (unlike ASL/VDLP which use 0; slight variation needed for graph construction).
-//
-// Provider posture: remote only, explicit, lawful-context checked, provenance recorded.
-//
-// See: RT-MSR-001 in docs/execution/todo/runtimes-and-aaci.md
-
 import Foundation
 import HealthOSCore
+import HealthOSProviders
 
-// MARK: - Public API
+public struct GEMExecutionResult: Sendable {
+    public let artifact: GEMArtifact
+    public let provenanceOperation: String
 
-public protocol GEMArtifactBuilding: Sendable {
-    func build(
-        transcriptionText: String,
-        aslData: Data,
-        vdlpData: Data
-    ) async throws -> Data
+    public init(artifact: GEMArtifact, provenanceOperation: String = "mental-space.gem") {
+        self.artifact = artifact
+        self.provenanceOperation = provenanceOperation
+    }
 }
 
-// MARK: - Errors
+public protocol GEMArtifactBuilding: Sendable {
+    func execute(
+        patientId: String,
+        transcriptionText: String,
+        aslData: Data,
+        vdlpData: Data,
+        sourceTranscriptRef: String,
+        lawfulContext: [String: String]
+    ) async throws -> GEMExecutionResult
+}
 
-public enum GEMArtifactBuilderError: Error, Sendable {
+public enum GEMArtifactBuilderError: Error, Sendable, Equatable {
     case triadIncomplete(missing: String)
     case providerUnavailable
-    case validationScoreBelowThreshold(Double)
+    case emptyTranscription
+    case degradedDependency(String)
     case invalidResponse(String)
     case chunkConsolidationFailed
 }
 
-// MARK: - Scaffold placeholder
-
-/// Scaffold placeholder — replace body with real implementation in RT-MSR-001.
-/// Do not call this in production paths; it always throws `.providerUnavailable`.
 public struct GEMArtifactBuilder: GEMArtifactBuilding {
+    public static let chunkTokenThreshold = 50_000
 
-    public init() {}
+    private let router: ProviderRouter
+    private let promptTemplate: String
+    private let model: String
 
-    public func build(
+    public init(router: ProviderRouter, useHaikuModel: Bool = false) throws {
+        self.router = router
+        self.promptTemplate = try Self.loadPromptTemplate()
+        self.model = useHaikuModel ? "claude-3-5-haiku-latest" : "claude-sonnet-4-20250514"
+    }
+
+    public func execute(
+        patientId: String,
         transcriptionText: String,
         aslData: Data,
-        vdlpData: Data
-    ) async throws -> Data {
-        if transcriptionText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-            throw GEMArtifactBuilderError.triadIncomplete(missing: "transcription")
+        vdlpData: Data,
+        sourceTranscriptRef: String,
+        lawfulContext: [String: String]
+    ) async throws -> GEMExecutionResult {
+        let trimmed = transcriptionText.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { throw GEMArtifactBuilderError.emptyTranscription }
+        guard !aslData.isEmpty else { throw GEMArtifactBuilderError.triadIncomplete(missing: "asl") }
+        guard !vdlpData.isEmpty else { throw GEMArtifactBuilderError.triadIncomplete(missing: "vdlp") }
+
+        let aslJSON = try parseProviderJSON(String(decoding: aslData, as: UTF8.self))
+        guard (aslJSON["sintese_interpretativa"] as? [String: Any]) != nil else {
+            throw GEMArtifactBuilderError.degradedDependency("ASL artifact missing sintese_interpretativa")
         }
-        if aslData.isEmpty {
-            throw GEMArtifactBuilderError.triadIncomplete(missing: "asl")
+
+        let vdlpJSON = try parseProviderJSON(String(decoding: vdlpData, as: UTF8.self))
+        guard (vdlpJSON["dimensoes_espaco_mental"] as? [String: Any]) != nil else {
+            throw GEMArtifactBuilderError.degradedDependency("VDLP artifact missing dimensoes_espaco_mental")
         }
-        if vdlpData.isEmpty {
-            throw GEMArtifactBuilderError.triadIncomplete(missing: "vdlp")
+
+        let request = ProviderRoutingRequest(taskClass: .languageModel, dataLayer: .derivedArtifacts, lawfulContext: lawfulContext, finalidade: "mental-space-gem", allowsRemoteFallback: true, fallbackAllowed: true, preferLocal: false)
+        let decision = await router.routeLanguage(request: request)
+        let selection: ProviderSelection
+        switch decision {
+        case .selected(let s), .degradedFallback(let s, _): selection = s
+        case .stubOnly, .deniedByPolicy, .unavailable: throw GEMArtifactBuilderError.providerUnavailable
         }
-        // Scaffold: no provider wired. Fail closed.
-        throw GEMArtifactBuilderError.providerUnavailable
+        guard let provider = await router.languageProvider(for: selection), !selection.isStub else {
+            throw GEMArtifactBuilderError.providerUnavailable
+        }
+
+        let chunks = chunk(transcript: trimmed)
+        var outputs: [[String: Any]] = []
+        for chunk in chunks {
+            let prompt = buildPrompt(patientId: patientId, transcriptionText: chunk, aslData: String(decoding: aslData, as: UTF8.self), vdlpData: String(decoding: vdlpData, as: UTF8.self))
+            let response = try await provider.generate(prompt: prompt, context: [
+                "task": "mental-space-gem",
+                "model": model,
+                "temperature": "0.2",
+                "max_tokens": "60000",
+                "anthropic-beta": "prompt-caching-2024-07-31,extended-cache-ttl-2025-04-11"
+            ])
+            outputs.append(try parseProviderJSON(response))
+        }
+
+        guard let consolidated = consolidate(outputs) else { throw GEMArtifactBuilderError.chunkConsolidationFailed }
+        let layers = ["aje", "ire", "e", "epe"]
+        let gem = (consolidated["gem"] as? [String: Any]) ?? consolidated
+        for layer in layers {
+            guard gem[layer] != nil else { throw GEMArtifactBuilderError.invalidResponse("Missing GEM layer: \(layer)") }
+        }
+
+        let outputData = try JSONSerialization.data(withJSONObject: consolidated, options: [.sortedKeys])
+        let artifact = GEMArtifact(
+            metadata: MentalSpaceArtifactMetadata(stage: .gem, sourceTranscriptRef: sourceTranscriptRef, stageVersion: "rt-msr-003", promptVersion: "gem-system.md", modelProvider: selection.providerId, modelId: provider.modelId ?? model, inputHash: MentalSpaceContentHasher.sha256Hex(for: trimmed), outputHash: MentalSpaceContentHasher.sha256Hex(for: String(decoding: outputData, as: UTF8.self)), lawfulContextSummary: lawfulContext["finalidade"] ?? "mental-space-gem", limitations: ["Derived artifact only", "Non-authorizing", "Gate required"]),
+            graphSummary: ((consolidated["statistics"] as? [String: Any])?["global_summary"] as? String) ?? "GEM graph available.",
+            layerRefs: layers
+        )
+        return GEMExecutionResult(artifact: artifact)
+    }
+
+    private func chunk(transcript: String) -> [String] {
+        let words = transcript.split(whereSeparator: \.isWhitespace)
+        guard words.count > Self.chunkTokenThreshold else { return [transcript] }
+        var result: [String] = []
+        var idx = 0
+        while idx < words.count {
+            let end = min(idx + Self.chunkTokenThreshold, words.count)
+            result.append(words[idx..<end].joined(separator: " "))
+            idx = end
+        }
+        return result
+    }
+
+    private func buildPrompt(patientId: String, transcriptionText: String, aslData: String, vdlpData: String) -> String {
+        promptTemplate
+            .replacingOccurrences(of: "{{patientId}}", with: patientId)
+            .replacingOccurrences(of: "{{transcriptionText}}", with: transcriptionText)
+            .replacingOccurrences(of: "{{aslData}}", with: aslData)
+            .replacingOccurrences(of: "{{vdlpData}}", with: vdlpData)
+    }
+
+    private func parseProviderJSON(_ response: String) throws -> [String: Any] {
+        guard let data = response.data(using: .utf8),
+              let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else {
+            throw GEMArtifactBuilderError.invalidResponse("Provider did not return a valid JSON object")
+        }
+        return json
+    }
+
+    private func consolidate(_ chunks: [[String: Any]]) -> [String: Any]? {
+        guard let first = chunks.first else { return nil }
+        if chunks.count == 1 { return first }
+        var merged = first
+        var gem = ((first["gem"] as? [String: Any]) ?? first)
+        for layer in ["aje", "ire", "e", "epe"] {
+            let values = chunks.flatMap { chunk -> [Any] in
+                let source = ((chunk["gem"] as? [String: Any]) ?? chunk)
+                return source[layer] as? [Any] ?? []
+            }
+            if !values.isEmpty { gem[layer] = values }
+        }
+        merged["gem"] = gem
+        return merged
+    }
+
+    private static func loadPromptTemplate() throws -> String {
+        guard let url = Bundle.module.url(forResource: "gem-system", withExtension: "md", subdirectory: "Prompts") else {
+            throw GEMArtifactBuilderError.invalidResponse("Missing GEM prompt template")
+        }
+        return try String(contentsOf: url, encoding: .utf8)
     }
 }

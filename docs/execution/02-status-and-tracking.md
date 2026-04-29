@@ -971,3 +971,32 @@ Residual gaps:
 - GEM still scaffolded
 - Remote provider use remains explicit and governed
 - Production hardening remains out of scope
+
+
+## RT-MSR-003 — Implement GEMArtifactBuilder with real Claude API adapter (2026-04-29)
+
+Objective: implement GEM stage as a provider-backed executor via HealthOSProviders while preserving fail-closed triad validation and non-authorizing derived artifact boundaries.
+
+Files changed:
+- `swift/Sources/HealthOSMentalSpace/Executors/GEMArtifactBuilder.swift`
+- `swift/Sources/HealthOSMentalSpace/MentalSpacePipeline.swift`
+- `swift/Tests/HealthOSTests/MentalSpaceRuntimeTests.swift`
+- `docs/execution/02-status-and-tracking.md`
+- `docs/execution/21-structural-ontology-and-product-readiness-plan.md`
+- `docs/execution/todo/runtimes-and-aaci.md`
+
+Validation run:
+- `cd swift && swift build`
+- `cd swift && swift test --filter MentalSpaceRuntimeTests`
+- `cd swift && swift test --filter AsyncRuntimeGovernanceTests`
+- `cd swift && swift test`
+- `make validate-docs`
+- `make validate-schemas`
+- `make validate-contracts`
+- `make validate-all` (fails due to pre-existing TypeScript steward workspace TS18003: no src/**/*.ts in ts/packages/healthos-steward/tsconfig.json)
+
+Result: RT-MSR-003 implementation and targeted/full Swift validations passed; validate-all remains blocked by unrelated pre-existing TS workspace issue.
+
+Invariants: Inv 1 (Core sovereignty), Inv 17/22 (provider honesty / anti-fake posture), Inv 25a (MSR artifacts derived and gated), Inv 43 (implementation progress != production readiness).
+
+Residual gaps: Apple Foundation Models normalization separate; semantic retrieval separate; SQL async runtime separate; production provider hardening out of scope; STR-002 Skill macOS archival still pending.

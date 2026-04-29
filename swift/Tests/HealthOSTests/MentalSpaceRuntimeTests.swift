@@ -305,6 +305,8 @@ extension MentalSpaceRuntimeTests {
 }
 
 private struct MockVDLPProvider: LanguageModelProvider {
+    static let validPayload = "{\"dimensoes_espaco_mental\":{\"v1\":{\"score\":0.5}},\"perfil_dimensional_integrativo\":{\"sintese_global\":\"Resumo VDLP\",\"evidencias\":[\"E1\"]}}"
+
     let isStub: Bool
     let providerName = "anthropic-claude"
     let modelId: String? = "claude-sonnet-4"
@@ -324,6 +326,81 @@ private struct MockVDLPProvider: LanguageModelProvider {
             "dimensoes_espaco_mental": dims,
             "perfil_dimensional_integrativo": ["sintese_global": "Resumo VDLP", "evidencias": ["E1", "E2"]]
         ]
+        let data = try JSONSerialization.data(withJSONObject: payload)
+        return String(decoding: data, as: UTF8.self)
+    }
+}
+
+
+extension MentalSpaceRuntimeTests {
+    func testGEMBuilderFailsWhenASLOrVDLPMissing() async throws {
+        let router = ProviderRouter()
+        try await router.register(MockGEMProvider(isStub: false))
+        let builder = try GEMArtifactBuilder(router: router)
+        await XCTAssertThrowsErrorAsync(try await builder.execute(patientId: "p", transcriptionText: "texto", aslData: Data(), vdlpData: Data(MockVDLPProvider.validPayload.utf8), sourceTranscriptRef: "src", lawfulContext: [:])) { error in
+            XCTAssertEqual(error as? GEMArtifactBuilderError, .triadIncomplete(missing: "asl"))
+        }
+        await XCTAssertThrowsErrorAsync(try await builder.execute(patientId: "p", transcriptionText: "texto", aslData: Data(MockASLProvider.rawPayload.utf8), vdlpData: Data(), sourceTranscriptRef: "src", lawfulContext: [:])) { error in
+            XCTAssertEqual(error as? GEMArtifactBuilderError, .triadIncomplete(missing: "vdlp"))
+        }
+    }
+
+    func testGEMBuilderFailsOnEmptyTranscriptAndStubProvider() async throws {
+        let router = ProviderRouter()
+        try await router.register(MockGEMProvider(isStub: false))
+        let builder = try GEMArtifactBuilder(router: router)
+        await XCTAssertThrowsErrorAsync(try await builder.execute(patientId: "p", transcriptionText: " ", aslData: Data(MockASLProvider.rawPayload.utf8), vdlpData: Data(MockVDLPProvider.validPayload.utf8), sourceTranscriptRef: "src", lawfulContext: [:])) { error in
+            XCTAssertEqual(error as? GEMArtifactBuilderError, .emptyTranscription)
+        }
+
+        let stubRouter = ProviderRouter()
+        try await stubRouter.register(MockGEMProvider(isStub: true))
+        let stubBuilder = try GEMArtifactBuilder(router: stubRouter)
+        await XCTAssertThrowsErrorAsync(try await stubBuilder.execute(patientId: "p", transcriptionText: "texto", aslData: Data(MockASLProvider.rawPayload.utf8), vdlpData: Data(MockVDLPProvider.validPayload.utf8), sourceTranscriptRef: "src", lawfulContext: [:])) { error in
+            XCTAssertEqual(error as? GEMArtifactBuilderError, .providerUnavailable)
+        }
+    }
+
+    func testGEMBuilderReturnsArtifactWithFourLayersAndProvenance() async throws {
+        let router = ProviderRouter()
+        try await router.register(MockGEMProvider(isStub: false))
+        let builder = try GEMArtifactBuilder(router: router)
+        let result = try await builder.execute(patientId: "p", transcriptionText: "texto longo", aslData: Data(MockASLProvider.rawPayload.utf8), vdlpData: Data(MockVDLPProvider.validPayload.utf8), sourceTranscriptRef: "src", lawfulContext: ["finalidade": "care-context"])
+        XCTAssertEqual(result.provenanceOperation, "mental-space.gem")
+        XCTAssertEqual(result.artifact.layerRefs, ["aje", "ire", "e", "epe"])
+        XCTAssertEqual(result.artifact.metadata.stage, .gem)
+        XCTAssertFalse(result.artifact.metadata.legalAuthorizing)
+        XCTAssertTrue(result.artifact.metadata.gateStillRequired)
+    }
+
+    func testGEMPipelineRefusesWhenVDLPMissing() async throws {
+        let router = ProviderRouter()
+        try await router.register(MockASLProvider(validJSON: true, isStub: false))
+        try await router.register(MockVDLPProvider(isStub: false))
+        try await router.register(MockGEMProvider(isStub: false))
+        let orchestrator = try MentalSpacePipelineOrchestrator(aslExecutor: ASLExecutor(router: router), vdlpExecutor: VDLPExecutor(router: router), gemBuilder: GEMArtifactBuilder(router: router))
+        await XCTAssertThrowsErrorAsync(try await orchestrator.runGEM(patientId: "p", normalizedTranscriptText: "text", aslData: Data(MockASLProvider.rawPayload.utf8), vdlpData: Data(MockVDLPProvider.validPayload.utf8), sourceTranscriptRef: "src", lawfulContext: [:], state: MentalSpaceRunArtifacts())) { error in
+            XCTAssertEqual(error as? MentalSpacePipelineError, .vdlpRequired)
+        }
+    }
+}
+
+private struct MockGEMProvider: LanguageModelProvider {
+    let isStub: Bool
+    let providerName = "anthropic-claude"
+    let modelId: String? = "claude-sonnet-4"
+    let modelVersion: String? = "2025-05-14"
+
+    var capabilityProfile: ProviderCapabilityProfile {
+        ProviderCapabilityProfile(providerId: "anthropic-claude", providerKind: .remote, supportedTaskClasses: [.languageModel], allowedDataLayers: [.derivedArtifacts], allowsPHI: true, allowsIdentifiableData: false, requiresNetwork: true, latencyClass: .batch, supportsCostReporting: false, supportsProvenanceReporting: true, isStub: isStub)
+    }
+
+    func generate(prompt: String, context: [String : String]) async throws -> String {
+        XCTAssertEqual(context["temperature"], "0.2")
+        XCTAssertEqual(context["max_tokens"], "60000")
+        XCTAssertEqual(context["anthropic-beta"], "prompt-caching-2024-07-31,extended-cache-ttl-2025-04-11")
+        XCTAssertTrue(prompt.contains("GEM"))
+        let payload: [String: Any] = ["gem": ["aje": [["n":"1"]], "ire": [["n":"2"]], "e": [["n":"3"]], "epe": [["n":"4"]]], "statistics": ["global_summary": "Resumo GEM"]]
         let data = try JSONSerialization.data(withJSONObject: payload)
         return String(decoding: data, as: UTF8.self)
     }

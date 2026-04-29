@@ -334,6 +334,7 @@ Branch: `feat/rt-msr-002-vdlp-executor`
 
 ### RT-MSR-003 Implement GEMArtifactBuilder with real Claude API adapter
 Priority: **P0 — after RT-MSR-002**
+Status: **DONE (2026-04-29)**
 Prerequisite: RT-MSR-002 DONE
 Plan: `docs/execution/21-structural-ontology-and-product-readiness-plan.md` → RT-MSR-003
 Reference: `Skill macOS/6-gem.ts`
@@ -400,3 +401,6 @@ Update 2026-04-29: ASL stage is now provider-backed through HealthOSProviders wi
 
 
 - [DONE] RT-MSR-002: VDLP executor now provider-backed via HealthOSProviders; fail-closed on missing/degraded ASL and empty speech; GEM remains scaffolded and out of scope for this unit.
+
+
+- [DONE] RT-MSR-003: GEM executor path is provider-backed through HealthOSProviders with fail-closed dependency checks for normalized transcript + ASL + VDLP, transcription-only chunking at 50k threshold, consolidation, and `mental-space.gem` provenance in tests. ASL/VDLP/GEM now all have provider-backed executor paths with mocked test coverage. This does not imply production-ready ML or clinical diagnosis authority. STR-002 (Skill macOS archive) remains separate.

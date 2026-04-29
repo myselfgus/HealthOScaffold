@@ -3,6 +3,7 @@ import XCTest
 @testable import HealthOSAACI
 @testable import HealthOSProviders
 @testable import HealthOSFirstSliceSupport
+@testable import HealthOSMentalSpace
 
 final class MentalSpaceRuntimeTests: XCTestCase {
     func testPipelineOrderingBlocksDownstreamStagesUntilPrerequisitesExist() throws {
@@ -165,5 +166,85 @@ private struct LocalNormalizerProvider: LanguageModelProvider {
         return prompt
             .split(whereSeparator: { $0.isWhitespace })
             .joined(separator: " ")
+    }
+}
+
+
+extension MentalSpaceRuntimeTests {
+    func testASLExecutorFailsOnEmptyInput() async throws {
+        let router = ProviderRouter()
+        try await router.register(MockASLProvider(validJSON: true, isStub: false))
+        let executor = try ASLExecutor(router: router)
+        await XCTAssertThrowsErrorAsync(try await executor.execute(patientId: "p", transcriptionText: "   ", sourceTranscriptRef: "ref", lawfulContext: [:])) { error in
+            XCTAssertEqual(error as? ASLExecutorError, .emptyTranscription)
+        }
+    }
+
+    func testASLExecutorFailsWhenProviderIsStubOnly() async throws {
+        let router = ProviderRouter()
+        try await router.register(MockASLProvider(validJSON: true, isStub: true))
+        let executor = try ASLExecutor(router: router)
+        await XCTAssertThrowsErrorAsync(try await executor.execute(patientId: "p", transcriptionText: "texto", sourceTranscriptRef: "ref", lawfulContext: [:])) { error in
+            XCTAssertEqual(error as? ASLExecutorError, .providerUnavailable)
+        }
+    }
+
+    func testASLExecutorReturnsArtifactAndProvenanceMarker() async throws {
+        let router = ProviderRouter()
+        try await router.register(MockASLProvider(validJSON: true, isStub: false))
+        let executor = try ASLExecutor(router: router)
+        let result = try await executor.execute(patientId: "p", transcriptionText: "texto clínico", sourceTranscriptRef: "src-ref", lawfulContext: ["finalidade": "care-context"])
+        XCTAssertEqual(result.provenanceOperation, "mental-space.asl")
+        XCTAssertEqual(result.artifact.metadata.stage, .asl)
+        XCTAssertEqual(result.artifact.metadata.sourceTranscriptRef, "src-ref")
+        XCTAssertFalse(result.artifact.metadata.legalAuthorizing)
+        XCTAssertTrue(result.artifact.metadata.gateStillRequired)
+        XCTAssertNotEqual(result.artifact.linguisticSummary, MockASLProvider.rawPayload)
+    }
+
+    func testASLPipelineRefusesWhenNormalizationMissing() async throws {
+        let router = ProviderRouter()
+        try await router.register(MockASLProvider(validJSON: true, isStub: false))
+        let orchestrator = try MentalSpacePipelineOrchestrator(aslExecutor: ASLExecutor(router: router))
+        await XCTAssertThrowsErrorAsync(try await orchestrator.runASL(patientId: "p", normalizedTranscriptText: "text", sourceTranscriptRef: "src", lawfulContext: [:], state: MentalSpaceRunArtifacts())) { error in
+            XCTAssertEqual(error as? MentalSpacePipelineError, .normalizedTranscriptRequired)
+        }
+    }
+}
+
+private struct MockASLProvider: LanguageModelProvider {
+    static let rawPayload = "{\"sintese_interpretativa\":{\"perfil_linguistico_geral\":\"Resumo ASL\",\"achados_mais_salientes\":[\"Evidência A\",\"Evidência B\"]}}"
+    let validJSON: Bool
+    let isStub: Bool
+    let providerName = "anthropic-claude"
+    let modelId: String? = "claude-sonnet-4"
+    let modelVersion: String? = "2025-05-14"
+
+    var capabilityProfile: ProviderCapabilityProfile {
+        ProviderCapabilityProfile(providerId: "anthropic-claude", providerKind: .remote, supportedTaskClasses: [.languageModel], allowedDataLayers: [.derivedArtifacts], allowsPHI: true, allowsIdentifiableData: false, requiresNetwork: true, latencyClass: .batch, supportsCostReporting: false, supportsProvenanceReporting: true, isStub: isStub)
+    }
+
+    func generate(prompt: String, context: [String : String]) async throws -> String {
+        XCTAssertTrue(prompt.contains("Falante ID"))
+        XCTAssertEqual(context["temperature"], "0")
+        XCTAssertEqual(context["max_tokens"], "60000")
+        XCTAssertEqual(context["anthropic-beta"], "prompt-caching-2024-07-31,extended-cache-ttl-2025-04-11")
+        return validJSON ? Self.rawPayload : "not-json"
+    }
+}
+
+private extension XCTestCase {
+    func XCTAssertThrowsErrorAsync<T>(
+        _ expression: @autoclosure () async throws -> T,
+        _ errorHandler: (Error) -> Void = { _ in },
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) async {
+        do {
+            _ = try await expression()
+            XCTFail("Expected error to be thrown", file: file, line: line)
+        } catch {
+            errorHandler(error)
+        }
     }
 }

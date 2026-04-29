@@ -24,7 +24,7 @@ Read this document **before** reading the per-domain TODO files. The priority ti
 | Task ID | Priority | Status | Title | Prerequisite |
 |---------|----------|--------|-------|-------------|
 | STR-001 | **P0** | DONE | Wire `HealthOSProviders` into `HealthOSMentalSpace` in Package.swift | — |
-| RT-MSR-001 | **P0** | READY | Implement `ASLExecutor` with real Claude API adapter | STR-001 |
+| RT-MSR-001 | **P0** | DONE | Implement `ASLExecutor` with real Claude API adapter | STR-001 |
 | RT-MSR-002 | **P0** | BLOCKED | Implement `VDLPExecutor` with real Claude API adapter | RT-MSR-001 |
 | RT-MSR-003 | **P0** | BLOCKED | Implement `GEMArtifactBuilder` with real Claude API adapter | RT-MSR-002 |
 | STR-002 | **P1** | READY | Archive `Skill macOS/` to `docs/reference/mental-space-legacy/` | — |

@@ -27,7 +27,7 @@ Read this document **before** reading the per-domain TODO files. The priority ti
 | RT-MSR-001 | **P0** | DONE | Implement `ASLExecutor` with real Claude API adapter | STR-001 |
 | RT-MSR-002 | **P0** | DONE | Implement `VDLPExecutor` with real Claude API adapter | RT-MSR-001 |
 | RT-MSR-003 | **P0** | DONE | Implement `GEMArtifactBuilder` with real Claude API adapter | RT-MSR-002 |
-| STR-002 | **P1** | READY | Archive `Skill macOS/` to `docs/reference/mental-space-legacy/` | — |
+| STR-002 | **P1** | DONE | Archive `Skill macOS/` to `docs/reference/mental-space-legacy/` | — |
 | STR-003 | **P1** | READY | Separate AGENT packages from PRODUCT in `ts/packages/` | — |
 | STR-004 | **P1** | READY | Rename `HealthOSFirstSliceSupport` → `HealthOSSessionRuntime` | — |
 | STR-005 | **P2** | READY | Add placeholder Swift targets for Sortio and CloudClinic | — |

@@ -293,6 +293,20 @@ Files touched:
 - `docs/execution/02-status-and-tracking.md`
 - `docs/execution/todo/runtimes-and-aaci.md`
 
+
+### STR-002 Archive Skill macOS legacy scripts (DONE 2026-04-29)
+Outcome:
+- repository-root `Skill macOS/` scripts were moved with history to `docs/reference/mental-space-legacy/` and are now explicitly archived reference implementations
+- the active Mental Space implementation remains the Swift runtime in `swift/Sources/HealthOSMentalSpace/`
+- this does not imply production-ready ML, clinical authority, or runtime/provider hardening completion
+Files touched:
+- `docs/reference/mental-space-legacy/*`
+- `docs/reference/mental-space-legacy/README.md`
+- `docs/architecture/49-mental-space-runtime.md`
+- `docs/execution/21-structural-ontology-and-product-readiness-plan.md`
+- `docs/execution/todo/runtimes-and-aaci.md`
+- `docs/execution/02-status-and-tracking.md`
+
 ## READY
 
 ### STR-001 Wire HealthOSProviders into HealthOSMentalSpace (Package.swift)
@@ -308,7 +322,7 @@ Priority: **P0 — after STR-001**
 Prerequisite: STR-001 DONE
 Plan: `docs/execution/21-structural-ontology-and-product-readiness-plan.md` → RT-MSR-001
 Skill: `docs/execution/skills/mental-space-runtime-skill.md`
-Reference: `docs/reference/mental-space-legacy/4-asl.ts` (after STR-002) or `Skill macOS/4-asl.ts`
+Reference: `docs/reference/mental-space-legacy/4-asl.ts`
 Definition of done:
 - `ASLExecutor` loads `Prompts/asl-system.md`, calls Claude Sonnet via `HealthOSProviders`, chunks at 10k tokens (parallel batches of 3), parses JSON → `ASLArtifact`, records provenance `mental-space.asl`
 - prompt caching headers: `anthropic-beta: prompt-caching-2024-07-31,extended-cache-ttl-2025-04-11`
@@ -323,7 +337,7 @@ Branch: `feat/rt-msr-001-asl-executor`
 Priority: **P0 — after RT-MSR-001**
 Prerequisite: RT-MSR-001 DONE
 Plan: `docs/execution/21-structural-ontology-and-product-readiness-plan.md` → RT-MSR-002
-Reference: `Skill macOS/5-vdlp.ts`
+Reference: `docs/reference/mental-space-legacy/5-vdlp.ts`
 Definition of done:
 - Requires ready ASL blob + non-empty patient speech; chunk at 10k tokens, speech-only split
 - Claude Sonnet, temp 0, max_tokens 60k, same caching headers
@@ -337,7 +351,7 @@ Priority: **P0 — after RT-MSR-002**
 Status: **DONE (2026-04-29)**
 Prerequisite: RT-MSR-002 DONE
 Plan: `docs/execution/21-structural-ontology-and-product-readiness-plan.md` → RT-MSR-003
-Reference: `Skill macOS/6-gem.ts`
+Reference: `docs/reference/mental-space-legacy/6-gem.ts`
 Definition of done:
 - Requires normalization + ASL + VDLP; chunk at 50k tokens, transcription-only split
 - Claude Sonnet, **temperature 0.2**, max_tokens 60k, same caching headers
@@ -403,4 +417,4 @@ Update 2026-04-29: ASL stage is now provider-backed through HealthOSProviders wi
 - [DONE] RT-MSR-002: VDLP executor now provider-backed via HealthOSProviders; fail-closed on missing/degraded ASL and empty speech; GEM remains scaffolded and out of scope for this unit.
 
 
-- [DONE] RT-MSR-003: GEM executor path is provider-backed through HealthOSProviders with fail-closed dependency checks for normalized transcript + ASL + VDLP, transcription-only chunking at 50k threshold, consolidation, and `mental-space.gem` provenance in tests. ASL/VDLP/GEM now all have provider-backed executor paths with mocked test coverage. This does not imply production-ready ML or clinical diagnosis authority. STR-002 (Skill macOS archive) remains separate.
+- [DONE] RT-MSR-003: GEM executor path is provider-backed through HealthOSProviders with fail-closed dependency checks for normalized transcript + ASL + VDLP, transcription-only chunking at 50k threshold, consolidation, and `mental-space.gem` provenance in tests. ASL/VDLP/GEM now all have provider-backed executor paths with mocked test coverage. This does not imply production-ready ML or clinical diagnosis authority. STR-002 (Skill macOS archive) is complete; scripts now live under `docs/reference/mental-space-legacy/`.

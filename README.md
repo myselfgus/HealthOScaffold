@@ -10,6 +10,8 @@ HealthOS is the full platform. **AACI is one runtime inside HealthOS**. **GOS is
 
 HealthOS mediates all clinical acts through a strictly layered, governance-first fabric.
 
+Steward, Settlers, Settlements, Territories, and `healthos-mcp` are repository engineering concepts outside this clinical/runtime hierarchy. They can inspect, edit, validate, and record repository work; they do not become HealthOS law, runtime automation, or clinical effectuation.
+
 ```mermaid
 %%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#f0f9ff', 'primaryBorderColor': '#bae6fd', 'primaryTextColor': '#0c4a6e', 'clusterBkg': '#fafafa', 'clusterBorder': '#e2e8f0', 'titleColor': '#0f172a', 'edgeLabelBackground': '#f8fafc', 'fontFamily': 'ui-sans-serif, system-ui, -apple-system'}}}%%
 graph TD
@@ -134,6 +136,7 @@ Use the README as the entry surface, then branch by intent.
 | understand current maturity and gaps | `docs/execution/11-current-maturity-map.md` | `13-scaffold-release-candidate-criteria.md`, `14-final-gap-register.md` |
 | start coding safely | `docs/execution/README.md` | `01-agent-operating-protocol.md`, `02-status-and-tracking.md`, relevant `todo/*.md`, relevant `skills/*.md` |
 | understand Steward for Xcode | `docs/architecture/45-healthos-xcode-agent.md` | `docs/execution/17-healthos-xcode-agent-migration-plan.md`, `.healthos-steward/README.md`, `ts/packages/healthos-steward/README.md` |
+| understand Steward, Settlers, Settlements, and Territories | `docs/architecture/47-steward-settler-engineering-model.md` | `docs/execution/19-settler-model-task-tracker.md`, `.healthos-settler/README.md`, `.healthos-territory/README.md` |
 
 ### Visual Reading Map
 
@@ -153,7 +156,7 @@ flowchart TD
     A1[Architecture\n01 overview · 19 doctrine · 46 sovereignty]:::arch
     A2[Execution\nREADME · protocol · status · maturity · gaps]:::exec
     A3[Code Surfaces\nswift · ts · schemas · sql]:::code
-    A4[Steward\n45 architecture · 17 migration · package readmes]:::steward
+    A4[Repository Engineering\nSteward · Settlers · Territories]:::steward
 
     R --> A1
     R --> A2
@@ -168,8 +171,9 @@ flowchart TD
     A2 --> A23[What to do next]
     A3 --> A31[Executable first slice]
     A3 --> A32[Cross-language contracts]
-    A4 --> A41[Current baseline]
-    A4 --> A42[Target architecture]
+    A4 --> A41[Steward baseline]
+    A4 --> A42[Settler doctrine]
+    A4 --> A43[Territory records]
 ```
 
 ## 🗺️ Repository Atlas
@@ -183,6 +187,7 @@ graph LR
     classDef exec fill:#fef3c7,stroke:#f59e0b,stroke-width:2px,color:#78350f
     classDef code fill:#ede9fe,stroke:#8b5cf6,stroke-width:2px,color:#4c1d95
     classDef data fill:#dcfce7,stroke:#22c55e,stroke-width:2px,color:#14532d
+    classDef agent fill:#fdf2f8,stroke:#ec4899,stroke-width:2px,color:#831843
 
     D[docs/architecture\nCanonical doctrine]:::docs
     E[docs/execution\nProtocol · status · TODO · handoff]:::exec
@@ -190,15 +195,19 @@ graph LR
     W[swift/\nCore · AACI · apps · tests]:::code
     T[ts/\ncontracts · runtimes · tooling · steward]:::code
     P[python/\nOffline ML governance scaffolds]:::code
+    EG[.healthos-steward\n.healthos-settler\n.healthos-territory]:::agent
 
     D -->|defines boundaries for| W
     D -->|defines boundaries for| T
+    D -->|canonical doctrine for| EG
     E -->|governs work order for| W
     E -->|governs work order for| T
+    E -->|tracks engineering records for| EG
     S -->|align with| W
     S -->|align with| T
     W -->|first executable slice| T
     P -->|offline-only support posture| W
+    EG -. outside clinical/runtime hierarchy .-> D
 ```
 
 ## 🔎 What To Read Next
@@ -311,6 +320,9 @@ Read in order before coding:
 - `sql/migrations/001_init.sql` — canonical metadata schema scaffold
 - `ops/` and `scripts/` — local operational scaffolding, bootstrap, network and backup notes
 - `apps/` — interface boundary scaffolds/documentation
+- `.healthos-steward/` — derived Steward state, policies, prompts, and session memory
+- `.healthos-settler/` — documentation-only Settler profile and Settlement record scaffolds
+- `.healthos-territory/` — documentation-only Territory record scaffolds
 
 ### Code-to-doc orientation
 
@@ -320,15 +332,21 @@ Read in order before coding:
 | AACI and first slice | `docs/architecture/09-aaci.md`, `28-first-slice-executable-path.md` | `swift/Sources/HealthOSAACI/`, `swift/Sources/HealthOSFirstSliceSupport/` |
 | GOS | `29-governed-operational-spec.md` to `34-gos-review-and-activation-policy.md` | `ts/packages/healthos-gos-tooling/`, `swift/Sources/HealthOSCore/` |
 | Apps/interfaces | `11-scribe.md`, `12-sortio.md`, `13-cloudclinic.md`, `43-cross-app-coordination-shared-surfaces.md` | `swift/Sources/HealthOSScribeApp/`, app boundary contracts in `swift/Sources/HealthOSCore/` |
-| Steward | `45-healthos-xcode-agent.md`, `46-apple-sovereignty-architecture.md` | `ts/packages/healthos-steward/`, `.healthos-steward/` |
+| Steward / Settlers / Territories | `45-healthos-xcode-agent.md`, `46-apple-sovereignty-architecture.md`, `47-steward-settler-engineering-model.md` | `ts/packages/healthos-steward/`, `.healthos-steward/`, `.healthos-settler/`, `.healthos-territory/` |
 
-## Steward (engineering agent)
+## Steward, Settlers, and Territories
 
 Steward is the canonical engineering agent for this repository. `healthos-steward` is the CLI, package, and repository-local state root.
 
 - CLI and package: `ts/packages/healthos-steward/`
 - Repository-local derived state root: `.healthos-steward/`
 - Current persisted runtime state: `.healthos-steward/memory/sessions/`
+
+Settlers are specialized engineering agent profiles. Settlements are bounded engineering work units. Territories are documented repository domains. The canonical model is `docs/architecture/47-steward-settler-engineering-model.md`.
+
+- Settler documentation root: `.healthos-settler/`
+- Territory documentation root: `.healthos-territory/`
+- Current maturity: documentation scaffold only; no executable Settlers, Settlement schema, Territory loader, or `healthos-mcp` server is implemented.
 
 **Steward for Xcode** is the Xcode-integration posture. Steward for Xcode integrates with Xcode Intelligence as an Apple-controlled engineering runtime surface, while HealthOS contributes instructions, `healthos-mcp`, derived repository memory, and deterministic CLI operations. See `docs/architecture/45-healthos-xcode-agent.md` for target architecture and `docs/execution/17-healthos-xcode-agent-migration-plan.md` for the migration plan.
 
@@ -349,7 +367,33 @@ Target future operations such as `scan-status`, `get-handoff`, `next-task`, `val
 
 `healthos-mcp` is the repository-maintenance MCP server for Steward (doctrine-only; not yet implemented). It is distinct from any future Core-governed runtime MCP servers for clinical or operational automation.
 
-Canonical truth resides in `docs/` and project manifests. Steward memory is derived operational state. Steward is non-clinical, non-constitutional, and non-authorizing.
+Canonical truth resides in `docs/` and project manifests. Steward memory, Settler scaffolds, Settlement records, and Territory records are derived or instructional engineering surfaces. They are non-clinical, non-constitutional, and non-authorizing.
+
+```mermaid
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#fdf2f8', 'primaryBorderColor': '#f9a8d4', 'primaryTextColor': '#831843', 'clusterBkg': '#ffffff', 'clusterBorder': '#e5e7eb', 'titleColor': '#0f172a', 'edgeLabelBackground': '#f8fafc', 'fontFamily': 'ui-sans-serif, system-ui, -apple-system'}}}%%
+flowchart TD
+    classDef steward fill:#fdf2f8,stroke:#ec4899,stroke-width:2px,color:#831843
+    classDef settler fill:#f5f3ff,stroke:#8b5cf6,stroke-width:2px,color:#4c1d95
+    classDef territory fill:#ecfeff,stroke:#06b6d4,stroke-width:2px,color:#164e63
+    classDef docs fill:#ecfdf5,stroke:#22c55e,stroke-width:2px,color:#14532d
+    classDef boundary fill:#f1f5f9,stroke:#94a3b8,stroke-width:2px,color:#334155
+
+    DOCS[Official docs\ncanonical truth]:::docs
+    STEW[Steward\ncoordinator]:::steward
+    SETT[Settler profiles\nspecialized instructions]:::settler
+    WORK[Settlements\nbounded work records]:::settler
+    TERR[Territories\nrepository domains]:::territory
+    MCP[healthos-mcp\nrepository maintenance\nnot implemented]:::boundary
+
+    DOCS --> STEW
+    DOCS --> TERR
+    STEW -->|frames| WORK
+    STEW -->|chooses| SETT
+    SETT -->|operates within| TERR
+    WORK -->|records scope and validation| DOCS
+    MCP -. future typed repo operations .-> STEW
+    MCP -. future typed repo operations .-> SETT
+```
 
 ## Canonical hierarchy
 

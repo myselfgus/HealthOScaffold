@@ -73,3 +73,9 @@ Use these docs as the target source of truth for future steward work:
 The intended evolution is Steward for Xcode: Xcode Intelligence as the Apple-controlled engineering runtime surface, with HealthOS contributing instructions, `healthos-mcp`, derived repository memory, and an expanded deterministic CLI.
 
 Settler model note: the Steward / Settler / Settlement / Territory model was added as doctrine-only in `docs/architecture/47-steward-settler-engineering-model.md`, with future implementation tracked in `docs/execution/19-settler-model-task-tracker.md`. Future work should use those docs and must not treat Settlers as clinical or runtime agents.
+
+Repository-local roots now exist for the model:
+- `.healthos-settler/` is a documentation-only root for future Settler profiles and Settlement records.
+- `.healthos-territory/` is a documentation-only root for future Territory records.
+
+These roots are subordinate to official docs and do not implement executable Settlers, a Settlement schema, a Territory loader, or `healthos-mcp`.

@@ -15,7 +15,7 @@ Outcome:
 - expanded `ScribeSessionBridgeState.gosRuntimeState` from coarse active/inactive status into an app-safe audit surface with active workflow title, bundle/spec identity, bound actors/families, reasoning boundaries, and SOAP/referral/prescription mediation markers
 - updated CLI and minimal SwiftUI Scribe output so the executable slice shows where AACI consumed GOS (`gos.use.compose.soap`, `gos.use.derive.referral`, `gos.use.derive.prescription`) while keeping app law ownership out of Scribe
 - preserved raw-spec boundary: no compiled GOS spec JSON or runtime-binding JSON is exposed to the app surface, and GOS remains `legalAuthorizing=false`, gate-required, and draft-only for referral/prescription
-- validation: `swift build`, `swift run HealthOSCLI`, `swift run HealthOSCLI --reject-gate`, `swift run HealthOSScribeApp --smoke-test`, and `swift run HealthOSScribeApp --smoke-test-audio` passed; `swift test` remains blocked by pre-existing compile errors in unrelated test files
+- validation: `swift build`, `swift run HealthOSCLI`, `swift run HealthOSCLI --reject-gate`, `swift run HealthOSScribeApp --smoke-test`, and `swift run HealthOSScribeApp --smoke-test-audio` passed; follow-up `swift test` passed after TEST-001 cleanup
 Files touched:
 - `swift/Sources/HealthOSCore/ScribeFirstSliceBridge.swift`
 - `swift/Sources/HealthOSFirstSliceSupport/ScribeFirstSliceAdapter.swift`

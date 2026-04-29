@@ -6,6 +6,31 @@ Current phase: Controlled implementation — first vertical slice started
 
 ## Completed recently
 
+## TEST-001 — Swift test blocker cleanup for app/retrieval boundary suites (2026-04-28)
+
+Objective: remove stale Swift XCTest compile blockers that prevented the repository test suite from running after the Scribe/GOS visibility work.
+
+Files touched:
+- `swift/Tests/HealthOSTests/CrossAppCoordinationContractsTests.swift` — moved the Sortio raw-CPF boundary test back inside the test case so shared helpers remain in scope
+- `swift/Tests/HealthOSTests/RetrievalMemoryGovernanceTests.swift` — moved the semantic-retrieval fixture test back inside the test case and updated its `RetrievalQuery` construction to the current contract shape
+- `swift/Tests/HealthOSTests/UserSovereigntyGovernanceTests.swift` — corrected the direct-identifier policy fixture so it exercises the intended fail-closed rule after lawful-context validation
+- `docs/execution/02-status-and-tracking.md` — this entry and validation status correction
+- `docs/execution/todo/apps-and-interfaces.md` — Scribe/GOS validation note updated now that `swift test` passes
+- `docs/execution/todo/runtimes-and-aaci.md` — AACI/GOS validation note updated now that `swift test` passes
+
+Invariants involved: Inv 4 (apps do not interpret raw GOS spec), Inv 21/22 (retrieval honesty and provider boundary), Inv 31/32 (user-agent/patient sovereignty boundary), Inv 39/40/41 (cross-app app-safe envelope and refs).
+
+Validation:
+- `swift test` PASS — 241 tests, 0 failures
+
+Done criteria:
+- Swift XCTest target compiles again
+- prior `CrossAppCoordinationContractsTests.swift` and `RetrievalMemoryGovernanceTests.swift` top-level brace/scope blockers are gone
+- the residual user-agent fixture failure is corrected without weakening runtime/app boundary rules
+
+Residual gaps:
+- no production capability is implied; this work only restores local Swift test execution and boundary-regression coverage
+
 ## DOC-002 — README entry-surface expansion and visual atlas pass (2026-04-28)
 
 Objective: strengthen `README.md` as the primary entry surface for HealthOS by adding clearer reading paths, repository/document maps, and more visually structured diagrams without removing existing constitutional content.
@@ -123,7 +148,7 @@ Residual gaps:
 - kept the Scribe/CLI surface informational and provenance-facing only: no raw compiled spec/runtime-binding JSON is exposed, and `legalAuthorizing=false`, `gateStillRequired=true`, and draft-only semantics remain explicit
 - updated the minimal SwiftUI Scribe validation surface and Scribe smoke output to show active bundle/spec, bound actors, and exact `gos.use.*` mediation operations
 - updated runtime-state/app-consumption docs so apps can audit GOS-mediated AACI work without interpreting GOS as sovereign policy
-- validation: `swift build` PASS; `swift run HealthOSCLI` PASS; `swift run HealthOSCLI --reject-gate` PASS; `swift run HealthOSScribeApp --smoke-test` PASS; `swift run HealthOSScribeApp --smoke-test-audio` PASS; `swift test` still FAILS on pre-existing compile errors in `CrossAppCoordinationContractsTests.swift` and `RetrievalMemoryGovernanceTests.swift`
+- validation: `swift build` PASS; `swift run HealthOSCLI` PASS; `swift run HealthOSCLI --reject-gate` PASS; `swift run HealthOSScribeApp --smoke-test` PASS; `swift run HealthOSScribeApp --smoke-test-audio` PASS; follow-up `swift test` PASS after TEST-001 cleanup
 Files touched:
 - `swift/Sources/HealthOSCore/ScribeFirstSliceBridge.swift`
 - `swift/Sources/HealthOSFirstSliceSupport/ScribeFirstSliceAdapter.swift`
@@ -143,7 +168,7 @@ Files touched:
 - linked the referral and prescription draft derivatives to the active GOS resolved runtime view through an explicit `DerivedDraftOperationalGuidance` contract carried on the existing same-session/SOAP/context spine link
 - derived draft payloads, persisted metadata, session-event attributes, and note summaries now surface bounded operational guidance: actor id, semantic role, primitive families, reasoning boundary, `gos.use.derive.*` operation, draft-only flag, gate-required flag, and non-authorizing posture
 - kept derivation intentionally low-authority: no new clinical semantics, no GOS mini-language, no referral/prescription effectuation path, and both derivatives remain `DraftStatus.draft`
-- validation status: `swift build` PASS; `swift test` still FAILS before running this suite due pre-existing compile errors in `CrossAppCoordinationContractsTests.swift` and `RetrievalMemoryGovernanceTests.swift`; `cd ts && npm run build` PASS; `make validate-schemas` PASS; `swift run HealthOSCLI` PASS; `swift run HealthOSCLI --reject-gate` PASS; `swift run HealthOSScribeApp --smoke-test` PASS; `swift run HealthOSScribeApp --smoke-test-audio` PASS
+- validation status: `swift build` PASS; follow-up `swift test` PASS after TEST-001 cleanup; `cd ts && npm run build` PASS; `make validate-schemas` PASS; `swift run HealthOSCLI` PASS; `swift run HealthOSCLI --reject-gate` PASS; `swift run HealthOSScribeApp --smoke-test` PASS; `swift run HealthOSScribeApp --smoke-test-audio` PASS
 Files touched:
 - `swift/Sources/HealthOSCore/FirstSliceContracts.swift`
 - `swift/Sources/HealthOSAACI/AACI.swift`

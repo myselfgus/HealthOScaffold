@@ -190,18 +190,6 @@ final class CrossAppCoordinationContractsTests: XCTestCase {
         )
     }
 
-    private func makeRedaction() -> RedactionSurfaceStatus {
-        RedactionSurfaceStatus(
-            status: .pseudonymized,
-            directIdentifierPresent: false,
-            reidentificationRequired: false,
-            reidentificationAllowed: false,
-            reason: "default app-safe posture",
-            lawfulScopeSummary: "professional session mediated by core"
-        )
-    }
-}
-
     func testSortioAdapterRejectRawCPF() {
         let envelope = AppSurfaceEnvelope(
             appKind: .sortio,
@@ -221,5 +209,16 @@ final class CrossAppCoordinationContractsTests: XCTestCase {
         XCTAssertThrowsError(try CrossAppSurfaceValidator.validateEnvelope(envelope)) { error in
             XCTAssertEqual(error as? CrossAppSurfaceFailure, .directIdentifierForbidden)
         }
+    }
+
+    private func makeRedaction() -> RedactionSurfaceStatus {
+        RedactionSurfaceStatus(
+            status: .pseudonymized,
+            directIdentifierPresent: false,
+            reidentificationRequired: false,
+            reidentificationAllowed: false,
+            reason: "default app-safe posture",
+            lawfulScopeSummary: "professional session mediated by core"
+        )
     }
 }

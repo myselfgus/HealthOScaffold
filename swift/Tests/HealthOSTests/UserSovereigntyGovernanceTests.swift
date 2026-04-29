@@ -356,8 +356,9 @@ final class UserSovereigntyGovernanceTests: XCTestCase {
     }
 
     func testUserAgentRawCPFLeakDenied() {
-        let scope = UserAgentScope(userId: UUID(), cpfHashRef: "hash", actorId: "actor", runtimeId: "runtime", dataLayersAllowed: [.directIdentifiers], dataLayersDenied: [], allowDirectIdentifiersFlowExplicit: false)
-        let request = UserAgentRequest(scope: scope, requestedCapability: .explainOwnData, lawfulContext: ["patientUserId": UUID().uuidString, "finalidade": "treatment"])
+        let userId = UUID()
+        let scope = UserAgentScope(userId: userId, cpfHashRef: "hash", actorId: "actor", runtimeId: "runtime", dataLayersAllowed: [.directIdentifiers], dataLayersDenied: [], allowDirectIdentifiersFlowExplicit: false)
+        let request = UserAgentRequest(scope: scope, requestedCapability: .explainOwnData, lawfulContext: lawfulContext(patientId: userId))
         
         XCTAssertThrowsError(try UserAgentGovernanceValidator.validateRequest(request)) { error in
             XCTAssertEqual(error as? UserAgentFailure, .directIdentifierFlowRequiresExplicitPolicy)

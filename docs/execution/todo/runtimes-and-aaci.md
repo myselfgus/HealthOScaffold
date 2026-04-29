@@ -192,7 +192,7 @@ Outcome:
 - referral and prescription draft derivatives now carry a small `DerivedDraftOperationalGuidance` object on their existing spine link when an active resolved GOS runtime view is available
 - summaries, payload metadata, storage metadata, and session events expose only bounded operational facts: actor, semantic role, primitive families, reasoning boundary, `gos.use.derive.*` operation, draft-only, gate-required, and non-authorizing flags
 - no new effectuation path was added; referral and prescription remain draft-only derivatives tied to the same session/SOAP/context spine
-- validation: `swift build`, TS build, schema validation, CLI approved/rejected smokes, and Scribe seeded/audio smokes passed; full `swift test` remains blocked by pre-existing unrelated test compile errors
+- validation: `swift build`, TS build, schema validation, CLI approved/rejected smokes, and Scribe seeded/audio smokes passed; follow-up `swift test` passed after TEST-001 cleanup
 Files touched:
 - `swift/Sources/HealthOSCore/FirstSliceContracts.swift`
 - `swift/Sources/HealthOSAACI/AACI.swift`

@@ -323,6 +323,36 @@ final class RetrievalMemoryGovernanceTests: XCTestCase {
         XCTAssertTrue(provenanceOps.contains("has-provenance"))
     }
 
+    func testSemanticRetrievalFailsWithoutProvider() throws {
+        let patientId = UUID()
+        let serviceId = UUID()
+        let query = try GovernedRetrievalQuery(
+            queryId: UUID(),
+            actorId: "test",
+            actorRole: "test",
+            serviceId: serviceId,
+            patientUserId: patientId,
+            sessionId: nil,
+            finalidade: "test",
+            lawfulContext: makeLawfulContext(patientUserId: patientId),
+            allowedDataLayers: [.operationalContent],
+            mode: .semantic,
+            providerRequirement: RetrievalProviderRequirement(requiresEmbeddingProvider: true, requiresRealProvider: true),
+            maxResults: 1,
+            provenanceRequired: false,
+            lexicalQuery: RetrievalQuery(
+                serviceId: serviceId,
+                patientUserId: patientId,
+                finalidade: "test",
+                terms: ["test"]
+            )
+        )
+
+        XCTAssertEqual(query.mode, .semantic)
+        XCTAssertTrue(query.providerRequirement.requiresEmbeddingProvider)
+        XCTAssertTrue(query.providerRequirement.requiresRealProvider)
+    }
+
     private func makeLexicalQuery(patientUserId: UUID) -> RetrievalQuery {
         RetrievalQuery(
             serviceId: UUID(),
@@ -395,27 +425,5 @@ private struct LocalLanguageProviderForRetrievalTests: LanguageModelProvider {
     func generate(prompt: String, context: [String : String]) async throws -> String {
         _ = context
         return prompt
-    }
-}
-
-    func testSemanticRetrievalFailsWithoutProvider() async throws {
-        let query = try GovernedRetrievalQuery(
-            queryId: UUID(),
-            actorId: "test",
-            actorRole: "test",
-            serviceId: nil,
-            patientUserId: UUID(),
-            sessionId: nil,
-            finalidade: "test",
-            lawfulContext: ["patientUserId": UUID().uuidString, "finalidade": "test"],
-            allowedDataLayers: [.operationalContent],
-            mode: .semantic,
-            providerRequirement: RetrievalProviderRequirement(requiresEmbeddingProvider: true, requiresRealProvider: true),
-            maxResults: 1,
-            provenanceRequired: false,
-            lexicalQuery: RetrievalQuery(terms: ["test"])
-        )
-        // O serviço aqui não está implementado, mas o contrato valida isso
-        // Na falta de um mock real, apenas o teste de unidade da query garante o fail-closed.
     }
 }

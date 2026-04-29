@@ -6,20 +6,24 @@ Current phase: Controlled implementation — first vertical slice started
 
 ## Completed recently
 
-## DOC-PLAN-001 — Documentary TODOs work plan (2026-04-28)
+## DOC-PLAN-001 — Documentary TODOs work plan + AI phase prompts (2026-04-28)
 
-Objective: audit the full repository for open documentation TODOs and produce a sequential AI work plan for writing all documental tasks.
+Objective: audit the full repository for open documentation TODOs, produce a sequential AI work plan, and write self-contained execution prompts for each phase.
 
 Files touched:
 - `docs/execution/20-documental-todos-work-plan.md` — comprehensive plan with 9 tasks across 3 phases
+- `docs/execution/prompts/README.md` — prompt index
+- `docs/execution/prompts/phase-1-settler-territory.md` — Phase 1 AI execution prompt (ST-006, ST-002, ST-003)
+- `docs/execution/prompts/phase-2-architecture-proposals.md` — Phase 2 AI execution prompt (CL-006, OPS-003, ST-004)
+- `docs/execution/prompts/phase-3-xcode-agent-streams.md` — Phase 3 AI execution prompt (Streams C, D, F)
 
 Outcome:
 - 9 documental TODO tasks identified, classified, and ordered
-- Phases: Phase 1 (Settler/Territory docs — ST-006, ST-002, ST-003), Phase 2 (architecture proposals — CL-006, OPS-003, ST-004), Phase 3 (Xcode Agent stream specs — Streams C, D, F)
-- Each task includes: read-before-write list, content prescription, file targets, invariants, and definition of done
+- 3 self-contained phase prompts with: identity, invariants, branch setup, mandatory pre-reading, per-task specs, tracking requirements, git workflow, definition of done
+- Each task includes exact field specs, file targets, and PR templates
 
 Residual gaps:
-- none; plan is READY — not started
+- none; prompts are READY — no phase has been executed yet
 
 ## ST-001a — README and repository roots for Settler/Territory scaffolds (2026-04-29)
 

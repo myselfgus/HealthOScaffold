@@ -88,6 +88,43 @@ ASL, VDLP, and GEM are scaffolded contracts/job kinds only in this wave.
 
 The `HealthOSMentalSpace` Swift module (`swift/Sources/HealthOSMentalSpace/`) is the designated home for the pipeline orchestrator and stage executors. It is registered in `Package.swift` and depends on `HealthOSCore` for contracts.
 
-Current state: placeholder module only (`MentalSpacePipeline.swift`). Implementation begins in RT-MSR-001 when the ASL executor is built.
+```
+swift/Sources/HealthOSMentalSpace/
+├── MentalSpacePipeline.swift          — module root; documents layout and stage order
+├── Prompts/
+│   ├── asl-system.md                  — ASL clinical prompts (clinically validated, 400 patients)
+│   ├── vdlp-system.md                 — VDLP 15-dimension prompts (validated, 400 patients)
+│   └── gem-system.md                  — GEM 4-layer graph prompts (validated, 400 patients)
+└── Executors/
+    ├── ASLExecutor.swift              — dispatch boundary for ASL stage
+    ├── VDLPExecutor.swift             — dispatch boundary for VDLP stage
+    └── GEMArtifactBuilder.swift       — dispatch boundary for GEM stage
+```
 
-Contracts and types remain in `HealthOSCore`. Normalization executor remains in `HealthOSAACI`. The orchestrator and future stage executors (ASL, VDLP, GEM) will live in `HealthOSMentalSpace`.
+### Prompt files as clinical contracts
+
+The prompt files in `Prompts/` are extracted verbatim from the TypeScript scripts tested on 400 patients. They are version-controlled as the canonical clinical contracts for each stage. Their content must not be altered without re-validation against the clinical cohort. The Swift executors are dispatch and provenance boundaries only — they load these prompts at runtime and route them to the appropriate provider.
+
+### Executor pattern
+
+Each executor exposes a protocol (`ASLExecuting`, `VDLPExecuting`, `GEMArtifactBuilding`) so the orchestrator can inject different provider implementations (real, stub, test). All executors throw on any error — no silent degradation. The input dependency chain is enforced at call sites:
+
+- `ASLExecutor`: requires non-empty transcription
+- `VDLPExecutor`: requires ready ASL blob + non-empty patient speech
+- `GEMArtifactBuilder`: requires all three (transcription + ASL + VDLP); any missing upstream throws `.triadIncomplete`
+
+### Provider posture per stage
+
+| Stage | Model | Temperature | Max tokens | Chunking threshold |
+|-------|-------|-------------|------------|--------------------|
+| ASL   | Sonnet (Haiku via flag) | 0 | 60k | 10k tokens; parallel batches of 3 |
+| VDLP  | Sonnet (Haiku via flag) | 0 | 60k | 10k tokens; speech only split |
+| GEM   | Sonnet | 0.2 | 60k | 50k tokens; transcription only split |
+
+All three stages require extended prompt caching (`anthropic-beta: prompt-caching-2024-07-31,extended-cache-ttl-2025-04-11`, ephemeral TTL 1h) — the system prompts are large and caching is mandatory for cost control.
+
+### Current state
+
+Executors are scaffold placeholders that fail closed (throw `.providerUnavailable`). Implementation begins in RT-MSR-001 when the ASL executor is built and a real provider adapter is available.
+
+Contracts and types remain in `HealthOSCore`. Normalization executor remains in `HealthOSAACI`. The orchestrator and stage executors live in `HealthOSMentalSpace`.

@@ -18,6 +18,9 @@ __pycache__/
 
 # Secrets and local config
 .env
+
+# Claude Code session artifacts (lock files, not definitions)
+.claude/scheduled_tasks.lock
 .env.local
 *.p12
 *.pfx
@@ -31,3 +34,7 @@ coverage/
 .healthos-steward/providers/*.local.json
 *.env
 runtime-data/steward/model-invocations.jsonl
+
+# Xcode per-user workspace state
+xcuserdata/
+*.xcuserstate

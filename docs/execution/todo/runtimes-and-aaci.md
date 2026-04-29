@@ -397,3 +397,6 @@ Files touched:
 
 
 Update 2026-04-29: ASL stage is now provider-backed through HealthOSProviders with fail-closed validation and provenance marker `mental-space.asl`. VDLP and GEM remain scaffolded; no production-readiness claim.
+
+
+- [DONE] RT-MSR-002: VDLP executor now provider-backed via HealthOSProviders; fail-closed on missing/degraded ASL and empty speech; GEM remains scaffolded and out of scope for this unit.

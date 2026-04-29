@@ -105,22 +105,23 @@ public struct ASLExecutor: ASLExecuting {
         var index = 0
         while index < chunks.count {
             let batch = Array(chunks[index..<min(index + Self.maxParallelBatchSize, chunks.count)])
-            let batchResponses = try await withThrowingTaskGroup(of: String.self) { group in
-                for chunk in batch {
+            let batchResponses = try await withThrowingTaskGroup(of: (Int, String).self) { group in
+                for (offset, chunk) in batch.enumerated() {
                     group.addTask {
                         let prompt = self.buildPrompt(patientId: patientId, transcriptionText: chunk)
-                        return try await provider.generate(prompt: prompt, context: [
+                        let response = try await provider.generate(prompt: prompt, context: [
                             "task": "mental-space-asl",
                             "model": self.model,
                             "temperature": "0",
                             "max_tokens": "60000",
                             "anthropic-beta": "prompt-caching-2024-07-31,extended-cache-ttl-2025-04-11"
                         ])
+                        return (offset, response)
                     }
                 }
-                var responses: [String] = []
-                for try await response in group { responses.append(response) }
-                return responses
+                var responses = [String?](repeating: nil, count: batch.count)
+                for try await (offset, response) in group { responses[offset] = response }
+                return responses.compactMap { $0 }
             }
             for response in batchResponses {
                 outputs.append(try parseProviderJSON(response))
@@ -164,8 +165,13 @@ public struct ASLExecutor: ASLExecuting {
         let summaries = chunks.compactMap {
             (($0["sintese_interpretativa"] as? [String: Any])?["perfil_linguistico_geral"] as? String)
         }
+        let allEvidence = chunks.flatMap {
+            (($0["sintese_interpretativa"] as? [String: Any])?["achados_mais_salientes"] as? [String]) ?? []
+        }
+
         var synth = (consolidated["sintese_interpretativa"] as? [String: Any]) ?? [:]
         if !summaries.isEmpty { synth["perfil_linguistico_geral"] = summaries.joined(separator: "\n") }
+        if !allEvidence.isEmpty { synth["achados_mais_salientes"] = allEvidence }
         consolidated["sintese_interpretativa"] = synth
         return consolidated
     }

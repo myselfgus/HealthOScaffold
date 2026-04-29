@@ -6,6 +6,91 @@ Current phase: Controlled implementation — first vertical slice started
 
 ## Completed recently
 
+## RT-010 — Mental Space Runtime contracts and first normalization slice (2026-04-29)
+
+Objective: establish Mental Space Runtime as a staged HealthOS runtime domain for derived linguistic/cognitive artifacts, then implement the first executable normalization stage after transcription without weakening Core law, provider honesty, or app boundaries.
+
+Files touched:
+- `docs/architecture/49-mental-space-runtime.md` — new canonical architecture contract for Mental Space Runtime, stage order, artifact posture, provider posture, and app-safe surface
+- `swift/Sources/HealthOSCore/MentalSpaceRuntime.swift` — new Swift contracts for stages, metadata, normalized/ASL/VDLP/GEM artifacts, stage state, pipeline dependency validation, normalization request/result, runtime view, and content hashing
+- `swift/Sources/HealthOSCore/AsyncRuntimeJobs.swift`, `ts/packages/contracts/src/index.ts`, `schemas/contracts/async-job.schema.json` — async job taxonomy extended with Mental Space stage jobs
+- `swift/Sources/HealthOSAACI/AACI.swift` — local-first transcript normalization provider boundary added; remote fallback denied and stub output degraded for v1
+- `swift/Sources/HealthOSFirstSliceSupport/FirstSliceRunner.swift` — normalization now runs after non-empty transcript persistence and stores a normalized transcript as a derived artifact only when a real local model is available
+- `swift/Sources/HealthOSCore/FirstSliceContracts.swift`, `ScribeFirstSliceBridge.swift`, `ScribeFirstSliceAdapter.swift`, and `HealthOSScribeApp/Views/ScribeFirstSliceView.swift` — first-slice/Scribe surfaces now carry minimal Mental Space runtime state
+- `swift/Tests/HealthOSTests/MentalSpaceRuntimeTests.swift` — tests for stage ordering, async substrate job kind, provider degradation, derived artifact persistence, and app-safe Scribe surface
+- `schemas/contracts/mental-space-artifact.schema.json`, `docs/execution/skills/mental-space-runtime-skill.md`, tracking docs
+
+Invariants involved:
+- Inv 1 (HealthOS Core is sovereign)
+- Inv 17/18 (provider/ML honesty and fail-closed remote/stub posture)
+- Inv 24/25 (async jobs remain governed/idempotent substrate)
+- Inv 25a (Mental Space artifacts are derived/gated insight surfaces only)
+- Inv 38 (Scribe consumes mediated state only)
+- Inv 43 (scaffold closure never equals product readiness)
+
+Validation:
+- `cd swift && swift test --filter MentalSpaceRuntimeTests` PASS — 5 tests
+- `cd swift && swift test --filter AsyncRuntimeGovernanceTests` PASS — 23 tests
+- `cd swift && swift build` PASS
+- `cd swift && swift test` PASS — 246 tests, 0 failures
+- `cd ts && npm run build` PASS
+- `make validate-schemas` PASS
+- `make validate-docs` PASS
+- `make validate-contracts` PASS
+- `git diff --check` PASS
+- `make validate-all` PASS, including Swift/TS/Python checks plus CLI and Scribe smokes
+
+Done criteria:
+- Mental Space Runtime is named and documented separately from async runtime
+- normalization is the only executable stage in this slice
+- ASL/VDLP/GEM are represented as contracts/job kinds but not falsely claimed as executable
+- normalized transcript artifacts are persisted under `derived-artifacts` with source transcript lineage and limitations
+- Scribe sees only status/summary/provider/artifact availability, not raw artifact JSON or diagnostic authority
+
+Residual gaps:
+- ASL, VDLP, and GEM adapters are not implemented yet
+- no real Apple Foundation/local model integration is shipped; existing Apple provider remains stub-marked
+- no production provider, semantic retrieval, diagnosis, or regulatory effectuation claim is made
+
+## APP-010 — Native macOS 26+ UI scaffold and design-system scope (2026-04-29)
+
+Objective: align the repository with macOS 26+ native UI work, Liquid Glass guidance, and app-boundary-safe scope for Scribe, Sortio, CloudClinic, and a future HealthOS control panel.
+
+Files touched:
+- `swift/Package.swift` — raised manifest to PackageDescription 6.2 and `.macOS(.v26)`
+- `docs/architecture/48-native-macos-ui-design-system-and-app-shells.md` — new canonical scope doc for macOS 26+ app shells, Liquid Glass, design-system boundaries, and control-panel scope
+- `docs/architecture/11-scribe.md`, `12-sortio.md`, `13-cloudclinic.md`, `19-interface-doctrine.md` — linked app docs to the new native UI scope while preserving scaffold non-claims
+- `docs/execution/skills/native-macos-ui/SKILL.md` — new local skill for native macOS UI scaffold work
+- `docs/execution/skills/README.md` — skill index updated
+- `README.md` — app-boundary reading path updated
+- `docs/execution/todo/apps-and-interfaces.md` — APP-010 completion and APP-011 future implementation task added
+- `docs/execution/06-scaffold-coverage-matrix.md`, `docs/execution/11-current-maturity-map.md`, `docs/execution/12-next-agent-handoff.md` — tracking aligned with macOS 26+ baseline
+
+Invariants involved:
+- Inv 1 (HealthOS Core is sovereign)
+- Inv 38 (Scribe consumes mediated state only)
+- Inv 39/40/41 (cross-app app-safe envelope, safe refs, notification boundary)
+- Inv 43 (scaffold closure never equals product readiness)
+
+Validation:
+- `cd swift && swift package dump-package` PASS; manifest resolves as tools version 6.2.0 and platform macOS 26.0
+- `cd swift && swift build` PASS
+- `cd swift && swift test` PASS — 241 tests, 0 failures
+- `cd swift && swift run HealthOSScribeApp --smoke-test` PASS
+- `make validate-docs` PASS
+- `make validate-all` PASS
+
+Done criteria:
+- native app work now treats macOS 26+ as the target baseline
+- Liquid Glass is documented as the macOS 26+ design baseline without decorative overuse
+- Scribe remains the only implemented native validation surface
+- Sortio, CloudClinic, and HealthOS control panel shells are scope-defined but not falsely claimed as implemented
+
+Residual gaps:
+- no final Scribe/Sortio/CloudClinic UI shell delivered
+- no HealthOS control panel executable target exists yet
+- existing Scribe validation UI has not been refactored into a macOS 26 app shell
+
 ## WS-1b — Codex external executor for Steward-scoped Xcode-facing maintenance (2026-04-29)
 
 Objective: register Codex as an external executor for Steward-scoped Xcode-facing repository maintenance without creating a new Steward authority category.

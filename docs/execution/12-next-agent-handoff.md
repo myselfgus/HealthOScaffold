@@ -6,7 +6,11 @@ Repository is in controlled implementation/scaffold hardening with strong govern
 
 HealthOScaffold is the historical repository name and construction repository for HealthOS. Future agents must treat implemented architecture, contracts, runtimes, apps, tests, and docs here as HealthOS work unless explicitly marked experimental or deprecated; scaffold vocabulary describes maturity/foundation phase only.
 
-Repository audit note (2026-04-28): the canonical Swift package exists at `swift/Package.swift`, and the repository now exposes a root `HealthOS.xcworkspace` that points to it. Treat SwiftPM as the canonical Apple build graph; the workspace is the Xcode entrypoint, not a replacement for TS/Python native tooling.
+Repository audit note (2026-04-29): the canonical Swift package exists at `swift/Package.swift`, targets macOS 26.0 via PackageDescription 6.2, and the repository exposes a root `HealthOS.xcworkspace` that points to it. Treat SwiftPM as the canonical Apple build graph; the workspace is the Xcode entrypoint, not a replacement for TS/Python native tooling.
+
+Native UI note: `docs/architecture/48-native-macos-ui-design-system-and-app-shells.md` defines scaffold scope for macOS 26+ Liquid Glass app-shell work across Scribe, Sortio, CloudClinic, and a future HealthOS control panel. Future UI implementation should use `docs/execution/skills/native-macos-ui/SKILL.md` plus the relevant app-boundary skill and must not move Core law into SwiftUI.
+
+Mental Space Runtime note: `docs/architecture/49-mental-space-runtime.md` defines the staged derived-artifact runtime for transcript normalization, ASL, VDLP, and GEM. The current executable slice implements only local-first transcript normalization after persisted transcription; ASL/VDLP/GEM are contracts/job kinds only until adapters wrap the existing scripts in order. Use `docs/execution/skills/mental-space-runtime-skill.md` for follow-up work and keep outputs derived/gated, app-safe, and non-authorizing.
 
 ## How to choose next task
 
@@ -30,7 +34,8 @@ Repository audit note (2026-04-28): the canonical Swift package exists at `swift
 2. extend runtime adapter coverage (user-agent/service) with boundary tests
 3. wire `make validate-all` quality gates into CI/distributed execution without declaring production-hardening
 4. continue storage/retrieval/provider parity without fake capability claims
-5. keep regulatory/provider/semantic non-claims explicit while preparing scaffold RC fixes + tag prep
+5. wrap Mental Space ASL, then VDLP, then GEM behind governed adapters without treating them as automatic diagnosis
+6. keep regulatory/provider/semantic non-claims explicit while preparing scaffold RC fixes + tag prep
 
 ## Validation command baseline
 

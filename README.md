@@ -132,7 +132,8 @@ Use the README as the entry surface, then branch by intent.
 | understand what HealthOS is | `docs/architecture/01-overview.md` | `docs/architecture/19-interface-doctrine.md`, `docs/architecture/46-apple-sovereignty-architecture.md` |
 | understand the executable slice | `docs/architecture/28-first-slice-executable-path.md` | `swift/Sources/HealthOSFirstSliceSupport/FirstSliceRunner.swift`, `swift/Sources/HealthOSCore/FirstSliceContracts.swift` |
 | understand GOS | `docs/architecture/29-governed-operational-spec.md` | `30-gos-authoring-and-compiler.md`, `31-gos-runtime-binding.md`, `32-gos-bundles-and-lifecycle.md`, `33-gos-app-consumption-patterns.md` |
-| understand apps and boundaries | `docs/architecture/11-scribe.md` | `12-sortio.md`, `13-cloudclinic.md`, `23-scribe-screen-contracts.md`, `24-sortio-screen-contracts.md`, `25-cloudclinic-screen-contracts.md`, `43-cross-app-coordination-shared-surfaces.md` |
+| understand Mental Space Runtime | `docs/architecture/49-mental-space-runtime.md` | `docs/execution/skills/mental-space-runtime-skill.md`, `swift/Sources/HealthOSCore/MentalSpaceRuntime.swift`, `swift/Tests/HealthOSTests/MentalSpaceRuntimeTests.swift` |
+| understand apps and boundaries | `docs/architecture/11-scribe.md` | `12-sortio.md`, `13-cloudclinic.md`, `23-scribe-screen-contracts.md`, `24-sortio-screen-contracts.md`, `25-cloudclinic-screen-contracts.md`, `43-cross-app-coordination-shared-surfaces.md`, `48-native-macos-ui-design-system-and-app-shells.md` |
 | understand current maturity and gaps | `docs/execution/11-current-maturity-map.md` | `13-scaffold-release-candidate-criteria.md`, `14-final-gap-register.md` |
 | start coding safely | `docs/execution/README.md` | `01-agent-operating-protocol.md`, `02-status-and-tracking.md`, relevant `todo/*.md`, relevant `skills/*.md` |
 | understand Steward for Xcode | `docs/architecture/45-healthos-xcode-agent.md` | `docs/execution/17-healthos-xcode-agent-migration-plan.md`, `.healthos-steward/README.md`, `ts/packages/healthos-steward/README.md` |
@@ -345,7 +346,7 @@ Read in order before coding:
 | Core law | `docs/architecture/06-core-services.md`, `05-data-layers.md`, `07-storage-and-sql.md` | `swift/Sources/HealthOSCore/` |
 | AACI and first slice | `docs/architecture/09-aaci.md`, `28-first-slice-executable-path.md` | `swift/Sources/HealthOSAACI/`, `swift/Sources/HealthOSFirstSliceSupport/` |
 | GOS | `29-governed-operational-spec.md` to `34-gos-review-and-activation-policy.md` | `ts/packages/healthos-gos-tooling/`, `swift/Sources/HealthOSCore/` |
-| Apps/interfaces | `11-scribe.md`, `12-sortio.md`, `13-cloudclinic.md`, `43-cross-app-coordination-shared-surfaces.md` | `swift/Sources/HealthOSScribeApp/`, app boundary contracts in `swift/Sources/HealthOSCore/` |
+| Apps/interfaces | `11-scribe.md`, `12-sortio.md`, `13-cloudclinic.md`, `43-cross-app-coordination-shared-surfaces.md`, `48-native-macos-ui-design-system-and-app-shells.md` | `swift/Sources/HealthOSScribeApp/`, app boundary contracts in `swift/Sources/HealthOSCore/` |
 | Steward / Settlers / Territories | `45-healthos-xcode-agent.md`, `46-apple-sovereignty-architecture.md`, `47-steward-settler-engineering-model.md` | `ts/packages/healthos-steward/`, `.healthos-steward/`, `.healthos-settler/`, `.healthos-territory/` |
 
 ## Steward, Settlers, and Territories

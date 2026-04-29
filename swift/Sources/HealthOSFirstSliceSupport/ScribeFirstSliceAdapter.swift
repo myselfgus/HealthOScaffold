@@ -372,6 +372,7 @@ public actor ScribeFirstSliceAdapter: ScribeFirstSliceFacade {
                 provenanceFacingOnly: true,
                 informationalOnly: true
             ),
+            mentalSpaceRuntimeState: .pending,
             runSummary: nil
         )
     }
@@ -445,7 +446,24 @@ public actor ScribeFirstSliceAdapter: ScribeFirstSliceFacade {
             prescriptionDraft: prescriptionDraft,
             finalDocument: finalDocument,
             gosRuntimeState: gosRuntimeState(from: result),
+            mentalSpaceRuntimeState: mentalSpaceRuntimeState(from: result),
             runSummary: result.summary
+        )
+    }
+
+    private func mentalSpaceRuntimeState(from result: FirstSliceRunResult) -> MentalSpaceRuntimeStateView {
+        let activeStage: MentalSpaceRuntimeStage?
+        if result.mentalSpace.normalizationState.status == .ready ||
+            result.mentalSpace.normalizationState.status == .degraded ||
+            result.mentalSpace.normalizationState.status == .failed {
+            activeStage = .normalization
+        } else {
+            activeStage = nil
+        }
+        return MentalSpaceRuntimeStateView(
+            stages: result.mentalSpace.stageStates,
+            activeStage: activeStage,
+            summary: result.mentalSpace.normalizationState.summary
         )
     }
 

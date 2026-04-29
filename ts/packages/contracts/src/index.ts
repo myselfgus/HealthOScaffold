@@ -61,6 +61,20 @@ export interface RuntimeStatus {
   message?: string;
 }
 
+export type StorageLayer =
+  | "direct-identifiers"
+  | "operational-content"
+  | "governance-metadata"
+  | "derived-artifacts"
+  | "reidentification-mapping";
+
+export interface StorageObjectRef {
+  objectPath: string;
+  contentHash: string;
+  layer: StorageLayer;
+  kind: string;
+}
+
 export type DraftKind =
   | "soap"
   | "prescription"
@@ -209,6 +223,53 @@ export interface FinalizedSOAPDocument {
   summary: string;
 }
 
+export type MentalSpaceRuntimeStage = "transcription_normalization" | "asl" | "vdlp" | "gem";
+
+export type MentalSpaceStageStatus = "pending" | "ready" | "degraded" | "blocked" | "failed";
+
+export type MentalSpaceClinicianReviewStatus = "unreviewed" | "in_review" | "reviewed" | "rejected";
+
+export interface MentalSpaceArtifactMetadata {
+  stage: MentalSpaceRuntimeStage;
+  sourceTranscriptRef: string;
+  stageVersion: string;
+  promptVersion: string;
+  modelProvider: string;
+  modelId?: string | null;
+  inputHash: string;
+  outputHash: string;
+  lawfulContextSummary: string;
+  clinicianReviewStatus: MentalSpaceClinicianReviewStatus;
+  limitations: string[];
+  legalAuthorizing: boolean;
+  gateStillRequired: boolean;
+}
+
+export interface NormalizedTranscriptArtifact {
+  metadata: MentalSpaceArtifactMetadata;
+  normalizedTranscript: string;
+  correctionSummary: string;
+  sourceTranscriptObjectRef: StorageObjectRef;
+}
+
+export interface ASLArtifact {
+  metadata: MentalSpaceArtifactMetadata;
+  linguisticSummary: string;
+  evidenceRefs: string[];
+}
+
+export interface VDLPArtifact {
+  metadata: MentalSpaceArtifactMetadata;
+  dimensionalSummary: string;
+  dimensionRefs: string[];
+}
+
+export interface GEMArtifact {
+  metadata: MentalSpaceArtifactMetadata;
+  graphSummary: string;
+  layerRefs: string[];
+}
+
 export type AsyncJobState =
   | "pending"
   | "leased"
@@ -226,6 +287,10 @@ export type AsyncJobKind =
   | "embedding_generation"
   | "retrieval_index_maintenance"
   | "provenance_enrichment"
+  | "mental_space_normalization"
+  | "mental_space_asl"
+  | "mental_space_vdlp"
+  | "mental_space_gem"
   | "audit_export"
   | "backup"
   | "restore_validation"

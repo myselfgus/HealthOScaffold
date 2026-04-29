@@ -195,6 +195,73 @@ public actor FirstSliceRunner {
                 providerExecution: transcription.providerExecution
             )
         }
+        var mentalSpace = MentalSpaceRunArtifacts()
+        if let transcriptText = transcription.transcriptText?.trimmingCharacters(in: .whitespacesAndNewlines),
+           let transcriptRef = transcription.transcriptRef,
+           !transcriptText.isEmpty {
+            let normalization = await orchestrator.normalizeTranscript(
+                MentalSpaceNormalizationRequest(
+                    transcriptText: transcriptText,
+                    sourceTranscriptRef: transcriptRef,
+                    lawfulContext: lawfulContext
+                )
+            )
+            let persisted = try await persistMentalSpaceNormalizationIfReady(
+                normalization,
+                sourceTranscriptRef: transcriptRef,
+                sessionId: session.id,
+                serviceId: service.id,
+                patientUserId: patient.id,
+                actorId: professional.id.uuidString,
+                lawfulContext: lawfulContext
+            )
+            let state = mentalSpaceNormalizationState(
+                from: normalization,
+                persisted: persisted
+            )
+            mentalSpace = mentalSpace.updatingNormalization(
+                artifact: persisted,
+                state: state
+            )
+            events.append(
+                SessionEventRecord(
+                    sessionId: session.id,
+                    kind: .mentalSpaceStageUpdated,
+                    payload: FirstSliceSessionEventPayload(
+                        summary: state.summary,
+                        attributes: mentalSpaceStageEventAttributes(state)
+                    )
+                )
+            )
+            if let persisted {
+                try await storage.audit(
+                    objectRef: persisted.objectRef,
+                    action: "write-mental-space-normalized-transcript",
+                    actorId: professional.id.uuidString,
+                    metadata: lawfulContext
+                )
+                try await appendStorageLawProvenance(
+                    actorId: professional.id.uuidString,
+                    writeObjectRef: persisted.objectRef,
+                    auditAction: "write-mental-space-normalized-transcript",
+                    to: &provenanceRecords
+                )
+            }
+            try await appendProvenance(
+                .init(
+                    actorId: "mental-space.normalizer",
+                    operation: "mental-space.normalize.transcript",
+                    providerName: normalization.providerExecution?.providerId,
+                    modelName: normalization.providerExecution?.modelId,
+                    modelVersion: normalization.providerExecution?.modelVersion,
+                    promptVersion: normalization.promptVersion,
+                    inputHash: transcriptRef.contentHash,
+                    outputHash: persisted?.metadata.outputHash,
+                    timestamp: .now
+                ),
+                to: &provenanceRecords
+            )
+        }
 
         try await appendGOSUsageProvenanceIfActive(
             runtimePath: .transcription,
@@ -773,6 +840,7 @@ public actor FirstSliceRunner {
         return FirstSliceRunResult(
             session: session,
             transcription: transcription,
+            mentalSpace: mentalSpace,
             retrieval: retrieval,
             draft: draft,
             referralDraft: referralDraft,
@@ -791,6 +859,9 @@ public actor FirstSliceRunner {
                 transcriptObjectPath: transcription.transcriptRef?.objectPath,
                 transcriptionStatus: transcription.status,
                 transcriptionSource: transcription.source,
+                mentalSpaceNormalizationStatus: mentalSpace.normalizationState.status,
+                mentalSpaceNormalizedTranscriptObjectPath: mentalSpace.normalizedTranscript?.objectRef.objectPath,
+                mentalSpaceNormalizationSummary: mentalSpace.normalizationState.summary,
                 draftObjectPath: draft.draftRef.objectPath,
                 reviewedDraftStatus: gate.reviewedDraftStatus,
                 referralDraftStatus: referralDraft.draft.status,
@@ -1181,6 +1252,141 @@ public actor FirstSliceRunner {
             metadata: lawfulContext
         )
         return transcriptRef
+    }
+
+    private func persistMentalSpaceNormalizationIfReady(
+        _ normalization: MentalSpaceNormalizationResult,
+        sourceTranscriptRef: StorageObjectRef,
+        sessionId: UUID,
+        serviceId: UUID,
+        patientUserId: UUID,
+        actorId: String,
+        lawfulContext: [String: String]
+    ) async throws -> MentalSpacePersistedArtifact? {
+        guard normalization.status == .ready,
+              let normalizedText = normalization.normalizedText?.trimmingCharacters(in: .whitespacesAndNewlines),
+              !normalizedText.isEmpty else {
+            return nil
+        }
+
+        let provider = normalization.providerExecution
+        let outputHash = MentalSpaceContentHasher.sha256Hex(for: normalizedText)
+        let metadata = MentalSpaceArtifactMetadata(
+            stage: .normalization,
+            sourceTranscriptRef: sourceTranscriptRef.objectPath,
+            stageVersion: normalization.stageVersion,
+            promptVersion: normalization.promptVersion,
+            modelProvider: provider?.providerId ?? "unknown-local-provider",
+            modelId: provider?.modelId,
+            inputHash: sourceTranscriptRef.contentHash,
+            outputHash: outputHash,
+            lawfulContextSummary: lawfulContextSummary(lawfulContext),
+            limitations: [
+                "Derived transcript-normalization artifact only.",
+                "Clinician review required before insight use.",
+                "Not diagnosis, not final clinical authority, not regulatory effectuation."
+            ]
+        )
+        let artifact = NormalizedTranscriptArtifact(
+            metadata: metadata,
+            normalizedTranscript: normalizedText,
+            correctionSummary: normalization.correctionSummary,
+            sourceTranscriptObjectRef: sourceTranscriptRef
+        )
+        let artifactData = try JSONEncoder.healthOS.encode(artifact)
+        let objectRef = try await storage.put(
+            StoragePutRequest(
+                owner: .servico(serviceId: serviceId),
+                kind: "mental-space-normalized-transcripts",
+                layer: .derivedArtifacts,
+                content: artifactData,
+                metadata: [
+                    "sessionId": sessionId.uuidString,
+                    "patientUserId": patientUserId.uuidString,
+                    "sourceTranscriptObjectPath": sourceTranscriptRef.objectPath,
+                    "sourceTranscriptHash": sourceTranscriptRef.contentHash,
+                    "stage": MentalSpaceRuntimeStage.normalization.rawValue,
+                    "stageVersion": normalization.stageVersion,
+                    "promptVersion": normalization.promptVersion,
+                    "modelProvider": metadata.modelProvider,
+                    "modelId": metadata.modelId ?? "none",
+                    "provenanceOperation": "mental-space.normalize.transcript",
+                    "clinicianReviewStatus": metadata.clinicianReviewStatus.rawValue,
+                    "legalAuthorizing": String(metadata.legalAuthorizing),
+                    "gateStillRequired": String(metadata.gateStillRequired),
+                    "finalidade": lawfulContext["finalidade"] ?? "care-context-retrieval"
+                ],
+                lawfulContext: lawfulContext
+            )
+        )
+        _ = actorId
+        return MentalSpacePersistedArtifact(
+            stage: .normalization,
+            objectRef: objectRef,
+            metadata: metadata,
+            summary: normalization.correctionSummary
+        )
+    }
+
+    private func mentalSpaceNormalizationState(
+        from normalization: MentalSpaceNormalizationResult,
+        persisted: MentalSpacePersistedArtifact?
+    ) -> MentalSpaceStageExecutionState {
+        switch normalization.status {
+        case .ready:
+            return MentalSpaceStageExecutionState(
+                stage: .normalization,
+                status: persisted == nil ? .degraded : .ready,
+                artifactObjectPath: persisted?.objectRef.objectPath,
+                modelProvider: normalization.providerExecution?.providerId,
+                modelId: normalization.providerExecution?.modelId,
+                clinicianReviewStatus: persisted?.metadata.clinicianReviewStatus ?? .unreviewed,
+                summary: persisted == nil
+                    ? "Mental Space transcript normalization completed without a persisted artifact."
+                    : "Mental Space transcript normalization persisted as a derived artifact.",
+                issueMessage: persisted == nil ? "Normalization output was not persisted." : nil
+            )
+        case .degraded, .failed, .blocked, .pending:
+            return MentalSpaceStageExecutionState(
+                stage: .normalization,
+                status: normalization.status,
+                modelProvider: normalization.providerExecution?.providerId,
+                modelId: normalization.providerExecution?.modelId,
+                summary: normalization.correctionSummary,
+                issueMessage: normalization.issueMessage
+            )
+        }
+    }
+
+    private func mentalSpaceStageEventAttributes(_ state: MentalSpaceStageExecutionState) -> [String: String] {
+        var attributes: [String: String] = [
+            "runtime": "mental-space-runtime",
+            "stage": state.stage.rawValue,
+            "status": state.status.rawValue,
+            "clinicianReviewStatus": state.clinicianReviewStatus.rawValue,
+            "legalAuthorizing": String(state.legalAuthorizing),
+            "gateStillRequired": String(state.gateStillRequired)
+        ]
+        if let artifactObjectPath = state.artifactObjectPath {
+            attributes["artifactObjectPath"] = artifactObjectPath
+        }
+        if let modelProvider = state.modelProvider {
+            attributes["modelProvider"] = modelProvider
+        }
+        if let modelId = state.modelId {
+            attributes["modelId"] = modelId
+        }
+        if let issueMessage = state.issueMessage {
+            attributes["issue"] = issueMessage
+        }
+        return attributes
+    }
+
+    private func lawfulContextSummary(_ lawfulContext: [String: String]) -> String {
+        let scope = lawfulContext["scope"] ?? "unknown-scope"
+        let finalidade = lawfulContext["finalidade"] ?? "unknown-finalidade"
+        let actorRole = lawfulContext["actorRole"] ?? "unknown-actor-role"
+        return "scope=\(scope);finalidade=\(finalidade);actorRole=\(actorRole)"
     }
 
     private func transcriptionEventSummary(for transcription: TranscriptionOutput) -> String {

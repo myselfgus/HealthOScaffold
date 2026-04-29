@@ -60,6 +60,7 @@ Professional-facing interface for session work with AACI support.
 ## Related detailed contract
 See:
 - `docs/architecture/23-scribe-screen-contracts.md`
+- `docs/architecture/48-native-macos-ui-design-system-and-app-shells.md`
 
 ## Boundaries
 - Scribe may request actions through core/runtime contracts
@@ -70,7 +71,7 @@ See:
 
 Scribe is a scaffold contract and minimal validation surface only:
 - no final production UI has been implemented
-- no design system or navigation architecture has been introduced
+- native macOS design-system and app-shell scope has been defined, but no final Scribe navigation architecture has been implemented
 - local audio currently uses file selection/import rather than a full microphone-recording pipeline
 - transcription remains stubbed (degraded/unavailable honesty preserved)
 - retrieval is bounded lexical/tag/recency only (no semantic/embedding pipeline)
@@ -130,5 +131,4 @@ Scribe is the primary interface for the first end-to-end slice. This remains sca
 - the slice demonstrates contract wiring and provenance separation
 - it does not claim production readiness or real provider integration
 - microphone capture, real transcription, and semantic retrieval remain deferred
-
 

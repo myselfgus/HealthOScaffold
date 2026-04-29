@@ -32,6 +32,10 @@ public enum AsyncJobKind: String, Codable, Sendable {
     case embeddingGeneration = "embedding_generation"
     case retrievalIndexMaintenance = "retrieval_index_maintenance"
     case provenanceEnrichment = "provenance_enrichment"
+    case mentalSpaceNormalization = "mental_space_normalization"
+    case mentalSpaceASL = "mental_space_asl"
+    case mentalSpaceVDLP = "mental_space_vdlp"
+    case mentalSpaceGEM = "mental_space_gem"
     case auditExport = "audit_export"
     case backup
     case restoreValidation = "restore_validation"

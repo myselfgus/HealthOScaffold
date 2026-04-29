@@ -4,6 +4,35 @@ Repository identity note: HealthOScaffold is the HealthOS construction repositor
 
 ## COMPLETED
 
+### RT-010 Establish Mental Space Runtime contracts and first normalization slice
+Outcome:
+- Mental Space Runtime is now defined as a staged derived-artifact runtime domain for transcription normalization, ASL, VDLP, and GEM, separate from the async runtime substrate
+- Swift Core now has Mental Space artifact contracts, stage states, fail-closed dependency validation, app-safe runtime view, and normalization result/request contracts
+- async job taxonomy now includes `mental_space_normalization`, `mental_space_asl`, `mental_space_vdlp`, and `mental_space_gem` in Swift, TypeScript, and JSON Schema
+- AACI now exposes local-first transcript normalization with remote fallback denied for v1 and stub output degraded instead of persisted
+- the first slice persists normalized transcript output as a `derived-artifacts` Mental Space artifact only when a real local model is available, with source transcript lineage, model/prompt/stage metadata, limitations, and provenance
+- Scribe bridge/UI now surfaces minimal Mental Space stage status without raw artifact JSON, prompt internals, direct identifiers, or legal-authorizing claims
+- ASL, VDLP, and GEM remain scaffolded stage contracts/job kinds only; existing prompt-engineered scripts still need future adapter wrapping in order
+Files touched:
+- `docs/architecture/49-mental-space-runtime.md`
+- `swift/Sources/HealthOSCore/MentalSpaceRuntime.swift`
+- `swift/Sources/HealthOSCore/AsyncRuntimeJobs.swift`
+- `swift/Sources/HealthOSCore/FirstSliceContracts.swift`
+- `swift/Sources/HealthOSCore/ScribeFirstSliceBridge.swift`
+- `swift/Sources/HealthOSAACI/AACI.swift`
+- `swift/Sources/HealthOSFirstSliceSupport/FirstSliceRunner.swift`
+- `swift/Sources/HealthOSFirstSliceSupport/ScribeFirstSliceAdapter.swift`
+- `swift/Sources/HealthOSScribeApp/Views/ScribeFirstSliceView.swift`
+- `swift/Tests/HealthOSTests/MentalSpaceRuntimeTests.swift`
+- `ts/packages/contracts/src/index.ts`
+- `schemas/contracts/async-job.schema.json`
+- `schemas/contracts/mental-space-artifact.schema.json`
+- `docs/execution/02-status-and-tracking.md`
+- `docs/execution/06-scaffold-coverage-matrix.md`
+- `docs/execution/10-invariant-matrix.md`
+- `docs/execution/11-current-maturity-map.md`
+- `docs/execution/skills/mental-space-runtime-skill.md`
+
 ### DOC-001 Correct HealthOScaffold / HealthOS repository identity vocabulary
 Outcome:
 - added an accepted ADR clarifying that HealthOScaffold is the historical repository name and construction repository for HealthOS

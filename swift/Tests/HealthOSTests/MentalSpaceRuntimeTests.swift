@@ -1,0 +1,169 @@
+import XCTest
+@testable import HealthOSCore
+@testable import HealthOSAACI
+@testable import HealthOSProviders
+@testable import HealthOSFirstSliceSupport
+
+final class MentalSpaceRuntimeTests: XCTestCase {
+    func testPipelineOrderingBlocksDownstreamStagesUntilPrerequisitesExist() throws {
+        let empty = MentalSpaceRunArtifacts()
+
+        XCTAssertNoThrow(try MentalSpacePipelineValidator.validateCanRun(stage: .normalization, state: empty))
+        XCTAssertThrowsError(try MentalSpacePipelineValidator.validateCanRun(stage: .asl, state: empty)) { error in
+            XCTAssertEqual(error as? MentalSpacePipelineError, .normalizedTranscriptRequired)
+        }
+        XCTAssertThrowsError(try MentalSpacePipelineValidator.validateCanRun(stage: .vdlp, state: empty)) { error in
+            XCTAssertEqual(error as? MentalSpacePipelineError, .aslRequired)
+        }
+        XCTAssertThrowsError(try MentalSpacePipelineValidator.validateCanRun(stage: .gem, state: empty)) { error in
+            XCTAssertEqual(error as? MentalSpacePipelineError, .vdlpRequired)
+        }
+    }
+
+    func testMentalSpaceAsyncJobKindsUseExistingGovernedRuntimeSubstrate() async throws {
+        let runtime = InMemoryAsyncJobRuntime()
+        let job = AsyncJobDescriptor(
+            kind: .mentalSpaceASL,
+            requestedByActor: "mental-space.runtime",
+            submissionSource: .system,
+            lawfulContextRequirement: .none,
+            dataLayersTouched: [.derivedArtifacts],
+            inputRefs: ["normalized-transcript-ref"],
+            idempotencyKey: "mental-space-asl-\(UUID().uuidString)",
+            retryPolicy: .init(maxRetries: 1),
+            idempotent: true
+        )
+
+        let enqueued = try await runtime.enqueue(job)
+        let completed = try await runtime.runJob(id: enqueued.id, lawfulContext: nil) { _, _ in
+            .completed(outputRefs: ["asl-artifact-ref"], provenanceRef: nil, auditRef: nil)
+        }
+
+        XCTAssertEqual(completed.kind, .mentalSpaceASL)
+        XCTAssertEqual(completed.state, .completed)
+        let events = await runtime.observabilityEvents()
+        XCTAssertTrue(events.contains { $0.kind == .completed && $0.jobKind == .mentalSpaceASL })
+        XCTAssertTrue(events.allSatisfy { !$0.source.lowercased().contains("cpf") })
+    }
+
+    func testNormalizationWithOnlyAppleStubDegradesWithoutUsingStubOutput() async throws {
+        let router = ProviderRouter()
+        try await router.register(AppleFoundationProvider())
+        let orchestrator = AACIOrchestrator(router: router)
+        let result = await orchestrator.normalizeTranscript(
+            MentalSpaceNormalizationRequest(
+                transcriptText: "Paciente relata sono ruim.",
+                sourceTranscriptRef: StorageObjectRef(
+                    objectPath: "/tmp/transcript.bin",
+                    contentHash: "hash",
+                    layer: .operationalContent,
+                    kind: "transcripts"
+                ),
+                lawfulContext: ["scope": "care-context", "finalidade": "care-context-retrieval"]
+            )
+        )
+
+        XCTAssertEqual(result.status, .degraded)
+        XCTAssertNil(result.normalizedText)
+        XCTAssertEqual(result.providerExecution?.status, ProviderExecutionStatus.stubOnly.rawValue)
+    }
+
+    func testFirstSlicePersistsNormalizedTranscriptAsDerivedMentalSpaceArtifact() async throws {
+        let root = makeTempRoot()
+        try DirectoryLayout.bootstrap(at: root)
+        let router = ProviderRouter()
+        try await router.register(LocalNormalizerProvider())
+        let runner = FirstSliceRunner(root: root, orchestrator: AACIOrchestrator(router: router))
+
+        let result = try await runner.run(
+            input: makeSessionInput(text: " Paciente   relata sono ruim. ")
+        )
+
+        let normalized = try XCTUnwrap(result.mentalSpace.normalizedTranscript)
+        let transcriptRef = try XCTUnwrap(result.transcription.transcriptRef)
+        XCTAssertEqual(normalized.objectRef.layer, .derivedArtifacts)
+        XCTAssertEqual(normalized.metadata.sourceTranscriptRef, transcriptRef.objectPath)
+        XCTAssertEqual(normalized.metadata.inputHash, transcriptRef.contentHash)
+        XCTAssertEqual(normalized.metadata.legalAuthorizing, false)
+        XCTAssertEqual(normalized.metadata.gateStillRequired, true)
+        XCTAssertEqual(result.summary.mentalSpaceNormalizationStatus, .ready)
+        XCTAssertEqual(result.summary.mentalSpaceNormalizedTranscriptObjectPath, normalized.objectRef.objectPath)
+        XCTAssertTrue(result.provenanceRecords.contains { $0.operation == "mental-space.normalize.transcript" })
+
+        let artifactData = try Data(contentsOf: URL(fileURLWithPath: normalized.objectRef.objectPath))
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .iso8601
+        let artifact = try decoder.decode(NormalizedTranscriptArtifact.self, from: artifactData)
+        XCTAssertEqual(artifact.normalizedTranscript, "Paciente relata sono ruim.")
+        XCTAssertEqual(artifact.sourceTranscriptObjectRef.objectPath, transcriptRef.objectPath)
+    }
+
+    func testScribeBridgeShowsMentalSpaceStatusWithoutRawArtifactPayload() async throws {
+        let root = makeTempRoot()
+        try DirectoryLayout.bootstrap(at: root)
+        let router = ProviderRouter()
+        try await router.register(LocalNormalizerProvider())
+        let runner = FirstSliceRunner(root: root, orchestrator: AACIOrchestrator(router: router))
+        let adapter = ScribeFirstSliceAdapter(runner: runner)
+
+        let professional = Usuario(cpfHash: "prof-hash", civilToken: "prof-token")
+        let patient = Usuario(cpfHash: "patient-hash", civilToken: "patient-token")
+        let service = Servico(nome: "Servico", tipo: "clinica")
+
+        let start = await adapter.startProfessionalSession(.init(professional: professional, service: service))
+        let sessionId = try XCTUnwrap(start.state?.sessionId)
+        _ = await adapter.selectPatient(.init(sessionId: sessionId, patient: patient))
+        _ = await adapter.submitSessionCapture(.init(sessionId: sessionId, capture: .init(rawText: "Paciente relata dor.")))
+        let resolved = await adapter.resolveGate(.init(sessionId: sessionId, approve: false))
+        let state = try XCTUnwrap(resolved.state)
+
+        let normalization = try XCTUnwrap(
+            state.mentalSpaceRuntimeState.stages.first { $0.stage == .normalization }
+        )
+        XCTAssertEqual(normalization.status, .ready)
+        XCTAssertFalse(state.mentalSpaceRuntimeState.legalAuthorizing)
+        XCTAssertTrue(state.mentalSpaceRuntimeState.clinicianReviewRequired)
+        XCTAssertFalse(state.mentalSpaceRuntimeState.summary.contains("Paciente relata dor."))
+    }
+
+    private func makeTempRoot() -> URL {
+        URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
+            .appendingPathComponent("HealthOSMentalSpaceRuntimeTests-\(UUID().uuidString)", isDirectory: true)
+    }
+
+    private func makeSessionInput(text: String) -> FirstSliceSessionInput {
+        FirstSliceSessionInput(
+            professional: Usuario(cpfHash: "prof", civilToken: "prof"),
+            patient: Usuario(cpfHash: "patient", civilToken: "patient"),
+            service: Servico(nome: "svc", tipo: "ambulatory"),
+            capture: SessionCaptureInput(rawText: text),
+            gateApprove: false
+        )
+    }
+}
+
+private struct LocalNormalizerProvider: LanguageModelProvider {
+    let providerName = "local-normalizer"
+    let modelId: String? = "local-normalizer-v1"
+    let modelVersion: String? = "1.0.0"
+    let capabilityProfile = ProviderCapabilityProfile(
+        providerId: "local-normalizer",
+        providerKind: .appleNative,
+        supportedTaskClasses: [.languageModel],
+        allowedDataLayers: [.derivedArtifacts],
+        allowsPHI: true,
+        allowsIdentifiableData: false,
+        requiresNetwork: false,
+        latencyClass: .interactive,
+        supportsCostReporting: false,
+        supportsProvenanceReporting: true,
+        isStub: false
+    )
+
+    func generate(prompt: String, context: [String: String]) async throws -> String {
+        XCTAssertEqual(context["task"], "mental-space-transcript-normalization")
+        return prompt
+            .split(whereSeparator: { $0.isWhitespace })
+            .joined(separator: " ")
+    }
+}

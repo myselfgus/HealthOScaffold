@@ -194,6 +194,7 @@ private struct SliceOutputsCard: View {
                 OutputBlock(title: "SOAP draft preview", text: model.bridgeState?.draftPreview ?? "Nenhum draft SOAP visivel ainda.")
                 OutputBlock(title: "Referral draft", text: model.referralDraftSummaryText)
                 OutputBlock(title: "Prescription draft", text: model.prescriptionDraftSummaryText)
+                OutputBlock(title: "Mental Space Runtime", text: mentalSpaceText)
                 OutputBlock(title: "GOS runtime mediation", text: model.gosRuntimeSummaryText)
                 OutputBlock(title: "Gate review", text: model.gateReviewSummaryText)
                 OutputBlock(title: "Final SOAP document", text: model.finalSummaryText)
@@ -201,6 +202,7 @@ private struct SliceOutputsCard: View {
                 LabeledContent("SOAP draft state", value: model.bridgeState?.draftState.rawValue ?? "empty")
                 LabeledContent("Referral draft state", value: model.bridgeState?.referralDraft.state.rawValue ?? "none")
                 LabeledContent("Prescription draft state", value: model.bridgeState?.prescriptionDraft.state.rawValue ?? "none")
+                LabeledContent("Mental Space normalization", value: model.bridgeState?.mentalSpaceRuntimeState.stages.first(where: { $0.stage == .normalization })?.status.rawValue ?? "pending")
                 LabeledContent("GOS runtime", value: model.bridgeState?.gosRuntimeState.lifecycle.rawValue ?? "unknown")
                 LabeledContent("Gate state", value: model.bridgeState?.gateState.rawValue ?? "none")
                 LabeledContent("Final SOAP document state", value: model.bridgeState?.finalDocument.state.rawValue ?? "none")
@@ -246,6 +248,27 @@ private struct SliceOutputsCard: View {
             transcription.issueMessage ?? "sem issue explicita"
         ]
         .joined(separator: "\n")
+    }
+
+    private var mentalSpaceText: String {
+        guard let mentalSpace = model.bridgeState?.mentalSpaceRuntimeState else {
+            return "Mental Space Runtime ainda nao executou nesta sessao."
+        }
+        let stageLines = mentalSpace.stages.map { stage in
+            [
+                "stage: \(stage.stage.rawValue)",
+                "status: \(stage.status.rawValue)",
+                "provider: \(stage.modelProvider ?? "none")",
+                "artifact: \(stage.artifactObjectPath ?? "none")",
+                stage.issueMessage ?? stage.summary
+            ].joined(separator: " | ")
+        }
+        return ([
+            "derived_artifacts_only: \(mentalSpace.derivedArtifactsOnly)",
+            "clinician_review_required: \(mentalSpace.clinicianReviewRequired)",
+            "legal_authorizing: \(mentalSpace.legalAuthorizing)",
+            "summary: \(mentalSpace.summary)"
+        ] + stageLines).joined(separator: "\n")
     }
 }
 

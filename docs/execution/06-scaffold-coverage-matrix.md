@@ -78,6 +78,9 @@ Legend:
 - [x] async runtime now has typed job governance contracts (job kind taxonomy, lawful-context requirements, retry/backpressure policy, idempotency, and observability event taxonomy)
 - [x] async runtime now has a minimal executable local executor with guarded lifecycle transitions, fail-closed sensitive-job checks, dead-letter flow, and operator control helpers
 - [~] async runtime persistence/execution remains local scaffold-level (in-memory executor + SQL table shape); distributed queue/worker orchestration is intentionally not implemented
+- [x] Mental Space Runtime now has staged contracts for transcription normalization, ASL, VDLP, and GEM with fail-closed dependency ordering and derived/gated artifact metadata
+- [x] first-slice transcription normalization now runs through a local-first provider boundary and persists normalized transcript output only as a `derived-artifacts` Mental Space artifact when a real local model is available
+- [~] ASL, VDLP, and GEM execution remain scaffolded contracts/job kinds in this wave; the existing prompt-engineered scripts still require future adapter wrapping before repo-native execution
 
 ## 5. GOS (Governed Operational Spec)
 - [x] GOS formally introduced as subordinate layer between HealthOS Core and runtimes
@@ -172,6 +175,9 @@ Legend:
 - [x] Scribe bridge GOS runtime app surface now carries an explicit non-authorizing flag (`legalAuthorizing = false`) so bundle/spec identifiers remain informational and provenance-facing only
 - [x] Scribe bridge/UI/CLI now expose minimal active GOS bundle/workflow visibility, bound actor/family summaries, reasoning-boundary summaries, and SOAP/referral/prescription `gos.use.*` mediation markers without exposing raw compiled spec/runtime-binding JSON
 - [x] Swift XCTest app-boundary coverage now verifies both active-GOS and no-active-GOS Scribe bridge paths return only safe GOS runtime surfaces while preserving gate-required + draft-only app semantics
+- [x] native macOS 26+ app-shell/design-system scope is defined for Scribe, Sortio, CloudClinic, and a future HealthOS control panel
+- [x] SwiftPM package manifest now declares PackageDescription 6.2 and `.macOS(.v26)` for the native Apple build graph
+- [~] Liquid Glass is a documented design baseline for future native UI work, but no final macOS 26 app shell or shared production design-system package has been implemented
 - [x] user-agent/patient-sovereignty contracts now exist in Swift Core + TS contracts for capability scope, consent surface, patient audit surface, export request/status surface, visibility-vs-retention summaries, and Sortio interaction envelope boundaries
 - [x] User Agent guard layer now fail-closes prohibited clinical/regulatory capabilities (`diagnose`, `prescribe`, `issue-referral`, `finalize-record`, `sign-document`, retention/habilitation bypass attempts), missing lawfulContext, denied sensitive layers, and non-informational outputs
 - [x] Swift XCTest coverage now includes explicit patient sovereignty negative tests for consent revocation policy acknowledgements, cross-patient audit view denial, reidentification export denial-by-default, direct-identifier policy gates, and Sortio app-safe payload boundaries

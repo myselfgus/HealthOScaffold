@@ -32,6 +32,9 @@ Objective: ensure that Xcode Intelligence and any compatible engineering assista
 
 Actions:
 - update `CLAUDE.md`, `AGENTS.md`, and relevant skill files in a future work unit
+- define Settler profiles as instruction and skill material
+- give each Settler a Territory, invariants, forbidden moves, and validation expectations
+- state that no Settler can override Steward framing or official docs
 - codify policy guards as instruction language:
   - official-doc precedence rule
   - non-authoritative posture rule
@@ -47,6 +50,7 @@ Definition of done:
 - the agent references official docs as source of truth
 - the agent does not invent capability or claim integration before verification
 - CLAUDE.md, AGENTS.md, and relevant skill files are consistent with docs 45 and 46
+- Settler profile instructions exist as doctrine/instruction artifacts before any multiagent implementation
 
 Constraint: this work unit (the architectural realignment documenting docs 45, 46, 17) is Phase A. WS-1 implementation is Phase B.
 
@@ -55,6 +59,8 @@ Constraint: this work unit (the architectural realignment documenting docs 45, 4
 Objective: expose typed HealthOS repository-maintenance operations to Xcode Intelligence or any compatible MCP client, so Steward can invoke HealthOS-specific operations as structured tool calls.
 
 Boundary constraint: `healthos-mcp` is the repository-maintenance MCP server only. It is outside the HealthOS clinical/runtime hierarchy. If HealthOS later uses MCP servers for clinical, operational, or runtime automation, those are separate Core-governed runtime MCP servers and must not be named `healthos-mcp`. Do not collapse these two MCP families.
+
+Settler boundary: `healthos-mcp` exposes operations for Steward and Settlers. Those operations are repository-maintenance operations. They are not clinical tools and do not execute HealthOS runtime acts.
 
 Actions:
 - build a local MCP server under a new or existing TS package
@@ -90,6 +96,8 @@ Actions:
 - remove or archive provider orchestration as primary architecture
 - remove prompt-template-based pseudo-agent orchestration as primary interface
 - add or restore deterministic repository operations deliberately rather than implying they already exist (`validate-docs`, `validate-all`, `scan-status`, `get-handoff`, `next-task`)
+- optionally support Settlement records later, after the doctrine and record shape are defined
+- keep Settlement support deterministic; the CLI does not implement multiagent intelligence by itself
 - make CLI share operation implementations with MCP server where structurally possible once those operations exist
 - ensure CLI works in CI/GitHub Actions without LLM dependency
 
@@ -120,6 +128,7 @@ Phase A is documentation and tracking only. No Swift, TypeScript, or schema sour
 
 Outputs:
 - WS-1: `CLAUDE.md`, `AGENTS.md`, and skill files updated with consolidated HealthOS instructions
+- Settler profiles exist as doctrine/instruction artifacts before any multiagent implementation
 - WS-2: `healthos-mcp` local MCP server implemented with typed operations
 - WS-3: deterministic CLI consolidated, provider orchestration removed as primary path
 - validation docs updated to reflect new operations
@@ -177,6 +186,7 @@ Target state is materially achieved when all are true:
 - deterministic CLI works without LLM dependency and passes CI (WS-3 complete)
 - official docs remain canonical; repository memory remains derived
 - Steward has no authority over Core, GOS, or clinical runtime
+- Settler profiles exist as doctrine/instruction artifacts before any multiagent implementation
 - `make validate-docs` passes with no drift errors against updated doc set
 - doc 44 is preserved as historical reference
 

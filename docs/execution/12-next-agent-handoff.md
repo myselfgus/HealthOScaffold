@@ -71,3 +71,5 @@ Use these docs as the target source of truth for future steward work:
 - `docs/execution/17-healthos-xcode-agent-migration-plan.md`
 
 The intended evolution is Steward for Xcode: Xcode Intelligence as the Apple-controlled engineering runtime surface, with HealthOS contributing instructions, `healthos-mcp`, derived repository memory, and an expanded deterministic CLI.
+
+Settler model note: the Steward / Settler / Settlement / Territory model was added as doctrine-only in `docs/architecture/47-steward-settler-engineering-model.md`, with future implementation tracked in `docs/execution/19-settler-model-task-tracker.md`. Future work should use those docs and must not treat Settlers as clinical or runtime agents.

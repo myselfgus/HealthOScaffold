@@ -6,6 +6,41 @@ Current phase: Controlled implementation — first vertical slice started
 
 ## Completed recently
 
+## ST-001 — Steward / Settler engineering model doctrine (2026-04-29)
+
+Objective: introduce the Steward / Settler / Settlement / Territory engineering model as documentation-only repository doctrine.
+
+Files touched:
+- `docs/architecture/47-steward-settler-engineering-model.md` — canonical doctrine for the model
+- `docs/architecture/45-healthos-xcode-agent.md` — Steward for Xcode linked to Settlers, Settlements, Territories, and `healthos-mcp`
+- `docs/execution/17-healthos-xcode-agent-migration-plan.md` — simplified migration plan updated with Settler profile, Settlement record, MCP, and deterministic CLI boundaries
+- `docs/execution/19-settler-model-task-tracker.md` — tracker for future Settler model implementation
+- `docs/execution/02-status-and-tracking.md` — this entry
+- `docs/execution/12-next-agent-handoff.md` — short handoff note for future agents
+
+Invariants involved:
+- Inv 1 (HealthOS Core is sovereign)
+- Inv 42 (validation harness fail-closed and drift-sensitive)
+- Inv 43 (scaffold closure never equals product readiness)
+- engineering-agent boundary doctrine: Steward, Settlers, Settlements, Territories, and `healthos-mcp` remain outside the HealthOS clinical/runtime hierarchy
+
+Validation:
+- `make validate-docs` PASS
+
+Done criteria:
+- doc 47 exists and contains all required sections
+- doc 45 links to doc 47
+- doc 17 includes Settler model updates while preserving simplified scope
+- tracker 19 exists
+- status and handoff tracking are updated
+- no Swift, TypeScript, schema, or runtime source is modified
+
+Residual gaps:
+- executable Settlers not implemented
+- `healthos-mcp` not implemented
+- Settlement schema not implemented
+- Settler profile skills not implemented
+
 ## TEST-001 — Swift test blocker cleanup for app/retrieval boundary suites (2026-04-28)
 
 Objective: remove stale Swift XCTest compile blockers that prevented the repository test suite from running after the Scribe/GOS visibility work.

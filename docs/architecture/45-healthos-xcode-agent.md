@@ -79,6 +79,22 @@ HealthOS clinical and runtime hierarchy (never collapses into engineering layer)
 
 These two structures never merge. Steward does not enter the clinical/runtime hierarchy. The clinical/runtime hierarchy does not depend on Steward.
 
+## Steward / Settler model
+
+Steward is the canonical engineering coordinator for the HealthOS construction repository.
+
+Settlers are specialized engineering profiles for bounded repository Territories. A Territory is a documented repository domain with canonical docs, files in scope, invariants, tests, risks, and validation rules.
+
+Settlements are bounded work units framed by Steward and assigned to one or more Settlers under Steward supervision.
+
+Xcode Intelligence, where available, may host or assist interactions with Steward, Settlers, Settlements, and Territories. Xcode Intelligence is not HealthOS Core, not a HealthOS clinical runtime, and not a HealthOS-controlled law engine.
+
+Steward for Xcode is the Xcode-native integration posture for Steward.
+
+`healthos-mcp` is the repository-maintenance MCP for Steward and Settlers. HealthOS runtime MCP servers are separate future Core-governed systems and must not be collapsed into `healthos-mcp`.
+
+The canonical model is defined in `docs/architecture/47-steward-settler-engineering-model.md`.
+
 ## What HealthOS contributes (extension surface)
 
 HealthOS does not build the runtime. HealthOS contributes four extension points.

@@ -118,10 +118,15 @@ Steward for Xcode is the Xcode-integration posture for Steward. Steward for Xcod
 Do not treat Steward memory as canonical truth; official docs are canonical. Steward memory is a derived index.
 
 Current deterministic baseline (hard-reset posture):
+
+`dist/` is not committed. Run `make ts-build` once before invoking the CLI.
+
 ```bash
+make ts-build
 cd ts && npx --yes --workspace @healthos/steward healthos-steward status
-cd ts && npx --yes --workspace @healthos/steward healthos-steward runtime
-cd ts && npx --yes --workspace @healthos/steward healthos-steward session
+cd ts && npx --yes --workspace @healthos/steward healthos-steward runtime --message "inspect repository posture" --dry-run
+# session requires --id <uuid>; exits non-zero if omitted or session not found
+cd ts && npx --yes --workspace @healthos/steward healthos-steward session --id <session-id>
 ```
 
 Codex, Claude Code, and other external coding assistants are external executors operating on this repository. They are not internal Steward providers.

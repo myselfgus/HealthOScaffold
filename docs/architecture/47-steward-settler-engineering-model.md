@@ -42,6 +42,25 @@ HealthOS runtime MCP servers: separate future family of Core-governed runtime, c
 
 `healthos-mcp` is repository-maintenance MCP for Steward and Settlers. HealthOS runtime MCP servers are future Core-governed runtime/clinical/operational MCP servers.
 
+## Repository-local roots
+
+The engineering layer uses three repository-local roots:
+
+- `.healthos-steward/` stores derived Steward state, policies, prompts, and session memory.
+- `.healthos-settler/` stores documentation-only Settler profile and Settlement record scaffolds.
+- `.healthos-territory/` stores documentation-only Territory record scaffolds.
+
+These roots are not canonical law. They do not implement clinical agents, runtime agents, or multiagent orchestration.
+
+Official docs remain canonical. Repository-local records may help navigation, handoff, and validation discipline only when they stay subordinate to `docs/`, project manifests, and human review.
+
+Current maturity:
+- `.healthos-steward/` has scaffolded derived state and the current hard-reset session seam.
+- `.healthos-settler/` is a documentation scaffold only.
+- `.healthos-territory/` is a documentation scaffold only.
+
+No Settler profile, Settlement record, or Territory record becomes executable by being present in these roots.
+
 ## Relationship to HealthOS hierarchy
 
 ```text

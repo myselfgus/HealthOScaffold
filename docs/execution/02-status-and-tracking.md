@@ -6,6 +6,47 @@ Current phase: Controlled implementation — first vertical slice started
 
 ## Completed recently
 
+## ST-001a — README and repository roots for Settler/Territory scaffolds (2026-04-29)
+
+Objective: update the main README and repository-local documentation roots after introducing Steward, Settler, Settlement, and Territory vocabulary.
+
+Files touched:
+- `README.md` — added Steward/Settler/Territory reading path, repository map entries, updated diagrams, and an engineering-layer diagram outside the clinical/runtime hierarchy
+- `.healthos-settler/README.md` — documentation-only root for Settler profile and Settlement record scaffolds
+- `.healthos-settler/profiles/README.md` — future profile instruction scaffold
+- `.healthos-settler/settlements/README.md` — future Settlement record scaffold
+- `.healthos-territory/README.md` — documentation-only root for Territory record scaffolds
+- `.healthos-territory/territories/README.md` — future Territory record scaffold
+- `docs/architecture/47-steward-settler-engineering-model.md` — repository-local root doctrine added
+- `docs/execution/19-settler-model-task-tracker.md` — active queue updated for scaffolded roots and future Territory records
+- `docs/execution/02-status-and-tracking.md` — this entry
+- `docs/execution/12-next-agent-handoff.md` — handoff note updated
+- `docs/execution/todo/ops-network-ml.md` — Settler/Territory scaffold completion note added
+
+Invariants involved:
+- Inv 1 (HealthOS Core is sovereign)
+- Inv 42 (validation harness fail-closed and drift-sensitive)
+- Inv 43 (scaffold closure never equals product readiness)
+- engineering-agent boundary doctrine: Steward, Settlers, Settlements, Territories, `.healthos-*` roots, and `healthos-mcp` remain outside the HealthOS clinical/runtime hierarchy
+
+Validation:
+- `git diff --check` PASS
+- `make validate-docs` PASS
+- `make validate-all` PASS
+
+Done criteria:
+- README names the new engineering concepts without collapsing them into HealthOS runtime authority
+- `.healthos-settler/` and `.healthos-territory/` exist as documentation scaffolds only
+- diagrams and repository maps show the new roots as engineering surfaces outside clinical/runtime hierarchy
+- status, handoff, and tracker docs are updated
+
+Residual gaps:
+- executable Settlers not implemented
+- Settlement schema not implemented
+- Territory records not defined beyond scaffold READMEs
+- Territory loader not implemented
+- `healthos-mcp` not implemented
+
 ## ST-001 — Steward / Settler engineering model doctrine (2026-04-29)
 
 Objective: introduce the Steward / Settler / Settlement / Territory engineering model as documentation-only repository doctrine.

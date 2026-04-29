@@ -2,6 +2,22 @@
 
 ## COMPLETED
 
+### ST-001a README and repository roots for Settler/Territory scaffolds
+Outcome:
+- README now names Steward, Settlers, Settlements, and Territories as repository engineering concepts outside the HealthOS clinical/runtime hierarchy
+- diagrams and repository maps include `.healthos-steward/`, `.healthos-settler/`, and `.healthos-territory/` as engineering surfaces
+- `.healthos-settler/` and `.healthos-territory/` exist as documentation-only roots for future profile, Settlement, and Territory records
+- tracker 19 records the scaffolded roots and keeps executable Settlers, Settlement schema, Territory records, Territory loader, and `healthos-mcp` as future work
+Files touched:
+- `README.md`
+- `.healthos-settler/*`
+- `.healthos-territory/*`
+- `docs/architecture/47-steward-settler-engineering-model.md`
+- `docs/execution/19-settler-model-task-tracker.md`
+- `docs/execution/02-status-and-tracking.md`
+- `docs/execution/12-next-agent-handoff.md`
+- `docs/execution/todo/ops-network-ml.md`
+
 ### OPS-004 Clarify online-only mesh doctrine and sovereign fabric projection
 Outcome:
 - networking/mesh doctrine now states online-only access posture and rejects offline-mode drift

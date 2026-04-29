@@ -18,6 +18,12 @@ No Settler profiles are implemented as executable agents.
 
 `docs/architecture/47-steward-settler-engineering-model.md` is the canonical architecture document for the model.
 
+Repository-local documentation roots exist:
+- `.healthos-settler/` for future Settler profiles and Settlement records
+- `.healthos-territory/` for future Territory records
+
+These roots are documentation scaffolds only.
+
 ## Streams
 
 ### ST-1 Settler profile instructions
@@ -26,6 +32,8 @@ Create profile docs or skill files for each initial Settler.
 
 Define territory, invariants, forbidden moves, validation expectations, maturity, and handoff requirements for each profile.
 
+Current scaffold root: `.healthos-settler/profiles/`.
+
 ### ST-2 Settlement record schema
 
 Define a schema for a Settlement work unit.
@@ -33,6 +41,14 @@ Define a schema for a Settlement work unit.
 The schema should capture objective, Territory, files in scope, invariants, restrictions, validation commands, done criteria, residual gaps, and handoff.
 
 No execution is implemented in this stream.
+
+Current scaffold root: `.healthos-settler/settlements/`.
+
+### ST-2a Territory record scaffolds
+
+Define Territory records as documentation-only repository domain records.
+
+Current scaffold root: `.healthos-territory/territories/`.
 
 ### ST-3 healthos-mcp operations for Steward/Settlers
 
@@ -75,7 +91,7 @@ Outcome:
 
 ### ST-002 Create Settler profile instruction files
 
-Status: TODO.
+Status: TODO; documentation root scaffolded.
 
 Goal:
 - create instruction or skill artifacts for initial Settler profiles
@@ -83,7 +99,7 @@ Goal:
 
 ### ST-003 Define Settlement record schema
 
-Status: TODO.
+Status: TODO; documentation root scaffolded.
 
 Goal:
 - define the document/schema shape for bounded Settlement work units
@@ -105,6 +121,15 @@ Goal:
 - add deterministic CLI support for listing, generating, validating, and handing off Settlement records
 - do not implement multiagent intelligence in the CLI
 
+### ST-006 Define Territory record files
+
+Status: TODO; documentation root scaffolded.
+
+Goal:
+- define initial Territory records under `.healthos-territory/territories/`
+- keep records subordinate to official docs
+- include canonical docs, files in scope, invariants, validation commands, maturity, and known gaps
+
 ## Non-claims
 
 No implementation exists yet.
@@ -118,3 +143,5 @@ No production readiness is claimed.
 No `healthos-mcp` server is implemented.
 
 No HealthOS runtime MCP server is implemented.
+
+No Territory loader is implemented.

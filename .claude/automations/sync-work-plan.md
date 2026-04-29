@@ -80,9 +80,9 @@ Após ler todas as fontes, construa mentalmente uma tabela de verdade:
 
 ### 1 — Detectar tarefas CONCLUÍDAS
 
-Uma tarefa está DONE quando **ambas** as condições são verdadeiras:
+Uma tarefa está DONE quando há evidência canônica suficiente:
 - O arquivo todo correspondente mostra `COMPLETED` (não apenas `READY`)
-- OU existe um commit no git log cujo título menciona o ID da tarefa (ex: `ST-006`, `OPS-003`, `CL-006`)
+- E existe um commit no git log cujo título menciona o ID da tarefa (ex: `ST-006`, `OPS-003`, `CL-006`)
   E os arquivos entregáveis existem no repositório
 
 Se apenas uma condição for verdadeira: marque como `UNCERTAIN` no log de memória, não altere o plano.

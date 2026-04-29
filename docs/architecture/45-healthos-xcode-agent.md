@@ -93,6 +93,8 @@ Steward for Xcode is the Xcode-native integration posture for Steward.
 
 `healthos-mcp` is the repository-maintenance MCP for Steward and Settlers. HealthOS runtime MCP servers are separate future Core-governed systems and must not be collapsed into `healthos-mcp`.
 
+Codex may act as an external executor for Steward-scoped Xcode-facing repository maintenance. Its bounded role is to review and propose PRs for Claude Code automations, scheduled-task definitions, Xcode/Steward instructions, and automation drift. This does not create a new Steward category, does not make Codex an internal Steward provider, and does not grant merge or clinical/runtime authority.
+
 The canonical model is defined in `docs/architecture/47-steward-settler-engineering-model.md`.
 
 ## What HealthOS contributes (extension surface)

@@ -91,6 +91,42 @@ Residual gaps:
 - no HealthOS control panel executable target exists yet
 - existing Scribe validation UI has not been refactored into a macOS 26 app shell
 
+## WS-1b — Codex external executor for Steward-scoped Xcode-facing maintenance (2026-04-29)
+
+Objective: register Codex as an external executor for Steward-scoped Xcode-facing repository maintenance without creating a new Steward authority category.
+
+Files touched:
+- `README.md` — Steward and automation sections now describe the Codex companion local automation
+- `AGENTS.md` — Steward section now defines the bounded Codex external executor role and local automation path
+- `CLAUDE.md` — same Steward role definition plus companion automation note for Claude Code automations
+- `docs/architecture/45-healthos-xcode-agent.md` — Steward for Xcode doctrine now includes the bounded Codex executor role
+- `docs/architecture/47-steward-settler-engineering-model.md` — Xcode Settler scope now includes Xcode-facing automation-maintenance surfaces
+- `docs/execution/17-healthos-xcode-agent-migration-plan.md` — WS-1/Phase B updated for Codex automation-maintenance posture
+- `docs/execution/skills/project-steward-skill.md` — Steward skill now includes Codex external executor scope and `.claude` automation surfaces
+- `docs/execution/12-next-agent-handoff.md` — handoff note updated
+- `docs/execution/todo/ops-network-ml.md` — WS-1 follow-up note added
+
+Invariants involved:
+- engineering-agent boundary doctrine: Codex remains an external executor, not an internal Steward provider
+- Steward for Xcode remains outside HealthOS clinical/runtime hierarchy
+- `healthos-mcp` remains doctrine-only and non-clinical
+- no merge authority or Core-law authority is granted
+
+Validation:
+- `git diff --check` PASS
+- `make validate-docs` PASS
+- `.claude/scheduled_tasks.json` parse PASS
+
+Done criteria:
+- Codex executor role is documented as Steward-scoped Xcode-facing repository maintenance
+- local Codex automation is registered at `$CODEX_HOME/automations/steward-xcode-facing-maintenance/`
+- Claude Code automations remain the scheduled jobs; Codex reviews/proposes PRs for drift
+- no production, clinical/runtime, Xcode Intelligence implementation, or `healthos-mcp` implementation claim was added
+
+Residual gaps:
+- local Codex automation registry is outside the repository and is not a HealthOS runtime artifact
+- `healthos-mcp` remains unimplemented
+
 ## DOC-PLAN-001 — Documentary TODOs work plan + AI phase prompts (2026-04-28)
 
 Objective: audit the full repository for open documentation TODOs, produce a sequential AI work plan, and write self-contained execution prompts for each phase.

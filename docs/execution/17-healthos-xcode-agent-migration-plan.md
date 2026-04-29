@@ -43,6 +43,7 @@ Actions:
   - HealthOS repository identity rule (scaffold = maturity, not separate product)
 - codify fail-closed default: when posture is ambiguous, deny rather than assume
 - align existing skill files under `docs/execution/skills/` with the simplified target architecture
+- define Codex as an external executor for Steward-scoped Xcode-facing repository maintenance, limited to PR-based review of Claude Code automations, scheduled-task definitions, Xcode/Steward instructions, and automation drift
 
 Definition of done:
 - Xcode Intelligence or any engineering assistant operating in this repository receives clear HealthOS-specific instructions
@@ -51,6 +52,7 @@ Definition of done:
 - the agent does not invent capability or claim integration before verification
 - CLAUDE.md, AGENTS.md, and relevant skill files are consistent with docs 45 and 46
 - Settler profile instructions exist as doctrine/instruction artifacts before any multiagent implementation
+- Codex automation-maintenance posture is documented without creating a new Steward authority category or granting merge/clinical/runtime authority
 
 Constraint: this work unit (the architectural realignment documenting docs 45, 46, 17) is Phase A. WS-1 implementation is Phase B.
 
@@ -128,6 +130,7 @@ Phase A is documentation and tracking only. No Swift, TypeScript, or schema sour
 
 Outputs:
 - WS-1: `CLAUDE.md`, `AGENTS.md`, and skill files updated with consolidated HealthOS instructions
+- Codex companion local automation registered for Steward-scoped Xcode-facing repository maintenance
 - Settler profiles exist as doctrine/instruction artifacts before any multiagent implementation
 - WS-2: `healthos-mcp` local MCP server implemented with typed operations
 - WS-3: deterministic CLI consolidated, provider orchestration removed as primary path

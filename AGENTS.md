@@ -90,6 +90,25 @@ make smoke-cli
 make smoke-scribe
 ```
 
+Recently confirmed direct smoke commands:
+```bash
+cd swift && swift run HealthOSCLI
+cd swift && swift run HealthOSCLI --reject-gate
+cd swift && swift run HealthOSScribeApp --smoke-test
+cd swift && swift run HealthOSScribeApp --smoke-test-audio
+```
+
+For GOS bundle lifecycle smoke, use the minimal operator-facing CLI path and keep reviewer/operator identity explicit:
+```bash
+cd swift && swift run HealthOSCLI --gos-review-bundle <bundle-id> --gos-spec-id <spec-id> --reviewer-id <id> --review-rationale "<reason>"
+cd swift && swift run HealthOSCLI --gos-promote-bundle <bundle-id> --gos-spec-id <spec-id> --activator-id <id> --activation-rationale "<reason>"
+```
+
+Workflow notes from recent repository use:
+- Before implementation work, `git fetch origin --prune`, confirm `main` equals `origin/main`, then create a fresh task branch.
+- Serialize SwiftPM validation commands; concurrent Swift builds/runs can contend on `.build` locks.
+- For documentation-only work, run `make validate-docs` and `git diff --check`; if a broader gate fails, record the exact failing gate instead of weakening the validation claim.
+
 ## Cross-language contract discipline
 
 When ontology/contracts change, align in the same work unit:
@@ -124,6 +143,10 @@ cd ts && npx --yes --workspace @healthos/steward healthos-steward session
 ```
 
 Codex, Claude Code, and other external coding assistants are external executors operating on this repository. They are not internal Steward providers.
+
+Codex may support Steward-scoped Xcode-facing repository maintenance as an external executor. Keep this role limited to reviewing and proposing PRs for Claude Code automations, scheduled-task definitions, Xcode/Steward instructions, and automation drift. Do not create a new Steward authority category, grant merge authority, or treat Codex as an internal Steward provider.
+
+The local Codex automation for this posture is `$CODEX_HOME/automations/steward-xcode-facing-maintenance/`. It should propose branch/PR updates for drift; it must not merge automatically or edit clinical/runtime code outside an explicitly scoped task.
 
 ## Steward and healthos-mcp boundary
 

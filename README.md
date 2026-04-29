@@ -365,6 +365,8 @@ Settlers are specialized engineering agent profiles. Settlements are bounded eng
 
 **Steward for Xcode** is the Xcode-integration posture. Steward for Xcode integrates with Xcode Intelligence as an Apple-controlled engineering runtime surface, while HealthOS contributes instructions, `healthos-mcp`, derived repository memory, and deterministic CLI operations. See `docs/architecture/45-healthos-xcode-agent.md` for target architecture and `docs/execution/17-healthos-xcode-agent-migration-plan.md` for the migration plan.
 
+Codex may support Steward-scoped Xcode-facing repository maintenance as an external executor. That role reviews and proposes PRs for Claude Code automations, scheduled-task definitions, Xcode/Steward instructions, and automation drift. It does not create a new Steward category, does not grant merge authority, and remains outside the HealthOS clinical/runtime hierarchy.
+
 Current deterministic baseline (hard-reset posture — only these CLI commands are implemented today):
 
 `dist/` is not committed. Run `make ts-build` once before invoking the CLI:
@@ -417,6 +419,8 @@ flowchart TD
 ## 🤖 Claude Code Automations
 
 Three durable Claude Code automations keep the repository state synchronized and documented. All follow the same **main-first** pattern: pull `origin/main` before reading, write output, then commit and push back to `origin/main`. This means any agent — local or remote — always sees the latest state after a pull.
+
+Codex maintains a companion local automation for Steward-scoped Xcode-facing maintenance: `$CODEX_HOME/automations/steward-xcode-facing-maintenance/`. It is a review/PR surface for automation definitions and instruction drift, not a replacement for the Claude Code scheduled jobs.
 
 | Automation | Schedule | What it does | Output pushed to main |
 | :--- | :--- | :--- | :--- |

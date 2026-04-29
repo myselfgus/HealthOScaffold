@@ -138,3 +138,23 @@ The scaffold should add:
 - architecture docs for GOS
 - canonical schema for GOS
 - execution/backlog references for compiler + runtime binding work
+
+## Follow-up status
+
+All items above are closed as of the GOS stabilization wave.
+See `docs/execution/08-gos-stabilization-handoff.md` for the full closure record.
+
+Closed items:
+- architecture docs added: `docs/architecture/29` through `docs/architecture/34`
+- canonical schema added: `schemas/governed-operational-spec.schema.json` and variants
+- authoring schema and bundle-manifest schema added
+- execution backlog added: `docs/execution/todo/gos-and-compilers.md`
+- TypeScript compiler scaffolded: `ts/packages/healthos-gos-tooling/`
+- Swift contracts scaffolded: `swift/Sources/HealthOSCore/GovernedOperationalSpec.swift` and related
+- file-backed registry and loader implemented: `GOSFileBackedRegistry`
+- AACI activation seam implemented: `AACIOrchestrator.activateGOS`
+- first-slice runtime path integrated with GOS activation and mediation
+- bootstrap exemplar bundle shipped for `aaci.first-slice`
+
+The ADR status remains Accepted.
+The GOS ontology established here should not be changed without a new or superseding ADR.

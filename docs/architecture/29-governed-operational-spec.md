@@ -17,6 +17,18 @@ GOS is not the sovereign layer.
 HealthOS Core remains the sovereign layer.
 GOS is a subordinate operational spec layer.
 
+## Why "Governed" in the name
+
+"Governed" does not mean that GOS governs health decisions or clinical acts.
+It means that GOS itself is subject to governance:
+- governed by HealthOS Core policy (which determines what is lawful)
+- governed by bundle lifecycle policy (which determines what is active)
+- governed by compilation discipline (which determines what is structurally valid)
+- governed by human review before activation (which determines what is semantically approved)
+
+GOS structures operational work within governance boundaries.
+GOS does not extend, replace, or constitute governance itself.
+
 ## Why GOS exists
 
 Without a native intermediate representation, operational guidance tends to leak into:
@@ -91,6 +103,32 @@ GOS cannot:
 - define law independently of core contracts
 - effectively authorize a health act by itself
 
+## Operational versus clinical-sovereign boundary
+
+GOS addresses the operational layer.
+HealthOS Core addresses the sovereign layer.
+The line between them must be explicit.
+
+Something belongs in GOS (operational) when:
+- it structures how work is extracted, derived, prepared, timed, or evidenced
+- its outputs are always draft-only and gate-required before effectuation
+- it does not determine lawful access, consent basis, or effectuation authority
+
+Something belongs in Core (clinical-sovereign) when:
+- it determines whether access is lawful
+- it determines whether a health act may be effectuated
+- it holds consent, habilitation, finality, or gate authority
+- its violation renders an action legally defective, not just operationally degraded
+
+Practical test:
+If removing GOS from a runtime would make an output unlawful → that logic belongs in Core, not GOS.
+If removing GOS from a runtime would make an output incomplete or unstructured but not unlawful → that logic belongs in GOS.
+
+This boundary also determines what may be authored in GOS primitives.
+A `scopeRequirementSpec` declaring a consent prerequisite does not satisfy that consent requirement.
+A `humanGateRequirementSpec` declaring review is needed does not substitute for the Core gate mechanism.
+GOS describes the operational shape of the work; Core enforces whether the work is lawful.
+
 ## Preferred authoring and compiled form
 
 Preferred authoring form:
@@ -137,6 +175,15 @@ Describe fields or assertions computed from already-available inputs/slots.
 Purpose:
 - turn raw extracted state into bounded derived meaning
 - keep derivation logic explicit rather than hidden in prompts
+
+Bounded reasoning defined:
+A derivation with `method_kind: bounded_reasoning` means:
+- inputs are explicitly declared in the derivation spec (no implicit context expansion)
+- outputs are limited to the declared output fields only
+- the reasoning does not produce effects beyond those declared output fields
+- the derivation does not infer lawful access, consent basis, or effectuation authority
+- a language model used for bounded reasoning operates within the declared input/output surface
+- the result remains a derived operational field, not a clinical determination or a gate substitute
 
 ### 4. task specs
 Describe bounded executable runtime tasks.
@@ -203,6 +250,14 @@ Purpose:
 - declare expected scope requirements without replacing the core lawful-context checks
 - help runtimes fail honestly before attempting work that would later be unlawful
 
+Critical distinction:
+Scope requirement specs are declarations of prerequisites, not verifications.
+Declaring a scope requirement in GOS does not mean the requirement is satisfied.
+Verification of consent, habilitation, finality, or lawful context is always the responsibility of HealthOS Core.
+A runtime that reads a `scope_requirement_spec` with `scope_kind: consent` must not infer that consent exists.
+It must still validate that consent through HealthOS Core before proceeding.
+A runtime that uses scope requirement specs as a substitute for Core verification is violating Core sovereignty.
+
 ## Relationship to AACI
 
 AACI is the primary early consumer of GOS.
@@ -249,13 +304,41 @@ GOS v1 should not try to be:
 
 ## Compiler posture
 
-A future GOS compiler should:
-- accept natural-language operational sources
-- produce normalized structured output
-- preserve source provenance
-- support human review and correction
-- compile to canonical JSON
-- fail conservatively when semantics are ambiguous
+The GOS compiler accepts human-authored YAML as its canonical input form.
+Compiled output is deterministic canonical JSON.
+
+The compiler must:
+- parse YAML authoring documents into normalized internal form
+- validate structurally against the canonical GOS schema
+- validate cross-references within the document
+- produce a compiler report preserving source provenance
+- fail conservatively when input is malformed or semantics are ambiguous
+
+See `docs/architecture/30-gos-authoring-and-compiler.md` for the full six-stage compiler specification.
+
+Note on natural-language sources:
+Accepting unstructured natural-language text as direct compiler input is out of scope for GOS v1.
+If operational language from policies or protocols needs to be encoded in GOS, it must first be
+represented as structured YAML authoring form, with human or AI assistance in that translation step.
+That translation step is not part of the GOS compiler itself.
+
+## Evidence hook verification posture
+
+Evidence hook specs declare what should be captured during execution.
+They do not guarantee that capture occurred.
+
+In the current scaffold, evidence hooks are declarative.
+A compiled GOS bundle that declares evidence hooks does not automatically verify that those hooks
+were executed at runtime. Runtime authors are responsible for implementing hook execution
+aligned with the declared hook specs.
+
+Future hardening should add:
+- runtime verification that declared evidence hooks were actually invoked
+- audit records that include per-hook execution status
+- policy enforcement that flags or rejects runs where required hooks were not fired
+
+Until that hardening exists, evidence hook conformance is an implementation discipline, not a structural guarantee.
+This is a known scaffold-level limitation that should not be mistaken for production-grade provenance enforcement.
 
 ## Runtime posture
 

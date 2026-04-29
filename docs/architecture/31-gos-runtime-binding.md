@@ -69,6 +69,13 @@ This means:
 - GOS can say a consent-scoped action is expected
 - only HealthOS Core can validate that consent basis actually exists
 
+Scope requirement specs are declarations of prerequisites, not verifications.
+A `scope_requirement_spec` with `scope_kind: consent` declares that consent is a prerequisite.
+It does not mean consent has been verified.
+A runtime that reads a scope requirement spec and infers that the requirement is already satisfied
+is violating Core sovereignty. The runtime must still validate the requirement through HealthOS Core
+before proceeding with any work that depends on that scope.
+
 ### 4. subagent routing
 AACI may route subagents based on GOS primitives.
 
@@ -199,5 +206,8 @@ Runtime binding does not mean:
 Still needed after this binding wave:
 - broader adoption beyond the current first-slice runtime paths
 - richer runtime validation hooks outside the current binding-plan and bundle-integrity checks
-- version pinning rules
 - app-surface policy for which GOS-derived facts may be exposed
+
+Note: version pinning rules are now documented in `docs/architecture/34-gos-review-and-activation-policy.md`.
+That doc covers `spec_version`, `bundle_version`, `source_sha256`, `compiler_version`, and `compiled_spec_hash`
+pinning as part of the activation policy. No further version pinning work is needed here.

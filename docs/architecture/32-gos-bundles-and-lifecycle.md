@@ -108,6 +108,26 @@ Preferred rule:
 
 The current file-backed registry follows this posture by updating active pointers and appending lifecycle audit records instead of mutating old audit history away.
 
+## Future multi-bundle posture
+
+The current scaffold maintains one active bundle pointer per `spec_id`.
+
+When multiple bundles become a requirement (for example: different active bundles per runtime,
+per service class, or per jurisdiction), the intended posture is:
+
+- bundle selection must remain explicit, never resolved by heuristic
+- multiple active pointers per `spec_id` require explicit disambiguation keys
+  (such as `runtime_id`, `service_class`, or `jurisdiction`) agreed on before implementation
+- conflict between active bundles for the same scope must be resolved by explicit operator policy,
+  not by runtime-level fallback logic
+- promotion and revocation of individual bundles in a multi-bundle set must preserve
+  append-only audit history for the full set, not only the affected bundle
+
+This is not yet implemented.
+Future work should extend the registry and loader contracts rather than inventing new conflict
+semantics ad hoc. The disambiguation key model and conflict resolution policy must be documented
+before any implementation begins.
+
 ## Non-goals
 
 This doc does not yet implement:
@@ -116,4 +136,4 @@ This doc does not yet implement:
 - multi-review / multi-approver policy
 - version-pinning and rollout policy beyond one active pointer per spec
 
-It now sets the posture and the minimum file-backed implementation shape so future hardening does not invent lifecycle rules ad hoc.
+It sets the posture and the minimum file-backed implementation shape so future hardening does not invent lifecycle rules ad hoc.

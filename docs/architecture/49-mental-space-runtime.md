@@ -103,7 +103,7 @@ swift/Sources/HealthOSMentalSpace/
 
 ### Prompt files as clinical contracts
 
-The prompt files in `Prompts/` are extracted verbatim from the TypeScript scripts tested on 400 patients. They are version-controlled as the canonical clinical contracts for each stage. Their content must not be altered without re-validation against the clinical cohort. The Swift executors are dispatch and provenance boundaries only — they load these prompts at runtime and route them to the appropriate provider.
+The prompt files in `Prompts/` are extracted verbatim from the legacy TypeScript scripts tested on 400 patients and now archived at `docs/reference/mental-space-legacy/` (including `4-asl.ts`, `5-vdlp.ts`, `6-gem.ts`). They are version-controlled as the canonical clinical contracts for each stage. Their content must not be altered without re-validation against the clinical cohort. The Swift executors are dispatch and provenance boundaries only — they load these prompts at runtime and route them to the appropriate provider.
 
 ### Executor pattern
 
@@ -125,6 +125,8 @@ All three stages require extended prompt caching (`anthropic-beta: prompt-cachin
 
 ### Current state
 
-Executors are scaffold placeholders that fail closed (throw `.providerUnavailable`). Implementation begins in RT-MSR-001 when the ASL executor is built and a real provider adapter is available.
+ASL, VDLP, and GEM executor paths are provider-backed through `HealthOSProviders` with fail-closed dependency validation and stage provenance.
 
-Contracts and types remain in `HealthOSCore`. Normalization executor remains in `HealthOSAACI`. The orchestrator and stage executors live in `HealthOSMentalSpace`.
+Legacy TypeScript scripts are archived reference implementations at `docs/reference/mental-space-legacy/`; they are not the active runtime pipeline.
+
+Contracts and types remain in `HealthOSCore`. Normalization executor remains in `HealthOSAACI`. The active orchestrator and stage executors live in `swift/Sources/HealthOSMentalSpace/`.

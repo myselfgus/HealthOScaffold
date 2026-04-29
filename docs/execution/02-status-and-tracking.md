@@ -7,6 +7,49 @@ Current phase: Controlled implementation — first vertical slice started
 ## Completed recently
 
 
+
+## STR-002 — Archive Skill macOS legacy scripts (2026-04-29)
+
+Objective: archive legacy TypeScript Mental Space scripts from repository root into `docs/reference/mental-space-legacy/` to remove active-runtime ambiguity while preserving history and governance posture.
+
+Files touched:
+- `docs/reference/mental-space-legacy/` (moved from `Skill macOS/` via `git mv`)
+- `docs/reference/mental-space-legacy/README.md`
+- `docs/architecture/49-mental-space-runtime.md`
+- `docs/execution/21-structural-ontology-and-product-readiness-plan.md`
+- `docs/execution/todo/runtimes-and-aaci.md`
+- `docs/execution/02-status-and-tracking.md`
+
+Invariants involved:
+- Inv 1 — Core sovereignty
+- Inv 17/22 — provider honesty / anti-fake posture
+- Inv 25a — Mental Space artifacts remain derived/gated
+- Inv 43 — scaffold/foundation maturity is not production readiness
+
+Validation:
+- `git status --short` PASS
+- `test ! -d "Skill macOS"` PASS
+- `test -d "docs/reference/mental-space-legacy"` PASS
+- `find "docs/reference/mental-space-legacy" -maxdepth 2 -type f | sort` PASS
+- `git log --oneline --follow -- "docs/reference/mental-space-legacy/4-asl.ts" | head` PASS
+- `git log --oneline --follow -- "docs/reference/mental-space-legacy/5-vdlp.ts" | head` PASS
+- `git log --oneline --follow -- "docs/reference/mental-space-legacy/6-gem.ts" | head` PASS
+- `grep -RIn "Skill macOS" README.md docs swift ts schemas .healthos-steward .healthos-settler .healthos-territory 2>/dev/null || true` PASS (expected residual historical planning references)
+- `make validate-docs` PASS
+- `make validate-schemas` PASS
+- `make validate-contracts` PASS
+- `cd swift && swift build` PASS
+- `cd swift && swift test` PASS
+- `make validate-all` FAIL due to known unrelated TypeScript workspace issue (`ts/packages/healthos-steward/tsconfig.json` no `src/**/*.ts` inputs; TS18003)
+
+Result:
+- STR-002 complete: legacy scripts are archived reference material under `docs/reference/mental-space-legacy/`; root ambiguity removed.
+
+Residual gaps:
+- legacy scripts are reference only; no Swift runtime behavior changed
+- production provider/runtime hardening remains separate work
+- Steward/Settler/Territory operationalization remains separate work
+
 ## STR-001 — Wire HealthOSProviders into HealthOSMentalSpace (2026-04-29)
 
 Objective: wire `HealthOSProviders` into `HealthOSMentalSpace` so future provider-backed Mental Space executors can route through the governed provider layer without moving constitutional authority out of Core.

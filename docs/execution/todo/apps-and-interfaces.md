@@ -2,6 +2,28 @@
 
 ## COMPLETED
 
+### APP-010 Define native macOS 26+ UI scaffold and design-system scope
+Outcome:
+- added a canonical architecture document for native macOS 26+ app-shell and Liquid Glass scope across Scribe, Sortio, CloudClinic, and a future HealthOS control panel
+- updated the SwiftPM manifest to `swift-tools-version: 6.2` and `.macOS(.v26)` so the package target matches the macOS 26 development baseline
+- added a repository-local `native-macos-ui` execution skill that composes app-boundary discipline with SwiftPM, SwiftUI patterns, and Liquid Glass guidance
+- clarified that Scribe remains the only implemented native validation surface, while Sortio, CloudClinic, and the control panel are scope-defined until executable targets are intentionally introduced
+- preserved app-boundary doctrine: no UI-owned consent, habilitation, gate, finality, storage law, provider behavior, or GOS policy
+Files touched:
+- `swift/Package.swift`
+- `docs/architecture/48-native-macos-ui-design-system-and-app-shells.md`
+- `docs/architecture/11-scribe.md`
+- `docs/architecture/12-sortio.md`
+- `docs/architecture/13-cloudclinic.md`
+- `docs/architecture/19-interface-doctrine.md`
+- `docs/execution/skills/native-macos-ui/SKILL.md`
+- `docs/execution/skills/README.md`
+- `README.md`
+- `docs/execution/02-status-and-tracking.md`
+- `docs/execution/06-scaffold-coverage-matrix.md`
+- `docs/execution/11-current-maturity-map.md`
+- `docs/execution/12-next-agent-handoff.md`
+
 ### DOC-002 README entry-surface expansion and visual atlas pass
 Outcome:
 - `README.md` now functions more clearly as the repository entry surface with reading-path tables, visual repository/document maps, and cross-language contract orientation
@@ -264,6 +286,15 @@ Skill: `docs/execution/skills/cross-app-surfaces-skill.md` + `docs/execution/ski
 Definition of done:
 - Sortio/CloudClinic adapter seams consume shared envelope contracts without raw payload leaks
 - boundary tests added/updated for app-kind + role mismatch and safe-ref enforcement
+
+### APP-011 Future native app-shell implementation pass
+Priority: Medium
+Skill: `docs/execution/skills/native-macos-ui/SKILL.md` + relevant app skill + `docs/execution/skills/liquid-glass/SKILL.md`
+Definition of done:
+- choose one shell explicitly: Scribe app-shell refactor, Sortio scaffold, CloudClinic scaffold, or HealthOS control panel scaffold
+- consume only mediated contracts already available for that shell
+- use macOS 26+ SwiftUI/Liquid Glass conventions without custom chrome or UI-owned law
+- validate with SwiftPM and relevant smoke/test path
 
 
 ## TESTS / VALIDATION

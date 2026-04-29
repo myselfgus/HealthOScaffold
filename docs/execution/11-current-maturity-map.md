@@ -13,6 +13,7 @@ This map measures maturity of HealthOS components in the HealthOScaffold reposit
 | Providers/ML | scaffolded contract / implemented seam | capability routing + fail-closed remote policy + model/adaptor governance | Provider tests present | no real external provider integration | integrate real providers without weakening fail-closed policy |
 | Retrieval/memory/index | scaffolded contract / implemented seam | governed retrieval + honest semantic unavailable posture | retrieval governance tests present | no embeddings/vector infra | integrate real embedding/index pipeline with same contracts |
 | Async runtime | implemented seam / tested operational path (local) | lawfulContext, retry/idempotency, policy-denial events | async governance tests present | no distributed workers/transactional persistence | SQL-backed executor parity |
+| Mental Space Runtime | scaffolded contract / implemented seam (normalization) | staged artifact contracts + local-first normalization provider boundary + derived-artifact persistence | Mental Space runtime tests present | ASL/VDLP/GEM not adapter-wrapped or executable in-repo yet | wrap existing scripts behind governed stage adapters in order: ASL, VDLP, GEM |
 | Network/fabric | doctrine-only / scaffolded contract | private-mesh doctrine + ops posture documented | docs-level only | no production sovereign fabric implementation | operator command set and hardened ACL tooling |
 | Backup/restore/export/retention | scaffolded contract / tested operational path | fail-closed governance validators in Core | backup governance tests present | no full operational automation | map contracts to persistent ops workflows |
 | Regulatory/signature/interoperability/emergency | scaffolded contract / tested operational path | fail-closed validators + placeholder delivery posture | regulatory tests present | no real endpoint/signature provider integration | state-machine + role approval workflow hardening |
@@ -20,7 +21,7 @@ This map measures maturity of HealthOS components in the HealthOScaffold reposit
 | Service Ops / CloudClinic | scaffolded contract / tested operational path (boundary) | service context/membership/queue/gate boundaries enforced | service operations tests present | no persisted workflow engine/UI shell | runtime adapter + persisted projections |
 | Scribe | implemented seam / tested operational path (minimal UI) | professional workspace boundary + gate/finalization mediation | Scribe boundary tests + smoke path | not final product UI | incremental session state integration with full spine |
 | Cross-app surfaces | scaffolded contract / tested operational path (contract) | shared envelope + safe refs + notification boundary validators | cross-app tests present | non-Scribe adapters incomplete | propagate envelope to all app adapters |
-| Apps/UI overall | scaffolded contract / implemented seam (Scribe minimal) | app-boundary doctrine and contracts exist | mainly boundary tests | no final UX for three apps | continue adapter-first without moving law to UI |
+| Apps/UI overall | scaffolded contract / implemented seam (Scribe minimal) | app-boundary doctrine, contracts, and native macOS 26+ UI scope exist | mainly boundary tests + Scribe smoke; design-system scope doc only | no final UX for three apps; no HealthOS control panel executable | continue adapter-first, then introduce one native app shell at a time without moving law to UI |
 | Validation harness | tested operational path (local) | fail-closed make/script gates for docs/schema/contracts/build/test/smoke + summary artifact | validate-all exercised locally | no CI/distributed gate yet | wire same harness into CI without inflating maturity claims |
 | Operations | scaffolded contract | runbooks/launchd/network docs + observability taxonomy | mostly docs + smoke | no production ops automation | incident command set and operator tooling |
 
@@ -35,6 +36,7 @@ This map measures maturity of HealthOS components in the HealthOScaffold reposit
 | Providers/ML | partial-but-acceptable-with-explicit-gap |
 | Retrieval/memory/index | partial-but-acceptable-with-explicit-gap |
 | Async runtime/jobs | ready-for-scaffold-closure |
+| Mental Space Runtime | partial-but-acceptable-with-explicit-gap |
 | Network/mesh/fabric | needs-small-closure |
 | Backup/restore/retention/export/DR | partial-but-acceptable-with-explicit-gap |
 | Regulatory/signature/interoperability/emergency | partial-but-acceptable-with-explicit-gap |

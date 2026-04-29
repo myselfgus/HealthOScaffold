@@ -995,6 +995,9 @@ public struct SliceRunSummary: Codable, Sendable {
     public let transcriptObjectPath: String?
     public let transcriptionStatus: TranscriptionStatus
     public let transcriptionSource: String
+    public let mentalSpaceNormalizationStatus: MentalSpaceStageStatus
+    public let mentalSpaceNormalizedTranscriptObjectPath: String?
+    public let mentalSpaceNormalizationSummary: String
     public let draftObjectPath: String
     public let reviewedDraftStatus: DraftStatus
     public let referralDraftStatus: DraftStatus
@@ -1026,6 +1029,9 @@ public struct SliceRunSummary: Codable, Sendable {
         transcriptObjectPath: String?,
         transcriptionStatus: TranscriptionStatus,
         transcriptionSource: String,
+        mentalSpaceNormalizationStatus: MentalSpaceStageStatus = .pending,
+        mentalSpaceNormalizedTranscriptObjectPath: String? = nil,
+        mentalSpaceNormalizationSummary: String = "Mental Space normalization has not run for this session.",
         draftObjectPath: String,
         reviewedDraftStatus: DraftStatus,
         referralDraftStatus: DraftStatus,
@@ -1056,6 +1062,9 @@ public struct SliceRunSummary: Codable, Sendable {
         self.transcriptObjectPath = transcriptObjectPath
         self.transcriptionStatus = transcriptionStatus
         self.transcriptionSource = transcriptionSource
+        self.mentalSpaceNormalizationStatus = mentalSpaceNormalizationStatus
+        self.mentalSpaceNormalizedTranscriptObjectPath = mentalSpaceNormalizedTranscriptObjectPath
+        self.mentalSpaceNormalizationSummary = mentalSpaceNormalizationSummary
         self.draftObjectPath = draftObjectPath
         self.reviewedDraftStatus = reviewedDraftStatus
         self.referralDraftStatus = referralDraftStatus
@@ -1082,6 +1091,7 @@ public enum FirstSliceSessionEventKind: String, Codable, Sendable {
     case captureReceived = "capture.received"
     case audioCapturePersisted = "audio.capture.persisted"
     case transcriptionProcessed = "transcription.processed"
+    case mentalSpaceStageUpdated = "mental_space.stage.updated"
     case contextRetrieved = "context.retrieved"
     case draftComposed = "draft.composed"
     case referralDraftComposed = "draft.referral.composed"
@@ -1126,6 +1136,7 @@ public struct SessionEventRecord: Codable, Sendable, Identifiable {
 public struct FirstSliceRunResult: Codable, Sendable {
     public let session: SessaoTrabalho
     public let transcription: TranscriptionOutput
+    public let mentalSpace: MentalSpaceRunArtifacts
     public let retrieval: RetrievalContextPackage
     public let draft: DraftPackage
     public let referralDraft: ReferralDraftPackage
@@ -1139,6 +1150,7 @@ public struct FirstSliceRunResult: Codable, Sendable {
     public init(
         session: SessaoTrabalho,
         transcription: TranscriptionOutput,
+        mentalSpace: MentalSpaceRunArtifacts = .init(),
         retrieval: RetrievalContextPackage,
         draft: DraftPackage,
         referralDraft: ReferralDraftPackage,
@@ -1151,6 +1163,7 @@ public struct FirstSliceRunResult: Codable, Sendable {
     ) {
         self.session = session
         self.transcription = transcription
+        self.mentalSpace = mentalSpace
         self.retrieval = retrieval
         self.draft = draft
         self.referralDraft = referralDraft

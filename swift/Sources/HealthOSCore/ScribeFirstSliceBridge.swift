@@ -360,6 +360,7 @@ public struct ScribeSessionBridgeState: Codable, Sendable {
     public let prescriptionDraft: ScribeDerivedDraftBridgeState
     public let finalDocument: ScribeFinalDocumentBridgeState
     public let gosRuntimeState: GOSRuntimeStateView
+    public let mentalSpaceRuntimeState: MentalSpaceRuntimeStateView
     public let runSummary: SliceRunSummary?
 
     public init(
@@ -379,6 +380,7 @@ public struct ScribeSessionBridgeState: Codable, Sendable {
         prescriptionDraft: ScribeDerivedDraftBridgeState,
         finalDocument: ScribeFinalDocumentBridgeState,
         gosRuntimeState: GOSRuntimeStateView,
+        mentalSpaceRuntimeState: MentalSpaceRuntimeStateView = .pending,
         runSummary: SliceRunSummary?
     ) {
         self.sessionId = sessionId
@@ -397,6 +399,7 @@ public struct ScribeSessionBridgeState: Codable, Sendable {
         self.prescriptionDraft = prescriptionDraft
         self.finalDocument = finalDocument
         self.gosRuntimeState = gosRuntimeState
+        self.mentalSpaceRuntimeState = mentalSpaceRuntimeState
         self.runSummary = runSummary
     }
 }

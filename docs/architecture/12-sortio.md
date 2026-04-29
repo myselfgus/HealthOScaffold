@@ -44,6 +44,7 @@ Patient/user-facing sovereignty interface.
 ## Related detailed contract
 See:
 - `docs/architecture/24-sortio-screen-contracts.md`
+- `docs/architecture/48-native-macos-ui-design-system-and-app-shells.md`
 
 ## Boundaries
 - Sortio may never behave as if it is the professional authority
@@ -57,6 +58,7 @@ Sortio is user-facing. It does not behave as a professional workspace.
 
 Sortio is a scaffold contract and documentation-only surface:
 - no final Sortio app/UI shell has been implemented
+- native macOS app-shell scope is defined for future work, but no executable Sortio target exists
 - no user-agent runtime chatbot behavior is wired
 - no clinical act pathways are implemented
 - Sortio does not own consent/habilitation/gate/finality law; it consumes mediated surfaces from HealthOS Core

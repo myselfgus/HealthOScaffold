@@ -1,9 +1,9 @@
-// swift-tools-version: 6.0
+// swift-tools-version: 6.2
 import PackageDescription
 
 let package = Package(
     name: "HealthOS",
-    platforms: [.macOS(.v14)],
+    platforms: [.macOS(.v26)],
     products: [
         .library(name: "HealthOSCore", targets: ["HealthOSCore"]),
         .library(name: "HealthOSAACI", targets: ["HealthOSAACI"]),

@@ -250,6 +250,59 @@ Files touched:
 - `docs/execution/02-status-and-tracking.md`
 - `docs/execution/todo/ops-network-ml.md`
 
+### STR-002 Archive `Skill macOS/` to `docs/reference/mental-space-legacy/`
+Priority: **P1** — do after RT-MSR-003 is DONE
+Plan: `docs/execution/21-structural-ontology-and-product-readiness-plan.md` → STR-002
+Definition of done:
+- `git mv "Skill macOS" docs/reference/mental-space-legacy` preserves full history
+- `docs/reference/mental-space-legacy/README.md` created, marks scripts as archived reference
+- `docs/architecture/49-mental-space-runtime.md` updated: `Skill macOS/` → `docs/reference/mental-space-legacy/`
+- `make validate-docs && make validate-all` PASS
+Branch: `feat/str-002-archive-skill-macos`
+
+### STR-003 Separate AGENT packages from PRODUCT in `ts/packages/`
+Priority: **P1** — independent, can run parallel to STR-002
+Plan: `docs/execution/21-structural-ontology-and-product-readiness-plan.md` → STR-003
+Definition of done:
+- `ts/agent-infra/` created; `healthos-steward` and `mcp-local` moved there via `git mv`
+- `pnpm-workspace.yaml` includes `"ts/agent-infra/*"`
+- `CLAUDE.md`, `README.md`, `docs/architecture/45-healthos-xcode-agent.md`, `docs/execution/17-healthos-xcode-agent-migration-plan.md` path references updated
+- `make ts-build && make validate-docs && make validate-all` PASS
+Branch: `feat/str-003-ts-agent-infra-dir`
+
+### STR-004 Rename `HealthOSFirstSliceSupport` → `HealthOSSessionRuntime`
+Priority: **P1** — independent, can run parallel to STR-002 and STR-003
+Plan: `docs/execution/21-structural-ontology-and-product-readiness-plan.md` → STR-004
+Definition of done:
+- `swift/Sources/HealthOSFirstSliceSupport/` renamed to `swift/Sources/HealthOSSessionRuntime/`
+- `Package.swift` updated; all imports updated in CLI, ScribeApp, and test targets
+- Primary public types renamed (at minimum: `FirstSliceRunner` → `SessionRunner`, `ScribeFirstSliceAdapter` → `ScribeSessionAdapter`)
+- `swift build` PASS; `swift test` PASS (all existing tests pass, no regression); `make validate-all` PASS
+- `grep -r "HealthOSFirstSliceSupport" swift/` → no results
+Branch: `feat/str-004-session-runtime-rename`
+
+### STR-005 Add placeholder Swift executable targets for Sortio and CloudClinic
+Priority: **P2** — after P1 complete or in parallel
+Plan: `docs/execution/21-structural-ontology-and-product-readiness-plan.md` → STR-005
+Definition of done:
+- `swift/Sources/HealthOSSortioApp/SortioEntrypoint.swift` created (minimal `@main` with `--smoke-test` flag)
+- `swift/Sources/HealthOSCloudClinicApp/CloudClinicEntrypoint.swift` created (same pattern)
+- `Package.swift`: both added as `.executableTarget` products
+- `swift run HealthOSSortioApp --smoke-test` exits 0
+- `swift run HealthOSCloudClinicApp --smoke-test` exits 0
+- `swift build && swift test` PASS; `make validate-all` PASS
+Branch: `feat/str-005-sortio-cloudclinic-targets`
+
+### CI-001 Wire `make validate-all` into GitHub Actions
+Priority: **P4** — after P0–P2 complete
+Plan: `docs/execution/21-structural-ontology-and-product-readiness-plan.md` → CI-001
+Definition of done:
+- `.github/workflows/validate.yml` runs `make validate-all` on push/PR to main
+- `.github/workflows/swift-test.yml` runs `make swift-test` on macOS runner with Swift 6.2
+- PRs with failing validation cannot be merged (branch protection)
+- No secrets or clinical data in CI logs
+Branch: `feat/ci-001-github-actions-validate`
+
 ### WS-2 Local MCP server (healthos-mcp)
 Priority: Medium
 Docs: `docs/execution/17-healthos-xcode-agent-migration-plan.md` (WS-2), `docs/architecture/45-healthos-xcode-agent.md`

@@ -227,19 +227,24 @@ graph TD
     classDef glass  fill:#fce7f3,stroke:#f472b6,stroke-width:2px,color:#831843
     classDef sys    fill:#f1f5f9,stroke:#94a3b8,stroke-width:1px,color:#475569
 
-    SRT[SessionRunner\norchestration]:::law
-    BR[ScribeFirstSliceBridge\nMediated state]:::bridge
-    MVM[ScribeFirstSliceViewModel\n@Observable · @MainActor]:::vm
+    subgraph RT["Session Runtime"]
+        SRT[SessionRunner\norchestration]:::law
+        BR[ScribeFirstSliceBridge\nMediated state]:::bridge
+    end
 
-    subgraph VIEWS["  SwiftUI View Layer — HealthOSScribeApp  "]
+    subgraph VM["ViewModel"]
+        MVM[ScribeFirstSliceViewModel\nObservable - MainActor]:::vm
+    end
+
+    subgraph SCRIBEAPP["HealthOSScribeApp"]
         APP[WindowGroup\nScribe First Slice]:::view
         ROOT[ScribeFirstSliceView\nScrollView root]:::view
-        C1[SurfaceSummaryCard\nGroupBox → GlassEffectContainer]:::glass
-        C2[SessionSetupCard\nGroupBox → glass panel]:::glass
-        C3[WorkspaceCard\nGroupBox → glass workspace]:::glass
-        C4[SliceOutputsCard\nOutputBlock · thinMaterial → glassEffect]:::glass
+        C1[SurfaceSummaryCard\nGroupBox to GlassEffectContainer]:::glass
+        C2[SessionSetupCard\nGroupBox to glass panel]:::glass
+        C3[WorkspaceCard\nGroupBox to glass workspace]:::glass
+        C4[SliceOutputsCard\nOutputBlock to glassEffect]:::glass
         C5[IssuesCard\nDegraded state banner]:::glass
-        SYSGL[System glass auto-applied\nToolbar · NavigationSplitView · Sheet]:::sys
+        SYSGL[System glass auto-applied\nToolbar - NavigationSplitView - Sheet]:::sys
     end
 
     SRT --> BR

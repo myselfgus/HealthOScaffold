@@ -6,6 +6,22 @@ Current phase: Controlled implementation — first vertical slice started
 
 ## Completed recently
 
+## RT-PROVIDER-001 — Real Apple Foundation Models integration for normalization (2026-04-30)
+
+- Objective: replace the always-stubbed Apple language-model provider with a real local Foundation Models adapter for transcript normalization only.
+- Files updated:
+  - `swift/Sources/HealthOSProviders/AppleFoundationModelsAdapter.swift`
+  - `swift/Sources/HealthOSProviders/StubProviders.swift`
+  - `swift/Tests/HealthOSTests/MSRRuntimeTests.swift`
+  - `swift/Tests/HealthOSTests/ProviderGovernanceTests.swift`
+  - `docs/execution/21-structural-ontology-and-product-readiness-plan.md`
+  - `docs/execution/todo/runtimes-and-aaci.md`
+- API confirmed: current Foundation Models SDK exposes `SystemLanguageModel.default.availability`, `SystemLanguageModel.supportsLocale(_:)`, `LanguageModelSession(model:tools:instructions:)`, `LanguageModelSession.respond(to:options:)`, `LanguageModelSession.Response<String>.content`, and unavailable reasons for device eligibility, Apple Intelligence enablement, and model readiness.
+- Result: transcript normalization now calls Apple Foundation Models locally when the framework is compiled in, the current locale is supported, and `SystemLanguageModel.default` is available. Remote fallback remains denied for v1. Unavailable framework/model/locale and forced-stub paths remain explicit degraded/stub-only states and do not persist stub output as normalized transcript.
+- Validation run: `cd swift && swift build`; `cd swift && swift test` (260 tests, 0 failures; the Foundation Models availability test executed the real provider on this machine).
+- Invariants: normalization remains a `HealthOSSessionRuntime` concern; ASL, VDLP, and GEM were not widened in this work unit; derived artifacts remain non-authorizing and clinician-review-bound.
+- Residual gaps: production provider hardening and broader local-model policy remain future work; Foundation Models output quality remains a local-provider capability, not a production clinical claim.
+
 ## STR-006 — Formalize MSR naming and move transcript normalization to Session Runtime (2026-04-30)
 
 - Objective: make `MSR` the official runtime sigla, rename the Swift module/runtime infrastructure from `MentalSpace*` to `MSR*`, and move transcript normalization ownership out of MSR and into `HealthOSSessionRuntime`.

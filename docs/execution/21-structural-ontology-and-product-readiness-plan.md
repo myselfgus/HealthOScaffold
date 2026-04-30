@@ -36,7 +36,7 @@ Construction-system note: this document remains the product/repo task queue. Con
 | APP-011 | **P2** | READY | Sortio: smoke-testable executable path | STR-005 |
 | APP-012 | **P2** | READY | CloudClinic: smoke-testable executable path | STR-005 |
 | RT-ASYNC-001 | **P3** | BLOCKED | SQL-backed async runtime executor | Core SQL migration (exists) |
-| RT-PROVIDER-001 | **P3** | READY | Real Apple Foundation Models integration for normalization stage | — |
+| RT-PROVIDER-001 | **P3** | DONE | Real Apple Foundation Models integration for normalization stage | — |
 | RT-RETRIEVAL-001 | **P3** | BLOCKED | Semantic retrieval with real embeddings provider | Provider adapter exists |
 | CI-001 | **P4** | READY | Wire `make validate-all` into GitHub Actions CI | — |
 
@@ -556,7 +556,7 @@ Do after P0 and P1 are complete. These tasks advance the runtime tier from "impl
 
 ### RT-PROVIDER-001: Real Apple Foundation Models integration for normalization
 
-**Priority:** P3 | **Status:** READY | **Branch:** `feat/rt-provider-001-apple-foundation-models`
+**Priority:** P3 | **Status:** DONE | **Branch:** `codex/rt-provider-001-foundationmodels-normalization`
 
 **Why:** Normalization is the only MSR stage that must use a local Apple provider (remote fallback denied for v1 per architecture). Currently the Apple provider is stub-marked. This task implements a real local model call using Apple Foundation Models (FoundationModels framework, macOS 26+).
 
@@ -573,6 +573,8 @@ Do after P0 and P1 are complete. These tasks advance the runtime tier from "impl
 - Normalization can produce a real normalized transcript (not stub) on a device with Foundation Models available
 - Stub path remains active and honest when Foundation Models unavailable
 - `swift build` PASS; `swift test` PASS
+
+**Completion note (2026-04-30):** RT-PROVIDER-001 completed by adding `AppleFoundationModelsAdapter.swift` and moving `AppleFoundationProvider` from an always-stubbed provider to a real local Foundation Models adapter. The implementation uses the current SDK shape: `SystemLanguageModel.default.availability`, locale support checks, `LanguageModelSession(model:tools:instructions:)`, and `respond(to:options:)`. Normalization uses the real provider only when Foundation Models is compiled in, the current locale is supported, and `SystemLanguageModel.default` is available. If the framework is unavailable, the device is not eligible, Apple Intelligence is disabled, the model is not ready, the locale is unsupported, or tests force stub mode, the path remains explicit degraded/stub-only and does not persist stub text as a normalized transcript. Remote fallback remains denied for v1. No ASL, VDLP, or GEM behavior was expanded. Validation: `cd swift && swift build` PASS; `cd swift && swift test` PASS (260 tests, 0 failures; real-provider availability test executed on this machine).
 
 ---
 

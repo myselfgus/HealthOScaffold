@@ -44,9 +44,9 @@ final class MSRRuntimeTests: XCTestCase {
         XCTAssertTrue(events.allSatisfy { !$0.source.lowercased().contains("cpf") })
     }
 
-    func testNormalizationWithOnlyAppleStubDegradesWithoutUsingStubOutput() async throws {
+    func testNormalizationWithForcedAppleStubDegradesWithoutUsingStubOutput() async throws {
         let router = ProviderRouter()
-        try await router.register(AppleFoundationProvider())
+        try await router.register(AppleFoundationProvider(forceStub: true))
         let executor = TranscriptNormalizationExecutor(router: router)
         let result = await executor.execute(
             TranscriptNormalizationRequest(
@@ -64,6 +64,35 @@ final class MSRRuntimeTests: XCTestCase {
         XCTAssertEqual(result.status, .degraded)
         XCTAssertNil(result.normalizedText)
         XCTAssertEqual(result.providerExecution?.status, ProviderExecutionStatus.stubOnly.rawValue)
+    }
+
+    func testAppleFoundationNormalizationUsesRealProviderWhenRuntimeAvailable() async throws {
+        guard AppleFoundationProvider.runtimeAvailabilityDescription() == "available" else {
+            throw XCTSkip("Requires macOS 26+ device with Foundation Models available locally; current state: \(AppleFoundationProvider.runtimeAvailabilityDescription()).")
+        }
+
+        let router = ProviderRouter()
+        try await router.register(AppleFoundationProvider())
+        let executor = TranscriptNormalizationExecutor(router: router)
+        let result = await executor.execute(
+            TranscriptNormalizationRequest(
+                transcriptText: " Paciente   relata sono ruim. ",
+                sourceTranscriptRef: StorageObjectRef(
+                    objectPath: "/tmp/transcript.bin",
+                    contentHash: "hash",
+                    layer: .operationalContent,
+                    kind: "transcripts"
+                ),
+                lawfulContext: ["scope": "care-context", "finalidade": "care-context-retrieval"]
+            )
+        )
+
+        XCTAssertEqual(result.status, .ready)
+        XCTAssertEqual(result.providerExecution?.providerId, "apple-foundation")
+        XCTAssertEqual(result.providerExecution?.status, ProviderExecutionStatus.selected.rawValue)
+        XCTAssertEqual(result.providerExecution?.isStub, false)
+        XCTAssertNotNil(result.normalizedText)
+        XCTAssertFalse(result.normalizedText?.contains("[apple-foundation stub]") ?? true)
     }
 
     func testFirstSlicePersistsNormalizedTranscriptAsDerivedMSRArtifact() async throws {

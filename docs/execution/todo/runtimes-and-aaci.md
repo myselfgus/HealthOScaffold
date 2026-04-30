@@ -378,12 +378,14 @@ Branch: `feat/rt-msr-003-gem-builder`
 
 ### RT-PROVIDER-001 Real Apple Foundation Models integration for normalization
 Priority: **P3** (after P0 complete)
+Status: **DONE** (2026-04-30)
 Plan: `docs/execution/21-structural-ontology-and-product-readiness-plan.md` → RT-PROVIDER-001
-Note: search Apple docs for `FoundationModels` API before implementing (macOS 26+ new framework)
+Note: Apple docs and the local macOS 26.4 SDK confirmed the current `FoundationModels` API before implementation.
 Definition of done:
-- normalization produces real normalized transcript when Foundation Models available locally
-- stub path remains active and honest when unavailable
-- `make swift-build && make swift-test` PASS
+- [x] normalization produces real normalized transcript when Foundation Models available locally
+- [x] stub/degraded path remains active and honest when unavailable
+- [x] `cd swift && swift build` PASS
+- [x] `cd swift && swift test` PASS
 
 ### RT-008 Extend runtime-boundary tests for user-agent and service-runtime adapters
 Priority: **P2** (parallel with STR-005)

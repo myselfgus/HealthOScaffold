@@ -492,6 +492,41 @@ Estas tarefas estão READY nos todo files mas **não fazem parte deste plano** p
 | AACI-009 | Runtimes/AACI | código + docs |
 | APP-008 | Apps | código Swift + docs |
 
+### CL-006 e OPS-003 — Status UNCERTAIN (2026-04-30)
+
+**Fonte**: `git log --since="7 days ago"` + `docs/execution/todo/core-laws.md` + `docs/execution/todo/ops-network-ml.md`
+
+Commits de implementação existem para ambas as tarefas:
+- `28826c4 feat(core): implement shared service boundary outcome envelope (CL-006)`
+- `3ae3345 docs(ops): define incident-response command vocabulary for operator tools (OPS-003)`
+
+Porém os arquivos todo correspondentes **ainda mostram status READY**, não COMPLETED. A regra do plano exige ambas as condições para marcar como DONE. Estas tarefas permanecem no plano como PENDENTES até que os todo files sejam atualizados para COMPLETED ou um agente verifique explicitamente os entregáveis nos arquivos de arquitetura.
+
+> **Ação recomendada**: verificar se `docs/architecture/06-core-services.md` contém a seção de error-envelope e se `docs/architecture/14-operations-runbook.md` contém a seção de incident-response. Se os entregáveis documentais existirem, atualizar os todo files e marcar estas tarefas como DONE no próximo sync.
+
+### Novas tarefas READY descobertas (2026-04-30) — fora do escopo documental
+
+**Fonte**: `docs/execution/todo/runtimes-and-aaci.md`, `docs/execution/todo/ops-network-ml.md`, `docs/execution/todo/apps-and-interfaces.md`
+
+| ID | Domínio | Prioridade | Natureza |
+|---|---|---|---|
+| STR-001 | Mental Space / Providers | **P0** | código Swift (Package.swift + HealthOSProviders dep) |
+| RT-PROVIDER-001 | Mental Space / Apple Models | P3 | código Swift (FoundationModels API) |
+| CI-001 | Repository governance | P4 | GitHub Actions workflow |
+| APP-011 | Apps (Sortio) | Medium | código Swift (smoke-testable path) |
+| APP-012 | Apps (CloudClinic) | Medium | código Swift (smoke-testable path) |
+
+### Mudanças estruturais relevantes (2026-04-29 a 2026-04-30)
+
+**Fonte**: `docs/execution/02-status-and-tracking.md` + git log
+
+Refactors completados que afetam referências neste plano:
+- **STR-003**: `ts/packages/healthos-steward/` → `ts/agent-infra/healthos-steward/` (produto separado de infraestrutura de agente)
+- **STR-004**: `HealthOSFirstSliceSupport` → `HealthOSSessionRuntime` (vocabulário de desenvolvimento removido)
+- **STR-005**: Sortio e CloudClinic agora têm targets Swift executáveis (`make smoke-sortio`, `make smoke-cloudclinic`)
+- **ST-010**: `docs/execution/22-steward-construction-operating-model.md` criado — baseline do construction operating model
+- **Novo doc**: `docs/execution/21-structural-ontology-and-product-readiness-plan.md` — plano de readiness estrutural
+
 ---
 
 ## Status
@@ -500,5 +535,5 @@ Este plano está: **READY — não iniciado**.
 
 Tarefas concluídas: 0 de 9.
 
-Última sincronização: 2026-04-28 (primeira execução de sync-work-plan).
+Última sincronização: 2026-04-30 (sync-work-plan automation).
 Próxima sincronização: automática — segunda/quarta/sexta 08:47.

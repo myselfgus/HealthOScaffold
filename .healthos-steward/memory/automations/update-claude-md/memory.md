@@ -3,7 +3,7 @@
 ## Último run
 
 **Data**: 2026-04-28
-**Verificado**: git log (14 dias), Makefile, `ts/packages/healthos-steward/src/cli.ts`, leitura integral do CLAUDE.md, docs/execution/ por novos arquivos canônicos
+**Verificado**: git log (14 dias), Makefile, `ts/agent-infra/healthos-steward/src/cli.ts`, leitura integral do CLAUDE.md, docs/execution/ por novos arquivos canônicos
 
 ## Mudanças feitas
 

@@ -136,7 +136,7 @@ Use the README as the entry surface, then branch by intent.
 | understand apps and boundaries | `docs/architecture/11-scribe.md` | `12-sortio.md`, `13-cloudclinic.md`, `23-scribe-screen-contracts.md`, `24-sortio-screen-contracts.md`, `25-cloudclinic-screen-contracts.md`, `43-cross-app-coordination-shared-surfaces.md`, `48-native-macos-ui-design-system-and-app-shells.md` |
 | understand current maturity and gaps | `docs/execution/11-current-maturity-map.md` | `13-scaffold-release-candidate-criteria.md`, `14-final-gap-register.md` |
 | start coding safely | `docs/execution/README.md` | `01-agent-operating-protocol.md`, `02-status-and-tracking.md`, relevant `todo/*.md`, relevant `skills/*.md` |
-| understand Steward for Xcode | `docs/architecture/45-healthos-xcode-agent.md` | `docs/execution/17-healthos-xcode-agent-migration-plan.md`, `.healthos-steward/README.md`, `ts/packages/healthos-steward/README.md` |
+| understand Steward for Xcode | `docs/architecture/45-healthos-xcode-agent.md` | `docs/execution/17-healthos-xcode-agent-migration-plan.md`, `.healthos-steward/README.md`, `ts/agent-infra/healthos-steward/README.md` |
 | understand Steward, Settlers, Settlements, and Territories | `docs/architecture/47-steward-settler-engineering-model.md` | `docs/execution/19-settler-model-task-tracker.md`, `.healthos-settler/README.md`, `.healthos-territory/README.md` |
 | see what documentation tasks remain open | `docs/execution/20-documental-todos-work-plan.md` | `docs/execution/prompts/` (phase execution prompts) |
 | see the latest daily status digest | `.healthos-steward/memory/automations/daily-todo-tracker/latest.md` | `docs/execution/02-status-and-tracking.md`, `docs/execution/12-next-agent-handoff.md` |
@@ -347,13 +347,13 @@ Read in order before coding:
 | AACI and first slice | `docs/architecture/09-aaci.md`, `28-first-slice-executable-path.md` | `swift/Sources/HealthOSAACI/`, `swift/Sources/HealthOSFirstSliceSupport/` |
 | GOS | `29-governed-operational-spec.md` to `34-gos-review-and-activation-policy.md` | `ts/packages/healthos-gos-tooling/`, `swift/Sources/HealthOSCore/` |
 | Apps/interfaces | `11-scribe.md`, `12-sortio.md`, `13-cloudclinic.md`, `43-cross-app-coordination-shared-surfaces.md`, `48-native-macos-ui-design-system-and-app-shells.md` | `swift/Sources/HealthOSScribeApp/`, app boundary contracts in `swift/Sources/HealthOSCore/` |
-| Steward / Settlers / Territories | `45-healthos-xcode-agent.md`, `46-apple-sovereignty-architecture.md`, `47-steward-settler-engineering-model.md` | `ts/packages/healthos-steward/`, `.healthos-steward/`, `.healthos-settler/`, `.healthos-territory/` |
+| Steward / Settlers / Territories | `45-healthos-xcode-agent.md`, `46-apple-sovereignty-architecture.md`, `47-steward-settler-engineering-model.md` | `ts/agent-infra/healthos-steward/`, `.healthos-steward/`, `.healthos-settler/`, `.healthos-territory/` |
 
 ## Steward, Settlers, and Territories
 
 Steward is the canonical engineering agent for this repository. `healthos-steward` is the CLI, package, and repository-local state root.
 
-- CLI and package: `ts/packages/healthos-steward/`
+- CLI and package: `ts/agent-infra/healthos-steward/`
 - Repository-local derived state root: `.healthos-steward/`
 - Current persisted runtime state: `.healthos-steward/memory/sessions/`
 

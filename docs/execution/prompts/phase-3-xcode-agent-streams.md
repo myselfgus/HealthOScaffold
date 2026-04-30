@@ -54,14 +54,14 @@ Read every file below before writing. Do not skip.
 6.  docs/architecture/46-apple-sovereignty-architecture.md       ← Apple boundary doc (for Stream F)
 7.  docs/architecture/44-project-steward-agent.md                ← Steward doc (context for Stream D)
 8.  docs/execution/02-status-and-tracking.md                     ← current status (top 80 lines)
-9.  ts/packages/healthos-steward/src/runtime/types.ts            ← current runtime types baseline
-10. ts/packages/healthos-steward/README.md                       ← package baseline description
+9.  ts/agent-infra/healthos-steward/src/runtime/types.ts            ← current runtime types baseline
+10. ts/agent-infra/healthos-steward/README.md                       ← package baseline description
 ```
 
 After reading, confirm:
 - `docs/architecture/45-healthos-xcode-agent.md` exists → YES/NO
 - `docs/architecture/46-apple-sovereignty-architecture.md` exists → YES/NO
-- `ts/packages/healthos-steward/src/runtime/types.ts` exists → YES/NO
+- `ts/agent-infra/healthos-steward/src/runtime/types.ts` exists → YES/NO
 
 If any file is missing, read what is available and note the gap explicitly.
 
@@ -74,7 +74,7 @@ This constraint governs every design decision you make in Phase 3.
 
 ## CURRENT IMPLEMENTATION BASELINE (memorize before writing)
 
-The current `ts/packages/healthos-steward/` baseline (from XA-002) contains:
+The current `ts/agent-infra/healthos-steward/` baseline (from XA-002) contains:
 - `src/runtime/types.ts` — runtime request/response and session types
 - `src/runtime/session-store.ts` — file-backed session store
 - `src/runtime/runtime.ts` — minimal runtime request handler
@@ -308,7 +308,7 @@ interface ToolContext {
 
 ```
 **Maturity**: This tool runtime specification is doctrine-only. No tool runtime implementation
-exists in ts/packages/healthos-steward/ as of this writing. This specification is the design
+exists in ts/agent-infra/healthos-steward/ as of this writing. This specification is the design
 contract for XA-004. Implementation is a separate future work unit. No production-readiness
 claim is made.
 ```
@@ -502,7 +502,7 @@ over network-requiring model invocations.
 
 ```
 **Maturity**: This model backend contract is doctrine-only. No backend implementation
-exists in ts/packages/healthos-steward/ as of this writing beyond the basic
+exists in ts/agent-infra/healthos-steward/ as of this writing beyond the basic
 runtime request/response baseline. This specification is the design contract
 for Stream D. Implementation requires a separate work unit. No production-readiness
 claim is made. No live provider integration is implemented.
@@ -700,7 +700,7 @@ When `healthos-mcp` is implemented, the XcodeContext will be serialized to JSON 
 
 ```
 **Maturity**: This Xcode context envelope specification is doctrine-only. No context
-collector or Xcode bridge is implemented in ts/packages/healthos-steward/ as of this
+collector or Xcode bridge is implemented in ts/agent-infra/healthos-steward/ as of this
 writing. This specification is the design contract for Stream F. Implementation requires
 a separate work unit and MCP transport support (WS-2). No production-readiness claim is made.
 ```

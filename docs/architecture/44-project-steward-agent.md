@@ -33,7 +33,7 @@ Project Steward does **not**:
 
 ## Location and stack
 
-- implementation: `ts/packages/healthos-steward/`
+- implementation: `ts/agent-infra/healthos-steward/`
 - persistent memory/policies/prompts: `.healthos-steward/`
 - runtime model: deterministic core + optional LLM-backed agent runtime
 

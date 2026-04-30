@@ -272,7 +272,7 @@ Outcome:
 - added versioned steward memory/policies/prompts under `.healthos-steward/` with explicit non-secret and derived-index posture
 - documented steward architecture and skill guidance for future agents without turning it into a clinical or autonomous merge agent
 Files touched:
-- `ts/packages/healthos-steward/*`
+- `ts/agent-infra/healthos-steward/*`
 - `.healthos-steward/*`
 - `docs/architecture/44-project-steward-agent.md`
 - `docs/execution/skills/project-steward-skill.md`
@@ -286,8 +286,8 @@ Outcome:
 - `healthos-steward comment-pr` and `healthos-steward comment-issue` now post comments to GitHub targets through `gh`
 - removed steward-local mock/test artifacts to keep the implementation fully live and non-simulated
 Files touched:
-- `ts/packages/healthos-steward/src/steward.ts`
-- `ts/packages/healthos-steward/package.json`
+- `ts/agent-infra/healthos-steward/src/steward.ts`
+- `ts/agent-infra/healthos-steward/package.json`
 - `docs/architecture/44-project-steward-agent.md`
 - `docs/execution/skills/project-steward-skill.md`
 - `docs/execution/02-status-and-tracking.md`

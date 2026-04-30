@@ -110,7 +110,7 @@ When ontology/contracts change, align in the same work unit:
 
 Steward is the canonical engineering agent for this repository. `healthos-steward` is the CLI, package, and repository-local state root.
 
-- CLI and package: `ts/packages/healthos-steward/`
+- CLI and package: `ts/agent-infra/healthos-steward/`
 - Derived memory, sessions, handoffs, policies, state: `.healthos-steward/`
 
 Steward for Xcode is the Xcode-integration posture for Steward. Steward for Xcode integrates with Xcode Intelligence as an Apple-controlled engineering runtime surface, while HealthOS contributes instructions, `healthos-mcp`, derived repository memory, and deterministic CLI operations. See `docs/architecture/45-healthos-xcode-agent.md` and `docs/architecture/46-apple-sovereignty-architecture.md`.

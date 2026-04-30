@@ -125,7 +125,7 @@ Outcome:
 - restricted primary internal LLM providers to openai/anthropic/xai/disabled and removed codex/claude internal-provider posture from examples
 - reinforced explicit network gating (`--allow-network`) and explicit provider requirement for agentic commands
 Files touched:
-- `ts/packages/healthos-steward/*`
+- `ts/agent-infra/healthos-steward/*`
 - `.healthos-steward/providers/*`
 - `docs/architecture/44-project-steward-agent.md`
 - `docs/execution/skills/project-steward-skill.md`
@@ -138,10 +138,10 @@ Outcome:
 - PR review posting now writes the real provider output only when invocation succeeds; no placeholder comment is posted on failure
 - provider unit tests now mock `fetch` for OpenAI/Anthropic/xAI real invocation paths without live network
 Files touched:
-- `ts/packages/healthos-steward/src/steward.ts`
-- `ts/packages/healthos-steward/src/providers/xai.ts`
-- `ts/packages/healthos-steward/test/cli.test.mjs`
-- `ts/packages/healthos-steward/test/providers.test.mjs`
+- `ts/agent-infra/healthos-steward/src/steward.ts`
+- `ts/agent-infra/healthos-steward/src/providers/xai.ts`
+- `ts/agent-infra/healthos-steward/test/cli.test.mjs`
+- `ts/agent-infra/healthos-steward/test/providers.test.mjs`
 - `docs/architecture/44-project-steward-agent.md`
 - `docs/execution/skills/project-steward-skill.md`
 - `docs/execution/02-status-and-tracking.md`
@@ -149,14 +149,14 @@ Files touched:
 ### ML-012 Hard reset `@healthos/steward` and recreate the package baseline from scratch
 Outcome:
 - deleted the prior package implementation (`src`, `test`, `dist`) instead of carrying forward compatibility or `legacy` layers inside the package
-- rebuilt `ts/packages/healthos-steward/` from zero with a new minimal baseline around runtime requests, sessions, session persistence, and CLI surface identity
+- rebuilt `ts/agent-infra/healthos-steward/` from zero with a new minimal baseline around runtime requests, sessions, session persistence, and CLI surface identity
 - created `.healthos-steward/memory/sessions/` as the first runtime-owned state location for the new steward
 - rewrote the initiative tracker so future work continues from the clean reset rather than from the removed provider-centric runtime
 Files touched:
-- `ts/packages/healthos-steward/src/*`
-- `ts/packages/healthos-steward/test/runtime.test.mjs`
-- `ts/packages/healthos-steward/package.json`
-- `ts/packages/healthos-steward/README.md`
+- `ts/agent-infra/healthos-steward/src/*`
+- `ts/agent-infra/healthos-steward/test/runtime.test.mjs`
+- `ts/agent-infra/healthos-steward/package.json`
+- `ts/agent-infra/healthos-steward/README.md`
 - `docs/execution/18-healthos-xcode-agent-task-tracker.md`
 - `docs/execution/02-status-and-tracking.md`
 - `docs/execution/todo/ops-network-ml.md`
@@ -164,15 +164,15 @@ Files touched:
 ### ML-011 Create Xcode Agent initiative tracker and land first runtime-core code
 Outcome:
 - dedicated initiative tracker added at `docs/execution/18-healthos-xcode-agent-task-tracker.md` with streams, active queue, open decisions, and per-work-unit continuity rules
-- first runtime-centric TypeScript files landed under `ts/packages/healthos-steward/src/agent/` defining session, surface, tool, backend, policy, and runtime contracts
+- first runtime-centric TypeScript files landed under `ts/agent-infra/healthos-steward/src/agent/` defining session, surface, tool, backend, policy, and runtime contracts
 - package root now exports the first agent runtime API surface, keeping the implementation additive and compatible with the current steward scaffold
 - minimal runtime helpers landed for session creation, policy evaluation, and non-provider-centric request handling
 - initial test scaffold added for future package build/test validation
 Files touched:
 - `docs/execution/18-healthos-xcode-agent-task-tracker.md`
-- `ts/packages/healthos-steward/src/agent/*`
-- `ts/packages/healthos-steward/src/index.ts`
-- `ts/packages/healthos-steward/test/agent-runtime.test.mjs`
+- `ts/agent-infra/healthos-steward/src/agent/*`
+- `ts/agent-infra/healthos-steward/src/index.ts`
+- `ts/agent-infra/healthos-steward/test/agent-runtime.test.mjs`
 - `docs/execution/02-status-and-tracking.md`
 - `docs/execution/todo/ops-network-ml.md`
 
@@ -198,10 +198,10 @@ Outcome:
 - deterministic Codex prompt surfaces now read `codex-next-task.md` rather than the generic model next-task prompt
 - coverage added for config precedence, fail-closed disabled provider behavior, and command de-aliasing in dry-run mode
 Files touched:
-- `ts/packages/healthos-steward/src/providers/router.ts`
-- `ts/packages/healthos-steward/src/steward.ts`
-- `ts/packages/healthos-steward/test/cli.test.mjs`
-- `ts/packages/healthos-steward/test/providers.test.mjs`
+- `ts/agent-infra/healthos-steward/src/providers/router.ts`
+- `ts/agent-infra/healthos-steward/src/steward.ts`
+- `ts/agent-infra/healthos-steward/test/cli.test.mjs`
+- `ts/agent-infra/healthos-steward/test/providers.test.mjs`
 - `docs/execution/02-status-and-tracking.md`
 - `docs/execution/todo/ops-network-ml.md`
 
@@ -217,13 +217,13 @@ Outcome:
 - `StewardAgentRuntime` now memoizes the provider router instead of recreating it per invocation
 - `node:test` coverage increased from 12 to 33 cases without live network, asserting every new errorKind branch and the formatter contract
 Files touched:
-- `ts/packages/healthos-steward/src/providers/types.ts`
-- `ts/packages/healthos-steward/src/providers/utils.ts`
-- `ts/packages/healthos-steward/src/providers/openai.ts`
-- `ts/packages/healthos-steward/src/providers/anthropic.ts`
-- `ts/packages/healthos-steward/src/providers/xai.ts`
-- `ts/packages/healthos-steward/src/steward.ts`
-- `ts/packages/healthos-steward/test/providers.test.mjs`
+- `ts/agent-infra/healthos-steward/src/providers/types.ts`
+- `ts/agent-infra/healthos-steward/src/providers/utils.ts`
+- `ts/agent-infra/healthos-steward/src/providers/openai.ts`
+- `ts/agent-infra/healthos-steward/src/providers/anthropic.ts`
+- `ts/agent-infra/healthos-steward/src/providers/xai.ts`
+- `ts/agent-infra/healthos-steward/src/steward.ts`
+- `ts/agent-infra/healthos-steward/test/providers.test.mjs`
 - `docs/architecture/44-project-steward-agent.md`
 - `docs/execution/02-status-and-tracking.md`
 - `docs/execution/16-next-10-actions-plan.md`
@@ -260,14 +260,15 @@ Definition of done:
 - `make validate-docs && make validate-all` PASS
 Branch: `feat/str-002-archive-skill-macos`
 
-### STR-003 Separate AGENT packages from PRODUCT in `ts/packages/`
+### STR-003 Separate AGENT packages from PRODUCT in `ts/packages/` (DONE 2026-04-29)
 Priority: **P1** — independent, can run parallel to STR-002
 Plan: `docs/execution/21-structural-ontology-and-product-readiness-plan.md` → STR-003
 Definition of done:
 - `ts/agent-infra/` created; `healthos-steward` and `mcp-local` moved there via `git mv`
-- `pnpm-workspace.yaml` includes `"ts/agent-infra/*"`
+- npm workspace (`ts/package.json`) includes both `"packages/*"` and `"agent-infra/*"`
 - `CLAUDE.md`, `README.md`, `docs/architecture/45-healthos-xcode-agent.md`, `docs/execution/17-healthos-xcode-agent-migration-plan.md` path references updated
 - `make ts-build && make validate-docs && make validate-all` PASS
+Completion note: moved `healthos-steward` and `mcp-local` into `ts/agent-infra/` with `git mv`, resolved steward TS build input blocker with minimal `src/` entrypoints, and updated affected path references/documentation without changing HealthOS clinical/runtime behavior.
 Branch: `feat/str-003-ts-agent-infra-dir`
 
 ### STR-004 Rename `HealthOSFirstSliceSupport` → `HealthOSSessionRuntime`
@@ -325,9 +326,9 @@ Objective:
 - preserve the current hard-reset baseline (`status`, `runtime`, `session`) while expanding it deliberately into deterministic CI-safe repository operations
 - remove provider orchestration as the primary architectural path
 Files:
-- `ts/packages/healthos-steward/src/*`
-- `ts/packages/healthos-steward/package.json`
-- `ts/packages/healthos-steward/README.md`
+- `ts/agent-infra/healthos-steward/src/*`
+- `ts/agent-infra/healthos-steward/package.json`
+- `ts/agent-infra/healthos-steward/README.md`
 - `README.md`
 - `.healthos-steward/README.md`
 - `docs/execution/12-next-agent-handoff.md`
@@ -363,13 +364,13 @@ Definition of done:
 
 ### ML-005 Extend Project Steward with model-agnostic provider orchestration (OpenAI/Anthropic/xAI + local-command)
 Outcome:
-- optional provider adapter layer added under `ts/packages/healthos-steward/src/providers/*`
+- optional provider adapter layer added under `ts/agent-infra/healthos-steward/src/providers/*`
 - provider config schema/example added under `.healthos-steward/providers/`
 - dry-run safe routing + invocation logs (hash-based) implemented
 - CLI expanded with `providers`, `ask`, `delegate`, and provider-aware `review-pr`/`prompt` flows
 - provider tests and CLI tests added without real network/API usage
 Files touched:
-- `ts/packages/healthos-steward/*`
+- `ts/agent-infra/healthos-steward/*`
 - `.healthos-steward/providers/*`
 - `.healthos-steward/prompts/*`
 - `docs/architecture/44-project-steward-agent.md`

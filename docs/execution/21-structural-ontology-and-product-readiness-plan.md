@@ -28,7 +28,7 @@ Read this document **before** reading the per-domain TODO files. The priority ti
 | RT-MSR-002 | **P0** | DONE | Implement `VDLPExecutor` with real Claude API adapter | RT-MSR-001 |
 | RT-MSR-003 | **P0** | DONE | Implement `GEMArtifactBuilder` with real Claude API adapter | RT-MSR-002 |
 | STR-002 | **P1** | DONE | Archive `Skill macOS/` to `docs/reference/mental-space-legacy/` | — |
-| STR-003 | **P1** | READY | Separate AGENT packages from PRODUCT in `ts/packages/` | — |
+| STR-003 | **P1** | DONE | Separate AGENT packages from PRODUCT in `ts/packages/` | — |
 | STR-004 | **P1** | READY | Rename `HealthOSFirstSliceSupport` → `HealthOSSessionRuntime` | — |
 | STR-005 | **P2** | READY | Add placeholder Swift targets for Sortio and CloudClinic | — |
 | APP-011 | **P2** | BLOCKED | Sortio: smoke-testable executable path | STR-005 |
@@ -353,7 +353,7 @@ Do not run these scripts against production data.
 
 ### STR-003: Separate AGENT packages from PRODUCT in `ts/packages/`
 
-**Priority:** P1 | **Status:** READY | **Branch:** `feat/str-003-ts-agent-infra-dir`
+**Priority:** P1 | **Status:** DONE (2026-04-29) | **Branch:** `feat/str-003-ts-agent-infra-dir`
 
 **Why:** `ts/packages/` currently conflates three distinct layers — product runtimes, BUILD tooling, and AGENT infrastructure — at the same directory level. This creates false structural equivalence between components that must not be mixed operationally.
 
@@ -389,8 +389,8 @@ mkdir -p ts/agent-infra
 git mv ts/packages/healthos-steward ts/agent-infra/healthos-steward
 git mv ts/packages/mcp-local ts/agent-infra/mcp-local
 ```
-- `pnpm-workspace.yaml` — add `"ts/agent-infra/*"` to packages array
-- `CLAUDE.md` — update Steward CLI path references from `ts/packages/healthos-steward` → `ts/agent-infra/healthos-steward`
+- `ts/package.json` and `ts/package-lock.json` — include `"agent-infra/*"` in npm workspaces while preserving `"packages/*"`
+- `CLAUDE.md` — update Steward CLI path references from `ts/agent-infra/healthos-steward` → `ts/agent-infra/healthos-steward`
 - `README.md` — same path updates
 - `docs/architecture/45-healthos-xcode-agent.md` — same path updates
 - `docs/execution/17-healthos-xcode-agent-migration-plan.md` — same path updates
@@ -398,7 +398,7 @@ git mv ts/packages/mcp-local ts/agent-infra/mcp-local
 - `docs/execution/21-structural-ontology-and-product-readiness-plan.md` — mark STR-003 DONE
 
 **Definition of done:**
-- `ls ts/packages/healthos-steward` → no such directory
+- `ls ts/agent-infra/healthos-steward` → no such directory
 - `ls ts/agent-infra/healthos-steward/src/` → source files present with history
 - `cd ts && npm run build` PASS (pnpm workspace resolves both paths)
 - `make ts-build` PASS
@@ -683,3 +683,6 @@ When a task is done:
 
 
 > RT-MSR-003 completion note (2026-04-29): GEM is now provider-backed through HealthOSProviders with fail-closed triad validation (normalized transcript + ASL + VDLP), 50k transcript-only chunking, consolidation, and `mental-space.gem` provenance. Residual gaps remain separate: Apple Foundation Models normalization, semantic retrieval, SQL async runtime, production provider hardening, and STR-002 Skill macOS archival.
+
+
+**Completion note (2026-04-29):** STR-003 completed by moving `@healthos/steward` and `@healthos/mcp-local` from `ts/packages/` to `ts/agent-infra/` with history preserved via `git mv`; npm workspace updated to include `agent-infra/*`; docs path references updated. Known TS18003 blocker for steward was resolved by restoring minimal `src/` entrypoints to satisfy the package build contract honestly. No HealthOS clinical/runtime behavior was changed.

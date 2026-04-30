@@ -311,7 +311,7 @@ These tasks extend `docs/architecture/45-healthos-xcode-agent.md` and the Xcode 
 **Read before writing**:
 - `docs/architecture/45-healthos-xcode-agent.md`
 - `docs/execution/17-healthos-xcode-agent-migration-plan.md` (WS-2 and WS-3 goals)
-- `ts/packages/healthos-steward/src/runtime/types.ts` (current runtime types baseline)
+- `ts/agent-infra/healthos-steward/src/runtime/types.ts` (current runtime types baseline)
 
 **Tool categories to specify**:
 1. **File tools** — read file, list files, search files

@@ -8,6 +8,18 @@ Current phase: Controlled implementation — first vertical slice started
 
 
 
+## STR-003 — Separate AGENT packages from PRODUCT in ts/ (2026-04-29)
+
+- Objective: move repository engineering-agent packages out of `ts/packages/` into `ts/agent-infra/` so product/build vs agent infrastructure boundaries are explicit and enforceable.
+- Files moved with history via `git mv`:
+  - `ts/packages/healthos-steward` → `ts/agent-infra/healthos-steward`
+  - `ts/packages/mcp-local` → `ts/agent-infra/mcp-local`
+- Workspace contract updated: `ts/package.json` and lockfile now include both `packages/*` and `agent-infra/*`.
+- Validation run: directory assertions, `git log --follow` checks, `cd ts && npm install`, `cd ts && npm ls --workspaces --depth=0`, `cd ts && npm run build --workspaces`, `make ts-build`, `make validate-docs`, `make validate-schemas`, `make validate-contracts`, `make swift-build`, `make swift-test`, `make smoke-cli`, `make smoke-scribe`, `make validate-all` (all PASS).
+- Result: STR-003 complete; `ts/packages/` now product/build only and `ts/agent-infra/` now steward + mcp-local infrastructure.
+- Invariants: Inv 1 (Core sovereignty), Inv 43 (scaffold maturity is not production readiness), engineering-agent boundary invariants preserved.
+- Residual gaps: Steward/Settler/Territory operationalization remains future work; `healthos-mcp` remains repository-maintenance MCP (not runtime MCP); no clinical/runtime behavior changed.
+
 ## STR-002 — Archive Skill macOS legacy scripts (2026-04-29)
 
 Objective: archive legacy TypeScript Mental Space scripts from repository root into `docs/reference/mental-space-legacy/` to remove active-runtime ambiguity while preserving history and governance posture.
@@ -40,7 +52,7 @@ Validation:
 - `make validate-contracts` PASS
 - `cd swift && swift build` PASS
 - `cd swift && swift test` PASS
-- `make validate-all` FAIL due to known unrelated TypeScript workspace issue (`ts/packages/healthos-steward/tsconfig.json` no `src/**/*.ts` inputs; TS18003)
+- `make validate-all` FAIL due to known unrelated TypeScript workspace issue (`ts/agent-infra/healthos-steward/tsconfig.json` no `src/**/*.ts` inputs; TS18003)
 
 Result:
 - STR-002 complete: legacy scripts are archived reference material under `docs/reference/mental-space-legacy/`; root ambiguity removed.
@@ -352,7 +364,7 @@ Objective: align canonical docs with the real post-reset `healthos-steward` base
 
 Files touched:
 - `README.md` — Steward section reorganized around current baseline vs target architecture; clarified current session store and non-delivered operations
-- `ts/packages/healthos-steward/README.md` — package scope tightened to actual commands and explicit non-scope
+- `ts/agent-infra/healthos-steward/README.md` — package scope tightened to actual commands and explicit non-scope
 - `.healthos-steward/README.md` — derived-state root clarified; historical provider artifacts reframed as non-canonical and subordinate
 - `docs/execution/12-next-agent-handoff.md` — Steward follow-up rewritten around current baseline and target posture
 - `docs/execution/15-scaffold-finalization-plan.md` — removed false dependence on non-existent `scan`/`handoff` CLI commands
@@ -364,7 +376,7 @@ Invariants involved: Inv 42 (validation/drift sensitivity), Inv 43 (scaffold clo
 
 Validation:
 - documentation consistency pass completed in-repo
-- command surface verified against `ts/packages/healthos-steward/src/steward.ts`
+- command surface verified against `ts/agent-infra/healthos-steward/src/steward.ts`
 
 Done criteria:
 - current docs describe only delivered `healthos-steward` commands (`status`, `runtime`, `session`) as implemented
@@ -527,22 +539,22 @@ Files touched:
 
 ## ML-012 — HealthOS steward hard reset and new clean runtime baseline (2026-04-27)
 
-- removed the previous `ts/packages/healthos-steward` implementation entirely instead of preserving compatibility layers or a `legacy` path inside the package
+- removed the previous `ts/agent-infra/healthos-steward` implementation entirely instead of preserving compatibility layers or a `legacy` path inside the package
 - recreated `@healthos/steward` from scratch as a minimal runtime baseline centered on runtime requests, sessions, surface identity, and file-backed session persistence
 - added `.healthos-steward/memory/sessions/` as the first real runtime-owned state directory for the new steward
 - new package baseline now exposes only `status`, `runtime`, and `session` flows; old provider/prompt/review command implementation is no longer present in the package runtime
 - dedicated initiative tracker remains at `docs/execution/18-healthos-xcode-agent-task-tracker.md` and was rewritten to reflect the hard reset rather than an incremental migration fiction
 - validation status: no build/test run in this environment after the reset; a minimal runtime test file exists for future package validation
 Files touched:
-- `ts/packages/healthos-steward/package.json`
-- `ts/packages/healthos-steward/README.md`
-- `ts/packages/healthos-steward/src/cli.ts`
-- `ts/packages/healthos-steward/src/index.ts`
-- `ts/packages/healthos-steward/src/steward.ts`
-- `ts/packages/healthos-steward/src/runtime/types.ts`
-- `ts/packages/healthos-steward/src/runtime/session-store.ts`
-- `ts/packages/healthos-steward/src/runtime/runtime.ts`
-- `ts/packages/healthos-steward/test/runtime.test.mjs`
+- `ts/agent-infra/healthos-steward/package.json`
+- `ts/agent-infra/healthos-steward/README.md`
+- `ts/agent-infra/healthos-steward/src/cli.ts`
+- `ts/agent-infra/healthos-steward/src/index.ts`
+- `ts/agent-infra/healthos-steward/src/steward.ts`
+- `ts/agent-infra/healthos-steward/src/runtime/types.ts`
+- `ts/agent-infra/healthos-steward/src/runtime/session-store.ts`
+- `ts/agent-infra/healthos-steward/src/runtime/runtime.ts`
+- `ts/agent-infra/healthos-steward/test/runtime.test.mjs`
 - `docs/execution/18-healthos-xcode-agent-task-tracker.md`
 - `docs/execution/02-status-and-tracking.md`
 - `docs/execution/todo/ops-network-ml.md`
@@ -550,19 +562,19 @@ Files touched:
 ## ML-011 — HealthOS Xcode Agent initiative tracker and first runtime-core implementation (2026-04-27)
 
 - created a dedicated multi-turn initiative tracker at `docs/execution/18-healthos-xcode-agent-task-tracker.md` to keep architecture, streams, queue, and open decisions synchronized across future work units
-- introduced the first concrete runtime-centric TypeScript implementation under `ts/packages/healthos-steward/src/agent/` with explicit contracts for runtime mode, conversation surface, session snapshot, action record, policy guard, tool runtime, and model backend
+- introduced the first concrete runtime-centric TypeScript implementation under `ts/agent-infra/healthos-steward/src/agent/` with explicit contracts for runtime mode, conversation surface, session snapshot, action record, policy guard, tool runtime, and model backend
 - added minimal executable helpers for session creation, session message append, policy evaluation, request summarization, and a first compatibility `runAgentRuntime` flow that no longer depends on provider CLI paths as the sole entry model
 - exported the new agent runtime API surface from the package root and added a first validation test file for future `npm test` execution
 - updated the initiative tracker to mark XA-002 complete and XA-003 in progress
 - validation status: no build/test run in this environment; TypeScript compilation remains to be executed in a future validated shell/build step
 Files touched:
 - `docs/execution/18-healthos-xcode-agent-task-tracker.md`
-- `ts/packages/healthos-steward/src/agent/types.ts`
-- `ts/packages/healthos-steward/src/agent/runtime.ts`
-- `ts/packages/healthos-steward/src/agent/guards.ts`
-- `ts/packages/healthos-steward/src/agent/index.ts`
-- `ts/packages/healthos-steward/src/index.ts`
-- `ts/packages/healthos-steward/test/agent-runtime.test.mjs`
+- `ts/agent-infra/healthos-steward/src/agent/types.ts`
+- `ts/agent-infra/healthos-steward/src/agent/runtime.ts`
+- `ts/agent-infra/healthos-steward/src/agent/guards.ts`
+- `ts/agent-infra/healthos-steward/src/agent/index.ts`
+- `ts/agent-infra/healthos-steward/src/index.ts`
+- `ts/agent-infra/healthos-steward/test/agent-runtime.test.mjs`
 - `docs/execution/02-status-and-tracking.md`
 - `docs/execution/todo/ops-network-ml.md`
 
@@ -591,10 +603,10 @@ Files touched:
 - TypeScript tests expanded to cover provider-config precedence, fail-closed disabled provider behavior, and non-aliased agent dry-run command outputs
 - validation status: source/test edits completed, but build/test execution was not run in this environment because shell execution was interrupted and Xcode diagnostics are unavailable for these TypeScript files
 Files touched:
-- `ts/packages/healthos-steward/src/providers/router.ts`
-- `ts/packages/healthos-steward/src/steward.ts`
-- `ts/packages/healthos-steward/test/cli.test.mjs`
-- `ts/packages/healthos-steward/test/providers.test.mjs`
+- `ts/agent-infra/healthos-steward/src/providers/router.ts`
+- `ts/agent-infra/healthos-steward/src/steward.ts`
+- `ts/agent-infra/healthos-steward/test/cli.test.mjs`
+- `ts/agent-infra/healthos-steward/test/providers.test.mjs`
 - `docs/execution/02-status-and-tracking.md`
 - `docs/execution/todo/ops-network-ml.md`
 
@@ -971,7 +983,7 @@ Validation:
 - `make validate-docs` PASS
 - `make validate-schemas` PASS
 - `make validate-contracts` PASS
-- `make validate-all` FAIL (`ts/packages/healthos-steward/tsconfig.json` has no `src/**/*.ts` inputs, causing `npm run build` to fail in `@healthos/steward`; unrelated to RT-MSR-001 Swift/doc changes).
+- `make validate-all` FAIL (`ts/agent-infra/healthos-steward/tsconfig.json` has no `src/**/*.ts` inputs, causing `npm run build` to fail in `@healthos/steward`; unrelated to RT-MSR-001 Swift/doc changes).
 
 Result:
 - RT-MSR-001 complete for ASL stage: executor now loads canonical prompt resource, uses governed provider routing boundary, enforces fail-closed input/provider/response behavior, applies 10k-token chunking with batch size 3, parses structured JSON into typed `ASLArtifact`, and emits provenance operation marker `mental-space.asl`.
@@ -1036,7 +1048,7 @@ Validation run:
 - `make validate-docs`
 - `make validate-schemas`
 - `make validate-contracts`
-- `make validate-all` (fails due to pre-existing TypeScript steward workspace TS18003: no src/**/*.ts in ts/packages/healthos-steward/tsconfig.json)
+- `make validate-all` (fails due to pre-existing TypeScript steward workspace TS18003: no src/**/*.ts in ts/agent-infra/healthos-steward/tsconfig.json)
 
 Result: RT-MSR-003 implementation and targeted/full Swift validations passed; validate-all remains blocked by unrelated pre-existing TS workspace issue.
 

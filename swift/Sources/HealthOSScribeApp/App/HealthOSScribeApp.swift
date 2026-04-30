@@ -23,7 +23,7 @@ struct HealthOSScribeApp: App {
 #else
 import Foundation
 import HealthOSCore
-import HealthOSFirstSliceSupport
+import HealthOSSessionRuntime
 
 @main
 struct HealthOSScribeApp {
@@ -36,7 +36,7 @@ struct HealthOSScribeApp {
         }
 
         do {
-            let environment = try await ScribeFirstSliceDemoBootstrap.makeEnvironment()
+            let environment = try await ScribeSessionDemoBootstrap.makeEnvironment()
             guard let patient = environment.patients.first else {
                 throw SmokeError.invalidState("No demo patient available.")
             }

@@ -81,7 +81,7 @@ Files touched:
 - `swift/Sources/HealthOSProviders/ModelGovernance.swift`
 - `swift/Sources/HealthOSAACI/AACI.swift`
 - `swift/Sources/HealthOSCore/FirstSliceContracts.swift`
-- `swift/Sources/HealthOSFirstSliceSupport/FirstSliceRunner.swift`
+- `swift/Sources/HealthOSSessionRuntime/SessionRunner.swift`
 - `swift/Tests/HealthOSTests/ProviderGovernanceTests.swift`
 - `docs/architecture/16-providers-and-ml.md`
 - `docs/execution/02-status-and-tracking.md`

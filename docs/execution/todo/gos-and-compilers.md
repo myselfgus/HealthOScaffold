@@ -148,7 +148,7 @@ Any future work on GOS should begin from:
 - `swift/Sources/HealthOSCore/GOSFileBackedRegistry.swift`
 - `swift/Sources/HealthOSAACI/GOSBindings.swift`
 - `swift/Sources/HealthOSAACI/GOSRuntimeActivation.swift`
-- `swift/Sources/HealthOSFirstSliceSupport/FirstSliceRunner.swift`
+- `swift/Sources/HealthOSSessionRuntime/SessionRunner.swift`
 - `bootstrap/gos/system/gos/`
 
 ## GOS definition of done ladder

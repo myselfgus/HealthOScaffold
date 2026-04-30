@@ -56,7 +56,7 @@ swift build
 Confirm:
 - `HealthOSCore`
 - `HealthOSAACI`
-- `HealthOSFirstSliceSupport`
+- `HealthOSSessionRuntime`
 - related targets compile cleanly
 
 ### 6. Smoke test CLI path

@@ -64,7 +64,7 @@ Always:
 ## Canonical first-slice reference
 
 Primary executable slice orchestration lives in:
-- `swift/Sources/HealthOSFirstSliceSupport/FirstSliceRunner.swift`
+- `swift/Sources/HealthOSSessionRuntime/SessionRunner.swift`
 - consumed by `HealthOSCLI` and the minimal `HealthOSScribeApp`
 
 Reference ordering:

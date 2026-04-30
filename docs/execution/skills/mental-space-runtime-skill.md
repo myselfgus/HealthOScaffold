@@ -14,7 +14,7 @@ Mental Space artifacts are derived and gated. They do not diagnose, authorize cl
 
 ## Main files
 
-`swift/Sources/HealthOSCore/MentalSpaceRuntime.swift`, `swift/Sources/HealthOSAACI/AACI.swift`, `swift/Sources/HealthOSFirstSliceSupport/FirstSliceRunner.swift`, `swift/Sources/HealthOSCore/AsyncRuntimeJobs.swift`, `ts/packages/contracts/src/index.ts`, `schemas/contracts/mental-space-artifact.schema.json`.
+`swift/Sources/HealthOSCore/MentalSpaceRuntime.swift`, `swift/Sources/HealthOSAACI/AACI.swift`, `swift/Sources/HealthOSSessionRuntime/SessionRunner.swift`, `swift/Sources/HealthOSCore/AsyncRuntimeJobs.swift`, `ts/packages/contracts/src/index.ts`, `schemas/contracts/mental-space-artifact.schema.json`.
 
 ## Expected tests
 

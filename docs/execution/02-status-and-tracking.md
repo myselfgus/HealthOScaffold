@@ -7,6 +7,20 @@ Current phase: Controlled implementation — first vertical slice started
 ## Completed recently
 
 
+## STR-004 — Rename HealthOSFirstSliceSupport to HealthOSSessionRuntime (2026-04-30)
+
+- Objective: remove development-phase vocabulary from the Swift product graph by renaming `HealthOSFirstSliceSupport` to `HealthOSSessionRuntime` without changing runtime behavior.
+- Files moved with history via `git mv`:
+  - `swift/Sources/HealthOSFirstSliceSupport/` → `swift/Sources/HealthOSSessionRuntime/`
+  - `FirstSliceRunner.swift` → `SessionRunner.swift`
+  - `ScribeFirstSliceAdapter.swift` → `ScribeSessionAdapter.swift`
+  - `ScribeFirstSliceDemoBootstrap.swift` → `ScribeSessionDemoBootstrap.swift`
+- Module/API wiring updated: `swift/Package.swift`, CLI/Scribe/test imports and references now consume `HealthOSSessionRuntime`; primary public runtime types renamed to session-runtime vocabulary.
+- Validation run: `test ! -d swift/Sources/HealthOSFirstSliceSupport`, `test -d swift/Sources/HealthOSSessionRuntime`, grep checks for stale imports/module names, `cd swift && swift package dump-package | grep -A8 HealthOSSessionRuntime`, `cd swift && swift build`, `cd swift && swift test`, `make swift-build`, `make swift-test`, `make smoke-cli`, `make smoke-scribe`, `make validate-docs`, `make validate-schemas`, `make validate-contracts`, `make validate-all`.
+- Result: STR-004 complete; no Core/GOS/AACI/Mental Space/app clinical behavior changes.
+- Invariants: Inv 1 (Core sovereignty), Inv 43 (scaffold/foundation maturity is not production readiness), app/session boundary invariants preserved.
+- Residual gaps: no Sortio/CloudClinic targets were added (reserved for STR-005); internal `FirstSlice*` contracts in `HealthOSCore` remain intentionally unchanged for scope control.
+
 
 ## STR-003 — Separate AGENT packages from PRODUCT in ts/ (2026-04-29)
 
@@ -102,8 +116,8 @@ Files touched:
 - `swift/Sources/HealthOSCore/MentalSpaceRuntime.swift` — new Swift contracts for stages, metadata, normalized/ASL/VDLP/GEM artifacts, stage state, pipeline dependency validation, normalization request/result, runtime view, and content hashing
 - `swift/Sources/HealthOSCore/AsyncRuntimeJobs.swift`, `ts/packages/contracts/src/index.ts`, `schemas/contracts/async-job.schema.json` — async job taxonomy extended with Mental Space stage jobs
 - `swift/Sources/HealthOSAACI/AACI.swift` — local-first transcript normalization provider boundary added; remote fallback denied and stub output degraded for v1
-- `swift/Sources/HealthOSFirstSliceSupport/FirstSliceRunner.swift` — normalization now runs after non-empty transcript persistence and stores a normalized transcript as a derived artifact only when a real local model is available
-- `swift/Sources/HealthOSCore/FirstSliceContracts.swift`, `ScribeFirstSliceBridge.swift`, `ScribeFirstSliceAdapter.swift`, and `HealthOSScribeApp/Views/ScribeFirstSliceView.swift` — first-slice/Scribe surfaces now carry minimal Mental Space runtime state
+- `swift/Sources/HealthOSSessionRuntime/SessionRunner.swift` — normalization now runs after non-empty transcript persistence and stores a normalized transcript as a derived artifact only when a real local model is available
+- `swift/Sources/HealthOSCore/FirstSliceContracts.swift`, `ScribeFirstSliceBridge.swift`, `ScribeSessionAdapter.swift`, and `HealthOSScribeApp/Views/ScribeFirstSliceView.swift` — first-slice/Scribe surfaces now carry minimal Mental Space runtime state
 - `swift/Tests/HealthOSTests/MentalSpaceRuntimeTests.swift` — tests for stage ordering, async substrate job kind, provider degradation, derived artifact persistence, and app-safe Scribe surface
 - `schemas/contracts/mental-space-artifact.schema.json`, `docs/execution/skills/mental-space-runtime-skill.md`, tracking docs
 
@@ -454,7 +468,7 @@ Residual gaps:
 - validation: `swift build` PASS; `swift run HealthOSCLI` PASS; `swift run HealthOSCLI --reject-gate` PASS; `swift run HealthOSScribeApp --smoke-test` PASS; `swift run HealthOSScribeApp --smoke-test-audio` PASS; follow-up `swift test` PASS after TEST-001 cleanup
 Files touched:
 - `swift/Sources/HealthOSCore/ScribeFirstSliceBridge.swift`
-- `swift/Sources/HealthOSFirstSliceSupport/ScribeFirstSliceAdapter.swift`
+- `swift/Sources/HealthOSSessionRuntime/ScribeSessionAdapter.swift`
 - `swift/Sources/HealthOSScribeApp/Models/ScribeFirstSliceViewModel.swift`
 - `swift/Sources/HealthOSScribeApp/Views/ScribeFirstSliceView.swift`
 - `swift/Sources/HealthOSCLI/CLIEntrypoint.swift`
@@ -475,7 +489,7 @@ Files touched:
 Files touched:
 - `swift/Sources/HealthOSCore/FirstSliceContracts.swift`
 - `swift/Sources/HealthOSAACI/AACI.swift`
-- `swift/Sources/HealthOSFirstSliceSupport/FirstSliceRunner.swift`
+- `swift/Sources/HealthOSSessionRuntime/SessionRunner.swift`
 - `swift/Tests/HealthOSTests/GOSRuntimeAdoptionTests.swift`
 - `ts/packages/contracts/src/index.ts`
 - `schemas/contracts/referral-draft-document.schema.json`
@@ -835,7 +849,7 @@ Files touched:
 - first-slice provenance recording made more consistent across transcription, retrieval, draft compose, gate resolve, and final document finalization
 - minimal Scribe bridge contract + adapter added to consume the first-slice spine without moving law into the app layer
 - first-slice bounded retrieval substrate added with typed query/match/result contracts and file-backed service-record index
-- FirstSliceRunner now uses deterministic bounded retrieval + provenance/event wiring instead of hardcoded synthetic context list
+- SessionRunner now uses deterministic bounded retrieval + provenance/event wiring instead of hardcoded synthetic context list
 - Scribe bridge state now exposes retrieval source/status/match preview for future UI wiring
 - shared HealthOS envelope vocabulary added for first-slice command/result semantics (`HealthOSCommandDisposition`, `HealthOSIssueCode`, `HealthOSFailureKind`, `HealthOSIssue`)
 - Scribe bridge + CLI adapter migrated from ad hoc issue strings to shared typed issue/disposition semantics

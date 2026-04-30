@@ -86,7 +86,7 @@ The scaffold includes a minimal macOS SwiftUI validation surface in:
 This surface is intentionally narrow:
 - one window with session start, patient selection, capture-mode choice (seeded text or local audio file), SOAP draft preview, referral/prescription derived draft previews, gate review summary, and final-document result sections
 - state is consumed through a small UI view model that talks to `ScribeFirstSliceFacade`
-- executable slice orchestration remains outside the app in `HealthOSFirstSliceSupport`
+- executable slice orchestration remains outside the app in `HealthOSSessionRuntime`
 - transcription status/source and structured retrieval state are shown explicitly instead of being implied from other UI state
 - retrieval now surfaces summary, highlights, source hints, match count, and explicit `partial` / `empty` / `degraded` truth without moving law into the app
 - gate review now surfaces review type, target, rationale, and reviewer timing/role without making SwiftUI the owner of gate law

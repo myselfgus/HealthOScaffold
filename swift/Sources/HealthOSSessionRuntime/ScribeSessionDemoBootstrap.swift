@@ -3,7 +3,7 @@ import HealthOSCore
 import HealthOSAACI
 import HealthOSProviders
 
-public struct ScribeFirstSliceDemoEnvironment: Sendable {
+public struct ScribeSessionDemoEnvironment: Sendable {
     public let root: URL
     public let professional: Usuario
     public let patients: [Usuario]
@@ -25,7 +25,7 @@ public struct ScribeFirstSliceDemoEnvironment: Sendable {
     }
 }
 
-public enum ScribeFirstSliceDemoBootstrapError: LocalizedError {
+public enum ScribeSessionDemoBootstrapError: LocalizedError {
     case repositoryRootNotFound(String)
 
     public var errorDescription: String? {
@@ -36,10 +36,10 @@ public enum ScribeFirstSliceDemoBootstrapError: LocalizedError {
     }
 }
 
-public enum ScribeFirstSliceDemoBootstrap {
+public enum ScribeSessionDemoBootstrap {
     public static func makeEnvironment(
         fileManager: FileManager = .default
-    ) async throws -> ScribeFirstSliceDemoEnvironment {
+    ) async throws -> ScribeSessionDemoEnvironment {
         let repositoryRoot = try resolveRepositoryRoot(fileManager: fileManager)
         let root = repositoryRoot
             .appending(path: "runtime-data/Users/Shared/HealthOS")
@@ -81,10 +81,10 @@ public enum ScribeFirstSliceDemoBootstrap {
         try await router.register(AppleFoundationProvider())
         try await router.register(NativeSpeechProvider())
         let orchestrator = AACIOrchestrator(router: router)
-        let runner = FirstSliceRunner(root: root, orchestrator: orchestrator)
-        let facade = ScribeFirstSliceAdapter(runner: runner)
+        let runner = SessionRunner(root: root, orchestrator: orchestrator)
+        let facade = ScribeSessionAdapter(runner: runner)
 
-        return ScribeFirstSliceDemoEnvironment(
+        return ScribeSessionDemoEnvironment(
             root: root,
             professional: professional,
             patients: patients,
@@ -115,7 +115,7 @@ public enum ScribeFirstSliceDemoBootstrap {
             candidate = parent
         }
 
-        throw ScribeFirstSliceDemoBootstrapError.repositoryRootNotFound(
+        throw ScribeSessionDemoBootstrapError.repositoryRootNotFound(
             fileManager.currentDirectoryPath
         )
     }

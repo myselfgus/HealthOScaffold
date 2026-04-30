@@ -416,7 +416,7 @@ make validate-all
 
 ### STR-004: Rename `HealthOSFirstSliceSupport` → `HealthOSSessionRuntime`
 
-**Priority:** P1 | **Status:** READY | **Branch:** `feat/str-004-session-runtime-rename`
+**Priority:** P1 | **Status:** DONE (2026-04-30) | **Branch:** `feat/str-004-session-runtime-rename`
 
 **Why:** `HealthOSFirstSliceSupport` encodes a development phase ("first slice") into the product's dependency graph. In a product, session orchestration is an architectural concept, not a development milestone. Renaming to `HealthOSSessionRuntime` correctly positions this module as the session orchestration layer.
 
@@ -425,14 +425,14 @@ make validate-all
 git mv swift/Sources/HealthOSFirstSliceSupport swift/Sources/HealthOSSessionRuntime
 ```
 - `swift/Package.swift` — rename all occurrences of `HealthOSFirstSliceSupport` → `HealthOSSessionRuntime`
-- `swift/Sources/HealthOSSessionRuntime/FirstSliceRunner.swift` — rename file to `SessionRunner.swift` and update any internal references to "FirstSlice" in public API names (keep internal names if needed for now; public API only)
-- `swift/Sources/HealthOSSessionRuntime/ScribeFirstSliceAdapter.swift` — rename to `ScribeSessionAdapter.swift` and update public type names
+- `swift/Sources/HealthOSSessionRuntime/SessionRunner.swift` — rename file to `SessionRunner.swift` and update any internal references to "FirstSlice" in public API names (keep internal names if needed for now; public API only)
+- `swift/Sources/HealthOSSessionRuntime/ScribeSessionAdapter.swift` — rename to `ScribeSessionAdapter.swift` and update public type names
 - `swift/Sources/HealthOSCLI/CLIEntrypoint.swift` — update imports: `HealthOSFirstSliceSupport` → `HealthOSSessionRuntime`
 - `swift/Sources/HealthOSScribeApp/` — update imports
 - `swift/Tests/HealthOSTests/` — update imports and any references in test files
 - `docs/execution/02-status-and-tracking.md` — completion entry
 - `docs/execution/21-structural-ontology-and-product-readiness-plan.md` — mark STR-004 DONE
-- Update any doc references to `HealthOSFirstSliceSupport` in `docs/architecture/`
+- Update any doc references to `HealthOSSessionRuntime` in `docs/architecture/`
 
 **Note:** Do NOT rename internal types that begin with `FirstSlice` if doing so would break too many things in one PR. Rename the module and its primary public types; leave internal helper names as a follow-up.
 
@@ -686,3 +686,6 @@ When a task is done:
 
 
 **Completion note (2026-04-29):** STR-003 completed by moving `@healthos/steward` and `@healthos/mcp-local` from `ts/packages/` to `ts/agent-infra/` with history preserved via `git mv`; npm workspace updated to include `agent-infra/*`; docs path references updated. Known TS18003 blocker for steward was resolved by restoring minimal `src/` entrypoints to satisfy the package build contract honestly. No HealthOS clinical/runtime behavior was changed.
+
+
+**Completion note (2026-04-30):** STR-004 completed by renaming the Swift module `HealthOSFirstSliceSupport` to `HealthOSSessionRuntime` with `git mv`, updating SwiftPM target/dependency wiring, CLI/Scribe/test imports, and architecture/execution documentation references. Primary public runtime types were renamed (`FirstSliceRunner` → `SessionRunner`, `ScribeFirstSliceAdapter` → `ScribeSessionAdapter`, demo bootstrap surfaces to session-runtime vocabulary). No Core/GOS/AACI/Mental Space/app clinical behavior changed; no Sortio/CloudClinic target additions were made in this work unit. Residual internal `FirstSlice*` contract names in `HealthOSCore` remain intentionally unchanged for STR-004 scope control.

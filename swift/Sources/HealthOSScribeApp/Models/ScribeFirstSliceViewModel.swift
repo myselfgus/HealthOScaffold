@@ -2,7 +2,7 @@
 import Foundation
 import Observation
 import HealthOSCore
-import HealthOSFirstSliceSupport
+import HealthOSSessionRuntime
 
 @MainActor
 @Observable
@@ -196,7 +196,7 @@ final class ScribeFirstSliceViewModel {
 
         beginAction("bootstrapping demo environment")
         do {
-            let environment = try await ScribeFirstSliceDemoBootstrap.makeEnvironment()
+            let environment = try await ScribeSessionDemoBootstrap.makeEnvironment()
             professionalToken = environment.professional.civilToken
             serviceName = environment.service.nome
             availablePatients = environment.patients

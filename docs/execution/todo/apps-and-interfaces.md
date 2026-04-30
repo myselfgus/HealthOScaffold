@@ -40,7 +40,7 @@ Outcome:
 - validation: `swift build`, `swift run HealthOSCLI`, `swift run HealthOSCLI --reject-gate`, `swift run HealthOSScribeApp --smoke-test`, and `swift run HealthOSScribeApp --smoke-test-audio` passed; follow-up `swift test` passed after TEST-001 cleanup
 Files touched:
 - `swift/Sources/HealthOSCore/ScribeFirstSliceBridge.swift`
-- `swift/Sources/HealthOSFirstSliceSupport/ScribeFirstSliceAdapter.swift`
+- `swift/Sources/HealthOSSessionRuntime/ScribeSessionAdapter.swift`
 - `swift/Sources/HealthOSScribeApp/Models/ScribeFirstSliceViewModel.swift`
 - `swift/Sources/HealthOSScribeApp/Views/ScribeFirstSliceView.swift`
 - `swift/Sources/HealthOSCLI/CLIEntrypoint.swift`
@@ -60,7 +60,7 @@ Outcome:
 Files touched:
 - `swift/Sources/HealthOSCore/ScribeProfessionalWorkspaceContracts.swift`
 - `swift/Sources/HealthOSCore/ScribeFirstSliceBridge.swift`
-- `swift/Sources/HealthOSFirstSliceSupport/ScribeFirstSliceAdapter.swift`
+- `swift/Sources/HealthOSSessionRuntime/ScribeSessionAdapter.swift`
 - `swift/Tests/HealthOSTests/ScribeProfessionalWorkspaceContractsTests.swift`
 - `docs/execution/02-status-and-tracking.md`
 - `docs/execution/todo/apps-and-interfaces.md`
@@ -128,16 +128,16 @@ Outcome:
 Files touched:
 - `swift/Sources/HealthOSCore/FirstSliceContracts.swift`
 - `swift/Sources/HealthOSCore/ScribeFirstSliceBridge.swift`
-- `swift/Sources/HealthOSFirstSliceSupport/ScribeFirstSliceAdapter.swift`
+- `swift/Sources/HealthOSSessionRuntime/ScribeSessionAdapter.swift`
 
 ### SCRIBE-002 Add minimal SwiftUI first-slice surface
 Outcome:
 - Scribe now has a minimal macOS SwiftUI validation surface for the first slice
 - the UI consumes a small observable view model over `ScribeFirstSliceFacade` instead of reimplementing governance/runtime law
-- first-slice executable wiring is shared between CLI and app through `HealthOSFirstSliceSupport`
+- first-slice executable wiring is shared between CLI and app through `HealthOSSessionRuntime`
 Files touched:
 - `swift/Package.swift`
-- `swift/Sources/HealthOSFirstSliceSupport/`
+- `swift/Sources/HealthOSSessionRuntime/`
 - `swift/Sources/HealthOSScribeApp/`
 - `swift/Sources/HealthOSCLI/CLIEntrypoint.swift`
 - `docs/architecture/11-scribe.md`
@@ -153,7 +153,7 @@ Files touched:
 - `swift/Sources/HealthOSScribeApp/`
 - `swift/Sources/HealthOSCore/FirstSliceContracts.swift`
 - `swift/Sources/HealthOSCore/ScribeFirstSliceBridge.swift`
-- `swift/Sources/HealthOSFirstSliceSupport/ScribeFirstSliceAdapter.swift`
+- `swift/Sources/HealthOSSessionRuntime/ScribeSessionAdapter.swift`
 - `docs/architecture/11-scribe.md`
 - `docs/architecture/23-scribe-screen-contracts.md`
 - `docs/architecture/28-first-slice-executable-path.md`
@@ -166,7 +166,7 @@ Outcome:
 Files touched:
 - `swift/Sources/HealthOSCore/ScribeFirstSliceBridge.swift`
 - `swift/Sources/HealthOSCore/SharedEnvelopeVocabulary.swift`
-- `swift/Sources/HealthOSFirstSliceSupport/ScribeFirstSliceAdapter.swift`
+- `swift/Sources/HealthOSSessionRuntime/ScribeSessionAdapter.swift`
 - `swift/Sources/HealthOSScribeApp/Models/ScribeFirstSliceViewModel.swift`
 - `swift/Sources/HealthOSScribeApp/Views/ScribeFirstSliceView.swift`
 - `swift/Sources/HealthOSCLI/CLIEntrypoint.swift`
@@ -186,8 +186,8 @@ Files touched:
 - `swift/Sources/HealthOSCore/FirstSliceContracts.swift`
 - `swift/Sources/HealthOSCore/ScribeFirstSliceBridge.swift`
 - `swift/Sources/HealthOSCore/SharedEnvelopeVocabulary.swift`
-- `swift/Sources/HealthOSFirstSliceSupport/FirstSliceRunner.swift`
-- `swift/Sources/HealthOSFirstSliceSupport/ScribeFirstSliceAdapter.swift`
+- `swift/Sources/HealthOSSessionRuntime/SessionRunner.swift`
+- `swift/Sources/HealthOSSessionRuntime/ScribeSessionAdapter.swift`
 - `swift/Sources/HealthOSCLI/CLIEntrypoint.swift`
 - `swift/Sources/HealthOSScribeApp/Models/ScribeFirstSliceViewModel.swift`
 - `swift/Sources/HealthOSScribeApp/Views/ScribeFirstSliceView.swift`
@@ -203,7 +203,7 @@ Outcome:
 - the app still consumes `ScribeFirstSliceFacade` contracts rather than reimplementing referral/prescription law
 Files touched:
 - `swift/Sources/HealthOSCore/ScribeFirstSliceBridge.swift`
-- `swift/Sources/HealthOSFirstSliceSupport/ScribeFirstSliceAdapter.swift`
+- `swift/Sources/HealthOSSessionRuntime/ScribeSessionAdapter.swift`
 - `swift/Sources/HealthOSCLI/CLIEntrypoint.swift`
 - `swift/Sources/HealthOSScribeApp/Models/ScribeFirstSliceViewModel.swift`
 - `swift/Sources/HealthOSScribeApp/Views/ScribeFirstSliceView.swift`

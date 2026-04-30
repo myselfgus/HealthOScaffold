@@ -10,7 +10,7 @@ AACI orchestration, session state, capture/transcription, retrieval mediation, d
 AACI assists; does not finalize clinical acts; draft-only before gate; degraded truth must be explicit.
 
 ## Main files
-`swift/Sources/HealthOSAACI/`, `swift/Sources/HealthOSFirstSliceSupport/FirstSliceRunner.swift`.
+`swift/Sources/HealthOSAACI/`, `swift/Sources/HealthOSSessionRuntime/SessionRunner.swift`.
 
 ## Expected tests
 `cd swift && swift test --filter AACI`, plus first-slice smoke if changed.

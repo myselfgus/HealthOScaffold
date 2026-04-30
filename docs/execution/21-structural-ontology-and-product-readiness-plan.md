@@ -4,6 +4,8 @@ This document is the canonical priority-ordered work plan produced by the ontolo
 
 Read this document **before** reading the per-domain TODO files. The priority tiers here override the ordering within any individual TODO file.
 
+Construction-system note: this document remains the product/repo task queue. Construction-system tasks ST-010 and later are tracked in `docs/execution/22-steward-construction-operating-model.md` and `docs/execution/19-settler-model-task-tracker.md`. APP-011 remains READY as the next product task; construction-system work may run before APP-011 to operationalize Steward, but it must not reorder or complete APP-011.
+
 ---
 
 ## How to use this document (for AI coding agents)

@@ -1,0 +1,164 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://healthos.local/schemas/steward/settlement.schema.json",
+  "title": "Steward Settlement Record",
+  "description": "Initial scaffold contract for bounded construction work units. This schema validates shape only and does not implement Steward execution.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "taskId",
+    "title",
+    "status",
+    "priority",
+    "territoryIds",
+    "settlerIds",
+    "sourceDocs",
+    "filesInScope",
+    "forbiddenFiles",
+    "invariants",
+    "allowedChanges",
+    "forbiddenChanges",
+    "validationCommands",
+    "doneCriteria",
+    "residualGaps",
+    "handoffRequired"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "taskId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "assigned",
+        "in_progress",
+        "validation_failed",
+        "ready_for_review",
+        "completed",
+        "blocked"
+      ]
+    },
+    "priority": {
+      "type": "string",
+      "minLength": 1
+    },
+    "territoryIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "settlerIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "sourceDocs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "filesInScope": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "forbiddenFiles": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "invariants": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "allowedChanges": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "forbiddenChanges": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "validationCommands": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "doneCriteria": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "residualGaps": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "handoffRequired": {
+      "type": "boolean"
+    }
+  },
+  "examples": [
+    {
+      "id": "APP-011-sortio-session-path",
+      "taskId": "APP-011",
+      "title": "Sortio smoke-testable executable path",
+      "status": "draft",
+      "priority": "P2",
+      "territoryIds": [
+        "apps",
+        "session-runtime"
+      ],
+      "settlerIds": [
+        "app-boundary-settler",
+        "validation-settler"
+      ],
+      "sourceDocs": [],
+      "filesInScope": [],
+      "forbiddenFiles": [],
+      "invariants": [],
+      "allowedChanges": [],
+      "forbiddenChanges": [],
+      "validationCommands": [],
+      "doneCriteria": [],
+      "residualGaps": [],
+      "handoffRequired": true
+    }
+  ]
+}

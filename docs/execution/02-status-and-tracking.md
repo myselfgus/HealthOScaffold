@@ -6,6 +6,30 @@ Current phase: Controlled implementation — first vertical slice started
 
 ## Completed recently
 
+## ST-010 — Create Steward Construction Operating Model baseline (2026-04-30)
+
+- Objective: create the canonical construction operating model baseline for Steward, Settler, Settlement, and Territory work without implementing product behavior, MCP, model calls, or multiagent orchestration.
+- Files created:
+  - `docs/execution/22-steward-construction-operating-model.md`
+  - `.healthos-settler/territories/README.md`
+  - `.healthos-settler/settlers/README.md`
+  - `.healthos-steward/settlements/README.md`
+  - `.healthos-steward/settlements/templates/settlement.schema.json`
+  - `.healthos-steward/prompts/generated/README.md`
+  - `.healthos-steward/prompts/templates/README.md`
+- Files updated:
+  - `.healthos-settler/README.md`
+  - `AGENTS.md`
+  - `CLAUDE.md`
+  - `docs/execution/19-settler-model-task-tracker.md`
+  - `docs/execution/21-structural-ontology-and-product-readiness-plan.md`
+  - `docs/execution/12-next-agent-handoff.md`
+  - `docs/execution/02-status-and-tracking.md`
+- Validation run: `git status --short`, required file assertions, `python3 -m json.tool .healthos-steward/settlements/templates/settlement.schema.json`, `make validate-docs`, `make validate-schemas`, `make validate-contracts`, `make ts-build`, `make swift-build`, `make swift-test`, `make smoke-cli`, `make smoke-scribe`, `make smoke-sortio`, `make smoke-cloudclinic`, `make validate-all`.
+- Result: ST-010 complete after validation; construction operating model and skeleton exist as scaffolded contract only.
+- Invariants: Inv 1 (Core sovereignty), Inv 43 (scaffold/foundation maturity is not production readiness), engineering-agent boundary invariants (Steward and Settlers remain outside HealthOS clinical/runtime hierarchy).
+- Residual gaps: Territory Registry not implemented; Settler Profile Registry not implemented; Settlement CLI not implemented; prompt generation not implemented; `healthos-mcp` not implemented.
+
 
 ## STR-005 — Add Sortio and CloudClinic scaffold executable targets (2026-04-30)
 

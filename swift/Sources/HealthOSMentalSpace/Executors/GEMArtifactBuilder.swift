@@ -131,27 +131,39 @@ public struct GEMArtifactBuilder: GEMArtifactBuilding {
     }
 
     private func parseProviderJSON(_ response: String) throws -> [String: Any] {
-        guard let data = response.data(using: .utf8),
-              let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else {
+        do {
+            return try MentalSpaceJSONRepair.parse(response)
+        } catch {
             throw GEMArtifactBuilderError.invalidResponse("Provider did not return a valid JSON object")
         }
-        return json
     }
 
+    // Full field-aware consolidation matching the validated 6-gem.ts logic.
+    // Concatenates .aje/.ire/.e/.epe arrays across chunks; handles gem nested or at root.
     private func consolidate(_ chunks: [[String: Any]]) -> [String: Any]? {
         guard let first = chunks.first else { return nil }
         if chunks.count == 1 { return first }
-        var merged = first
-        var gem = ((first["gem"] as? [String: Any]) ?? first)
-        for layer in ["aje", "ire", "e", "epe"] {
-            let values = chunks.flatMap { chunk -> [Any] in
-                let source = ((chunk["gem"] as? [String: Any]) ?? chunk)
-                return source[layer] as? [Any] ?? []
-            }
-            if !values.isEmpty { gem[layer] = values }
+        var result = first
+        for chunk in chunks.dropFirst() {
+            gemMergeChunk(&result, chunk: chunk)
         }
-        merged["gem"] = gem
-        return merged
+        return result
+    }
+
+    private func gemMergeChunk(_ base: inout [String: Any], chunk: [String: Any]) {
+        let isNested = base["gem"] != nil
+        var bGem = (base["gem"] as? [String: Any]) ?? base
+        let cGem = (chunk["gem"] as? [String: Any]) ?? chunk
+
+        for layer in ["aje", "ire", "e", "epe"] {
+            bGem[layer] = (bGem[layer] as? [Any] ?? []) + (cGem[layer] as? [Any] ?? [])
+        }
+
+        if isNested {
+            base["gem"] = bGem
+        } else {
+            for layer in ["aje", "ire", "e", "epe"] { base[layer] = bGem[layer] }
+        }
     }
 
     private static func loadPromptTemplate() throws -> String {

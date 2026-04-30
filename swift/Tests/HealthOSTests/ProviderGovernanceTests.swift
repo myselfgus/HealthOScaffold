@@ -73,7 +73,7 @@ final class ProviderGovernanceTests: XCTestCase {
 
     func testProviderStubIsMarkedStubOnly() async throws {
         let router = ProviderRouter()
-        try await router.register(AppleFoundationProvider())
+        try await router.register(AppleFoundationProvider(forceStub: true))
 
         let decision = await router.routeLanguage(
             request: ProviderRoutingRequest(

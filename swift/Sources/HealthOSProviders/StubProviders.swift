@@ -1,32 +1,6 @@
 import Foundation
 import HealthOSCore
 
-public struct AppleFoundationProvider: LanguageModelProvider {
-    public let providerName = "apple-foundation"
-    public let modelId: String? = nil
-    public let modelVersion: String? = nil
-    public let capabilityProfile = ProviderCapabilityProfile(
-        providerId: "apple-foundation",
-        providerKind: .appleNative,
-        supportedTaskClasses: [.languageModel],
-        allowedDataLayers: [.operationalContent, .derivedArtifacts, .governanceMetadata],
-        allowsPHI: true,
-        allowsIdentifiableData: false,
-        requiresNetwork: false,
-        latencyClass: .interactive,
-        supportsCostReporting: false,
-        supportsProvenanceReporting: true,
-        isStub: true
-    )
-
-    public init() {}
-
-    public func generate(prompt: String, context: [String : String]) async throws -> String {
-        _ = context
-        return "[apple-foundation stub] \(prompt.prefix(64))"
-    }
-}
-
 public struct LocalHTTPModelProvider: LanguageModelProvider {
     public let providerName = "local-http"
     public let modelId: String? = nil

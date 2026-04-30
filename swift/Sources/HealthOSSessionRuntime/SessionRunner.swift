@@ -3,7 +3,7 @@ import HealthOSCore
 import HealthOSProviders
 import HealthOSAACI
 
-public actor FirstSliceRunner {
+public actor SessionRunner {
     private let root: URL
     private let habilitationService: SimpleHabilitationService
     private let consentService: SimpleConsentService

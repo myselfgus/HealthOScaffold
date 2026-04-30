@@ -41,7 +41,7 @@ Files touched:
 - `swift/Sources/HealthOSCore/StorageContracts.swift`
 - `swift/Sources/HealthOSCore/FirstSliceServices.swift`
 - `swift/Sources/HealthOSCore/ReidentificationGovernance.swift`
-- `swift/Sources/HealthOSFirstSliceSupport/FirstSliceRunner.swift`
+- `swift/Sources/HealthOSSessionRuntime/SessionRunner.swift`
 - `swift/Tests/HealthOSTests/GOSRuntimeAdoptionTests.swift`
 - `docs/execution/02-status-and-tracking.md`
 - `docs/execution/06-scaffold-coverage-matrix.md`

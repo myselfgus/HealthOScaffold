@@ -2,7 +2,7 @@ import XCTest
 @testable import HealthOSCore
 @testable import HealthOSAACI
 @testable import HealthOSProviders
-@testable import HealthOSFirstSliceSupport
+@testable import HealthOSSessionRuntime
 @testable import HealthOSMentalSpace
 
 final class MentalSpaceRuntimeTests: XCTestCase {
@@ -74,7 +74,7 @@ final class MentalSpaceRuntimeTests: XCTestCase {
         try DirectoryLayout.bootstrap(at: root)
         let router = ProviderRouter()
         try await router.register(LocalNormalizerProvider())
-        let runner = FirstSliceRunner(root: root, orchestrator: AACIOrchestrator(router: router))
+        let runner = SessionRunner(root: root, orchestrator: AACIOrchestrator(router: router))
 
         let result = try await runner.run(
             input: makeSessionInput(text: " Paciente   relata sono ruim. ")
@@ -104,8 +104,8 @@ final class MentalSpaceRuntimeTests: XCTestCase {
         try DirectoryLayout.bootstrap(at: root)
         let router = ProviderRouter()
         try await router.register(LocalNormalizerProvider())
-        let runner = FirstSliceRunner(root: root, orchestrator: AACIOrchestrator(router: router))
-        let adapter = ScribeFirstSliceAdapter(runner: runner)
+        let runner = SessionRunner(root: root, orchestrator: AACIOrchestrator(router: router))
+        let adapter = ScribeSessionAdapter(runner: runner)
 
         let professional = Usuario(cpfHash: "prof-hash", civilToken: "prof-token")
         let patient = Usuario(cpfHash: "patient-hash", civilToken: "patient-token")

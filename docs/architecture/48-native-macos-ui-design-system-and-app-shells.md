@@ -28,7 +28,7 @@ Current products:
 - `HealthOSCore` library
 - `HealthOSAACI` library
 - `HealthOSProviders` library
-- `HealthOSFirstSliceSupport` library
+- `HealthOSSessionRuntime` library
 - `HealthOSCLI` executable
 - `HealthOSScribeApp` executable
 

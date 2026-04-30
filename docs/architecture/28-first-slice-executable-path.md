@@ -30,9 +30,9 @@ The current Swift executable path (CLI plus minimal Scribe SwiftUI surface) exer
 - `swift/Sources/HealthOSCore/FirstSliceServices.swift`
 - `swift/Sources/HealthOSCore/FirstSliceContracts.swift`
 - `swift/Sources/HealthOSCore/ScribeFirstSliceBridge.swift`
-- `swift/Sources/HealthOSFirstSliceSupport/FirstSliceRunner.swift`
-- `swift/Sources/HealthOSFirstSliceSupport/ScribeFirstSliceAdapter.swift`
-- `swift/Sources/HealthOSFirstSliceSupport/ScribeFirstSliceDemoBootstrap.swift`
+- `swift/Sources/HealthOSSessionRuntime/SessionRunner.swift`
+- `swift/Sources/HealthOSSessionRuntime/ScribeSessionAdapter.swift`
+- `swift/Sources/HealthOSSessionRuntime/ScribeSessionDemoBootstrap.swift`
 - `services/<service-id>/records/patient-record-index.json` (runtime-data, seeded when missing for demo execution)
 - `swift/Sources/HealthOSCLI/CLIEntrypoint.swift`
 - `swift/Sources/HealthOSScribeApp/`
@@ -61,7 +61,7 @@ The current Swift executable path (CLI plus minimal Scribe SwiftUI surface) exer
 - retrieval bridge state now exposes UI-ready status/source/count/summary/highlight fields including explicit degraded and partial modes
 - a minimal macOS SwiftUI Scribe surface now consumes the same bridge through a small view model instead of touching core/runtime services directly
 - the minimal Scribe surface now shows SOAP draft preview, referral/prescription draft-only previews, gate review summary, and final-document state/path as separate truths
-- the same `HealthOSFirstSliceSupport` target now backs both CLI and SwiftUI validation paths, reducing duplicated first-slice wiring
+- the same `HealthOSSessionRuntime` target now backs both CLI and SwiftUI validation paths, reducing duplicated first-slice wiring
 
 ## What remains intentionally stubbed
 - microphone recording is not implemented yet; the current audio path is local file selection/import

@@ -24,7 +24,7 @@ Its current products are:
 - `HealthOSCore`
 - `HealthOSAACI`
 - `HealthOSProviders`
-- `HealthOSFirstSliceSupport`
+- `HealthOSSessionRuntime`
 - `HealthOSCLI`
 - `HealthOSScribeApp`
 
@@ -33,7 +33,7 @@ Its current structure includes:
 - `swift/Sources/HealthOSCore/`
 - `swift/Sources/HealthOSAACI/`
 - `swift/Sources/HealthOSProviders/`
-- `swift/Sources/HealthOSFirstSliceSupport/`
+- `swift/Sources/HealthOSSessionRuntime/`
 - `swift/Sources/HealthOSCLI/`
 - `swift/Sources/HealthOSScribeApp/`
 - `swift/Tests/HealthOSTests/`
@@ -69,7 +69,7 @@ HealthOScaffold/
       HealthOSCore/
       HealthOSAACI/
       HealthOSProviders/
-      HealthOSFirstSliceSupport/
+      HealthOSSessionRuntime/
       HealthOSCLI/
       HealthOSScribeApp/
     Tests/

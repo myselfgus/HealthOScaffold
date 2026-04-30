@@ -1,6 +1,6 @@
 import Foundation
 import HealthOSCore
-import HealthOSFirstSliceSupport
+import HealthOSSessionRuntime
 
 @main
 struct HealthOSCLI {
@@ -62,7 +62,7 @@ struct HealthOSCLI {
             }
 
             let approveGate = !arguments.contains("--reject-gate")
-            let environment = try await ScribeFirstSliceDemoBootstrap.makeEnvironment()
+            let environment = try await ScribeSessionDemoBootstrap.makeEnvironment()
             guard let patient = environment.patients.first else {
                 throw CLIError.invalidState("Demo bootstrap did not provide a patient.")
             }

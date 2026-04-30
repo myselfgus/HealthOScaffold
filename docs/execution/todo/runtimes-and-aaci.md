@@ -31,8 +31,8 @@ Files touched:
 - `swift/Sources/HealthOSCore/FirstSliceContracts.swift`
 - `swift/Sources/HealthOSCore/ScribeFirstSliceBridge.swift`
 - `swift/Sources/HealthOSAACI/AACI.swift`
-- `swift/Sources/HealthOSFirstSliceSupport/FirstSliceRunner.swift`
-- `swift/Sources/HealthOSFirstSliceSupport/ScribeFirstSliceAdapter.swift`
+- `swift/Sources/HealthOSSessionRuntime/SessionRunner.swift`
+- `swift/Sources/HealthOSSessionRuntime/ScribeSessionAdapter.swift`
 - `swift/Sources/HealthOSScribeApp/Views/ScribeFirstSliceView.swift`
 - `swift/Tests/HealthOSTests/MentalSpaceRuntimeTests.swift`
 - `ts/packages/contracts/src/index.ts`
@@ -193,8 +193,8 @@ Files touched:
 - `swift/Sources/HealthOSAACI/AACI.swift`
 - `swift/Sources/HealthOSProviders/ProviderProtocols.swift`
 - `swift/Sources/HealthOSProviders/StubProviders.swift`
-- `swift/Sources/HealthOSFirstSliceSupport/FirstSliceRunner.swift`
-- `swift/Sources/HealthOSFirstSliceSupport/ScribeFirstSliceDemoBootstrap.swift`
+- `swift/Sources/HealthOSSessionRuntime/SessionRunner.swift`
+- `swift/Sources/HealthOSSessionRuntime/ScribeSessionDemoBootstrap.swift`
 - `swift/Sources/HealthOSCore/FirstSliceContracts.swift`
 - `docs/architecture/09-aaci.md`
 - `docs/architecture/28-first-slice-executable-path.md`
@@ -208,7 +208,7 @@ Files touched:
 - `swift/Sources/HealthOSCore/FirstSliceContracts.swift`
 - `swift/Sources/HealthOSCore/FirstSliceServices.swift`
 - `swift/Sources/HealthOSAACI/AACI.swift`
-- `swift/Sources/HealthOSFirstSliceSupport/FirstSliceRunner.swift`
+- `swift/Sources/HealthOSSessionRuntime/SessionRunner.swift`
 - `docs/architecture/09-aaci.md`
 - `docs/architecture/28-first-slice-executable-path.md`
 
@@ -220,7 +220,7 @@ Outcome:
 Files touched:
 - `swift/Sources/HealthOSCore/FirstSliceContracts.swift`
 - `swift/Sources/HealthOSAACI/AACI.swift`
-- `swift/Sources/HealthOSFirstSliceSupport/FirstSliceRunner.swift`
+- `swift/Sources/HealthOSSessionRuntime/SessionRunner.swift`
 - `ts/packages/contracts/src/index.ts`
 - `schemas/contracts/referral-draft-document.schema.json`
 - `schemas/contracts/prescription-draft-document.schema.json`
@@ -236,7 +236,7 @@ Outcome:
 Files touched:
 - `swift/Sources/HealthOSCore/FirstSliceContracts.swift`
 - `swift/Sources/HealthOSAACI/AACI.swift`
-- `swift/Sources/HealthOSFirstSliceSupport/FirstSliceRunner.swift`
+- `swift/Sources/HealthOSSessionRuntime/SessionRunner.swift`
 - `swift/Tests/HealthOSTests/GOSRuntimeAdoptionTests.swift`
 - `ts/packages/contracts/src/index.ts`
 - `schemas/contracts/referral-draft-document.schema.json`
@@ -257,7 +257,7 @@ Outcome:
 Files touched:
 - `swift/Sources/HealthOSCore/RetrievalMemoryGovernance.swift`
 - `swift/Sources/HealthOSCore/FirstSliceServices.swift`
-- `swift/Sources/HealthOSFirstSliceSupport/FirstSliceRunner.swift`
+- `swift/Sources/HealthOSSessionRuntime/SessionRunner.swift`
 - `swift/Sources/HealthOSProviders/ProviderProtocols.swift`
 - `swift/Sources/HealthOSProviders/StubProviders.swift`
 - `swift/Tests/HealthOSTests/RetrievalMemoryGovernanceTests.swift`

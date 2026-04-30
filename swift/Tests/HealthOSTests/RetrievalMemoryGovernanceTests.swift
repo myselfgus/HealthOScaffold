@@ -2,7 +2,7 @@ import XCTest
 @testable import HealthOSCore
 @testable import HealthOSAACI
 @testable import HealthOSProviders
-@testable import HealthOSFirstSliceSupport
+@testable import HealthOSSessionRuntime
 
 final class RetrievalMemoryGovernanceTests: XCTestCase {
     func testRetrievalFailsWithoutLawfulContext() throws {
@@ -301,8 +301,8 @@ final class RetrievalMemoryGovernanceTests: XCTestCase {
         let router = ProviderRouter()
         try await router.register(LocalLanguageProviderForRetrievalTests())
         try await router.register(NativeSpeechProvider())
-        let runner = FirstSliceRunner(root: root, orchestrator: AACIOrchestrator(router: router))
-        let adapter = ScribeFirstSliceAdapter(runner: runner)
+        let runner = SessionRunner(root: root, orchestrator: AACIOrchestrator(router: router))
+        let adapter = ScribeSessionAdapter(runner: runner)
 
         let professional = Usuario(cpfHash: "prof-hash", civilToken: "prof-token")
         let patient = Usuario(cpfHash: "pat-hash", civilToken: "pat-token")

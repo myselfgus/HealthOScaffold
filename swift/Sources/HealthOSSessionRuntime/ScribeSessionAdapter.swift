@@ -1,7 +1,7 @@
 import Foundation
 import HealthOSCore
 
-public actor ScribeFirstSliceAdapter: ScribeFirstSliceFacade {
+public actor ScribeSessionAdapter: ScribeFirstSliceFacade {
     private struct SessionWorkspace {
         let professional: Usuario
         let service: Servico
@@ -9,10 +9,10 @@ public actor ScribeFirstSliceAdapter: ScribeFirstSliceFacade {
         var capture: SessionCaptureInput?
     }
 
-    private let runner: FirstSliceRunner
+    private let runner: SessionRunner
     private var workspaces: [UUID: SessionWorkspace] = [:]
 
-    public init(runner: FirstSliceRunner) {
+    public init(runner: SessionRunner) {
         self.runner = runner
     }
 

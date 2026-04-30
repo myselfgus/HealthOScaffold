@@ -52,7 +52,7 @@ This document is the authoritative priority-ordered work plan as of 2026-04-29. 
 
 - Swift Package: `swift/Package.swift` targets macOS 26.0, Swift tools 6.2. Canonical Apple build graph.
 - Xcode workspace: `HealthOS.xcworkspace` → points to `swift/Package.swift`. Not a replacement for TS/Python tooling.
-- `HealthOSFirstSliceSupport` is a scaffold module, not a product concept. STR-004 renames it to `HealthOSSessionRuntime`.
+- `HealthOSSessionRuntime` is a scaffold module, not a product concept. STR-004 renames it to `HealthOSSessionRuntime`.
 - `Skill macOS/` TS scripts are reference implementations, not the active pipeline. STR-002 archives them.
 - `ts/packages/` conflates PRODUCT, BUILD, and AGENT packages. STR-003 separates them.
 - Sortio and CloudClinic have no Swift executable targets. STR-005 adds them.

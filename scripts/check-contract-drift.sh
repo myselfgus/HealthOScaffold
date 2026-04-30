@@ -20,7 +20,7 @@ required_paths=(
   "swift/Sources/HealthOSCore/AsyncRuntimeJobs.swift"
   "swift/Sources/HealthOSCore/GovernedOperationalSpec.swift"
   "swift/Sources/HealthOSCore/GOSFileBackedRegistry.swift"
-  "swift/Sources/HealthOSFirstSliceSupport/FirstSliceRunner.swift"
+  "swift/Sources/HealthOSSessionRuntime/SessionRunner.swift"
   "ts/packages/contracts/src/index.ts"
   "ts/packages/healthos-gos-tooling/src/index.ts"
   "sql/migrations/001_init.sql"

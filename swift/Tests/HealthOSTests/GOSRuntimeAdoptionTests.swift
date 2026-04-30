@@ -2,7 +2,7 @@ import Foundation
 import HealthOSCore
 import HealthOSAACI
 import HealthOSProviders
-import HealthOSFirstSliceSupport
+import HealthOSSessionRuntime
 
 #if canImport(XCTest)
 import XCTest
@@ -226,7 +226,7 @@ final class GOSRuntimeAdoptionTests: XCTestCase {
         let router = ProviderRouter()
         try await router.register(AppleFoundationProvider())
         try await router.register(NativeSpeechProvider())
-        let runner = FirstSliceRunner(root: root, orchestrator: AACIOrchestrator(router: router))
+        let runner = SessionRunner(root: root, orchestrator: AACIOrchestrator(router: router))
 
         let input = FirstSliceSessionInput(
             professional: Usuario(cpfHash: "prof", civilToken: "prof"),
@@ -290,7 +290,7 @@ final class GOSRuntimeAdoptionTests: XCTestCase {
         let router = ProviderRouter()
         try await router.register(AppleFoundationProvider())
         try await router.register(NativeSpeechProvider())
-        let runner = FirstSliceRunner(root: root, orchestrator: AACIOrchestrator(router: router))
+        let runner = SessionRunner(root: root, orchestrator: AACIOrchestrator(router: router))
         let result = try await runner.run(
             input: makeSessionInput(gateApprove: false, text: "Paciente sem bundle ativo.")
         )
@@ -322,7 +322,7 @@ final class GOSRuntimeAdoptionTests: XCTestCase {
         let router = ProviderRouter()
         try await router.register(AppleFoundationProvider())
         try await router.register(NativeSpeechProvider())
-        let runner = FirstSliceRunner(root: root, orchestrator: AACIOrchestrator(router: router))
+        let runner = SessionRunner(root: root, orchestrator: AACIOrchestrator(router: router))
         let result = try await runner.run(
             input: makeSessionInput(gateApprove: false, text: "Paciente com insonia e cefaleia.")
         )
@@ -354,7 +354,7 @@ final class GOSRuntimeAdoptionTests: XCTestCase {
         let router = ProviderRouter()
         try await router.register(AppleFoundationProvider())
         try await router.register(NativeSpeechProvider())
-        let runner = FirstSliceRunner(root: root, orchestrator: AACIOrchestrator(router: router))
+        let runner = SessionRunner(root: root, orchestrator: AACIOrchestrator(router: router))
         let result = try await runner.run(
             input: makeSessionInput(gateApprove: true, text: "Paciente com insonia e dor.")
         )
@@ -459,7 +459,7 @@ final class GOSRuntimeAdoptionTests: XCTestCase {
         let router = ProviderRouter()
         try await router.register(AppleFoundationProvider())
         try await router.register(NativeSpeechProvider())
-        let runner = FirstSliceRunner(root: root, orchestrator: AACIOrchestrator(router: router))
+        let runner = SessionRunner(root: root, orchestrator: AACIOrchestrator(router: router))
         let result = try await runner.run(
             input: makeSessionInput(gateApprove: true, text: "Paciente com dor e fadiga.")
         )
@@ -493,7 +493,7 @@ final class GOSRuntimeAdoptionTests: XCTestCase {
         let router = ProviderRouter()
         try await router.register(AppleFoundationProvider())
         try await router.register(NativeSpeechProvider())
-        let runner = FirstSliceRunner(root: root, orchestrator: AACIOrchestrator(router: router))
+        let runner = SessionRunner(root: root, orchestrator: AACIOrchestrator(router: router))
 
         do {
             _ = try await runner.run(
@@ -1000,8 +1000,8 @@ final class GOSRuntimeAdoptionTests: XCTestCase {
         let router = ProviderRouter()
         try await router.register(AppleFoundationProvider())
         try await router.register(NativeSpeechProvider())
-        let runner = FirstSliceRunner(root: root, orchestrator: AACIOrchestrator(router: router))
-        let adapter = ScribeFirstSliceAdapter(runner: runner)
+        let runner = SessionRunner(root: root, orchestrator: AACIOrchestrator(router: router))
+        let adapter = ScribeSessionAdapter(runner: runner)
         let professional = Usuario(cpfHash: "prof", civilToken: "prof")
         let service = Servico(nome: "svc", tipo: "ambulatory")
         let patient = Usuario(cpfHash: "patient", civilToken: "patient")
@@ -1065,8 +1065,8 @@ final class GOSRuntimeAdoptionTests: XCTestCase {
         let router = ProviderRouter()
         try await router.register(AppleFoundationProvider())
         try await router.register(NativeSpeechProvider())
-        let runner = FirstSliceRunner(root: root, orchestrator: AACIOrchestrator(router: router))
-        let adapter = ScribeFirstSliceAdapter(runner: runner)
+        let runner = SessionRunner(root: root, orchestrator: AACIOrchestrator(router: router))
+        let adapter = ScribeSessionAdapter(runner: runner)
         let professional = Usuario(cpfHash: "prof-cpf-hash", civilToken: "prof-token")
         let service = Servico(nome: "svc", tipo: "ambulatory")
         let patient = Usuario(cpfHash: "patient-cpf-hash", civilToken: "patient-token")
@@ -1103,8 +1103,8 @@ final class GOSRuntimeAdoptionTests: XCTestCase {
         let router = ProviderRouter()
         try await router.register(AppleFoundationProvider())
         try await router.register(NativeSpeechProvider())
-        let runner = FirstSliceRunner(root: root, orchestrator: AACIOrchestrator(router: router))
-        let adapter = ScribeFirstSliceAdapter(runner: runner)
+        let runner = SessionRunner(root: root, orchestrator: AACIOrchestrator(router: router))
+        let adapter = ScribeSessionAdapter(runner: runner)
         let professional = Usuario(cpfHash: "prof", civilToken: "prof")
         let service = Servico(nome: "svc", tipo: "ambulatory")
         let patient = Usuario(cpfHash: "patient", civilToken: "patient")

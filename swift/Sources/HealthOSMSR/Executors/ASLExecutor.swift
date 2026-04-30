@@ -6,7 +6,7 @@ public struct ASLExecutionResult: Sendable {
     public let artifact: ASLArtifact
     public let provenanceOperation: String
 
-    public init(artifact: ASLArtifact, provenanceOperation: String = "mental-space.asl") {
+    public init(artifact: ASLArtifact, provenanceOperation: String = "msr.asl") {
         self.artifact = artifact
         self.provenanceOperation = provenanceOperation
     }
@@ -55,7 +55,7 @@ public struct ASLExecutor: ASLExecuting {
             taskClass: .languageModel,
             dataLayer: .derivedArtifacts,
             lawfulContext: lawfulContext,
-            finalidade: "mental-space-asl",
+            finalidade: "msr.asl",
             allowsRemoteFallback: true,
             fallbackAllowed: true,
             preferLocal: false
@@ -78,16 +78,16 @@ public struct ASLExecutor: ASLExecuting {
 
         let outputData = try JSONSerialization.data(withJSONObject: consolidated, options: [.sortedKeys])
         let artifact = ASLArtifact(
-            metadata: MentalSpaceArtifactMetadata(
+            metadata: MSRArtifactMetadata(
                 stage: .asl,
                 sourceTranscriptRef: sourceTranscriptRef,
                 stageVersion: "rt-msr-001",
                 promptVersion: "asl-system.md",
                 modelProvider: selection.providerId,
                 modelId: provider.modelId ?? model,
-                inputHash: MentalSpaceContentHasher.sha256Hex(for: trimmed),
-                outputHash: MentalSpaceContentHasher.sha256Hex(for: String(data: outputData, encoding: .utf8) ?? ""),
-                lawfulContextSummary: lawfulContext["finalidade"] ?? "mental-space-asl",
+                inputHash: MSRContentHasher.sha256Hex(for: trimmed),
+                outputHash: MSRContentHasher.sha256Hex(for: String(data: outputData, encoding: .utf8) ?? ""),
+                lawfulContextSummary: lawfulContext["finalidade"] ?? "msr.asl",
                 limitations: ["Derived artifact only", "Non-authorizing", "Gate required"]
             ),
             linguisticSummary: (consolidated["sintese_interpretativa"] as? [String: Any])?["perfil_linguistico_geral"] as? String ?? "ASL synthesis available.",
@@ -110,7 +110,7 @@ public struct ASLExecutor: ASLExecuting {
                     group.addTask {
                         let prompt = self.buildPrompt(patientId: patientId, transcriptionText: chunk)
                         let response = try await provider.generate(prompt: prompt, context: [
-                            "task": "mental-space-asl",
+                            "task": "msr.asl",
                             "model": self.model,
                             "temperature": "0",
                             "max_tokens": "60000",
@@ -152,7 +152,7 @@ public struct ASLExecutor: ASLExecuting {
 
     private func parseProviderJSON(_ response: String) throws -> [String: Any] {
         do {
-            return try MentalSpaceJSONRepair.parse(response)
+            return try MSRJSONRepair.parse(response)
         } catch {
             throw ASLExecutorError.invalidResponse("Provider did not return a valid JSON object")
         }

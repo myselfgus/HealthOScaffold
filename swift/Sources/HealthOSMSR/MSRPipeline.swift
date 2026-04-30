@@ -1,7 +1,7 @@
 import Foundation
 import HealthOSCore
 
-public struct MentalSpacePipelineOrchestrator: Sendable {
+public struct MSROrchestrator: Sendable {
     private let aslExecutor: any ASLExecuting
     private let vdlpExecutor: (any VDLPExecuting)?
     private let gemBuilder: (any GEMArtifactBuilding)?
@@ -17,9 +17,9 @@ public struct MentalSpacePipelineOrchestrator: Sendable {
         normalizedTranscriptText: String,
         sourceTranscriptRef: String,
         lawfulContext: [String: String],
-        state: MentalSpaceRunArtifacts
+        state: MSRRunArtifacts
     ) async throws -> ASLExecutionResult {
-        try MentalSpacePipelineValidator.validateCanRun(stage: .asl, state: state)
+        try MSRPipelineValidator.validateCanRun(stage: .asl, state: state)
         return try await aslExecutor.execute(
             patientId: patientId,
             transcriptionText: normalizedTranscriptText,
@@ -34,9 +34,9 @@ public struct MentalSpacePipelineOrchestrator: Sendable {
         patientSpeech: String,
         sourceTranscriptRef: String,
         lawfulContext: [String: String],
-        state: MentalSpaceRunArtifacts
+        state: MSRRunArtifacts
     ) async throws -> VDLPExecutionResult {
-        try MentalSpacePipelineValidator.validateCanRun(stage: .vdlp, state: state)
+        try MSRPipelineValidator.validateCanRun(stage: .vdlp, state: state)
         guard let vdlpExecutor else { throw VDLPExecutorError.providerUnavailable }
         return try await vdlpExecutor.execute(
             patientId: patientId,
@@ -55,9 +55,9 @@ public struct MentalSpacePipelineOrchestrator: Sendable {
         vdlpData: Data,
         sourceTranscriptRef: String,
         lawfulContext: [String: String],
-        state: MentalSpaceRunArtifacts
+        state: MSRRunArtifacts
     ) async throws -> GEMExecutionResult {
-        try MentalSpacePipelineValidator.validateCanRun(stage: .gem, state: state)
+        try MSRPipelineValidator.validateCanRun(stage: .gem, state: state)
         guard let gemBuilder else { throw GEMArtifactBuilderError.providerUnavailable }
         return try await gemBuilder.execute(
             patientId: patientId,
@@ -70,6 +70,6 @@ public struct MentalSpacePipelineOrchestrator: Sendable {
     }
 }
 
-public enum MentalSpacePipeline {
+public enum MSRPipeline {
     public static let moduleVersion = "rt-msr-003"
 }

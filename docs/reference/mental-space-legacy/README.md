@@ -1,6 +1,6 @@
 # Mental Space Legacy Reference Scripts
 
-These TypeScript scripts are the original reference implementation of the ASL/VDLP/GEM Mental Space pipeline developed before the Swift `HealthOSMentalSpace` runtime.
+These TypeScript scripts are the original reference implementation of the ASL/VDLP/GEM Mental Space pipeline developed before the Swift `HealthOSMSR` runtime.
 
 They are archived reference implementations.
 
@@ -11,7 +11,7 @@ They are not the active HealthOS pipeline.
 The active pipeline is:
 
 ```text
-swift/Sources/HealthOSMentalSpace/
+swift/Sources/HealthOSMSR/
 ```
 
 The active Swift runtime owns:
@@ -28,7 +28,7 @@ The active Swift runtime owns:
 The canonical prompt contracts are extracted into:
 
 ```text
-swift/Sources/HealthOSMentalSpace/Prompts/
+swift/Sources/HealthOSMSR/Prompts/
 ```
 
 Current prompt files:

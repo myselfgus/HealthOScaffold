@@ -6,6 +6,26 @@ Current phase: Controlled implementation — first vertical slice started
 
 ## Completed recently
 
+## STR-006 — Formalize MSR naming and move transcript normalization to Session Runtime (2026-04-30)
+
+- Objective: make `MSR` the official runtime sigla, rename the Swift module/runtime infrastructure from `MentalSpace*` to `MSR*`, and move transcript normalization ownership out of MSR and into `HealthOSSessionRuntime`.
+- Files updated:
+  - `swift/Package.swift`
+  - `swift/Sources/HealthOSCore/MSRRuntime.swift`
+  - `swift/Sources/HealthOSCore/TranscriptNormalization.swift`
+  - `swift/Sources/HealthOSMSR/*`
+  - `swift/Sources/HealthOSSessionRuntime/*`
+  - `ts/packages/contracts/src/index.ts`
+  - `schemas/contracts/mental-space-artifact.schema.json`
+  - `schemas/contracts/async-job.schema.json`
+  - `docs/architecture/49-mental-space-runtime.md`
+  - `docs/execution/11-current-maturity-map.md`
+  - `docs/execution/12-next-agent-handoff.md`
+  - `docs/execution/10-invariant-matrix.md`
+  - `docs/execution/todo/runtimes-and-aaci.md`
+- Result: package/module naming and ownership boundaries now match the intended architecture; transcript normalization is a session-runtime concern and MSR is limited to `ASL -> VDLP -> GEM`.
+- Residual gaps: full end-to-end Swift validation was not completed in this work unit because interactive builds were interrupted; any remaining compile drift must be resolved in the next validation pass.
+
 ## ST-010 — Create Steward Construction Operating Model baseline (2026-04-30)
 
 - Objective: create the canonical construction operating model baseline for Steward, Settler, Settlement, and Territory work without implementing product behavior, MCP, model calls, or multiagent orchestration.
@@ -114,9 +134,9 @@ Residual gaps:
 - production provider/runtime hardening remains separate work
 - Steward/Settler/Territory operationalization remains separate work
 
-## STR-001 — Wire HealthOSProviders into HealthOSMentalSpace (2026-04-29)
+## STR-001 — Wire HealthOSProviders into HealthOSMSR (2026-04-29)
 
-Objective: wire `HealthOSProviders` into `HealthOSMentalSpace` so future provider-backed Mental Space executors can route through the governed provider layer without moving constitutional authority out of Core.
+Objective: wire `HealthOSProviders` into `HealthOSMSR` so future provider-backed Mental Space executors can route through the governed provider layer without moving constitutional authority out of Core.
 
 Files touched:
 - `swift/Package.swift`
@@ -132,12 +152,12 @@ Invariants involved:
 Validation:
 - `cd swift && swift build` PASS
 - `cd swift && swift test` PASS
-- `cd swift && swift package dump-package | grep -A8 HealthOSMentalSpace` PASS (shows `HealthOSProviders`)
+- `cd swift && swift package dump-package | grep -A8 HealthOSMSR` PASS (shows `HealthOSProviders`)
 - `make validate-docs` PASS
 - `make validate-all` PASS
 
 Result:
-- STR-001 complete: `HealthOSMentalSpace` now depends on both `HealthOSCore` and `HealthOSProviders`.
+- STR-001 complete: `HealthOSMSR` now depends on both `HealthOSCore` and `HealthOSProviders`.
 
 Residual gaps:
 - ASL executor still not implemented
@@ -1015,8 +1035,8 @@ Validation executed in this work unit:
 Objective: implement a provider-backed ASL stage executor in Mental Space Runtime without widening authority beyond derived, gated, non-authorizing artifacts.
 
 Files touched:
-- `swift/Sources/HealthOSMentalSpace/Executors/ASLExecutor.swift`
-- `swift/Sources/HealthOSMentalSpace/MentalSpacePipeline.swift`
+- `swift/Sources/HealthOSMSR/Executors/ASLExecutor.swift`
+- `swift/Sources/HealthOSMSR/MSRPipeline.swift`
 - `swift/Tests/HealthOSTests/MentalSpaceRuntimeTests.swift`
 - `docs/execution/21-structural-ontology-and-product-readiness-plan.md`
 - `docs/execution/todo/runtimes-and-aaci.md`
@@ -1051,8 +1071,8 @@ Residual gaps:
 Objective: implement provider-backed VDLP stage through `HealthOSProviders` with fail-closed ASL prerequisite checks, speech-only chunking, typed artifact output, and VDLP provenance marker.
 
 Files touched:
-- `swift/Sources/HealthOSMentalSpace/Executors/VDLPExecutor.swift`
-- `swift/Sources/HealthOSMentalSpace/MentalSpacePipeline.swift`
+- `swift/Sources/HealthOSMSR/Executors/VDLPExecutor.swift`
+- `swift/Sources/HealthOSMSR/MSRPipeline.swift`
 - `swift/Tests/HealthOSTests/MentalSpaceRuntimeTests.swift`
 - `docs/execution/21-structural-ontology-and-product-readiness-plan.md`
 - `docs/execution/todo/runtimes-and-aaci.md`
@@ -1085,8 +1105,8 @@ Residual gaps:
 Objective: implement GEM stage as a provider-backed executor via HealthOSProviders while preserving fail-closed triad validation and non-authorizing derived artifact boundaries.
 
 Files changed:
-- `swift/Sources/HealthOSMentalSpace/Executors/GEMArtifactBuilder.swift`
-- `swift/Sources/HealthOSMentalSpace/MentalSpacePipeline.swift`
+- `swift/Sources/HealthOSMSR/Executors/GEMArtifactBuilder.swift`
+- `swift/Sources/HealthOSMSR/MSRPipeline.swift`
 - `swift/Tests/HealthOSTests/MentalSpaceRuntimeTests.swift`
 - `docs/execution/02-status-and-tracking.md`
 - `docs/execution/21-structural-ontology-and-product-readiness-plan.md`

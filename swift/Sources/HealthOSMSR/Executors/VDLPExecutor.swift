@@ -6,7 +6,7 @@ public struct VDLPExecutionResult: Sendable {
     public let artifact: VDLPArtifact
     public let provenanceOperation: String
 
-    public init(artifact: VDLPArtifact, provenanceOperation: String = "mental-space.vdlp") {
+    public init(artifact: VDLPArtifact, provenanceOperation: String = "msr.vdlp") {
         self.artifact = artifact
         self.provenanceOperation = provenanceOperation
     }
@@ -56,7 +56,7 @@ public struct VDLPExecutor: VDLPExecuting {
         let trimmedSpeech = patientSpeech.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmedSpeech.isEmpty else { throw VDLPExecutorError.emptyPatientSpeech }
 
-        let request = ProviderRoutingRequest(taskClass: .languageModel, dataLayer: .derivedArtifacts, lawfulContext: lawfulContext, finalidade: "mental-space-vdlp", allowsRemoteFallback: true, fallbackAllowed: true, preferLocal: false)
+        let request = ProviderRoutingRequest(taskClass: .languageModel, dataLayer: .derivedArtifacts, lawfulContext: lawfulContext, finalidade: "msr.vdlp", allowsRemoteFallback: true, fallbackAllowed: true, preferLocal: false)
         let decision = await router.routeLanguage(request: request)
         let selection: ProviderSelection
         switch decision {
@@ -69,7 +69,7 @@ public struct VDLPExecutor: VDLPExecuting {
         var chunkOutputs: [[String: Any]] = []
         for speechChunk in speechChunks {
             let prompt = buildPrompt(patientId: patientId, aslJSON: String(decoding: aslData, as: UTF8.self), patientSpeech: speechChunk)
-            let response = try await provider.generate(prompt: prompt, context: ["task": "mental-space-vdlp", "model": model, "temperature": "0", "max_tokens": "60000", "anthropic-beta": "prompt-caching-2024-07-31,extended-cache-ttl-2025-04-11"])
+            let response = try await provider.generate(prompt: prompt, context: ["task": "msr.vdlp", "model": model, "temperature": "0", "max_tokens": "60000", "anthropic-beta": "prompt-caching-2024-07-31,extended-cache-ttl-2025-04-11"])
             chunkOutputs.append(try parseProviderJSON(response))
         }
 
@@ -77,12 +77,12 @@ public struct VDLPExecutor: VDLPExecuting {
         let dimensionRefs = (1...15).map { "v\($0)" }
         let dimensionKeys = Set((consolidated["dimensoes_espaco_mental"] as? [String: Any])?.keys.map { $0 } ?? [])
         guard Set(dimensionRefs).isSubset(of: dimensionKeys) else {
-            throw VDLPExecutorError.invalidResponse("Missing one or more mental-space dimensions v1-v15")
+            throw VDLPExecutorError.invalidResponse("Missing one or more MSR VDLP dimensions v1-v15")
         }
 
         let outputData = try JSONSerialization.data(withJSONObject: consolidated, options: [.sortedKeys])
         let artifact = VDLPArtifact(
-            metadata: MentalSpaceArtifactMetadata(stage: .vdlp, sourceTranscriptRef: sourceTranscriptRef, stageVersion: "rt-msr-002", promptVersion: "vdlp-system.md", modelProvider: selection.providerId, modelId: provider.modelId ?? model, inputHash: MentalSpaceContentHasher.sha256Hex(for: trimmedSpeech), outputHash: MentalSpaceContentHasher.sha256Hex(for: String(decoding: outputData, as: UTF8.self)), lawfulContextSummary: lawfulContext["finalidade"] ?? "mental-space-vdlp", limitations: ["Derived artifact only", "Non-authorizing", "Gate required"]),
+            metadata: MSRArtifactMetadata(stage: .vdlp, sourceTranscriptRef: sourceTranscriptRef, stageVersion: "rt-msr-002", promptVersion: "vdlp-system.md", modelProvider: selection.providerId, modelId: provider.modelId ?? model, inputHash: MSRContentHasher.sha256Hex(for: trimmedSpeech), outputHash: MSRContentHasher.sha256Hex(for: String(decoding: outputData, as: UTF8.self)), lawfulContextSummary: lawfulContext["finalidade"] ?? "msr.vdlp", limitations: ["Derived artifact only", "Non-authorizing", "Gate required"]),
             dimensionalSummary: ((consolidated["perfil_dimensional_integrativo"] as? [String: Any])?["sintese_global"] as? String) ?? "VDLP dimensions available.",
             dimensionRefs: dimensionRefs
         )
@@ -115,7 +115,7 @@ public struct VDLPExecutor: VDLPExecuting {
 
     private func parseProviderJSON(_ response: String) throws -> [String: Any] {
         do {
-            return try MentalSpaceJSONRepair.parse(response)
+            return try MSRJSONRepair.parse(response)
         } catch {
             throw VDLPExecutorError.invalidResponse("Provider did not return a valid JSON object")
         }

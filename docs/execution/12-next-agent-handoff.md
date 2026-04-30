@@ -2,7 +2,7 @@
 
 ## Current state
 
-Repository is in controlled implementation/scaffold hardening. Governance contracts, Swift tests (246 passing), TS build, GOS tooling, and the Mental Space Runtime normalization stage are all in place. A full structural ontology and product-readiness analysis was performed on 2026-04-29 and produced a canonical priority-ordered work plan.
+Repository is in controlled implementation/scaffold hardening. Governance contracts, Swift tests, TS build, GOS tooling, transcript normalization in `HealthOSSessionRuntime`, and the MSR stage contracts are all in place. A full structural ontology and product-readiness analysis was performed on 2026-04-29 and produced a canonical priority-ordered work plan.
 
 HealthOScaffold is the historical repository name and construction repository for HealthOS. Future agents must treat implemented architecture, contracts, runtimes, apps, tests, and docs here as HealthOS work unless explicitly marked experimental or deprecated; scaffold vocabulary describes maturity/foundation phase only.
 
@@ -62,15 +62,15 @@ This document is the authoritative priority-ordered work plan as of 2026-04-29. 
 - `Skill macOS/` TS scripts are reference implementations, not the active pipeline. STR-002 archives them.
 - `ts/packages/` conflates PRODUCT, BUILD, and AGENT packages. STR-003 separates them.
 - Sortio and CloudClinic have no Swift executable targets. STR-005 adds them.
-- `HealthOSMentalSpace` depends only on `HealthOSCore`, blocking real Claude API calls. STR-001 fixes this.
+- `HealthOSMSR` depends on `HealthOSCore` and `HealthOSProviders`; transcript normalization is owned by `HealthOSSessionRuntime`.
 
 ## Native UI note
 
 `docs/architecture/48-native-macos-ui-design-system-and-app-shells.md` defines scaffold scope for macOS 26+ Liquid Glass app-shell work. Use `docs/execution/skills/native-macos-ui/SKILL.md` for UI work. Do not move Core law into SwiftUI.
 
-## Mental Space Runtime note
+## MSR note
 
-`docs/architecture/49-mental-space-runtime.md` and `docs/execution/skills/mental-space-runtime-skill.md` are the canonical refs. P0 tasks implement ASL, VDLP, and GEM executors in order. Keep outputs derived/gated/app-safe/non-authorizing at all times.
+`docs/architecture/49-mental-space-runtime.md` and `docs/execution/skills/mental-space-runtime-skill.md` are the canonical refs. `MSR` is now the official sigla for Mental Space Runtime, and transcript normalization belongs to `HealthOSSessionRuntime`, not to MSR. Keep outputs derived/gated/app-safe/non-authorizing at all times.
 
 ## Validation command baseline
 

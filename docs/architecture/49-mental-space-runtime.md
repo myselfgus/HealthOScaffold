@@ -1,8 +1,8 @@
-# Mental Space Runtime
+# MSR — Mental Space Runtime
 
 ## Purpose
 
-Mental Space Runtime is the HealthOS runtime domain for staged linguistic and cognitive derived artifacts.
+MSR (Mental Space Runtime) is the HealthOS runtime domain for staged linguistic and cognitive derived artifacts.
 
 It is not a replacement for the async runtime. The async runtime remains the queue, retry, idempotency, dead-letter, and backpressure substrate. Mental Space Runtime defines the artifact pipeline, stage dependencies, provider posture, provenance, and app-safe clinician insight surface.
 
@@ -10,14 +10,13 @@ It is not a replacement for the async runtime. The async runtime remains the que
 
 The stage order is fixed:
 
-1. transcription normalization
-2. ASL: Analise Sistemica da Linguagem
-3. VDLP: Vetores-Dimensao do Espaco-Campo Mental
-4. GEM: Grafo do Espaco-Mental
+1. ASL: Analise Sistemica da Linguagem
+2. VDLP: Vetores-Dimensao do Espaco-Campo Mental
+3. GEM: Grafo do Espaco-Mental
 
 Downstream stages fail closed when upstream artifacts are missing or degraded:
 
-- ASL requires a ready normalized transcript artifact.
+- MSR receives a normalized transcript as input from `HealthOSSessionRuntime`.
 - VDLP requires ready ASL plus the transcript lineage.
 - GEM requires ready transcript, ASL, and VDLP lineage.
 
@@ -47,13 +46,21 @@ The shared artifact metadata records:
 
 Raw audio and raw transcript material remain operational content. Mental Space outputs are stored as `derived-artifacts`.
 
-## Provider posture
+## Boundary with session runtime
 
-Normalization is the first executable slice and is local-first.
+Normalization does not belong to MSR.
+
+The session pipeline is:
+
+1. capture / transcription
+2. transcript normalization
+3. MSR (`ASL -> VDLP -> GEM`)
+
+`HealthOSSessionRuntime` owns transcription normalization, speaker cleanup, and transcript preparation. MSR starts only after a normalized transcript exists.
 
 For v1:
 
-- normalization prefers Apple/local language-model providers
+- transcript normalization prefers Apple/local language-model providers
 - remote fallback is denied unless a future explicit policy changes this
 - stub model output is never persisted as a real normalized transcript
 - unavailable or stub-only providers produce explicit degraded state
@@ -74,23 +81,23 @@ Scribe must not expose raw prompt internals, raw artifact JSON, direct identifie
 
 ## Current executable posture
 
-The scaffold now implements the normalization stage in the first slice:
+The scaffold now implements transcript normalization in `HealthOSSessionRuntime`:
 
-- after a non-empty transcript is persisted, AACI requests Mental Space normalization
+- after a non-empty transcript is persisted, `SessionRunner` requests transcript normalization
 - a real local language model can return normalized transcript text
-- the normalized transcript is persisted as a `mental-space-normalized-transcripts` derived artifact
-- provenance records `mental-space.normalize.transcript`
-- Scribe receives a mediated `MentalSpaceRuntimeStateView`
+- the normalized transcript is persisted as a derived artifact before MSR execution
+- provenance records transcript-normalization lineage separately from MSR stage lineage
+- Scribe receives separate mediated surfaces for transcript normalization and MSR
 
-ASL, VDLP, and GEM are scaffolded contracts/job kinds only in this wave.
+ASL, VDLP, and GEM remain scaffolded contracts/job kinds only in this wave.
 
 ## Module structure
 
-The `HealthOSMentalSpace` Swift module (`swift/Sources/HealthOSMentalSpace/`) is the designated home for the pipeline orchestrator and stage executors. It is registered in `Package.swift` and depends on `HealthOSCore` for contracts.
+The `HealthOSMSR` Swift module (`swift/Sources/HealthOSMSR/`) is the designated home for the pipeline orchestrator and stage executors. It is registered in `Package.swift` and depends on `HealthOSCore` for contracts.
 
 ```
-swift/Sources/HealthOSMentalSpace/
-├── MentalSpacePipeline.swift          — module root; documents layout and stage order
+swift/Sources/HealthOSMSR/
+├── MSRPipeline.swift                  — module root; documents layout and stage order
 ├── Prompts/
 │   ├── asl-system.md                  — ASL clinical prompts (clinically validated, 400 patients)
 │   ├── vdlp-system.md                 — VDLP 15-dimension prompts (validated, 400 patients)
@@ -129,4 +136,4 @@ ASL, VDLP, and GEM executor paths are provider-backed through `HealthOSProviders
 
 Legacy TypeScript scripts are archived reference implementations at `docs/reference/mental-space-legacy/`; they are not the active runtime pipeline.
 
-Contracts and types remain in `HealthOSCore`. Normalization executor remains in `HealthOSAACI`. The active orchestrator and stage executors live in `swift/Sources/HealthOSMentalSpace/`.
+Contracts and types remain in `HealthOSCore`. Transcript normalization lives in `swift/Sources/HealthOSSessionRuntime/Normalization/NormalizationExecutor.swift`. The active MSR orchestrator and stage executors live in `swift/Sources/HealthOSMSR/`.

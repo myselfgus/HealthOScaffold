@@ -223,14 +223,14 @@ export interface FinalizedSOAPDocument {
   summary: string;
 }
 
-export type MentalSpaceRuntimeStage = "transcription_normalization" | "asl" | "vdlp" | "gem";
+export type MSRStage = "asl" | "vdlp" | "gem";
 
-export type MentalSpaceStageStatus = "pending" | "ready" | "degraded" | "blocked" | "failed";
+export type MSRStageStatus = "pending" | "ready" | "degraded" | "blocked" | "failed";
 
-export type MentalSpaceClinicianReviewStatus = "unreviewed" | "in_review" | "reviewed" | "rejected";
+export type MSRClinicianReviewStatus = "unreviewed" | "in_review" | "reviewed" | "rejected";
 
-export interface MentalSpaceArtifactMetadata {
-  stage: MentalSpaceRuntimeStage;
+export interface MSRArtifactMetadata {
+  stage: MSRStage;
   sourceTranscriptRef: string;
   stageVersion: string;
   promptVersion: string;
@@ -239,33 +239,26 @@ export interface MentalSpaceArtifactMetadata {
   inputHash: string;
   outputHash: string;
   lawfulContextSummary: string;
-  clinicianReviewStatus: MentalSpaceClinicianReviewStatus;
+  clinicianReviewStatus: MSRClinicianReviewStatus;
   limitations: string[];
   legalAuthorizing: boolean;
   gateStillRequired: boolean;
 }
 
-export interface NormalizedTranscriptArtifact {
-  metadata: MentalSpaceArtifactMetadata;
-  normalizedTranscript: string;
-  correctionSummary: string;
-  sourceTranscriptObjectRef: StorageObjectRef;
-}
-
 export interface ASLArtifact {
-  metadata: MentalSpaceArtifactMetadata;
+  metadata: MSRArtifactMetadata;
   linguisticSummary: string;
   evidenceRefs: string[];
 }
 
 export interface VDLPArtifact {
-  metadata: MentalSpaceArtifactMetadata;
+  metadata: MSRArtifactMetadata;
   dimensionalSummary: string;
   dimensionRefs: string[];
 }
 
 export interface GEMArtifact {
-  metadata: MentalSpaceArtifactMetadata;
+  metadata: MSRArtifactMetadata;
   graphSummary: string;
   layerRefs: string[];
 }
@@ -287,10 +280,10 @@ export type AsyncJobKind =
   | "embedding_generation"
   | "retrieval_index_maintenance"
   | "provenance_enrichment"
-  | "mental_space_normalization"
-  | "mental_space_asl"
-  | "mental_space_vdlp"
-  | "mental_space_gem"
+  | "transcript_normalization"
+  | "msr_asl"
+  | "msr_vdlp"
+  | "msr_gem"
   | "audit_export"
   | "backup"
   | "restore_validation"

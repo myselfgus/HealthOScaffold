@@ -8,7 +8,7 @@ let package = Package(
         .library(name: "HealthOSCore", targets: ["HealthOSCore"]),
         .library(name: "HealthOSAACI", targets: ["HealthOSAACI"]),
         .library(name: "HealthOSProviders", targets: ["HealthOSProviders"]),
-        .library(name: "HealthOSMentalSpace", targets: ["HealthOSMentalSpace"]),
+        .library(name: "HealthOSMSR", targets: ["HealthOSMSR"]),
         .library(name: "HealthOSSessionRuntime", targets: ["HealthOSSessionRuntime"]),
         .executable(name: "HealthOSCLI", targets: ["HealthOSCLI"]),
         .executable(name: "HealthOSScribeApp", targets: ["HealthOSScribeApp"]),
@@ -19,16 +19,16 @@ let package = Package(
         .target(name: "HealthOSCore"),
         .target(name: "HealthOSProviders", dependencies: ["HealthOSCore"]),
         .target(name: "HealthOSAACI", dependencies: ["HealthOSCore", "HealthOSProviders"]),
-        .target(name: "HealthOSMentalSpace", dependencies: ["HealthOSCore", "HealthOSProviders"],
+        .target(name: "HealthOSMSR", dependencies: ["HealthOSCore", "HealthOSProviders"],
                 resources: [.copy("Prompts")]),
-        .target(name: "HealthOSSessionRuntime", dependencies: ["HealthOSCore", "HealthOSAACI", "HealthOSProviders"]),
+        .target(name: "HealthOSSessionRuntime", dependencies: ["HealthOSCore", "HealthOSAACI", "HealthOSProviders", "HealthOSMSR"]),
         .executableTarget(name: "HealthOSCLI", dependencies: ["HealthOSCore", "HealthOSSessionRuntime"]),
         .executableTarget(name: "HealthOSScribeApp", dependencies: ["HealthOSCore", "HealthOSSessionRuntime"]),
         .executableTarget(name: "HealthOSSortioApp", dependencies: ["HealthOSCore"]),
         .executableTarget(name: "HealthOSCloudClinicApp", dependencies: ["HealthOSCore"]),
         .testTarget(
             name: "HealthOSTests",
-            dependencies: ["HealthOSCore", "HealthOSAACI", "HealthOSProviders", "HealthOSMentalSpace", "HealthOSSessionRuntime"]
+            dependencies: ["HealthOSCore", "HealthOSAACI", "HealthOSProviders", "HealthOSMSR", "HealthOSSessionRuntime"]
         )
     ]
 )

@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://healthos.dev/schemas/contracts/mental-space-artifact.schema.json",
-  "title": "MentalSpaceArtifact",
+  "title": "MSRArtifact",
   "type": "object",
   "required": ["metadata"],
   "properties": {
@@ -24,7 +24,7 @@
       "properties": {
         "stage": {
           "type": "string",
-          "enum": ["transcription_normalization", "asl", "vdlp", "gem"]
+          "enum": ["asl", "vdlp", "gem"]
         },
         "sourceTranscriptRef": {"type": "string", "minLength": 1},
         "stageVersion": {"type": "string", "minLength": 1},
@@ -48,8 +48,6 @@
       },
       "additionalProperties": false
     },
-    "normalizedTranscript": {"type": "string"},
-    "correctionSummary": {"type": "string"},
     "linguisticSummary": {"type": "string"},
     "dimensionalSummary": {"type": "string"},
     "graphSummary": {"type": "string"},

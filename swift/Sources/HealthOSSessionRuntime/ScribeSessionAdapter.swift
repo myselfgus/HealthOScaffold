@@ -372,7 +372,8 @@ public actor ScribeSessionAdapter: ScribeFirstSliceFacade {
                 provenanceFacingOnly: true,
                 informationalOnly: true
             ),
-            mentalSpaceRuntimeState: .pending,
+            transcriptNormalizationState: .pending,
+            msrRuntimeState: .pending,
             runSummary: nil
         )
     }
@@ -446,24 +447,22 @@ public actor ScribeSessionAdapter: ScribeFirstSliceFacade {
             prescriptionDraft: prescriptionDraft,
             finalDocument: finalDocument,
             gosRuntimeState: gosRuntimeState(from: result),
-            mentalSpaceRuntimeState: mentalSpaceRuntimeState(from: result),
+            transcriptNormalizationState: transcriptNormalizationState(from: result),
+            msrRuntimeState: msrRuntimeState(from: result),
             runSummary: result.summary
         )
     }
 
-    private func mentalSpaceRuntimeState(from result: FirstSliceRunResult) -> MentalSpaceRuntimeStateView {
-        let activeStage: MentalSpaceRuntimeStage?
-        if result.mentalSpace.normalizationState.status == .ready ||
-            result.mentalSpace.normalizationState.status == .degraded ||
-            result.mentalSpace.normalizationState.status == .failed {
-            activeStage = .normalization
-        } else {
-            activeStage = nil
-        }
-        return MentalSpaceRuntimeStateView(
-            stages: result.mentalSpace.stageStates,
-            activeStage: activeStage,
-            summary: result.mentalSpace.normalizationState.summary
+    private func transcriptNormalizationState(from result: FirstSliceRunResult) -> TranscriptNormalizationStateView {
+        TranscriptNormalizationStateView(
+            state: result.transcriptNormalization.state
+        )
+    }
+
+    private func msrRuntimeState(from result: FirstSliceRunResult) -> MSRRuntime {
+        MSRRuntime(
+            stages: result.msr.stageStates,
+            summary: "MSR has not run in this first-slice path yet."
         )
     }
 

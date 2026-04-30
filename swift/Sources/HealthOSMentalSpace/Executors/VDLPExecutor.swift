@@ -114,26 +114,60 @@ public struct VDLPExecutor: VDLPExecuting {
     }
 
     private func parseProviderJSON(_ response: String) throws -> [String: Any] {
-        guard let data = response.data(using: .utf8), let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else {
+        do {
+            return try MentalSpaceJSONRepair.parse(response)
+        } catch {
             throw VDLPExecutorError.invalidResponse("Provider did not return a valid JSON object")
         }
-        return json
     }
 
+    // Full field-aware consolidation matching the validated 5-vdlp.ts logic.
+    // Per dimension: concat evidencias_textuais, dedup componentes_asl_usados, keep first score.
     private func consolidate(_ chunks: [[String: Any]]) -> [String: Any]? {
         guard let first = chunks.first else { return nil }
         if chunks.count == 1 { return first }
-        var merged = first
-        var evidence: [String] = []
-        for chunk in chunks {
-            if let e = ((chunk["perfil_dimensional_integrativo"] as? [String: Any])?["evidencias"] as? [String]) {
-                evidence.append(contentsOf: e)
-            }
+        var result = first
+        for chunk in chunks.dropFirst() {
+            vdlpMergeChunk(&result, chunk: chunk)
         }
-        var profile = (merged["perfil_dimensional_integrativo"] as? [String: Any]) ?? [:]
-        if !evidence.isEmpty { profile["evidencias"] = Array(NSOrderedSet(array: evidence)) }
-        merged["perfil_dimensional_integrativo"] = profile
-        return merged
+        return result
+    }
+
+    private func vdlpMergeChunk(_ base: inout [String: Any], chunk: [String: Any]) {
+        // dimensoes_espaco_mental: per dimension key
+        if var bDims = base["dimensoes_espaco_mental"] as? [String: Any],
+           let cDims = chunk["dimensoes_espaco_mental"] as? [String: Any] {
+            for key in bDims.keys {
+                guard var bDim = bDims[key] as? [String: Any],
+                      let cDim = cDims[key] as? [String: Any] else { continue }
+                // evidencias_textuais: concatenate
+                bDim["evidencias_textuais"] = (bDim["evidencias_textuais"] as? [Any] ?? []) + (cDim["evidencias_textuais"] as? [Any] ?? [])
+                // componentes_asl_usados: concatenate preserving order, deduplicating
+                var bComps = bDim["componentes_asl_usados"] as? [String] ?? []
+                var seen = Set(bComps)
+                for comp in cDim["componentes_asl_usados"] as? [String] ?? [] where seen.insert(comp).inserted {
+                    bComps.append(comp)
+                }
+                bDim["componentes_asl_usados"] = bComps
+                // score: keep first chunk value — the TS comment: "score já vem da ASL que é única e completa"
+                bDims[key] = bDim
+            }
+            base["dimensoes_espaco_mental"] = bDims
+        }
+
+        // perfil_dimensional_integrativo.evidencias: ordered deduplicated concat
+        if var bPDI = base["perfil_dimensional_integrativo"] as? [String: Any],
+           let cPDI = chunk["perfil_dimensional_integrativo"] as? [String: Any] {
+            var bEv = bPDI["evidencias"] as? [String] ?? []
+            var seen = Set(bEv)
+            for ev in cPDI["evidencias"] as? [String] ?? [] where seen.insert(ev).inserted {
+                bEv.append(ev)
+            }
+            bPDI["evidencias"] = bEv
+            base["perfil_dimensional_integrativo"] = bPDI
+        }
+
+        // All other top-level keys (sintese_global, etc.): keep first chunk value
     }
 
     private static func loadPromptTemplate() throws -> String {

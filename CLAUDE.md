@@ -89,6 +89,8 @@ Smoke path (when validating runnable flow):
 ```bash
 make smoke-cli
 make smoke-scribe
+make smoke-sortio
+make smoke-cloudclinic
 ```
 
 ## Cross-language contract discipline

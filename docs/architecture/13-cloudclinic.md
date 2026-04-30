@@ -62,7 +62,7 @@ CloudClinic is service-facing. It must not absorb patient sovereignty functions 
 
 CloudClinic is a scaffold contract and documentation-only surface:
 - no final CloudClinic UI shell has been implemented
-- native macOS app-shell scope is defined for future work, but no executable CloudClinic target exists
+- a minimal `HealthOSCloudClinicApp` executable target exists as a scaffold placeholder for product-graph honesty and smoke validation only
 - no persisted queue/task projection service is wired
 - service operations contracts exist in Swift Core + TypeScript + JSON Schema with fail-closed validators, but no runtime adapter is implemented
 - CloudClinic does not own service access law or membership policy; it consumes mediated surfaces from HealthOS Core

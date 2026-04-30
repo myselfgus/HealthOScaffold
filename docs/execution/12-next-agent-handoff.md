@@ -6,6 +6,12 @@ Repository is in controlled implementation/scaffold hardening. Governance contra
 
 HealthOScaffold is the historical repository name and construction repository for HealthOS. Future agents must treat implemented architecture, contracts, runtimes, apps, tests, and docs here as HealthOS work unless explicitly marked experimental or deprecated; scaffold vocabulary describes maturity/foundation phase only.
 
+## Construction-system track
+
+ST-010 started the construction-system track by adding `docs/execution/22-steward-construction-operating-model.md` and the initial `.healthos-settler/` / `.healthos-steward/` construction skeletons.
+
+Future construction-system work should read doc 22 before creating Territory records, Settler profiles, Settlement templates, prompt generation, PR review drafts, derived memory builders, or `healthos-mcp` surfaces. Product queue work still reads doc 21. APP-011 remains the next product task, but ST-011 is the next construction-system task.
+
 ## CRITICAL: Read the master plan first
 
 **Before selecting any task, read:**
@@ -107,6 +113,8 @@ Use these docs as the target source of truth for future steward work:
 The intended evolution is Steward for Xcode: Xcode Intelligence as the Apple-controlled engineering runtime surface, with HealthOS contributing instructions, `healthos-mcp`, derived repository memory, and an expanded deterministic CLI.
 
 Settler model note: the Steward / Settler / Settlement / Territory model was added as doctrine-only in `docs/architecture/47-steward-settler-engineering-model.md`, with future implementation tracked in `docs/execution/19-settler-model-task-tracker.md`. Future work should use those docs and must not treat Settlers as clinical or runtime agents.
+
+Construction operating model note: `docs/execution/22-steward-construction-operating-model.md` now defines the lifecycle, directories, ST-010 through ST-020 sequence, and non-claims for operationalizing Steward construction work. The next construction-system task is ST-011 — Create Territory Registry.
 
 Codex may support Steward-scoped Xcode-facing repository maintenance as an external executor. The local Codex automation is `$CODEX_HOME/automations/steward-xcode-facing-maintenance/`; use it for PR-based review of Claude Code automations, scheduled-task definitions, Xcode/Steward instructions, and automation drift. Do not treat this as a new Steward authority category, merge authority, or clinical/runtime capability.
 

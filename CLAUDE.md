@@ -85,6 +85,13 @@ make validate-contracts
 make validate-all
 ```
 
+Additional real Makefile targets:
+```bash
+make python-compile
+make swift-smoke
+make sql-print
+```
+
 Smoke path (when validating runnable flow):
 ```bash
 make smoke-cli
@@ -92,6 +99,28 @@ make smoke-scribe
 make smoke-sortio
 make smoke-cloudclinic
 ```
+
+Recently confirmed direct smoke commands:
+```bash
+cd swift && swift run HealthOSCLI
+cd swift && swift run HealthOSCLI --reject-gate
+cd swift && swift run HealthOSScribeApp --smoke-test
+cd swift && swift run HealthOSScribeApp --smoke-test-audio
+cd swift && swift run HealthOSSortioApp --smoke-test
+cd swift && swift run HealthOSCloudClinicApp --smoke-test
+```
+
+For GOS bundle lifecycle smoke, use the minimal operator-facing CLI path and keep reviewer/operator identity explicit:
+```bash
+cd swift && swift run HealthOSCLI --gos-review-bundle <bundle-id> --gos-spec-id <spec-id> --reviewer-id <id> --review-rationale "<reason>"
+cd swift && swift run HealthOSCLI --gos-promote-bundle <bundle-id> --gos-spec-id <spec-id> --activator-id <id> --activation-rationale "<reason>"
+```
+
+Workflow notes from recent repository use:
+- Before implementation work, `git fetch origin --prune`, confirm `main` equals `origin/main`, then create a fresh task branch.
+- Serialize SwiftPM validation commands; concurrent Swift builds/runs can contend on `.build` locks.
+- For documentation-only work, run `make validate-docs` and `git diff --check`; if a broader gate fails, record the exact failing gate instead of weakening the validation claim.
+- `make validate-docs` checks documentation/reference consistency; it does not prove that claimed CLI commands or package source paths exist. Verify executable command claims with the package source and a smoke run, or add a short TODO instead of documenting them as delivered.
 
 ## Cross-language contract discipline
 
@@ -127,10 +156,11 @@ Current deterministic baseline (hard-reset posture):
 ```bash
 make ts-build
 cd ts && npx --yes --workspace @healthos/steward healthos-steward status
-cd ts && npx --yes --workspace @healthos/steward healthos-steward runtime --message "inspect repository posture" --dry-run
-# session requires --id <uuid>; exits non-zero if omitted or session not found
-cd ts && npx --yes --workspace @healthos/steward healthos-steward session --id <session-id>
+cd ts && npx --yes --workspace @healthos/steward healthos-steward runtime
+cd ts && npx --yes --workspace @healthos/steward healthos-steward session
 ```
+
+Treat `status`, `runtime`, and `session` as the only implemented `healthos-steward` CLI commands unless `ts/agent-infra/healthos-steward/src/` and a local smoke run prove otherwise. Do not describe `scan-status`, `next-task`, `validate-docs`, `validate-all`, or other target repository-maintenance operations as delivered CLI behavior until implemented.
 
 Codex, Claude Code, and other external coding assistants are external executors operating on this repository. They are not internal Steward providers.
 

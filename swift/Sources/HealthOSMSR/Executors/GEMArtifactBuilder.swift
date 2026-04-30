@@ -102,7 +102,7 @@ public struct GEMArtifactBuilder: GEMArtifactBuilding {
 
         let outputData = try JSONSerialization.data(withJSONObject: consolidated, options: [.sortedKeys])
         let artifact = GEMArtifact(
-            metadata: MentalSpaceArtifactMetadata(stage: .gem, sourceTranscriptRef: sourceTranscriptRef, stageVersion: "rt-msr-003", promptVersion: "gem-system.md", modelProvider: selection.providerId, modelId: provider.modelId ?? model, inputHash: MentalSpaceContentHasher.sha256Hex(for: trimmed), outputHash: MentalSpaceContentHasher.sha256Hex(for: String(decoding: outputData, as: UTF8.self)), lawfulContextSummary: lawfulContext["finalidade"] ?? "mental-space-gem", limitations: ["Derived artifact only", "Non-authorizing", "Gate required"]),
+            metadata: MSRArtifactMetadata(stage: .gem, sourceTranscriptRef: sourceTranscriptRef, stageVersion: "rt-msr-003", promptVersion: "gem-system.md", modelProvider: selection.providerId, modelId: provider.modelId ?? model, inputHash: MSRContentHasher.sha256Hex(for: trimmed), outputHash: MSRContentHasher.sha256Hex(for: String(decoding: outputData, as: UTF8.self)), lawfulContextSummary: lawfulContext["finalidade"] ?? "mental-space-gem", limitations: ["Derived artifact only", "Non-authorizing", "Gate required"]),
             graphSummary: ((consolidated["statistics"] as? [String: Any])?["global_summary"] as? String) ?? "GEM graph available.",
             layerRefs: layers
         )
@@ -132,7 +132,7 @@ public struct GEMArtifactBuilder: GEMArtifactBuilding {
 
     private func parseProviderJSON(_ response: String) throws -> [String: Any] {
         do {
-            return try MentalSpaceJSONRepair.parse(response)
+            return try MSRJSONRepair.parse(response)
         } catch {
             throw GEMArtifactBuilderError.invalidResponse("Provider did not return a valid JSON object")
         }

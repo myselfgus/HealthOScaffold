@@ -3,7 +3,7 @@ import Foundation
 // Shared JSON extraction and repair utility for MSR executors.
 // Mirrors the 3-strategy repair logic from the validated TypeScript scripts
 // (4-asl.ts, 5-vdlp.ts, 6-gem.ts) that were validated against 400 patients.
-enum MentalSpaceJSONRepair {
+enum MSRJSONRepair {
     struct ParseError: Error {
         let reason: String
     }

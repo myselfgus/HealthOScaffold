@@ -78,15 +78,15 @@ public struct ASLExecutor: ASLExecuting {
 
         let outputData = try JSONSerialization.data(withJSONObject: consolidated, options: [.sortedKeys])
         let artifact = ASLArtifact(
-            metadata: MentalSpaceArtifactMetadata(
+            metadata: MSRArtifactMetadata(
                 stage: .asl,
                 sourceTranscriptRef: sourceTranscriptRef,
                 stageVersion: "rt-msr-001",
                 promptVersion: "asl-system.md",
                 modelProvider: selection.providerId,
                 modelId: provider.modelId ?? model,
-                inputHash: MentalSpaceContentHasher.sha256Hex(for: trimmed),
-                outputHash: MentalSpaceContentHasher.sha256Hex(for: String(data: outputData, encoding: .utf8) ?? ""),
+                inputHash: MSRContentHasher.sha256Hex(for: trimmed),
+                outputHash: MSRContentHasher.sha256Hex(for: String(data: outputData, encoding: .utf8) ?? ""),
                 lawfulContextSummary: lawfulContext["finalidade"] ?? "mental-space-asl",
                 limitations: ["Derived artifact only", "Non-authorizing", "Gate required"]
             ),
@@ -152,7 +152,7 @@ public struct ASLExecutor: ASLExecuting {
 
     private func parseProviderJSON(_ response: String) throws -> [String: Any] {
         do {
-            return try MentalSpaceJSONRepair.parse(response)
+            return try MSRJSONRepair.parse(response)
         } catch {
             throw ASLExecutorError.invalidResponse("Provider did not return a valid JSON object")
         }

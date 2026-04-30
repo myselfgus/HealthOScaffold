@@ -4,10 +4,26 @@ Repository identity note: HealthOScaffold is the HealthOS construction repositor
 
 ## COMPLETED
 
-
-### STR-001 Wire HealthOSProviders into HealthOSMentalSpace
+### STR-006 Formalize MSR naming and move transcript normalization to Session Runtime
 Outcome:
-- `HealthOSMentalSpace` now declares both `HealthOSCore` and `HealthOSProviders` in SwiftPM target dependencies, unblocking provider-backed runtime executor implementation work.
+- `MSR` is now the official runtime sigla for Mental Space Runtime in the Swift package graph and architecture docs
+- the previous Mental Space Swift module name was renamed to `HealthOSMSR`; orchestrator and infrastructure types now use `MSR*` naming
+- transcript normalization no longer belongs to MSR; it now executes from `HealthOSSessionRuntime/Normalization/NormalizationExecutor.swift`
+- first-slice contracts and Scribe app surfaces now distinguish transcript normalization from MSR runtime state
+Files touched:
+- `swift/Package.swift`
+- `swift/Sources/HealthOSCore/MSRRuntime.swift`
+- `swift/Sources/HealthOSCore/TranscriptNormalization.swift`
+- `swift/Sources/HealthOSMSR/*`
+- `swift/Sources/HealthOSSessionRuntime/*`
+- `docs/architecture/49-mental-space-runtime.md`
+- `docs/execution/02-status-and-tracking.md`
+- `docs/execution/todo/runtimes-and-aaci.md`
+
+
+### STR-001 Wire HealthOSProviders into HealthOSMSR
+Outcome:
+- `HealthOSMSR` now declares both `HealthOSCore` and `HealthOSProviders` in SwiftPM target dependencies, unblocking provider-backed runtime executor implementation work.
 - No ASL/VDLP/GEM provider execution was implemented in this work unit; executors remain scaffolded fail-closed boundaries.
 Files touched:
 - `swift/Package.swift`
@@ -19,7 +35,7 @@ Files touched:
 Outcome:
 - Mental Space Runtime is now defined as a staged derived-artifact runtime domain for transcription normalization, ASL, VDLP, and GEM, separate from the async runtime substrate
 - Swift Core now has Mental Space artifact contracts, stage states, fail-closed dependency validation, app-safe runtime view, and normalization result/request contracts
-- async job taxonomy now includes `mental_space_normalization`, `mental_space_asl`, `mental_space_vdlp`, and `mental_space_gem` in Swift, TypeScript, and JSON Schema
+- async job taxonomy now includes `transcript_normalization`, `msr_asl`, `msr_vdlp`, and `msr_gem` in Swift, TypeScript, and JSON Schema
 - AACI now exposes local-first transcript normalization with remote fallback denied for v1 and stub output degraded instead of persisted
 - the first slice persists normalized transcript output as a `derived-artifacts` Mental Space artifact only when a real local model is available, with source transcript lineage, model/prompt/stage metadata, limitations, and provenance
 - Scribe bridge/UI now surfaces minimal Mental Space stage status without raw artifact JSON, prompt internals, direct identifiers, or legal-authorizing claims
@@ -297,7 +313,7 @@ Files touched:
 ### STR-002 Archive Skill macOS legacy scripts (DONE 2026-04-29)
 Outcome:
 - repository-root `Skill macOS/` scripts were moved with history to `docs/reference/mental-space-legacy/` and are now explicitly archived reference implementations
-- the active Mental Space implementation remains the Swift runtime in `swift/Sources/HealthOSMentalSpace/`
+- the active Mental Space implementation remains the Swift runtime in `swift/Sources/HealthOSMSR/`
 - this does not imply production-ready ML, clinical authority, or runtime/provider hardening completion
 Files touched:
 - `docs/reference/mental-space-legacy/*`
@@ -309,11 +325,11 @@ Files touched:
 
 ## READY
 
-### STR-001 Wire HealthOSProviders into HealthOSMentalSpace (Package.swift)
+### STR-001 Wire HealthOSProviders into HealthOSMSR (Package.swift)
 Priority: **P0 — DO FIRST**
 Plan: `docs/execution/21-structural-ontology-and-product-readiness-plan.md` → STR-001
 Definition of done:
-- `swift/Package.swift` — `HealthOSMentalSpace` dependencies include `"HealthOSProviders"`
+- `swift/Package.swift` — `HealthOSMSR` dependencies include `"HealthOSProviders"`
 - `swift build` PASS; `swift test` PASS; `make validate-all` PASS
 Branch: `feat/str-001-mentlspace-providers-dep`
 

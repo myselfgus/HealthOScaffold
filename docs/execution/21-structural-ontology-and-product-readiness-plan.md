@@ -25,7 +25,7 @@ Construction-system note: this document remains the product/repo task queue. Con
 
 | Task ID | Priority | Status | Title | Prerequisite |
 |---------|----------|--------|-------|-------------|
-| STR-001 | **P0** | DONE | Wire `HealthOSProviders` into `HealthOSMentalSpace` in Package.swift | — |
+| STR-001 | **P0** | DONE | Wire `HealthOSProviders` into `HealthOSMSR` in Package.swift | — |
 | RT-MSR-001 | **P0** | DONE | Implement `ASLExecutor` with real Claude API adapter | STR-001 |
 | RT-MSR-002 | **P0** | DONE | Implement `VDLPExecutor` with real Claude API adapter | RT-MSR-001 |
 | RT-MSR-003 | **P0** | DONE | Implement `GEMArtifactBuilder` with real Claude API adapter | RT-MSR-002 |
@@ -115,7 +115,7 @@ EOF
 )"
 ```
 
-PR title format: `feat(msr): STR-001 wire HealthOSProviders into HealthOSMentalSpace`
+PR title format: `feat(msr): STR-001 wire HealthOSProviders into HealthOSMSR`
 Branch format: `feat/str-001-mentlspace-providers-dep`
 
 **Never push directly to `main`. Always open a PR.**
@@ -130,15 +130,15 @@ Do P0 tasks before any P1/P2/P3/P4 task. They must be executed in order (STR-001
 
 ---
 
-### STR-001: Wire `HealthOSProviders` into `HealthOSMentalSpace`
+### STR-001: Wire `HealthOSProviders` into `HealthOSMSR`
 
 **Priority:** P0 | **Status:** DONE | **Branch:** `feat/str-001-mentlspace-providers-dep`
 
-**Why this first:** `HealthOSMentalSpace` cannot call Claude API without `HealthOSProviders`. This is a one-line Package.swift change that unblocks RT-MSR-001.
+**Why this first:** `HealthOSMSR` cannot call Claude API without `HealthOSProviders`. This is a one-line Package.swift change that unblocks RT-MSR-001.
 
 **Files to touch:**
 
-- `swift/Package.swift` — add `"HealthOSProviders"` to `HealthOSMentalSpace` dependencies array
+- `swift/Package.swift` — add `"HealthOSProviders"` to `HealthOSMSR` dependencies array
 - `docs/execution/02-status-and-tracking.md` — add STR-001 completion entry
 - `docs/execution/21-structural-ontology-and-product-readiness-plan.md` — mark STR-001 DONE
 
@@ -146,24 +146,24 @@ Do P0 tasks before any P1/P2/P3/P4 task. They must be executed in order (STR-001
 
 ```swift
 // Before:
-.target(name: "HealthOSMentalSpace", dependencies: ["HealthOSCore"],
+.target(name: "HealthOSMSR", dependencies: ["HealthOSCore"],
         resources: [.copy("Prompts")]),
 
 // After:
-.target(name: "HealthOSMentalSpace", dependencies: ["HealthOSCore", "HealthOSProviders"],
+.target(name: "HealthOSMSR", dependencies: ["HealthOSCore", "HealthOSProviders"],
         resources: [.copy("Prompts")]),
 ```
 
 **Definition of done:**
 - `swift build` PASS with the new dependency declared
 - `swift test` PASS (no regressions)
-- `swift package dump-package` shows `HealthOSMentalSpace` depending on `["HealthOSCore", "HealthOSProviders"]`
+- `swift package dump-package` shows `HealthOSMSR` depending on `["HealthOSCore", "HealthOSProviders"]`
 
 **Validation commands:**
 ```bash
 cd swift && swift build
 cd swift && swift test
-cd swift && swift package dump-package | grep -A5 HealthOSMentalSpace
+cd swift && swift package dump-package | grep -A5 HealthOSMSR
 make validate-all
 ```
 
@@ -171,7 +171,7 @@ make validate-all
 
 **Residual gaps after this task:** Executors still throw `.providerUnavailable`; only the dependency graph is fixed.
 
-**Completion note (2026-04-29):** Dependency graph wired. `HealthOSMentalSpace` now declares `HealthOSProviders` alongside `HealthOSCore`. Residual gap remains explicit: ASL/VDLP/GEM executors still throw `.providerUnavailable` until RT-MSR-001/002/003; no provider call was implemented in STR-001.
+**Completion note (2026-04-29):** Dependency graph wired. `HealthOSMSR` now declares `HealthOSProviders` alongside `HealthOSCore`. Residual gap remains explicit: ASL/VDLP/GEM executors still throw `.providerUnavailable` until RT-MSR-001/002/003; no provider call was implemented in STR-001.
 
 ---
 
@@ -181,14 +181,14 @@ make validate-all
 
 **Prerequisite:** STR-001 DONE.
 
-**Why:** ASL (Analise Sistemica da Linguagem) is the first stage of the clinical pipeline. It extracts 8 psycholinguistic domains from a transcript. The prompt is validated against 400 patients and lives at `swift/Sources/HealthOSMentalSpace/Prompts/asl-system.md`. The executor stub always throws `.providerUnavailable`. This task makes it callable.
+**Why:** ASL (Analise Sistemica da Linguagem) is the first stage of the clinical pipeline. It extracts 8 psycholinguistic domains from a transcript. The prompt is validated against 400 patients and lives at `swift/Sources/HealthOSMSR/Prompts/asl-system.md`. The executor stub always throws `.providerUnavailable`. This task makes it callable.
 
 **Reference implementation:** `Skill macOS/4-asl.ts` — use for chunking logic and output structure only. Do not copy TypeScript syntax.
 
 **Files to touch:**
 
-- `swift/Sources/HealthOSMentalSpace/Executors/ASLExecutor.swift` — implement real executor
-- `swift/Sources/HealthOSMentalSpace/MentalSpacePipeline.swift` — update orchestrator to call ASL executor
+- `swift/Sources/HealthOSMSR/Executors/ASLExecutor.swift` — implement real executor
+- `swift/Sources/HealthOSMSR/MSRPipeline.swift` — update orchestrator to call ASL executor
 - `swift/Tests/HealthOSTests/MentalSpaceRuntimeTests.swift` — add ASL executor tests
 - `docs/execution/02-status-and-tracking.md` — completion entry
 - `docs/execution/todo/runtimes-and-aaci.md` — mark RT-MSR-001 DONE
@@ -241,8 +241,8 @@ make validate-all
 **Reference implementation:** `Skill macOS/5-vdlp.ts`
 
 **Files to touch:**
-- `swift/Sources/HealthOSMentalSpace/Executors/VDLPExecutor.swift`
-- `swift/Sources/HealthOSMentalSpace/MentalSpacePipeline.swift`
+- `swift/Sources/HealthOSMSR/Executors/VDLPExecutor.swift`
+- `swift/Sources/HealthOSMSR/MSRPipeline.swift`
 - `swift/Tests/HealthOSTests/MentalSpaceRuntimeTests.swift`
 - `docs/execution/02-status-and-tracking.md`
 - `docs/execution/todo/runtimes-and-aaci.md`
@@ -275,8 +275,8 @@ make validate-all
 **Reference implementation:** `Skill macOS/6-gem.ts`
 
 **Files to touch:**
-- `swift/Sources/HealthOSMentalSpace/Executors/GEMArtifactBuilder.swift`
-- `swift/Sources/HealthOSMentalSpace/MentalSpacePipeline.swift`
+- `swift/Sources/HealthOSMSR/Executors/GEMArtifactBuilder.swift`
+- `swift/Sources/HealthOSMSR/MSRPipeline.swift`
 - `swift/Tests/HealthOSTests/MentalSpaceRuntimeTests.swift`
 - `docs/execution/02-status-and-tracking.md`
 - `docs/execution/todo/runtimes-and-aaci.md`
@@ -312,7 +312,7 @@ These tasks eliminate structural confusion between product, build, and agent lay
 
 **Do this after RT-MSR-003 is DONE.** Archiving before executors are validated loses the reference implementation.
 
-**Why:** `Skill macOS/` at repository root implies it is an active production component at the same level as `swift/`, `ts/`, and `schemas/`. It is not. The prompt contracts are already migrated to `swift/Sources/HealthOSMentalSpace/Prompts/`. The TS scripts are reference implementations during the Swift migration, nothing more.
+**Why:** `Skill macOS/` at repository root implies it is an active production component at the same level as `swift/`, `ts/`, and `schemas/`. It is not. The prompt contracts are already migrated to `swift/Sources/HealthOSMSR/Prompts/`. The TS scripts are reference implementations during the Swift migration, nothing more.
 
 **Files to touch:**
 ```bash
@@ -334,11 +334,11 @@ ASL/VDLP/GEM clinical pipeline (tested on 400 patients, 2024–2026).
 They are ARCHIVED REFERENCE IMPLEMENTATIONS. They are not the active pipeline.
 
 The active pipeline is:
-  swift/Sources/HealthOSMentalSpace/
+  swift/Sources/HealthOSMSR/
 
 The canonical prompt contracts are extracted verbatim from these scripts and
 version-controlled at:
-  swift/Sources/HealthOSMentalSpace/Prompts/
+  swift/Sources/HealthOSMSR/Prompts/
 
 Do not alter prompt content here — edit the Swift Prompts/ copies instead.
 Do not run these scripts against production data.

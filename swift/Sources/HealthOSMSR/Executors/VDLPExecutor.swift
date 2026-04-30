@@ -82,7 +82,7 @@ public struct VDLPExecutor: VDLPExecuting {
 
         let outputData = try JSONSerialization.data(withJSONObject: consolidated, options: [.sortedKeys])
         let artifact = VDLPArtifact(
-            metadata: MentalSpaceArtifactMetadata(stage: .vdlp, sourceTranscriptRef: sourceTranscriptRef, stageVersion: "rt-msr-002", promptVersion: "vdlp-system.md", modelProvider: selection.providerId, modelId: provider.modelId ?? model, inputHash: MentalSpaceContentHasher.sha256Hex(for: trimmedSpeech), outputHash: MentalSpaceContentHasher.sha256Hex(for: String(decoding: outputData, as: UTF8.self)), lawfulContextSummary: lawfulContext["finalidade"] ?? "mental-space-vdlp", limitations: ["Derived artifact only", "Non-authorizing", "Gate required"]),
+            metadata: MSRArtifactMetadata(stage: .vdlp, sourceTranscriptRef: sourceTranscriptRef, stageVersion: "rt-msr-002", promptVersion: "vdlp-system.md", modelProvider: selection.providerId, modelId: provider.modelId ?? model, inputHash: MSRContentHasher.sha256Hex(for: trimmedSpeech), outputHash: MSRContentHasher.sha256Hex(for: String(decoding: outputData, as: UTF8.self)), lawfulContextSummary: lawfulContext["finalidade"] ?? "mental-space-vdlp", limitations: ["Derived artifact only", "Non-authorizing", "Gate required"]),
             dimensionalSummary: ((consolidated["perfil_dimensional_integrativo"] as? [String: Any])?["sintese_global"] as? String) ?? "VDLP dimensions available.",
             dimensionRefs: dimensionRefs
         )
@@ -115,7 +115,7 @@ public struct VDLPExecutor: VDLPExecuting {
 
     private func parseProviderJSON(_ response: String) throws -> [String: Any] {
         do {
-            return try MentalSpaceJSONRepair.parse(response)
+            return try MSRJSONRepair.parse(response)
         } catch {
             throw VDLPExecutorError.invalidResponse("Provider did not return a valid JSON object")
         }

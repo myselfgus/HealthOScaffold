@@ -3,34 +3,31 @@ import XCTest
 @testable import HealthOSAACI
 @testable import HealthOSProviders
 @testable import HealthOSSessionRuntime
-@testable import HealthOSMentalSpace
+@testable import HealthOSMSR
 
 final class MentalSpaceRuntimeTests: XCTestCase {
     func testPipelineOrderingBlocksDownstreamStagesUntilPrerequisitesExist() throws {
-        let empty = MentalSpaceRunArtifacts()
+        let empty = MSRRunArtifacts()
 
-        XCTAssertNoThrow(try MentalSpacePipelineValidator.validateCanRun(stage: .normalization, state: empty))
-        XCTAssertThrowsError(try MentalSpacePipelineValidator.validateCanRun(stage: .asl, state: empty)) { error in
-            XCTAssertEqual(error as? MentalSpacePipelineError, .normalizedTranscriptRequired)
+        XCTAssertNoThrow(try MSRPipelineValidator.validateCanRun(stage: .asl, state: empty))
+        XCTAssertThrowsError(try MSRPipelineValidator.validateCanRun(stage: .vdlp, state: empty)) { error in
+            XCTAssertEqual(error as? MSRPipelineError, .aslRequired)
         }
-        XCTAssertThrowsError(try MentalSpacePipelineValidator.validateCanRun(stage: .vdlp, state: empty)) { error in
-            XCTAssertEqual(error as? MentalSpacePipelineError, .aslRequired)
-        }
-        XCTAssertThrowsError(try MentalSpacePipelineValidator.validateCanRun(stage: .gem, state: empty)) { error in
-            XCTAssertEqual(error as? MentalSpacePipelineError, .vdlpRequired)
+        XCTAssertThrowsError(try MSRPipelineValidator.validateCanRun(stage: .gem, state: empty)) { error in
+            XCTAssertEqual(error as? MSRPipelineError, .vdlpRequired)
         }
     }
 
     func testMentalSpaceAsyncJobKindsUseExistingGovernedRuntimeSubstrate() async throws {
         let runtime = InMemoryAsyncJobRuntime()
         let job = AsyncJobDescriptor(
-            kind: .mentalSpaceASL,
-            requestedByActor: "mental-space.runtime",
+            kind: .msrASL,
+            requestedByActor: "msr.runtime",
             submissionSource: .system,
             lawfulContextRequirement: .none,
             dataLayersTouched: [.derivedArtifacts],
             inputRefs: ["normalized-transcript-ref"],
-            idempotencyKey: "mental-space-asl-\(UUID().uuidString)",
+            idempotencyKey: "msr-asl-\(UUID().uuidString)",
             retryPolicy: .init(maxRetries: 1),
             idempotent: true
         )
@@ -40,19 +37,19 @@ final class MentalSpaceRuntimeTests: XCTestCase {
             .completed(outputRefs: ["asl-artifact-ref"], provenanceRef: nil, auditRef: nil)
         }
 
-        XCTAssertEqual(completed.kind, .mentalSpaceASL)
+        XCTAssertEqual(completed.kind, .msrASL)
         XCTAssertEqual(completed.state, .completed)
         let events = await runtime.observabilityEvents()
-        XCTAssertTrue(events.contains { $0.kind == .completed && $0.jobKind == .mentalSpaceASL })
+        XCTAssertTrue(events.contains { $0.kind == .completed && $0.jobKind == .msrASL })
         XCTAssertTrue(events.allSatisfy { !$0.source.lowercased().contains("cpf") })
     }
 
     func testNormalizationWithOnlyAppleStubDegradesWithoutUsingStubOutput() async throws {
         let router = ProviderRouter()
         try await router.register(AppleFoundationProvider())
-        let orchestrator = AACIOrchestrator(router: router)
-        let result = await orchestrator.normalizeTranscript(
-            MentalSpaceNormalizationRequest(
+        let executor = TranscriptNormalizationExecutor(router: router)
+        let result = await executor.execute(
+            TranscriptNormalizationRequest(
                 transcriptText: "Paciente relata sono ruim.",
                 sourceTranscriptRef: StorageObjectRef(
                     objectPath: "/tmp/transcript.bin",
@@ -80,16 +77,16 @@ final class MentalSpaceRuntimeTests: XCTestCase {
             input: makeSessionInput(text: " Paciente   relata sono ruim. ")
         )
 
-        let normalized = try XCTUnwrap(result.mentalSpace.normalizedTranscript)
+        let normalized = try XCTUnwrap(result.transcriptNormalization.normalizedTranscript)
         let transcriptRef = try XCTUnwrap(result.transcription.transcriptRef)
         XCTAssertEqual(normalized.objectRef.layer, .derivedArtifacts)
         XCTAssertEqual(normalized.metadata.sourceTranscriptRef, transcriptRef.objectPath)
         XCTAssertEqual(normalized.metadata.inputHash, transcriptRef.contentHash)
         XCTAssertEqual(normalized.metadata.legalAuthorizing, false)
         XCTAssertEqual(normalized.metadata.gateStillRequired, true)
-        XCTAssertEqual(result.summary.mentalSpaceNormalizationStatus, .ready)
-        XCTAssertEqual(result.summary.mentalSpaceNormalizedTranscriptObjectPath, normalized.objectRef.objectPath)
-        XCTAssertTrue(result.provenanceRecords.contains { $0.operation == "mental-space.normalize.transcript" })
+        XCTAssertEqual(result.summary.transcriptNormalizationStatus, .ready)
+        XCTAssertEqual(result.summary.transcriptNormalizedObjectPath, normalized.objectRef.objectPath)
+        XCTAssertTrue(result.provenanceRecords.contains { $0.operation == "transcript.normalize" })
 
         let artifactData = try Data(contentsOf: URL(fileURLWithPath: normalized.objectRef.objectPath))
         let decoder = JSONDecoder()
@@ -118,18 +115,16 @@ final class MentalSpaceRuntimeTests: XCTestCase {
         let resolved = await adapter.resolveGate(.init(sessionId: sessionId, approve: false))
         let state = try XCTUnwrap(resolved.state)
 
-        let normalization = try XCTUnwrap(
-            state.mentalSpaceRuntimeState.stages.first { $0.stage == .normalization }
-        )
+        let normalization = state.transcriptNormalizationState.state
         XCTAssertEqual(normalization.status, .ready)
-        XCTAssertFalse(state.mentalSpaceRuntimeState.legalAuthorizing)
-        XCTAssertTrue(state.mentalSpaceRuntimeState.clinicianReviewRequired)
-        XCTAssertFalse(state.mentalSpaceRuntimeState.summary.contains("Paciente relata dor."))
+        XCTAssertFalse(state.transcriptNormalizationState.legalAuthorizing)
+        XCTAssertFalse(state.transcriptNormalizationState.summary.contains("Paciente relata dor."))
+        XCTAssertTrue(state.msrRuntimeState.clinicianReviewRequired)
     }
 
     private func makeTempRoot() -> URL {
         URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
-            .appendingPathComponent("HealthOSMentalSpaceRuntimeTests-\(UUID().uuidString)", isDirectory: true)
+            .appendingPathComponent("HealthOSMSRRuntimeTests-\(UUID().uuidString)", isDirectory: true)
     }
 
     private func makeSessionInput(text: String) -> FirstSliceSessionInput {
@@ -162,7 +157,7 @@ private struct LocalNormalizerProvider: LanguageModelProvider {
     )
 
     func generate(prompt: String, context: [String: String]) async throws -> String {
-        XCTAssertEqual(context["task"], "mental-space-transcript-normalization")
+        XCTAssertEqual(context["task"], "session-transcript-normalization")
         return prompt
             .split(whereSeparator: { $0.isWhitespace })
             .joined(separator: " ")
@@ -205,10 +200,14 @@ extension MentalSpaceRuntimeTests {
     func testASLPipelineRefusesWhenNormalizationMissing() async throws {
         let router = ProviderRouter()
         try await router.register(MockASLProvider(validJSON: true, isStub: false))
-        let orchestrator = try MentalSpacePipelineOrchestrator(aslExecutor: ASLExecutor(router: router))
-        await XCTAssertThrowsErrorAsync(try await orchestrator.runASL(patientId: "p", normalizedTranscriptText: "text", sourceTranscriptRef: "src", lawfulContext: [:], state: MentalSpaceRunArtifacts())) { error in
-            XCTAssertEqual(error as? MentalSpacePipelineError, .normalizedTranscriptRequired)
-        }
+        let orchestrator = try MSROrchestrator(aslExecutor: ASLExecutor(router: router))
+        _ = try await orchestrator.runASL(
+            patientId: "p",
+            normalizedTranscriptText: "text",
+            sourceTranscriptRef: "src",
+            lawfulContext: [:],
+            state: MSRRunArtifacts()
+        )
     }
 }
 
@@ -297,9 +296,9 @@ extension MentalSpaceRuntimeTests {
         try await router.register(MockASLProvider(validJSON: true, isStub: false))
         let aslExecutor = try ASLExecutor(router: router)
         let vdlpExecutor = try VDLPExecutor(router: router)
-        let orchestrator = MentalSpacePipelineOrchestrator(aslExecutor: aslExecutor, vdlpExecutor: vdlpExecutor)
-        await XCTAssertThrowsErrorAsync(try await orchestrator.runVDLP(patientId: "p", aslData: Data(MockASLProvider.rawPayload.utf8), patientSpeech: "fala", sourceTranscriptRef: "src", lawfulContext: [:], state: MentalSpaceRunArtifacts())) { error in
-            XCTAssertEqual(error as? MentalSpacePipelineError, .aslRequired)
+        let orchestrator = MSROrchestrator(aslExecutor: aslExecutor, vdlpExecutor: vdlpExecutor)
+        await XCTAssertThrowsErrorAsync(try await orchestrator.runVDLP(patientId: "p", aslData: Data(MockASLProvider.rawPayload.utf8), patientSpeech: "fala", sourceTranscriptRef: "src", lawfulContext: [:], state: MSRRunArtifacts())) { error in
+            XCTAssertEqual(error as? MSRPipelineError, .aslRequired)
         }
     }
 }
@@ -378,9 +377,9 @@ extension MentalSpaceRuntimeTests {
         try await router.register(MockASLProvider(validJSON: true, isStub: false))
         try await router.register(MockVDLPProvider(isStub: false))
         try await router.register(MockGEMProvider(isStub: false))
-        let orchestrator = try MentalSpacePipelineOrchestrator(aslExecutor: ASLExecutor(router: router), vdlpExecutor: VDLPExecutor(router: router), gemBuilder: GEMArtifactBuilder(router: router))
-        await XCTAssertThrowsErrorAsync(try await orchestrator.runGEM(patientId: "p", normalizedTranscriptText: "text", aslData: Data(MockASLProvider.rawPayload.utf8), vdlpData: Data(MockVDLPProvider.validPayload.utf8), sourceTranscriptRef: "src", lawfulContext: [:], state: MentalSpaceRunArtifacts())) { error in
-            XCTAssertEqual(error as? MentalSpacePipelineError, .vdlpRequired)
+        let orchestrator = try MSROrchestrator(aslExecutor: ASLExecutor(router: router), vdlpExecutor: VDLPExecutor(router: router), gemBuilder: GEMArtifactBuilder(router: router))
+        await XCTAssertThrowsErrorAsync(try await orchestrator.runGEM(patientId: "p", normalizedTranscriptText: "text", aslData: Data(MockASLProvider.rawPayload.utf8), vdlpData: Data(MockVDLPProvider.validPayload.utf8), sourceTranscriptRef: "src", lawfulContext: [:], state: MSRRunArtifacts())) { error in
+            XCTAssertEqual(error as? MSRPipelineError, .vdlpRequired)
         }
     }
 }

@@ -6,7 +6,7 @@ public struct GEMExecutionResult: Sendable {
     public let artifact: GEMArtifact
     public let provenanceOperation: String
 
-    public init(artifact: GEMArtifact, provenanceOperation: String = "mental-space.gem") {
+    public init(artifact: GEMArtifact, provenanceOperation: String = "msr.gem") {
         self.artifact = artifact
         self.provenanceOperation = provenanceOperation
     }
@@ -68,7 +68,7 @@ public struct GEMArtifactBuilder: GEMArtifactBuilding {
             throw GEMArtifactBuilderError.degradedDependency("VDLP artifact missing dimensoes_espaco_mental")
         }
 
-        let request = ProviderRoutingRequest(taskClass: .languageModel, dataLayer: .derivedArtifacts, lawfulContext: lawfulContext, finalidade: "mental-space-gem", allowsRemoteFallback: true, fallbackAllowed: true, preferLocal: false)
+        let request = ProviderRoutingRequest(taskClass: .languageModel, dataLayer: .derivedArtifacts, lawfulContext: lawfulContext, finalidade: "msr.gem", allowsRemoteFallback: true, fallbackAllowed: true, preferLocal: false)
         let decision = await router.routeLanguage(request: request)
         let selection: ProviderSelection
         switch decision {
@@ -84,7 +84,7 @@ public struct GEMArtifactBuilder: GEMArtifactBuilding {
         for chunk in chunks {
             let prompt = buildPrompt(patientId: patientId, transcriptionText: chunk, aslData: String(decoding: aslData, as: UTF8.self), vdlpData: String(decoding: vdlpData, as: UTF8.self))
             let response = try await provider.generate(prompt: prompt, context: [
-                "task": "mental-space-gem",
+                "task": "msr.gem",
                 "model": model,
                 "temperature": "0.2",
                 "max_tokens": "60000",
@@ -102,7 +102,7 @@ public struct GEMArtifactBuilder: GEMArtifactBuilding {
 
         let outputData = try JSONSerialization.data(withJSONObject: consolidated, options: [.sortedKeys])
         let artifact = GEMArtifact(
-            metadata: MSRArtifactMetadata(stage: .gem, sourceTranscriptRef: sourceTranscriptRef, stageVersion: "rt-msr-003", promptVersion: "gem-system.md", modelProvider: selection.providerId, modelId: provider.modelId ?? model, inputHash: MSRContentHasher.sha256Hex(for: trimmed), outputHash: MSRContentHasher.sha256Hex(for: String(decoding: outputData, as: UTF8.self)), lawfulContextSummary: lawfulContext["finalidade"] ?? "mental-space-gem", limitations: ["Derived artifact only", "Non-authorizing", "Gate required"]),
+            metadata: MSRArtifactMetadata(stage: .gem, sourceTranscriptRef: sourceTranscriptRef, stageVersion: "rt-msr-003", promptVersion: "gem-system.md", modelProvider: selection.providerId, modelId: provider.modelId ?? model, inputHash: MSRContentHasher.sha256Hex(for: trimmed), outputHash: MSRContentHasher.sha256Hex(for: String(decoding: outputData, as: UTF8.self)), lawfulContextSummary: lawfulContext["finalidade"] ?? "msr.gem", limitations: ["Derived artifact only", "Non-authorizing", "Gate required"]),
             graphSummary: ((consolidated["statistics"] as? [String: Any])?["global_summary"] as? String) ?? "GEM graph available.",
             layerRefs: layers
         )

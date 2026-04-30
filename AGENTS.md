@@ -88,6 +88,8 @@ Smoke path (when validating runnable flow):
 ```bash
 make smoke-cli
 make smoke-scribe
+make smoke-sortio
+make smoke-cloudclinic
 ```
 
 Recently confirmed direct smoke commands:
@@ -96,6 +98,8 @@ cd swift && swift run HealthOSCLI
 cd swift && swift run HealthOSCLI --reject-gate
 cd swift && swift run HealthOSScribeApp --smoke-test
 cd swift && swift run HealthOSScribeApp --smoke-test-audio
+cd swift && swift run HealthOSSortioApp --smoke-test
+cd swift && swift run HealthOSCloudClinicApp --smoke-test
 ```
 
 For GOS bundle lifecycle smoke, use the minimal operator-facing CLI path and keep reviewer/operator identity explicit:

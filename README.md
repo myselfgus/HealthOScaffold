@@ -235,7 +235,7 @@ graph LR
 
 1. Read `docs/architecture/28-first-slice-executable-path.md`.
 2. Open `swift/Sources/HealthOSSessionRuntime/SessionRunner.swift`.
-3. Run `make smoke-cli` and `make smoke-scribe`.
+3. Run `make smoke-cli`, `make smoke-scribe`, `make smoke-sortio`, and `make smoke-cloudclinic`.
 4. Then inspect `docs/execution/10-invariant-matrix.md` to understand what the slice is protecting.
 
 ### If you want governance first
@@ -270,7 +270,11 @@ Optional local smoke path:
 ```bash
 make smoke-cli
 make smoke-scribe
+make smoke-sortio
+make smoke-cloudclinic
 ```
+
+`HealthOSSortioApp` and `HealthOSCloudClinicApp` are scaffold placeholder executables only. They provide honest smoke-testable product-graph representation; they do not implement final UI, session behavior, clinical authority, or production readiness.
 
 ## 🧩 Cross-Language Contract Discipline
 
@@ -346,7 +350,7 @@ Read in order before coding:
 | Core law | `docs/architecture/06-core-services.md`, `05-data-layers.md`, `07-storage-and-sql.md` | `swift/Sources/HealthOSCore/` |
 | AACI and first slice | `docs/architecture/09-aaci.md`, `28-first-slice-executable-path.md` | `swift/Sources/HealthOSAACI/`, `swift/Sources/HealthOSSessionRuntime/` |
 | GOS | `29-governed-operational-spec.md` to `34-gos-review-and-activation-policy.md` | `ts/packages/healthos-gos-tooling/`, `swift/Sources/HealthOSCore/` |
-| Apps/interfaces | `11-scribe.md`, `12-sortio.md`, `13-cloudclinic.md`, `43-cross-app-coordination-shared-surfaces.md`, `48-native-macos-ui-design-system-and-app-shells.md` | `swift/Sources/HealthOSScribeApp/`, app boundary contracts in `swift/Sources/HealthOSCore/` |
+| Apps/interfaces | `11-scribe.md`, `12-sortio.md`, `13-cloudclinic.md`, `43-cross-app-coordination-shared-surfaces.md`, `48-native-macos-ui-design-system-and-app-shells.md` | `swift/Sources/HealthOSScribeApp/`, `swift/Sources/HealthOSSortioApp/`, `swift/Sources/HealthOSCloudClinicApp/`, app boundary contracts in `swift/Sources/HealthOSCore/` |
 | Steward / Settlers / Territories | `45-healthos-xcode-agent.md`, `46-apple-sovereignty-architecture.md`, `47-steward-settler-engineering-model.md` | `ts/agent-infra/healthos-steward/`, `.healthos-steward/`, `.healthos-settler/`, `.healthos-territory/` |
 
 ## Steward, Settlers, and Territories

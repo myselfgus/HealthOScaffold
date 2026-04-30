@@ -29,10 +29,10 @@ Read this document **before** reading the per-domain TODO files. The priority ti
 | RT-MSR-003 | **P0** | DONE | Implement `GEMArtifactBuilder` with real Claude API adapter | RT-MSR-002 |
 | STR-002 | **P1** | DONE | Archive `Skill macOS/` to `docs/reference/mental-space-legacy/` | — |
 | STR-003 | **P1** | DONE | Separate AGENT packages from PRODUCT in `ts/packages/` | — |
-| STR-004 | **P1** | READY | Rename `HealthOSFirstSliceSupport` → `HealthOSSessionRuntime` | — |
-| STR-005 | **P2** | READY | Add placeholder Swift targets for Sortio and CloudClinic | — |
-| APP-011 | **P2** | BLOCKED | Sortio: smoke-testable executable path | STR-005 |
-| APP-012 | **P2** | BLOCKED | CloudClinic: smoke-testable executable path | STR-005 |
+| STR-004 | **P1** | DONE | Rename `HealthOSFirstSliceSupport` → `HealthOSSessionRuntime` | — |
+| STR-005 | **P2** | DONE | Add placeholder Swift targets for Sortio and CloudClinic | — |
+| APP-011 | **P2** | READY | Sortio: smoke-testable executable path | STR-005 |
+| APP-012 | **P2** | READY | CloudClinic: smoke-testable executable path | STR-005 |
 | RT-ASYNC-001 | **P3** | BLOCKED | SQL-backed async runtime executor | Core SQL migration (exists) |
 | RT-PROVIDER-001 | **P3** | READY | Real Apple Foundation Models integration for normalization stage | — |
 | RT-RETRIEVAL-001 | **P3** | BLOCKED | Semantic retrieval with real embeddings provider | Provider adapter exists |
@@ -453,7 +453,7 @@ These tasks add missing product targets. They can be done after P1 or in paralle
 
 ### STR-005: Add placeholder Swift executable targets for Sortio and CloudClinic
 
-**Priority:** P2 | **Status:** READY | **Branch:** `feat/str-005-sortio-cloudclinic-targets`
+**Priority:** P2 | **Status:** DONE | **Branch:** `feat/str-005-sortio-cloudclinic-targets`
 
 **Why:** Sortio and CloudClinic have governance contracts, boundary tests, and architecture docs, but no Swift executable targets. The Xcode workspace references only Scribe as an app. This creates a false picture of the product: one app is buildable, two are documentation-only. Adding minimal placeholder targets forces the product graph to be honest and gives CI a build surface for all three apps.
 
@@ -471,7 +471,7 @@ import HealthOSCore
 // Sortio is the patient sovereignty interface for HealthOS.
 // This target is a scaffold placeholder — no final UI shell is implemented.
 // Architecture: docs/architecture/12-sortio.md
-// Governance contracts: HealthOSCore/UserAgentGovernance.swift
+// Governance contracts: HealthOSCore/UserSovereigntyContracts.swift
 
 @main
 struct SortioEntrypoint {
@@ -486,7 +486,7 @@ struct SortioEntrypoint {
 }
 ```
 
-**`CloudClinicEntrypoint.swift` minimum:** same pattern, referencing `13-cloudclinic.md` and `ServiceOperationsGovernance.swift`.
+**`CloudClinicEntrypoint.swift` minimum:** same pattern, referencing `13-cloudclinic.md` and `ServiceOperationsContracts.swift`.
 
 **`swift/Package.swift` additions:**
 ```swift
@@ -514,7 +514,7 @@ Also add to products:
 - `docs/execution/21-structural-ontology-and-product-readiness-plan.md`
 
 **Definition of done:**
-- `swift build` PASS — all 5 executable targets build (CLI, Scribe, Sortio, CloudClinic + test target)
+- `swift build` PASS — CLI, Scribe, Sortio, CloudClinic, and test targets build
 - `swift run HealthOSSortioApp --smoke-test` exits 0 and prints scaffold message
 - `swift run HealthOSCloudClinicApp --smoke-test` exits 0 and prints scaffold message
 - `swift test` PASS — no regressions
@@ -524,11 +524,11 @@ Also add to products:
 
 ### APP-011: Sortio — wire existing boundary contracts to session runtime
 
-**Priority:** P2 | **Status:** BLOCKED on STR-005 | **Branch:** `feat/app-011-sortio-session-wire`
+**Priority:** P2 | **Status:** READY | **Branch:** `feat/app-011-sortio-session-wire`
 
 **Prerequisite:** STR-005 DONE. Also depends on STR-004 if already done.
 
-**Scope:** Wire `UserAgentGovernance.swift` contracts into a minimal `SortioSessionFacade` (equivalent pattern to `ScribeFirstSliceFacade`) so Sortio has an executable session boundary, not just a contract-only posture.
+**Scope:** Wire `UserSovereigntyContracts.swift` contracts into a minimal `SortioSessionFacade` (equivalent pattern to `ScribeFirstSliceFacade`) so Sortio has an executable session boundary, not just a contract-only posture.
 
 **Definition of done:**
 - `HealthOSSortioApp` can run a governed user-agent session scaffold (seeded input, governed output, honest degraded state)
@@ -540,9 +540,9 @@ Also add to products:
 
 ### APP-012: CloudClinic — wire existing boundary contracts to session runtime
 
-**Priority:** P2 | **Status:** BLOCKED on STR-005 | **Branch:** `feat/app-012-cloudclinic-session-wire`
+**Priority:** P2 | **Status:** READY | **Branch:** `feat/app-012-cloudclinic-session-wire`
 
-**Same pattern as APP-011, using `ServiceOperationsGovernance.swift` contracts.**
+**Same pattern as APP-011, using `ServiceOperationsContracts.swift` contracts.**
 
 ---
 
@@ -689,3 +689,6 @@ When a task is done:
 
 
 **Completion note (2026-04-30):** STR-004 completed by renaming the Swift module `HealthOSFirstSliceSupport` to `HealthOSSessionRuntime` with `git mv`, updating SwiftPM target/dependency wiring, CLI/Scribe/test imports, and architecture/execution documentation references. Primary public runtime types were renamed (`FirstSliceRunner` → `SessionRunner`, `ScribeFirstSliceAdapter` → `ScribeSessionAdapter`, demo bootstrap surfaces to session-runtime vocabulary). No Core/GOS/AACI/Mental Space/app clinical behavior changed; no Sortio/CloudClinic target additions were made in this work unit. Residual internal `FirstSlice*` contract names in `HealthOSCore` remain intentionally unchanged for STR-004 scope control.
+
+
+**Completion note (2026-04-30):** STR-005 completed by adding `HealthOSSortioApp` and `HealthOSCloudClinicApp` as minimal Swift executable scaffold targets with honest `--smoke-test` paths. Both targets compile and print scaffold-only, no-final-UI, no-clinical-authority smoke output. No Sortio or CloudClinic session wiring, final UI shell, Core law, GOS, AACI, Mental Space Runtime, provider, storage, or Steward/Settler behavior was implemented or changed. APP-011 and APP-012 are now READY as the next app wiring tasks.

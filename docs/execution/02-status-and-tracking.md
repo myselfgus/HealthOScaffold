@@ -7,6 +7,20 @@ Current phase: Controlled implementation — first vertical slice started
 ## Completed recently
 
 
+## STR-005 — Add Sortio and CloudClinic scaffold executable targets (2026-04-30)
+
+- Objective: make the Swift HealthOS product graph honest by adding minimal placeholder executable targets for Sortio and CloudClinic alongside Scribe.
+- Files created:
+  - `swift/Sources/HealthOSSortioApp/SortioEntrypoint.swift`
+  - `swift/Sources/HealthOSCloudClinicApp/CloudClinicEntrypoint.swift`
+- Package wiring added: `HealthOSSortioApp` and `HealthOSCloudClinicApp` executable products/targets in `swift/Package.swift`, each depending only on `HealthOSCore`.
+- Smoke targets added: `make smoke-sortio` and `make smoke-cloudclinic`; `swift-smoke` now includes CLI, Scribe, Sortio, and CloudClinic smoke paths.
+- Validation run: `git status --short`, entrypoint file assertions, `cd swift && swift package dump-package | grep -A10 HealthOSSortioApp`, `cd swift && swift package dump-package | grep -A10 HealthOSCloudClinicApp`, `cd swift && swift build`, `cd swift && swift run HealthOSSortioApp --smoke-test`, `cd swift && swift run HealthOSCloudClinicApp --smoke-test`, `cd swift && swift test`, `make swift-build`, `make swift-test`, `make smoke-cli`, `make smoke-scribe`, `make smoke-sortio`, `make smoke-cloudclinic`, `make validate-docs`, `make validate-schemas`, `make validate-contracts`, `make ts-build`, `make validate-all`.
+- Result: STR-005 complete after validation; APP-011 and APP-012 are unblocked and ready, but not implemented.
+- Invariants: Inv 1 (Core sovereignty), app boundary invariants (Sortio/CloudClinic remain mediated app surfaces), Inv 43 (scaffold/foundation maturity is not production readiness).
+- Residual gaps: Sortio session wiring remains APP-011; CloudClinic session wiring remains APP-012; no final UI shell is implemented; no clinical authority or production behavior was added.
+
+
 ## STR-004 — Rename HealthOSFirstSliceSupport to HealthOSSessionRuntime (2026-04-30)
 
 - Objective: remove development-phase vocabulary from the Swift product graph by renaming `HealthOSFirstSliceSupport` to `HealthOSSessionRuntime` without changing runtime behavior.

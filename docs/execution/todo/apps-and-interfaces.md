@@ -2,6 +2,26 @@
 
 ## COMPLETED
 
+### STR-005 Add placeholder Swift executable targets for Sortio and CloudClinic
+Outcome:
+- added `HealthOSSortioApp` and `HealthOSCloudClinicApp` as minimal Swift executable scaffold targets so the HealthOS product graph no longer represents only Scribe as an app/interface surface
+- added honest `--smoke-test` paths for both placeholders: scaffold-only, no final UI, no clinical authority, and no production-readiness claim
+- added `make smoke-sortio` and `make smoke-cloudclinic` while preserving existing CLI/Scribe smoke targets
+- unblocked APP-011 and APP-012 as next app wiring tasks without implementing either session path
+Files touched:
+- `swift/Package.swift`
+- `swift/Sources/HealthOSSortioApp/SortioEntrypoint.swift`
+- `swift/Sources/HealthOSCloudClinicApp/CloudClinicEntrypoint.swift`
+- `Makefile`
+- `README.md`
+- `AGENTS.md`
+- `CLAUDE.md`
+- `docs/architecture/12-sortio.md`
+- `docs/architecture/13-cloudclinic.md`
+- `docs/execution/21-structural-ontology-and-product-readiness-plan.md`
+- `docs/execution/02-status-and-tracking.md`
+- `docs/execution/todo/apps-and-interfaces.md`
+
 ### APP-010 Define native macOS 26+ UI scaffold and design-system scope
 Outcome:
 - added a canonical architecture document for native macOS 26+ app-shell and Liquid Glass scope across Scribe, Sortio, CloudClinic, and a future HealthOS control panel
@@ -287,14 +307,25 @@ Definition of done:
 - Sortio/CloudClinic adapter seams consume shared envelope contracts without raw payload leaks
 - boundary tests added/updated for app-kind + role mismatch and safe-ref enforcement
 
-### APP-011 Future native app-shell implementation pass
+### APP-011 Sortio: smoke-testable executable path
 Priority: Medium
+Status: READY after STR-005
 Skill: `docs/execution/skills/native-macos-ui/SKILL.md` + relevant app skill + `docs/execution/skills/liquid-glass/SKILL.md`
 Definition of done:
-- choose one shell explicitly: Scribe app-shell refactor, Sortio scaffold, CloudClinic scaffold, or HealthOS control panel scaffold
-- consume only mediated contracts already available for that shell
-- use macOS 26+ SwiftUI/Liquid Glass conventions without custom chrome or UI-owned law
-- validate with SwiftPM and relevant smoke/test path
+- wire the existing Sortio boundary contracts into a minimal smoke-testable executable path
+- consume only mediated contracts already available for Sortio
+- do not move consent, habilitation, gate, finality, storage law, or clinical authority into the app target
+- validate with SwiftPM and the Sortio smoke path
+
+### APP-012 CloudClinic: smoke-testable executable path
+Priority: Medium
+Status: READY after STR-005
+Skill: `docs/execution/skills/native-macos-ui/SKILL.md` + relevant app skill + `docs/execution/skills/liquid-glass/SKILL.md`
+Definition of done:
+- wire the existing CloudClinic boundary contracts into a minimal smoke-testable executable path
+- consume only mediated contracts already available for CloudClinic
+- do not move service access law, membership policy, gate/finality law, storage law, or clinical authority into the app target
+- validate with SwiftPM and the CloudClinic smoke path
 
 
 ## TESTS / VALIDATION
@@ -309,3 +340,5 @@ Definition of done:
 - `swift run HealthOSCLI --audio-file /System/Library/Sounds/Glass.aiff`
 - `swift run HealthOSScribeApp --smoke-test`
 - `swift run HealthOSScribeApp --smoke-test-audio`
+- `swift run HealthOSSortioApp --smoke-test`
+- `swift run HealthOSCloudClinicApp --smoke-test`

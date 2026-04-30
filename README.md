@@ -1,24 +1,43 @@
+<p align="center">
+  <img src="docs/assets/healthos_overview.gif" width="100%" alt="HealthOS — Sovereign Clinical Platform">
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/Swift-6.2-FA7343?style=flat&logo=swift&logoColor=white" alt="Swift 6.2">
+  <img src="https://img.shields.io/badge/macOS-26%2B-000000?style=flat&logo=apple&logoColor=white" alt="macOS 26+">
+  <img src="https://img.shields.io/badge/Platform-Apple%20Silicon-333333?style=flat&logo=apple&logoColor=white" alt="Apple Silicon">
+  <img src="https://img.shields.io/badge/Build-SwiftPM%206.2-orange?style=flat" alt="SwiftPM 6.2">
+  <img src="https://img.shields.io/badge/Phase-Scaffold%20Hardening-3B82F6?style=flat" alt="Scaffold Hardening">
+  <img src="https://img.shields.io/badge/UI-Liquid%20Glass%20%28macOS%2026%2B%29-8B5CF6?style=flat" alt="Liquid Glass">
+  <img src="https://img.shields.io/badge/AI-Apple%20FoundationModels-000000?style=flat&logo=apple&logoColor=white" alt="Apple FoundationModels">
+</p>
+
 # HealthOS
 
-HealthOScaffold is the historical repository name and initial scaffolding phase for HealthOS. All implemented architecture, contracts, runtimes, apps, tests, and documentation in this repository are part of HealthOS unless explicitly marked experimental or deprecated. "Scaffold" describes maturity, not project identity.
+> **Sovereign computational environment for health data and clinical operations.**  
+> Governance-first architecture — every clinical act mediated through strictly layered contract law.
 
-HealthOS is a sovereign computational environment for health data and clinical operations. This repository is the HealthOS construction repository in **controlled implementation / scaffold hardening** phase, establishing foundational architecture.
+**HealthOScaffold is the historical repository name for the scaffold/foundation phase of HealthOS.** All implemented architecture, contracts, runtimes, apps, tests, and documentation in this repository are HealthOS work. "Scaffold" describes maturity, not product identity.
 
-HealthOS is the full platform. **AACI is one runtime inside HealthOS**. **GOS is a governed operational layer subordinate to Core law**. **Scribe, Sortio, and CloudClinic are app/interfaces that consume mediated surfaces; they never define constitutional law**.
+**This repository is not production-ready, not a complete EHR, and not a final UI delivery.** It establishes foundational architecture with executable first-slice orchestration, cross-language contracts (Swift / TypeScript / JSON Schema / SQL), and macOS 26+ native app surfaces targeting Liquid Glass as the design baseline.
+
+HealthOS is the full platform. **AACI is one runtime inside HealthOS. GOS is a governed operational layer subordinate to Core law. Scribe, Sortio, and CloudClinic are app/interfaces that consume mediated surfaces; they never define constitutional law.**
+
+---
 
 ## 🏗️ Canonical Architecture
 
-HealthOS mediates all clinical acts through a strictly layered, governance-first fabric.
+HealthOS is a governance-first platform. Every clinical act flows through a strictly layered, consent- and provenance-governed fabric. Apps and interfaces consume only mediated surfaces — they never become law engines.
 
-Steward, Settlers, Settlements, Territories, and `healthos-mcp` are repository engineering concepts outside this clinical/runtime hierarchy. They can inspect, edit, validate, and record repository work; they do not become HealthOS law, runtime automation, or clinical effectuation.
+Steward, Settlers, Settlements, Territories, and `healthos-mcp` are repository engineering concepts outside this clinical/runtime hierarchy. They inspect, edit, validate, and record repository work. They do not become HealthOS law, runtime automation, or clinical effectuation.
 
 ```mermaid
 %%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#f0f9ff', 'primaryBorderColor': '#bae6fd', 'primaryTextColor': '#0c4a6e', 'clusterBkg': '#fafafa', 'clusterBorder': '#e2e8f0', 'titleColor': '#0f172a', 'edgeLabelBackground': '#f8fafc', 'fontFamily': 'ui-sans-serif, system-ui, -apple-system'}}}%%
 graph TD
-    classDef iface    fill:#dbeafe,stroke:#60a5fa,stroke-width:2px,color:#1e3a8a
-    classDef gos      fill:#fef9c3,stroke:#f59e0b,stroke-width:2px,color:#78350f
-    classDef runtime  fill:#e0f2fe,stroke:#0ea5e9,stroke-width:2px,color:#0c4a6e
-    classDef core     fill:#dcfce7,stroke:#22c55e,stroke-width:2px,color:#14532d
+    classDef iface     fill:#dbeafe,stroke:#60a5fa,stroke-width:2px,color:#1e3a8a
+    classDef gos       fill:#fef9c3,stroke:#f59e0b,stroke-width:2px,color:#78350f
+    classDef runtime   fill:#e0f2fe,stroke:#0ea5e9,stroke-width:2px,color:#0c4a6e
+    classDef core      fill:#dcfce7,stroke:#22c55e,stroke-width:2px,color:#14532d
     classDef substrate fill:#f1f5f9,stroke:#94a3b8,stroke-width:2px,color:#334155
 
     subgraph IFACE["  Interfaces  "]
@@ -45,7 +64,7 @@ graph TD
     end
 
     subgraph SUB["  Material Substrate  "]
-        ST[Storage · SQL · File-Backed]
+        ST[Storage · SQL · File-Backed\nAPFS + FileVault + Secure Enclave]
         NE[Mesh · VPN · Network]
     end
 
@@ -63,7 +82,7 @@ graph TD
 
 ### First Slice — Executable Orchestration Path
 
-The current scaffold-level executable path, consumed by `HealthOSCLI` and `HealthOSScribeApp`.
+The current scaffold-level executable path, consumed by `HealthOSCLI` and `HealthOSScribeApp`:
 
 ```mermaid
 %%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#f0f9ff', 'primaryBorderColor': '#bae6fd', 'primaryTextColor': '#0c4a6e', 'edgeLabelBackground': '#fafafa', 'fontFamily': 'ui-sans-serif, system-ui, -apple-system'}}}%%
@@ -95,64 +114,316 @@ flowchart LR
     GV -->|rejected| STOP
 ```
 
-## 📋 Current repository posture (April 2026)
+---
+
+## 📦 Swift Package Graph
+
+All nine targets build from `swift/Package.swift` (Swift tools 6.2, platform `.macOS(.v26)`). External dependencies: none — sovereignty by design.
+
+```mermaid
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#f8f4ff', 'primaryBorderColor': '#c4b5fd', 'primaryTextColor': '#3b0764', 'clusterBkg': '#fdfbff', 'clusterBorder': '#e9d5ff', 'titleColor': '#0f172a', 'edgeLabelBackground': '#fdf8ff', 'fontFamily': 'ui-sans-serif, system-ui, -apple-system'}}}%%
+graph LR
+    classDef core     fill:#dcfce7,stroke:#22c55e,stroke-width:2px,color:#14532d
+    classDef runtime  fill:#dbeafe,stroke:#60a5fa,stroke-width:2px,color:#1e3a8a
+    classDef provider fill:#fef9c3,stroke:#f59e0b,stroke-width:2px,color:#78350f
+    classDef msr      fill:#ede9fe,stroke:#a78bfa,stroke-width:2px,color:#3b0764
+    classDef app      fill:#fce7f3,stroke:#f472b6,stroke-width:2px,color:#831843
+    classDef cli      fill:#f1f5f9,stroke:#94a3b8,stroke-width:2px,color:#334155
+
+    CORE[HealthOSCore\nlaw · governance · contracts]:::core
+    PROV[HealthOSProviders\nprotocols · FoundationModels · stubs]:::provider
+    AACI[HealthOSAACI\nsession · GOS bindings · subagents]:::runtime
+    MSR[HealthOSMSR\nASL · VDLP · GEM pipeline]:::msr
+    SRT[HealthOSSessionRuntime\norchestration · normalization · bridge]:::runtime
+
+    CLI[HealthOSCLI\nexecutable]:::cli
+    SCRIBE[HealthOSScribeApp\nexecutable · SwiftUI · Liquid Glass]:::app
+    SORTIO[HealthOSSortioApp\nexecutable · scaffold placeholder]:::app
+    CLOUDCLINIC[HealthOSCloudClinicApp\nexecutable · scaffold placeholder]:::app
+
+    CORE --> PROV
+    CORE --> AACI
+    CORE --> MSR
+    PROV --> AACI
+    PROV --> MSR
+    CORE --> SRT
+    AACI --> SRT
+    PROV --> SRT
+    MSR --> SRT
+    CORE --> CLI
+    SRT --> CLI
+    CORE --> SCRIBE
+    SRT --> SCRIBE
+    CORE --> SORTIO
+    CORE --> CLOUDCLINIC
+```
+
+| Target | Kind | Description |
+| :--- | :--- | :--- |
+| `HealthOSCore` | Library | Core law, governance types, storage contracts, GOS types, MSR runtime types, entity model |
+| `HealthOSProviders` | Library | Provider protocol contracts, `AppleFoundationProvider` (FoundationModels), stub providers, model governance |
+| `HealthOSAACI` | Library | AACI runtime, GOS bindings, GOS runtime activation/context/resolution |
+| `HealthOSMSR` | Library | Mental Space Runtime pipeline — ASL, VDLP, GEM executors, provenance metadata |
+| `HealthOSSessionRuntime` | Library | Session orchestration (`SessionRunner`), normalization executor, Scribe bridge adapter |
+| `HealthOSCLI` | Executable | Command-line operator interface for session and GOS lifecycle |
+| `HealthOSScribeApp` | Executable | Minimal Scribe professional workspace validation surface (SwiftUI, macOS 26+) |
+| `HealthOSSortioApp` | Executable | Scaffold placeholder — product-graph representation, no final UI |
+| `HealthOSCloudClinicApp` | Executable | Scaffold placeholder — product-graph representation, no final UI |
+
+---
+
+## 🪟 Native Interface Layer — Liquid Glass Design System
+
+HealthOS native macOS surfaces target macOS 26+ and adopt **Liquid Glass as the design baseline** per `docs/architecture/48-native-macos-ui-design-system-and-app-shells.md`.
+
+Standard SwiftUI/AppKit controls and navigation surfaces (sidebars, toolbars, sheets, `NavigationSplitView`) inherit system Liquid Glass behavior automatically. Custom `glassEffect`, `GlassEffectContainer`, and glass button styles are reserved for app-specific HealthOS surfaces not covered by standard controls.
+
+**Current scaffold state:** `HealthOSScribeApp` uses `GroupBox` + `.thinMaterial` with standard SwiftUI controls. Full Liquid Glass adoption is in progress as the macOS 26+ native app shell matures.
+
+<p align="center">
+  <img src="docs/assets/liquidglass_intro.gif" width="100%" alt="Demonstração do Liquid Glass UI — HealthOS Scribe First Slice">
+</p>
+
+### UI Component Stack
+
+```mermaid
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#f5f3ff', 'primaryBorderColor': '#a78bfa', 'primaryTextColor': '#3b0764', 'clusterBkg': '#fdfbff', 'clusterBorder': '#ddd6fe', 'titleColor': '#0f172a', 'edgeLabelBackground': '#f9f7ff', 'fontFamily': 'ui-rounded, -apple-system, BlinkMacSystemFont, sans-serif'}}}%%
+graph TD
+    classDef law    fill:#dcfce7,stroke:#22c55e,stroke-width:2px,color:#14532d
+    classDef bridge fill:#dbeafe,stroke:#60a5fa,stroke-width:2px,color:#1e3a8a
+    classDef vm     fill:#fef9c3,stroke:#f59e0b,stroke-width:2px,color:#78350f
+    classDef view   fill:#ede9fe,stroke:#8b5cf6,stroke-width:2px,color:#3b0764
+    classDef glass  fill:#fce7f3,stroke:#f472b6,stroke-width:2px,color:#831843
+    classDef sys    fill:#f1f5f9,stroke:#94a3b8,stroke-width:1px,color:#475569
+
+    subgraph LAW["  Core Law + Session Runtime  "]
+        SRT[SessionRunner\norchestrates first-slice flow]:::law
+        BR[ScribeFirstSliceBridge\nMediated state surface]:::bridge
+    end
+
+    subgraph VM["  ViewModel  "]
+        MVM[ScribeFirstSliceViewModel\n@Observable · @MainActor]:::vm
+    end
+
+    subgraph VIEWS["  SwiftUI View Layer  "]
+        RV[ScribeFirstSliceView\nScrollView root]:::view
+        C1[SurfaceSummaryCard\nGroupBox → GlassEffectContainer]:::glass
+        C2[SessionSetupCard\nGroupBox → glass panel]:::glass
+        C3[WorkspaceCard\nGroupBox → glass workspace]:::glass
+        C4[SliceOutputsCard\nOutputBlock · thinMaterial → glassEffect]:::glass
+        C5[IssuesCard\nDegraded state banner]:::glass
+    end
+
+    subgraph SYSUI["  System Liquid Glass (auto)  "]
+        TB[Toolbar]:::sys
+        NV[NavigationSplitView\nsidebar]:::sys
+        SH[Sheet / Panel]:::sys
+    end
+
+    SRT --> BR --> MVM --> RV
+    RV --> C1 & C2 & C3 & C4 & C5
+    TB & NV & SH -->|system-provided glass| RV
+```
+
+### ScribeFirstSliceView — Session Lifecycle & Glass Surfaces
+
+```mermaid
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#f0fdf4', 'primaryBorderColor': '#86efac', 'primaryTextColor': '#14532d', 'edgeLabelBackground': '#f8fafc', 'fontFamily': 'ui-sans-serif, system-ui, -apple-system'}}}%%
+stateDiagram-v2
+    [*] --> Idle : app launch · loadIfNeeded()
+
+    Idle --> Opening : startSession()
+    Opening --> Active : session opened\nhabilitation + consent valid
+    Opening --> Failed : governance deny\nor operational failure
+
+    Active --> Active : submitCapture()\nselectPatient() · requestDraftPreview()
+    Active --> Degraded : transcription unavailable\nor retrieval degraded
+    Active --> GateReview : gate request raised
+
+    Degraded --> GateReview : gate request raised (degraded path)
+
+    GateReview --> Closed : gate approved → final SOAP + provenance
+    GateReview --> Withheld : gate rejected → artifact withheld
+
+    Closed --> [*]
+    Withheld --> [*]
+    Failed --> [*]
+
+    note right of Active
+        Liquid Glass surfaces active:
+        GlassEffectContainer wrapping
+        SessionSetupCard, WorkspaceCard,
+        and SliceOutputsCard
+    end note
+
+    note right of GateReview
+        Gate panel: glass-prominent
+        approve / reject buttons
+        with semantic tint
+    end note
+```
+
+### Liquid Glass Adoption Map (macOS 26+)
+
+| Surface | Current (scaffold) | macOS 26+ target |
+| :--- | :--- | :--- |
+| App window | `WindowGroup` | `WindowGroup` + system auto-glass toolbar |
+| Navigation | flat `VStack` | `NavigationSplitView` with auto-glass sidebar |
+| Session cards | `GroupBox` | `GlassEffectContainer` (one per logical group) |
+| Output blocks | `.thinMaterial` | `glassEffect` modifier |
+| Gate panel | plain `HStack` buttons | Glass-prominent approve/reject with semantic tint |
+| Degraded banner | `.secondary` text | Tinted glass warning surface |
+| Issues list | `ForEach` + `Text` | Grouped in single `GlassEffectContainer` |
+
+> **Rule:** group nearby custom glass elements in one `GlassEffectContainer`. Standard controls and navigation surfaces never need explicit glass modifiers — they adapt automatically on macOS 26+. Keep tint semantic, not decorative.
+
+---
+
+## 📋 Current Repository Posture (April 2026)
 
 This repository is in **controlled implementation / scaffold hardening**:
-- multiple cross-language contracts (Swift/TS/JSON Schema/SQL) are executable
-- Swift governance and boundary suites are present and runnable
-- TypeScript workspace builds; GOS tooling has automated tests
-- first-slice execution exists (CLI + minimal Scribe validation surface)
-
-These are HealthOS components at varied maturity levels. Scaffold-stage components are not a separate product and are not placeholders for another future repository; their maturity must simply be described honestly.
-
-It is **not**:
-- a production-ready product
-- a complete EHR
-- a final UI delivery of Scribe/Sortio/CloudClinic
-- a real regulatory-signature/interoperability integration
-- a real semantic retrieval stack with embeddings/vector index
-- a real external provider deployment (LM/STT/embedding remain scaffold/stub posture)
-
-## 📊 Current Maturity Dashboard
 
 | Layer | Status | Focus |
 | :--- | :--- | :--- |
-| **Core Law** | ✅ Implemented Seam | Invariant-based governance |
-| **GOS Layer** | ✅ Operational Path | Stabilization & Binding |
+| **Core Law** | ✅ Implemented Seam | Invariant-based governance, storage contracts |
+| **GOS Layer** | ✅ Operational Path | Stabilization, bundle binding, compiler tooling |
 | **AACI First Slice** | 🚧 Scaffold Hardening | Boundary enforcement + GOS-mediated derived drafts |
-| **Provider/ML** | ⚠️ Stub/Contract | Deterministic safety |
-| **Apps/UI** | 🧩 Contract-First | Minimal validation surface |
+| **MSR Pipeline** | 🚧 Scaffold | ASL · VDLP · GEM stages, provenance metadata |
+| **Provider / ML** | ⚠️ Stub / Contract | `AppleFoundationProvider` adapter; deterministic safety posture |
+| **Apps / UI** | 🧩 Contract-First | Minimal Scribe validation surface; Sortio/CloudClinic placeholder |
+| **Liquid Glass UI** | 🎯 macOS 26+ Baseline | Design system defined in architecture docs; glass adoption in progress |
+
+**This repository is not:**
+- a production-ready product
+- a complete EHR
+- a final UI delivery of Scribe, Sortio, or CloudClinic
+- a real regulatory-signature or interoperability integration
+- a real semantic retrieval stack with embeddings/vector index
+- a real external provider deployment (LM/STT/embedding remain scaffold/stub posture)
+
+---
+
+## 🚀 Quick Start
+
+```bash
+# Bootstrap all surfaces
+make bootstrap
+
+# Build
+make swift-build
+make ts-build
+make python-check
+
+# Test
+make swift-test
+make ts-test
+
+# Validate contracts and documentation
+make validate-schemas
+make validate-contracts
+make validate-docs
+make validate-all
+```
+
+**Xcode:** open `HealthOS.xcworkspace` from repository root — resolves `swift/Package.swift`.
+
+**Smoke paths:**
+
+```bash
+make smoke-cli
+make smoke-scribe
+make smoke-sortio
+make smoke-cloudclinic
+```
+
+**Direct smoke commands:**
+
+```bash
+cd swift && swift run HealthOSCLI
+cd swift && swift run HealthOSCLI --reject-gate
+cd swift && swift run HealthOSScribeApp --smoke-test
+cd swift && swift run HealthOSScribeApp --smoke-test-audio
+cd swift && swift run HealthOSSortioApp --smoke-test
+cd swift && swift run HealthOSCloudClinicApp --smoke-test
+```
+
+**GOS bundle lifecycle:**
+
+```bash
+cd swift && swift run HealthOSCLI \
+  --gos-review-bundle <bundle-id> \
+  --gos-spec-id <spec-id> \
+  --reviewer-id <id> \
+  --review-rationale "<reason>"
+
+cd swift && swift run HealthOSCLI \
+  --gos-promote-bundle <bundle-id> \
+  --gos-spec-id <spec-id> \
+  --activator-id <id> \
+  --activation-rationale "<reason>"
+```
+
+`HealthOSSortioApp` and `HealthOSCloudClinicApp` are scaffold placeholder executables. They provide honest smoke-testable product-graph representation; they do not implement final UI, session behavior, clinical authority, or production readiness.
+
+---
+
+## 🧩 Cross-Language Contract Discipline
+
+HealthOS is not "just a Swift app" or "just a TypeScript workspace". The same doctrine flows through schemas, Swift, TypeScript, SQL, and execution docs. **When ontology or contracts change, align all four surfaces in the same work unit.**
+
+```mermaid
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#f8fbff', 'primaryBorderColor': '#cadcf0', 'primaryTextColor': '#17324d', 'clusterBkg': '#ffffff', 'clusterBorder': '#dbeafe', 'titleColor': '#0f172a', 'edgeLabelBackground': '#f8fbff', 'fontFamily': 'ui-rounded, -apple-system, BlinkMacSystemFont, sans-serif'}}}%%
+flowchart LR
+    classDef source fill:#ecfeff,stroke:#06b6d4,stroke-width:2px,color:#164e63
+    classDef schema fill:#dcfce7,stroke:#22c55e,stroke-width:2px,color:#14532d
+    classDef swift  fill:#ede9fe,stroke:#8b5cf6,stroke-width:2px,color:#4c1d95
+    classDef ts     fill:#fff7ed,stroke:#f59e0b,stroke-width:2px,color:#7c2d12
+    classDef sql    fill:#fce7f3,stroke:#ec4899,stroke-width:2px,color:#831843
+
+    C[Canonical doctrine\narchitecture + execution docs]:::source
+    J[schemas/\nJSON Schema]:::schema
+    SW[swift/\nCore contracts + services + tests]:::swift
+    TS[ts/\ncontracts + runtimes + tooling]:::ts
+    SQL[sql/migrations/\nmetadata shape]:::sql
+
+    C --> J & SW & TS & SQL
+    J <--> SW
+    J <--> TS
+    SW <--> TS
+    SQL -. when relevant .-> SW
+    SQL -. when relevant .-> TS
+```
+
+---
 
 ## ✨ Reading Paths
 
-Use the README as the entry surface, then branch by intent.
-
-| If you want to... | Start here | Then go to |
+| If you want to… | Start here | Then go to |
 | :--- | :--- | :--- |
-| understand what HealthOS is | `docs/architecture/01-overview.md` | `docs/architecture/19-interface-doctrine.md`, `docs/architecture/46-apple-sovereignty-architecture.md` |
-| understand the executable slice | `docs/architecture/28-first-slice-executable-path.md` | `swift/Sources/HealthOSSessionRuntime/SessionRunner.swift`, `swift/Sources/HealthOSCore/FirstSliceContracts.swift` |
-| understand GOS | `docs/architecture/29-governed-operational-spec.md` | `30-gos-authoring-and-compiler.md`, `31-gos-runtime-binding.md`, `32-gos-bundles-and-lifecycle.md`, `33-gos-app-consumption-patterns.md` |
-| understand MSR | `docs/architecture/49-mental-space-runtime.md` | `docs/execution/skills/mental-space-runtime-skill.md`, `swift/Sources/HealthOSCore/MSRRuntime.swift`, `swift/Tests/HealthOSTests/MentalSpaceRuntimeTests.swift` |
-| understand apps and boundaries | `docs/architecture/11-scribe.md` | `12-sortio.md`, `13-cloudclinic.md`, `23-scribe-screen-contracts.md`, `24-sortio-screen-contracts.md`, `25-cloudclinic-screen-contracts.md`, `43-cross-app-coordination-shared-surfaces.md`, `48-native-macos-ui-design-system-and-app-shells.md` |
-| understand current maturity and gaps | `docs/execution/11-current-maturity-map.md` | `13-scaffold-release-candidate-criteria.md`, `14-final-gap-register.md` |
-| start coding safely | `docs/execution/README.md` | `01-agent-operating-protocol.md`, `02-status-and-tracking.md`, relevant `todo/*.md`, relevant `skills/*.md` |
-| understand Steward for Xcode | `docs/architecture/45-healthos-xcode-agent.md` | `docs/execution/17-healthos-xcode-agent-migration-plan.md`, `.healthos-steward/README.md`, `ts/agent-infra/healthos-steward/README.md` |
-| understand Steward, Settlers, Settlements, and Territories | `docs/architecture/47-steward-settler-engineering-model.md` | `docs/execution/19-settler-model-task-tracker.md`, `.healthos-settler/README.md`, `.healthos-territory/README.md` |
-| see what documentation tasks remain open | `docs/execution/20-documental-todos-work-plan.md` | `docs/execution/prompts/` (phase execution prompts) |
-| see the latest daily status digest | `.healthos-steward/memory/automations/daily-todo-tracker/latest.md` | `docs/execution/02-status-and-tracking.md`, `docs/execution/12-next-agent-handoff.md` |
+| Understand what HealthOS is | `docs/architecture/01-overview.md` | `19-interface-doctrine.md`, `46-apple-sovereignty-architecture.md` |
+| Understand the executable slice | `docs/architecture/28-first-slice-executable-path.md` | `swift/Sources/HealthOSSessionRuntime/SessionRunner.swift`, `swift/Sources/HealthOSCore/FirstSliceContracts.swift` |
+| Understand GOS | `docs/architecture/29-governed-operational-spec.md` | `30-gos-authoring-and-compiler.md` → `33-gos-app-consumption-patterns.md` |
+| Understand MSR | `docs/architecture/49-mental-space-runtime.md` | `swift/Sources/HealthOSMSR/`, `swift/Sources/HealthOSCore/MSRRuntime.swift` |
+| Understand native UI + Liquid Glass | `docs/architecture/48-native-macos-ui-design-system-and-app-shells.md` | `swift/Sources/HealthOSScribeApp/` |
+| Understand Apple sovereignty | `docs/architecture/46-apple-sovereignty-architecture.md` | `swift/Sources/HealthOSProviders/AppleFoundationModelsAdapter.swift` |
+| Understand apps and boundaries | `docs/architecture/11-scribe.md` | `12-sortio.md`, `13-cloudclinic.md`, `43-cross-app-coordination-shared-surfaces.md` |
+| Understand maturity and gaps | `docs/execution/11-current-maturity-map.md` | `13-scaffold-release-candidate-criteria.md`, `14-final-gap-register.md` |
+| Start coding safely | `docs/execution/README.md` | `01-agent-operating-protocol.md`, `02-status-and-tracking.md`, relevant `todo/*.md` |
+| Understand Steward for Xcode | `docs/architecture/45-healthos-xcode-agent.md` | `docs/execution/17-healthos-xcode-agent-migration-plan.md` |
+| See open documentation tasks | `docs/execution/20-documental-todos-work-plan.md` | `docs/execution/prompts/` |
+| See latest daily digest | `.healthos-steward/memory/automations/daily-todo-tracker/latest.md` | `docs/execution/02-status-and-tracking.md` |
 
 ### Visual Reading Map
-
-Liquid Glass guidance from Apple emphasizes hierarchy, grouping, and restrained use of visual emphasis. This README follows that spirit with grouped diagrams and reading paths rather than trying to mimic UI effects in plain markdown.
 
 ```mermaid
 %%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#eef6ff', 'primaryBorderColor': '#b8d7f5', 'primaryTextColor': '#11324d', 'clusterBkg': '#fbfdff', 'clusterBorder': '#d7e7f5', 'titleColor': '#0f172a', 'edgeLabelBackground': '#f8fbff', 'fontFamily': 'ui-rounded, -apple-system, BlinkMacSystemFont, sans-serif'}}}%%
 flowchart TD
-    classDef entry fill:#e8f3ff,stroke:#7db7e8,stroke-width:2px,color:#12324a
-    classDef arch fill:#ecfdf5,stroke:#6fcf97,stroke-width:2px,color:#14532d
-    classDef exec fill:#fff7ed,stroke:#f59e0b,stroke-width:2px,color:#7c2d12
-    classDef code fill:#f5f3ff,stroke:#a78bfa,stroke-width:2px,color:#4c1d95
+    classDef entry   fill:#e8f3ff,stroke:#7db7e8,stroke-width:2px,color:#12324a
+    classDef arch    fill:#ecfdf5,stroke:#6fcf97,stroke-width:2px,color:#14532d
+    classDef exec    fill:#fff7ed,stroke:#f59e0b,stroke-width:2px,color:#7c2d12
+    classDef code    fill:#f5f3ff,stroke:#a78bfa,stroke-width:2px,color:#4c1d95
     classDef steward fill:#fdf2f8,stroke:#ec4899,stroke-width:2px,color:#831843
+    classDef ui      fill:#fdf4ff,stroke:#c084fc,stroke-width:2px,color:#581c87
 
     R[README.md\nEntry Surface]:::entry
 
@@ -160,14 +431,10 @@ flowchart TD
     A2[Execution\nREADME · protocol · status · maturity · gaps]:::exec
     A3[Code Surfaces\nswift · ts · schemas · sql]:::code
     A4[Repository Engineering\nSteward · Settlers · Territories]:::steward
-
     A5[Claude Code Automations\nupdate · digest · sync]:::steward
+    A6[Native UI + Liquid Glass\n48-native-macos-ui · ScribeApp]:::ui
 
-    R --> A1
-    R --> A2
-    R --> A3
-    R --> A4
-    R --> A5
+    R --> A1 & A2 & A3 & A4 & A5 & A6
 
     A1 --> A11[Core law]
     A1 --> A12[GOS]
@@ -179,42 +446,39 @@ flowchart TD
     A3 --> A32[Cross-language contracts]
     A4 --> A41[Steward baseline]
     A4 --> A42[Settler doctrine]
-    A4 --> A43[Territory records]
-    A5 --> A51[update-claude-md]
-    A5 --> A52[daily-todo-tracker]
-    A5 --> A53[sync-work-plan]
+    A6 --> A61[Component contracts]
+    A6 --> A62[Glass adoption path]
 ```
+
+---
 
 ## 🗺️ Repository Atlas
 
-The repository is easier to understand if you read it as four synchronized surfaces: doctrine, execution discipline, executable code, and cross-language contracts.
+The repository is four synchronized surfaces: doctrine, execution discipline, executable code, and cross-language contracts.
 
 ```mermaid
 %%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#f5faff', 'primaryBorderColor': '#c6ddf5', 'primaryTextColor': '#17324d', 'clusterBkg': '#ffffff', 'clusterBorder': '#dbeafe', 'titleColor': '#0f172a', 'edgeLabelBackground': '#f8fbff', 'fontFamily': 'ui-rounded, -apple-system, BlinkMacSystemFont, sans-serif'}}}%%
 graph LR
-    classDef docs fill:#e0f2fe,stroke:#38bdf8,stroke-width:2px,color:#0c4a6e
-    classDef exec fill:#fef3c7,stroke:#f59e0b,stroke-width:2px,color:#78350f
-    classDef code fill:#ede9fe,stroke:#8b5cf6,stroke-width:2px,color:#4c1d95
-    classDef data fill:#dcfce7,stroke:#22c55e,stroke-width:2px,color:#14532d
+    classDef docs  fill:#e0f2fe,stroke:#38bdf8,stroke-width:2px,color:#0c4a6e
+    classDef exec  fill:#fef3c7,stroke:#f59e0b,stroke-width:2px,color:#78350f
+    classDef code  fill:#ede9fe,stroke:#8b5cf6,stroke-width:2px,color:#4c1d95
+    classDef data  fill:#dcfce7,stroke:#22c55e,stroke-width:2px,color:#14532d
     classDef agent fill:#fdf2f8,stroke:#ec4899,stroke-width:2px,color:#831843
 
     D[docs/architecture\nCanonical doctrine]:::docs
     E[docs/execution\nProtocol · status · TODO · handoff]:::exec
     S[schemas + sql\nContract and metadata shape]:::data
-    W[swift/\nCore · AACI · apps · tests]:::code
+    W[swift/\nCore · AACI · MSR · apps · tests]:::code
     T[ts/\ncontracts · runtimes · tooling · steward]:::code
     P[python/\nOffline ML governance scaffolds]:::code
     EG[.healthos-steward\n.healthos-settler\n.healthos-territory]:::agent
-    AU[.claude/automations\nupdate-claude-md\ndaily-todo-tracker · sync-work-plan]:::agent
+    AU[.claude/automations\nupdate-claude-md · daily-todo · sync-work-plan]:::agent
 
-    D -->|defines boundaries for| W
-    D -->|defines boundaries for| T
+    D -->|defines boundaries for| W & T
     D -->|canonical doctrine for| EG
-    E -->|governs work order for| W
-    E -->|governs work order for| T
+    E -->|governs work order for| W & T
     E -->|tracks engineering records for| EG
-    S -->|align with| W
-    S -->|align with| T
+    S -->|align with| W & T
     W -->|first executable slice| T
     P -->|offline-only support posture| W
     EG -. outside clinical/runtime hierarchy .-> D
@@ -222,136 +486,55 @@ graph LR
     AU -->|pushes to| D
 ```
 
-## 🔎 What To Read Next
-
-### If you are new to HealthOS
-
-1. Read `docs/architecture/01-overview.md`.
-2. Read `docs/architecture/19-interface-doctrine.md`.
-3. Read `docs/architecture/46-apple-sovereignty-architecture.md`.
-4. Return here and then continue into the execution docs.
-
-### If you want the runnable system first
-
-1. Read `docs/architecture/28-first-slice-executable-path.md`.
-2. Open `swift/Sources/HealthOSSessionRuntime/SessionRunner.swift`.
-3. Run `make smoke-cli`, `make smoke-scribe`, `make smoke-sortio`, and `make smoke-cloudclinic`.
-4. Then inspect `docs/execution/10-invariant-matrix.md` to understand what the slice is protecting.
-
-### If you want governance first
-
-1. Read `docs/execution/10-invariant-matrix.md`.
-2. Read `docs/execution/06-scaffold-coverage-matrix.md`.
-3. Read `docs/execution/11-current-maturity-map.md`.
-4. Read `docs/execution/14-final-gap-register.md`.
-
-## 🚀 Quick Start
-
-```bash
-make bootstrap
-make swift-build
-make swift-test
-make ts-build
-make ts-test
-make python-check
-make validate-docs
-make validate-schemas
-make validate-contracts
-make validate-all
-```
-
-Xcode entrypoint:
-
-- open `HealthOS.xcworkspace` from repository root
-- the workspace resolves the canonical Swift package at `swift/Package.swift`
-
-Optional local smoke path:
-
-```bash
-make smoke-cli
-make smoke-scribe
-make smoke-sortio
-make smoke-cloudclinic
-```
-
-`HealthOSSortioApp` and `HealthOSCloudClinicApp` are scaffold placeholder executables only. They provide honest smoke-testable product-graph representation; they do not implement final UI, session behavior, clinical authority, or production readiness.
-
-## 🧩 Cross-Language Contract Discipline
-
-HealthOS is intentionally not “just a Swift app” or “just a TypeScript workspace”. The same doctrine is carried through schemas, Swift, TypeScript, SQL shape, and execution docs.
-
-```mermaid
-%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#f8fbff', 'primaryBorderColor': '#cadcf0', 'primaryTextColor': '#17324d', 'clusterBkg': '#ffffff', 'clusterBorder': '#dbeafe', 'titleColor': '#0f172a', 'edgeLabelBackground': '#f8fbff', 'fontFamily': 'ui-rounded, -apple-system, BlinkMacSystemFont, sans-serif'}}}%%
-flowchart LR
-    classDef source fill:#ecfeff,stroke:#06b6d4,stroke-width:2px,color:#164e63
-    classDef schema fill:#dcfce7,stroke:#22c55e,stroke-width:2px,color:#14532d
-    classDef swift fill:#ede9fe,stroke:#8b5cf6,stroke-width:2px,color:#4c1d95
-    classDef ts fill:#fff7ed,stroke:#f59e0b,stroke-width:2px,color:#7c2d12
-    classDef sql fill:#fce7f3,stroke:#ec4899,stroke-width:2px,color:#831843
-
-    C[Canonical doctrine\narchitecture + execution docs]:::source
-    J[schemas/\nJSON Schema]:::schema
-    SW[swift/\nCore contracts + services + tests]:::swift
-    TS[ts/\ncontracts + runtimes + tooling]:::ts
-    SQL[sql/migrations/\nmetadata shape]:::sql
-
-    C --> J
-    C --> SW
-    C --> TS
-    C --> SQL
-    J <--> SW
-    J <--> TS
-    SW <--> TS
-    SQL -. when relevant .-> SW
-    SQL -. when relevant .-> TS
-```
-
-## 🧠 Where agents should start
-
-Read in order before coding:
-1. `README.md`
-2. `docs/execution/README.md`
-3. `docs/execution/00-master-plan.md`
-4. `docs/execution/01-agent-operating-protocol.md`
-5. `docs/execution/02-status-and-tracking.md`
-6. `docs/execution/06-scaffold-coverage-matrix.md`
-7. `docs/execution/10-invariant-matrix.md`
-8. `docs/execution/11-current-maturity-map.md`
-9. `docs/execution/12-next-agent-handoff.md`
-10. `docs/execution/13-scaffold-release-candidate-criteria.md`
-11. `docs/execution/14-final-gap-register.md`
-12. `docs/execution/15-scaffold-finalization-plan.md`
-13. `docs/execution/16-next-10-actions-plan.md`
-14. relevant `docs/execution/todo/*.md`
-15. matching `docs/execution/skills/*.md`
-
-## 📂 Repository map (real, current)
-
-- `docs/architecture/` — canonical architecture/doctrine docs (including GOS, app-boundary, regulatory, and cross-app waves)
-- `docs/execution/` — governed execution protocol, status tracking, coverage, invariants, TODOs, maturity/handoff
-- `schemas/` — JSON Schema contracts/entities and GOS schemas
-- `swift/` — Core, AACI, Providers, first-slice support, CLI, minimal Scribe app, XCTest suites
-- `ts/` — workspace packages (`contracts`, `runtime-async`, `runtime-user-agent`, `mcp-local`, `healthos-gos-tooling`)
-- `python/` — offline ML governance scaffolds only
-- `sql/migrations/001_init.sql` — canonical metadata schema scaffold
-- `ops/` and `scripts/` — local operational scaffolding, bootstrap, network and backup notes
-- `apps/` — interface boundary scaffolds/documentation
-- `.healthos-steward/` — derived Steward state, policies, prompts, and session memory
-- `.healthos-steward/memory/automations/` — automation run logs and daily TODO digests (committed to remote after each run)
-- `.healthos-settler/` — documentation-only Settler profile and Settlement record scaffolds
-- `.healthos-territory/` — documentation-only Territory record scaffolds
-- `.claude/automations/` — Claude Code automation definitions (schedule, prompt, git pattern)
-- `.claude/scheduled_tasks.json` — durable cron job registry
-
-### Code-to-doc orientation
+### Code-to-Doc Orientation
 
 | Surface | Primary docs | Primary code |
 | :--- | :--- | :--- |
 | Core law | `docs/architecture/06-core-services.md`, `05-data-layers.md`, `07-storage-and-sql.md` | `swift/Sources/HealthOSCore/` |
-| AACI and first slice | `docs/architecture/09-aaci.md`, `28-first-slice-executable-path.md` | `swift/Sources/HealthOSAACI/`, `swift/Sources/HealthOSSessionRuntime/` |
-| GOS | `29-governed-operational-spec.md` to `34-gos-review-and-activation-policy.md` | `ts/packages/healthos-gos-tooling/`, `swift/Sources/HealthOSCore/` |
-| Apps/interfaces | `11-scribe.md`, `12-sortio.md`, `13-cloudclinic.md`, `43-cross-app-coordination-shared-surfaces.md`, `48-native-macos-ui-design-system-and-app-shells.md` | `swift/Sources/HealthOSScribeApp/`, `swift/Sources/HealthOSSortioApp/`, `swift/Sources/HealthOSCloudClinicApp/`, app boundary contracts in `swift/Sources/HealthOSCore/` |
-| Steward / Settlers / Territories | `45-healthos-xcode-agent.md`, `46-apple-sovereignty-architecture.md`, `47-steward-settler-engineering-model.md` | `ts/agent-infra/healthos-steward/`, `.healthos-steward/`, `.healthos-settler/`, `.healthos-territory/` |
+| AACI + first slice | `docs/architecture/09-aaci.md`, `28-first-slice-executable-path.md` | `swift/Sources/HealthOSAACI/`, `swift/Sources/HealthOSSessionRuntime/` |
+| MSR | `docs/architecture/49-mental-space-runtime.md` | `swift/Sources/HealthOSMSR/` |
+| GOS | `29-governed-operational-spec.md` → `34-gos-review-and-activation-policy.md` | `ts/packages/healthos-gos-tooling/`, `swift/Sources/HealthOSCore/` |
+| Native UI + Liquid Glass | `docs/architecture/48-native-macos-ui-design-system-and-app-shells.md` | `swift/Sources/HealthOSScribeApp/` |
+| Apps/interfaces | `11-scribe.md`, `12-sortio.md`, `13-cloudclinic.md`, `43-cross-app-coordination-shared-surfaces.md` | `swift/Sources/HealthOSScribeApp/`, `HealthOSSortioApp/`, `HealthOSCloudClinicApp/` |
+| Providers / ML | `docs/architecture/16-providers-and-ml.md`, `27-provider-threshold-policy.md` | `swift/Sources/HealthOSProviders/` |
+| Steward | `45-healthos-xcode-agent.md`, `47-steward-settler-engineering-model.md` | `ts/agent-infra/healthos-steward/`, `.healthos-steward/` |
+
+---
+
+## 📂 Internal Documentation Index
+
+| Module / Folder | README | Focus |
+| :--- | :--- | :--- |
+| `swift/Sources/HealthOSCore/` | [README](swift/Sources/HealthOSCore/README.md) | Core law contracts, governance types, storage, GOS, MSR runtime types, entity model |
+| `swift/Sources/HealthOSScribeApp/` | [README](swift/Sources/HealthOSScribeApp/README.md) | Scribe validation surface, SwiftUI architecture, Liquid Glass adoption path |
+| `swift/Sources/HealthOSMSR/` | [README](swift/Sources/HealthOSMSR/README.md) | Mental Space Runtime pipeline — ASL · VDLP · GEM executors, provenance metadata |
+| `swift/Sources/HealthOSProviders/` | [README](swift/Sources/HealthOSProviders/README.md) | Provider protocol contracts, Apple FoundationModels adapter, stub providers |
+| `docs/architecture/` | [index](docs/architecture/) | 48+ canonical architecture doctrine documents |
+| `docs/execution/` | [README](docs/execution/README.md) | Execution protocol, status tracking, TODO tracker, maturity/handoff |
+| `ts/` | [README](ts/README.md) | TypeScript workspace: contracts, GOS tooling, async runtime, Steward CLI |
+| `.healthos-steward/` | [README](.healthos-steward/README.md) | Steward derived state, session memory, automation logs |
+
+---
+
+## 🗂️ Repository Map (current)
+
+- `docs/architecture/` — canonical architecture and doctrine docs (GOS, app-boundary, regulatory, cross-app, native UI)
+- `docs/execution/` — governed execution protocol, status tracking, coverage, invariants, TODOs, maturity/handoff
+- `schemas/` — JSON Schema entity contracts and GOS schemas
+- `swift/` — Core, AACI, Providers, MSR, SessionRuntime, CLI, Scribe app, XCTest suites
+- `ts/` — workspace packages (`contracts`, `runtime-async`, `runtime-user-agent`, `mcp-local`, `healthos-gos-tooling`, `healthos-steward`)
+- `python/` — offline ML governance scaffolds only
+- `sql/migrations/001_init.sql` — canonical metadata schema scaffold
+- `ops/` and `scripts/` — local operational scaffolding, bootstrap, network and backup notes
+- `apps/` — interface boundary scaffolds/documentation
+- `.healthos-steward/` — derived Steward state, policies, prompts, session memory
+- `.healthos-steward/memory/automations/` — automation run logs and daily TODO digests
+- `.healthos-settler/` — Settler profile scaffolds (documentation only)
+- `.healthos-territory/` — Territory record scaffolds (documentation only)
+- `.claude/automations/` — Claude Code automation definitions
+- `.claude/scheduled_tasks.json` — durable cron job registry
+
+---
 
 ## Steward, Settlers, and Territories
 
@@ -361,89 +544,70 @@ Steward is the canonical engineering agent for this repository. `healthos-stewar
 - Repository-local derived state root: `.healthos-steward/`
 - Current persisted runtime state: `.healthos-steward/memory/sessions/`
 
-Settlers are specialized engineering agent profiles. Settlements are bounded engineering work units. Territories are documented repository domains. The canonical model is `docs/architecture/47-steward-settler-engineering-model.md`.
-
-- Settler documentation root: `.healthos-settler/`
-- Territory documentation root: `.healthos-territory/`
-- Current maturity: documentation scaffold only; no executable Settlers, Settlement schema, Territory loader, or `healthos-mcp` server is implemented.
-
-**Steward for Xcode** is the Xcode-integration posture. Steward for Xcode integrates with Xcode Intelligence as an Apple-controlled engineering runtime surface, while HealthOS contributes instructions, `healthos-mcp`, derived repository memory, and deterministic CLI operations. See `docs/architecture/45-healthos-xcode-agent.md` for target architecture and `docs/execution/17-healthos-xcode-agent-migration-plan.md` for the migration plan.
-
-Codex may support Steward-scoped Xcode-facing repository maintenance as an external executor. That role reviews and proposes PRs for Claude Code automations, scheduled-task definitions, Xcode/Steward instructions, and automation drift. It does not create a new Steward category, does not grant merge authority, and remains outside the HealthOS clinical/runtime hierarchy.
-
-Current deterministic baseline (hard-reset posture — only these CLI commands are implemented today):
-
-`dist/` is not committed. Run `make ts-build` once before invoking the CLI:
+Settlers are specialized engineering agent profiles. Settlements are bounded engineering work units. Territories are documented repository domains. Canonical model: `docs/architecture/47-steward-settler-engineering-model.md`.
 
 ```bash
 make ts-build
 cd ts && npx --yes --workspace @healthos/steward healthos-steward status
 cd ts && npx --yes --workspace @healthos/steward healthos-steward runtime --message "inspect repository posture" --dry-run
-# session requires an existing session id: --id <uuid>
+# session requires an existing session id:
 cd ts && npx --yes --workspace @healthos/steward healthos-steward session --id <session-id>
 ```
 
-Current baseline semantics:
-- `status` reports package identity, required docs, and the session store location.
-- `runtime` records a minimal request/response turn and persists session state under `.healthos-steward/memory/sessions/`.
-- `session` reads one persisted session by id; exits non-zero if `--id` is omitted or no matching session exists.
-
-Target future operations such as `scan-status`, `get-handoff`, `next-task`, `validate-docs`, and `validate-all` belong to the planned deterministic CLI and/or `healthos-mcp` workstreams. They must not be described as delivered until implemented.
-
-`healthos-mcp` is the repository-maintenance MCP server for Steward (doctrine-only; not yet implemented). It is distinct from any future Core-governed runtime MCP servers for clinical or operational automation.
-
-Canonical truth resides in `docs/` and project manifests. Steward memory, Settler scaffolds, Settlement records, and Territory records are derived or instructional engineering surfaces. They are non-clinical, non-constitutional, and non-authorizing.
+Only `status`, `runtime`, and `session` are implemented CLI commands today. Target operations (`scan-status`, `next-task`, `validate-all`, `validate-docs`, `get-handoff`) belong to the planned `healthos-mcp` workstream. Do not describe them as delivered until implemented.
 
 ```mermaid
 %%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#fdf2f8', 'primaryBorderColor': '#f9a8d4', 'primaryTextColor': '#831843', 'clusterBkg': '#ffffff', 'clusterBorder': '#e5e7eb', 'titleColor': '#0f172a', 'edgeLabelBackground': '#f8fafc', 'fontFamily': 'ui-sans-serif, system-ui, -apple-system'}}}%%
 flowchart TD
-    classDef steward fill:#fdf2f8,stroke:#ec4899,stroke-width:2px,color:#831843
-    classDef settler fill:#f5f3ff,stroke:#8b5cf6,stroke-width:2px,color:#4c1d95
+    classDef steward   fill:#fdf2f8,stroke:#ec4899,stroke-width:2px,color:#831843
+    classDef settler   fill:#f5f3ff,stroke:#8b5cf6,stroke-width:2px,color:#4c1d95
     classDef territory fill:#ecfeff,stroke:#06b6d4,stroke-width:2px,color:#164e63
-    classDef docs fill:#ecfdf5,stroke:#22c55e,stroke-width:2px,color:#14532d
-    classDef boundary fill:#f1f5f9,stroke:#94a3b8,stroke-width:2px,color:#334155
+    classDef docs      fill:#ecfdf5,stroke:#22c55e,stroke-width:2px,color:#14532d
+    classDef boundary  fill:#f1f5f9,stroke:#94a3b8,stroke-width:2px,color:#334155
 
     DOCS[Official docs\ncanonical truth]:::docs
     STEW[Steward\ncoordinator]:::steward
     SETT[Settler profiles\nspecialized instructions]:::settler
     WORK[Settlements\nbounded work records]:::settler
     TERR[Territories\nrepository domains]:::territory
-    MCP[healthos-mcp\nrepository maintenance\nnot implemented]:::boundary
+    MCP[healthos-mcp\nrepository maintenance\nnot yet implemented]:::boundary
 
-    DOCS --> STEW
-    DOCS --> TERR
+    DOCS --> STEW & TERR
     STEW -->|frames| WORK
     STEW -->|chooses| SETT
     SETT -->|operates within| TERR
     WORK -->|records scope and validation| DOCS
-    MCP -. future typed repo operations .-> STEW
-    MCP -. future typed repo operations .-> SETT
+    MCP -. future typed repo operations .-> STEW & SETT
 ```
+
+**Steward for Xcode** is the Xcode-integration posture: integrates with Xcode Intelligence as an Apple-controlled engineering runtime surface. See `docs/architecture/45-healthos-xcode-agent.md` for target architecture.
+
+Canonical truth resides in `docs/` and project manifests. Steward memory, Settler scaffolds, Settlement records, and Territory records are derived or instructional engineering surfaces — non-clinical, non-constitutional, and non-authorizing.
+
+---
 
 ## 🤖 Claude Code Automations
 
-Three durable Claude Code automations keep the repository state synchronized and documented. All follow the same **main-first** pattern: pull `origin/main` before reading, write output, then commit and push back to `origin/main`. This means any agent — local or remote — always sees the latest state after a pull.
+Three durable automations keep repository state synchronized. All follow **main-first**: pull `origin/main` → read → write → commit → push. Any agent always sees the latest state after a pull.
 
-Codex maintains a companion local automation for Steward-scoped Xcode-facing maintenance: `$CODEX_HOME/automations/steward-xcode-facing-maintenance/`. It is a review/PR surface for automation definitions and instruction drift, not a replacement for the Claude Code scheduled jobs.
-
-| Automation | Schedule | What it does | Output pushed to main |
+| Automation | Schedule | Function | Output pushed to `main` |
 | :--- | :--- | :--- | :--- |
-| `update-claude-md` | Mon 09:03 | Reviews recent git history, Makefile, and Steward CLI; updates CLAUDE.md with genuinely new commands or patterns | `CLAUDE.md` + memory log |
-| `daily-todo-tracker` | Daily 08:07 | Scans all `todo/*.md`, trackers, and gap register; writes a structured daily status digest | `.healthos-steward/memory/automations/daily-todo-tracker/YYYY-MM-DD.md` + `latest.md` |
-| `sync-work-plan` | Mon/Wed/Fri 08:47 | Builds a truth table for every open documental task; marks completed, unblocks dependencies, surfaces new gaps | `docs/execution/20-documental-todos-work-plan.md` + memory log |
+| `update-claude-md` | Mon 09:03 | Reviews recent git history, Makefile, Steward CLI; updates `CLAUDE.md` with genuinely new commands or patterns | `CLAUDE.md` + memory log |
+| `daily-todo-tracker` | Daily 08:07 | Scans all `todo/*.md`, trackers, gap register; writes structured daily digest | `.healthos-steward/memory/automations/daily-todo-tracker/YYYY-MM-DD.md` + `latest.md` |
+| `sync-work-plan` | Mon/Wed/Fri 08:47 | Builds truth table for every open documental task; marks completed, unblocks dependencies | `docs/execution/20-documental-todos-work-plan.md` + memory log |
 
-Automation definitions: `.claude/automations/` · Cron registry: `.claude/scheduled_tasks.json`
+Definitions: `.claude/automations/` · Registry: `.claude/scheduled_tasks.json`
 
-To run any automation immediately: ask Claude Code directly (e.g. *"rode o daily-todo-tracker agora"*).
+To run any automation immediately: ask Claude Code directly (e.g. *"run the daily-todo-tracker now"*).
 
 ```mermaid
 %%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#f0fdf4', 'primaryBorderColor': '#86efac', 'primaryTextColor': '#14532d', 'clusterBkg': '#fafafa', 'clusterBorder': '#e2e8f0', 'titleColor': '#0f172a', 'edgeLabelBackground': '#f8fafc', 'fontFamily': 'ui-sans-serif, system-ui, -apple-system'}}}%%
 flowchart LR
-    classDef trigger  fill:#f0fdf4,stroke:#22c55e,stroke-width:2px,color:#14532d
-    classDef git      fill:#dbeafe,stroke:#3b82f6,stroke-width:2px,color:#1e3a8a
-    classDef read     fill:#fef9c3,stroke:#f59e0b,stroke-width:2px,color:#78350f
-    classDef write    fill:#ede9fe,stroke:#8b5cf6,stroke-width:2px,color:#4c1d95
-    classDef mem      fill:#fce7f3,stroke:#ec4899,stroke-width:2px,color:#831843
+    classDef trigger fill:#f0fdf4,stroke:#22c55e,stroke-width:2px,color:#14532d
+    classDef git     fill:#dbeafe,stroke:#3b82f6,stroke-width:2px,color:#1e3a8a
+    classDef read    fill:#fef9c3,stroke:#f59e0b,stroke-width:2px,color:#78350f
+    classDef write   fill:#ede9fe,stroke:#8b5cf6,stroke-width:2px,color:#4c1d95
+    classDef mem     fill:#fce7f3,stroke:#ec4899,stroke-width:2px,color:#831843
 
     CRON[Cron trigger\nor manual request]:::trigger
     STASH[stash + checkout main\ngit pull origin main]:::git
@@ -458,11 +622,11 @@ flowchart LR
     MEM --> COMMIT
 ```
 
-### Documental work plan
+### Documental Work Plan
 
-`docs/execution/20-documental-todos-work-plan.md` is the living plan for all open documentation tasks (9 tasks across 3 phases). It is kept synchronized by the `sync-work-plan` automation.
+`docs/execution/20-documental-todos-work-plan.md` is the living plan for all open documentation tasks. Kept synchronized by the `sync-work-plan` automation.
 
-Phase execution prompts (self-contained, ready for any AI agent) live in `docs/execution/prompts/`:
+Phase execution prompts in `docs/execution/prompts/`:
 
 | Prompt file | Phase | Tasks |
 | :--- | :--- | :--- |
@@ -470,22 +634,49 @@ Phase execution prompts (self-contained, ready for any AI agent) live in `docs/e
 | `phase-2-architecture-proposals.md` | Phase 2 | CL-006 Error envelope · OPS-003 Incident command set · ST-004 healthos-mcp spec |
 | `phase-3-xcode-agent-streams.md` | Phase 3 | Stream C tool contracts · Stream D backend contract · Stream F Xcode envelope |
 
-## Canonical hierarchy
+---
+
+## 🧠 Where Agents Should Start
+
+Read in order before coding:
+
+1. `README.md` (this file)
+2. `docs/execution/README.md`
+3. `docs/execution/00-master-plan.md`
+4. `docs/execution/01-agent-operating-protocol.md`
+5. `docs/execution/02-status-and-tracking.md`
+6. `docs/execution/06-scaffold-coverage-matrix.md`
+7. `docs/execution/10-invariant-matrix.md`
+8. `docs/execution/11-current-maturity-map.md`
+9. `docs/execution/12-next-agent-handoff.md`
+10. `docs/execution/13-scaffold-release-candidate-criteria.md`
+11. `docs/execution/14-final-gap-register.md`
+12. `docs/execution/15-scaffold-finalization-plan.md`
+13. `docs/execution/16-next-10-actions-plan.md`
+14. relevant `docs/execution/todo/*.md`
+15. matching `docs/execution/skills/*.md`
+16. if touching Swift/SwiftUI/Xcode: `docs/architecture/48-native-macos-ui-design-system-and-app-shells.md` and matching `docs/execution/skills/<name>/SKILL.md`
+
+---
+
+## Canonical Hierarchy
 
 ```text
 Material substrate
   └─ host, storage, private network/mesh, backups
+     (APFS + FileVault + Secure Enclave key custody)
 HealthOS Core
   └─ law/governance (identity, consent, habilitation, storage, provenance, gate, audit)
 Governed Operational Spec (GOS)
   └─ operational translation layer subordinate to Core
 HealthOS Runtimes
-  ├─ AACI runtime
-  ├─ Async runtime
-  └─ User-Agent runtime
+  ├─ AACI runtime (session · first slice · subagents)
+  ├─ Async runtime (jobs · retry · backpressure)
+  ├─ MSR runtime (ASL · VDLP · GEM pipeline)
+  └─ User-Agent runtime (patient-facing interactions)
 Actors / Agents
   └─ bounded actors and role-governed agents
-Apps / Interfaces
+Apps / Interfaces  (macOS 26+ · Liquid Glass design baseline)
   ├─ Scribe (professional workspace)
   ├─ Sortio (patient sovereignty)
   └─ CloudClinic (service operations)
@@ -493,16 +684,18 @@ Artifacts / Effects
   └─ drafts, gate records, final artifacts, provenance/audit traces
 ```
 
-## Maturity snapshot by layer
+## Maturity Snapshot by Layer
 
-Use `docs/execution/11-current-maturity-map.md` for full detail. Short view:
-- Core law + storage governance: **implemented seam / tested operational path (local scaffold)**
-- GOS authoring/compiler/lifecycle: **implemented seam / tested operational path (scaffold hardening)**
-- AACI + first slice orchestration: **implemented seam / tested operational path (bounded scope)**
+Full detail: `docs/execution/11-current-maturity-map.md`.
 
-## Scaffold/foundation phase closure references
+- **Core law + storage governance:** implemented seam / tested operational path (local scaffold)
+- **GOS authoring/compiler/lifecycle:** implemented seam / tested operational path (scaffold hardening)
+- **AACI + first slice orchestration:** implemented seam / tested operational path (bounded scope)
+- **MSR pipeline:** scaffold — executors present, provenance metadata defined, provider integration pending
+- **Liquid Glass UI:** design baseline established; native macOS 26+ adoption in progress
 
-For final scaffold/foundation phase closure auditing and handoff discipline, use:
+## Scaffold/Foundation Phase Closure References
+
 - `docs/execution/13-scaffold-release-candidate-criteria.md`
 - `docs/execution/14-final-gap-register.md`
 - `docs/execution/15-scaffold-finalization-plan.md`

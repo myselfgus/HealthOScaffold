@@ -29,63 +29,79 @@ HealthOS is the full platform. **AACI is one runtime inside HealthOS. GOS is a g
 
 HealthOS is a governance-first platform. Every clinical act flows through a strictly layered, consent- and provenance-governed fabric. Apps and interfaces consume only mediated surfaces — they never become law engines.
 
-Steward, Settlers, Settlements, Territories, and `healthos-mcp` are repository engineering concepts outside this clinical/runtime hierarchy. They inspect, edit, validate, and record repository work. They do not become HealthOS law, runtime automation, or clinical effectuation.
+Steward, Settlers, Settlements, Territories, and `healthos-mcp` are repository engineering concepts **outside** this clinical/runtime hierarchy. They inspect, edit, validate, and record repository work. They do not become HealthOS law, runtime automation, or clinical effectuation.
 
 ```mermaid
 %%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#f0f9ff', 'primaryBorderColor': '#bae6fd', 'primaryTextColor': '#0c4a6e', 'clusterBkg': '#fafafa', 'clusterBorder': '#e2e8f0', 'titleColor': '#0f172a', 'edgeLabelBackground': '#f8fafc', 'fontFamily': 'ui-sans-serif, system-ui, -apple-system'}}}%%
 graph TD
-    classDef iface     fill:#dbeafe,stroke:#60a5fa,stroke-width:2px,color:#1e3a8a
-    classDef gos       fill:#fef9c3,stroke:#f59e0b,stroke-width:2px,color:#78350f
-    classDef runtime   fill:#e0f2fe,stroke:#0ea5e9,stroke-width:2px,color:#0c4a6e
-    classDef core      fill:#dcfce7,stroke:#22c55e,stroke-width:2px,color:#14532d
+    classDef iface    fill:#dbeafe,stroke:#60a5fa,stroke-width:2px,color:#1e3a8a
+    classDef gos      fill:#fef9c3,stroke:#f59e0b,stroke-width:2px,color:#78350f
+    classDef session  fill:#f0fdf4,stroke:#16a34a,stroke-width:2px,color:#14532d
+    classDef swift    fill:#e0f2fe,stroke:#0ea5e9,stroke-width:2px,color:#0c4a6e
+    classDef tsrt     fill:#fff7ed,stroke:#ea580c,stroke-width:2px,color:#7c2d12
+    classDef provider fill:#f5f3ff,stroke:#a78bfa,stroke-width:2px,color:#3b0764
+    classDef core     fill:#dcfce7,stroke:#22c55e,stroke-width:2px,color:#14532d
     classDef substrate fill:#f1f5f9,stroke:#94a3b8,stroke-width:2px,color:#334155
 
     subgraph IFACE["  Interfaces  "]
-        SC[Scribe\nProfessional Workspace]
+        SC[Scribe\nSwiftUI - macOS 26+]
         SO[Sortio\nPatient Sovereignty]
         CC[CloudClinic\nService Operations]
     end
 
     subgraph GOS_L["  GOS — Governed Operational Spec  "]
-        GOS[Compiler · Validator · Lifecycle\nRuntime Mediation · Bundle Binding]
+        GOS[Compiler - Validator - Bundler\nTypeScript tooling + Swift runtime consumption\nBundle lifecycle - AACI binding]
     end
 
-    subgraph RT["  Runtimes  "]
-        AACI[AACI Runtime\nSession · First Slice · Subagents]
-        ASYNC[Async Runtime\nJobs · Retry · Backpressure]
-        UA[User-Agent Runtime\nPatient-Facing Interactions]
+    subgraph SRT_L["  Session Runtime — Swift  "]
+        SR[SessionRunner\nFirst-slice orchestrator - Swift actor\nHabilitation - Consent - Capture - Gate]
+    end
+
+    subgraph SWIFT_L["  Swift Runtimes  "]
+        AACI[AACI\nCapture - Transcription\nDraft composition - GOS binding]
+        MSR[MSR\nASL - VDLP - GEM\nSemantic enrichment - Provenance]
+        PROV[Providers\nFoundationModels - ProviderRouter\nStubs - Capability profiles]
+    end
+
+    subgraph TS_L["  TypeScript Runtimes  "]
+        ASYNC[Async Runtime\nJobs - Idempotency\nRetry - Dead-lettering]
+        UA[User-Agent Runtime\nPatient-governed queries\nProhibited-capability enforcement]
+        SVC[Service Runtime\nCloudClinic envelope adapter\nLegalAuthorizing guard]
     end
 
     subgraph CORE_L["  Core Law  "]
-        ID[Identity &\nHabilitation]
-        CO[Consent &\nFinalidade]
-        PR[Provenance &\nAudit]
-        GA[Gate &\nFinalization]
+        ID[Identity\nHabilitation]
+        CO[Consent\nFinalidade]
+        PR[Provenance\nAudit]
+        GA[Gate\nFinalization]
     end
 
     subgraph SUB["  Material Substrate  "]
-        ST[Storage · SQL · File-Backed\nAPFS + FileVault + Secure Enclave]
-        NE[Mesh · VPN · Network]
+        ST[Storage - File-backed\nAPFS + FileVault + Secure Enclave]
+        NE[Mesh - VPN - Network]
     end
 
-    SC -->|mediated surfaces| GOS
-    SO -->|mediated surfaces| GOS
-    CC -->|mediated surfaces| GOS
-    GOS -->|runtime binding| AACI
-    GOS -->|runtime binding| ASYNC
-    GOS -->|runtime binding| UA
-    AACI -->|lawful-context required| ID
-    AACI -->|lawful-context required| CO
-    AACI -->|lawful-context required| PR
-    AACI -->|lawful-context required| GA
-    ASYNC -->|lawful-context required| ID
-    ASYNC -->|lawful-context required| CO
-    ASYNC -->|lawful-context required| PR
-    ASYNC -->|lawful-context required| GA
-    UA -->|lawful-context required| ID
-    UA -->|lawful-context required| CO
-    UA -->|lawful-context required| PR
-    UA -->|lawful-context required| GA
+    SC -->|mediated surface| GOS
+    SO -->|mediated surface| GOS
+    CC -->|mediated surface| GOS
+    GOS -->|runtime binding| SR
+    SR --> AACI
+    SR --> MSR
+    AACI --> PROV
+    MSR --> PROV
+    SR -->|lawful-context| ID
+    SR -->|lawful-context| CO
+    SR -->|lawful-context| PR
+    SR -->|lawful-context| GA
+    AACI -->|lawful-context| ID
+    AACI -->|lawful-context| GA
+    MSR -->|lawful-context| PR
+    ASYNC -->|lawful-context| CO
+    ASYNC -->|lawful-context| PR
+    UA -->|lawful-context| CO
+    UA -->|lawful-context| PR
+    SVC -->|lawful-context| ID
+    SVC -->|lawful-context| CO
     ID --> ST
     ID --> NE
     CO --> ST
@@ -97,7 +113,10 @@ graph TD
 
     class SC,SO,CC iface
     class GOS gos
-    class AACI,ASYNC,UA runtime
+    class SR session
+    class AACI,MSR swift
+    class PROV provider
+    class ASYNC,UA,SVC tsrt
     class ID,CO,PR,GA core
     class ST,NE substrate
 ```

@@ -5,7 +5,7 @@ import XCTest
 @testable import HealthOSSessionRuntime
 @testable import HealthOSMSR
 
-final class MentalSpaceRuntimeTests: XCTestCase {
+final class MSRRuntimeTests: XCTestCase {
     func testPipelineOrderingBlocksDownstreamStagesUntilPrerequisitesExist() throws {
         let empty = MSRRunArtifacts()
 
@@ -18,7 +18,7 @@ final class MentalSpaceRuntimeTests: XCTestCase {
         }
     }
 
-    func testMentalSpaceAsyncJobKindsUseExistingGovernedRuntimeSubstrate() async throws {
+    func testMSRAsyncJobKindsUseExistingGovernedRuntimeSubstrate() async throws {
         let runtime = InMemoryAsyncJobRuntime()
         let job = AsyncJobDescriptor(
             kind: .msrASL,
@@ -66,7 +66,7 @@ final class MentalSpaceRuntimeTests: XCTestCase {
         XCTAssertEqual(result.providerExecution?.status, ProviderExecutionStatus.stubOnly.rawValue)
     }
 
-    func testFirstSlicePersistsNormalizedTranscriptAsDerivedMentalSpaceArtifact() async throws {
+    func testFirstSlicePersistsNormalizedTranscriptAsDerivedMSRArtifact() async throws {
         let root = makeTempRoot()
         try DirectoryLayout.bootstrap(at: root)
         let router = ProviderRouter()
@@ -96,7 +96,7 @@ final class MentalSpaceRuntimeTests: XCTestCase {
         XCTAssertEqual(artifact.sourceTranscriptObjectRef.objectPath, transcriptRef.objectPath)
     }
 
-    func testScribeBridgeShowsMentalSpaceStatusWithoutRawArtifactPayload() async throws {
+    func testScribeBridgeShowsMSRStatusWithoutRawArtifactPayload() async throws {
         let root = makeTempRoot()
         try DirectoryLayout.bootstrap(at: root)
         let router = ProviderRouter()
@@ -165,7 +165,7 @@ private struct LocalNormalizerProvider: LanguageModelProvider {
 }
 
 
-extension MentalSpaceRuntimeTests {
+extension MSRRuntimeTests {
     func testASLExecutorFailsOnEmptyInput() async throws {
         let router = ProviderRouter()
         try await router.register(MockASLProvider(validJSON: true, isStub: false))
@@ -249,7 +249,7 @@ private extension XCTestCase {
 }
 
 
-extension MentalSpaceRuntimeTests {
+extension MSRRuntimeTests {
     func testVDLPExecutorFailsWhenASLMissing() async throws {
         let router = ProviderRouter()
         try await router.register(MockVDLPProvider(isStub: false))
@@ -331,7 +331,7 @@ private struct MockVDLPProvider: LanguageModelProvider {
 }
 
 
-extension MentalSpaceRuntimeTests {
+extension MSRRuntimeTests {
     func testGEMBuilderFailsWhenASLOrVDLPMissing() async throws {
         let router = ProviderRouter()
         try await router.register(MockGEMProvider(isStub: false))

@@ -112,6 +112,7 @@ Workflow notes from recent repository use:
 - Before implementation work, `git fetch origin --prune`, confirm `main` equals `origin/main`, then create a fresh task branch.
 - Serialize SwiftPM validation commands; concurrent Swift builds/runs can contend on `.build` locks.
 - For documentation-only work, run `make validate-docs` and `git diff --check`; if a broader gate fails, record the exact failing gate instead of weakening the validation claim.
+- `make validate-docs` checks documentation/reference consistency; it does not prove that claimed CLI commands or package source paths exist. Verify executable command claims with the package source and a smoke run, or add a short TODO instead of documenting them as delivered.
 
 ## Cross-language contract discipline
 
@@ -146,6 +147,8 @@ cd ts && npx --yes --workspace @healthos/steward healthos-steward status
 cd ts && npx --yes --workspace @healthos/steward healthos-steward runtime
 cd ts && npx --yes --workspace @healthos/steward healthos-steward session
 ```
+
+Treat `status`, `runtime`, and `session` as the only implemented `healthos-steward` CLI commands unless `ts/agent-infra/healthos-steward/src/` and a local smoke run prove otherwise. Do not describe `scan-status`, `next-task`, `validate-docs`, `validate-all`, or other target repository-maintenance operations as delivered CLI behavior until implemented.
 
 Codex, Claude Code, and other external coding assistants are external executors operating on this repository. They are not internal Steward providers.
 

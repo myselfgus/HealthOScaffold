@@ -68,10 +68,32 @@ graph TD
         NE[Mesh · VPN · Network]
     end
 
-    SC & SO & CC -->|mediated surfaces| GOS
-    GOS -->|runtime binding| AACI & ASYNC & UA
-    AACI & ASYNC & UA -->|lawful-context required| ID & CO & PR & GA
-    ID & CO & PR & GA --> ST & NE
+    SC -->|mediated surfaces| GOS
+    SO -->|mediated surfaces| GOS
+    CC -->|mediated surfaces| GOS
+    GOS -->|runtime binding| AACI
+    GOS -->|runtime binding| ASYNC
+    GOS -->|runtime binding| UA
+    AACI -->|lawful-context required| ID
+    AACI -->|lawful-context required| CO
+    AACI -->|lawful-context required| PR
+    AACI -->|lawful-context required| GA
+    ASYNC -->|lawful-context required| ID
+    ASYNC -->|lawful-context required| CO
+    ASYNC -->|lawful-context required| PR
+    ASYNC -->|lawful-context required| GA
+    UA -->|lawful-context required| ID
+    UA -->|lawful-context required| CO
+    UA -->|lawful-context required| PR
+    UA -->|lawful-context required| GA
+    ID --> ST
+    ID --> NE
+    CO --> ST
+    CO --> NE
+    PR --> ST
+    PR --> NE
+    GA --> ST
+    GA --> NE
 
     class SC,SO,CC iface
     class GOS gos
@@ -90,7 +112,9 @@ flowchart LR
     classDef govern   fill:#dcfce7,stroke:#22c55e,stroke-width:2px,color:#14532d
     classDef capture  fill:#dbeafe,stroke:#60a5fa,stroke-width:2px,color:#1e3a8a
     classDef gos      fill:#fef9c3,stroke:#f59e0b,stroke-width:2px,color:#78350f
-    classDef draft    fill:#ede9fe,stroke:#a78bfa,stroke-width:2px,color:#3b0764
+    classDef norm     fill:#ecfeff,stroke:#06b6d4,stroke-width:2px,color:#164e63
+    classDef msr      fill:#ede9fe,stroke:#a78bfa,stroke-width:2px,color:#3b0764
+    classDef draft    fill:#fdf4ff,stroke:#c084fc,stroke-width:2px,color:#581c87
     classDef gate     fill:#fce7f3,stroke:#f472b6,stroke-width:2px,color:#831843
     classDef final    fill:#d1fae5,stroke:#34d399,stroke-width:2px,color:#065f46
     classDef terminal fill:#f1f5f9,stroke:#94a3b8,stroke-width:2px,color:#475569
@@ -98,9 +122,11 @@ flowchart LR
     HAB[Habilitation\nValidate]:::govern
     CON[Consent\nValidate]:::govern
     SES[Session\nStart]:::capture
+    GOS_ACT[GOS Activation\nBundle · Binding Plan]:::gos
     CAP[Capture\nAudio · Text]:::capture
     TRA[Transcription\nready · degraded · unavailable]:::capture
-    GOS_ACT[GOS Activation\nBundle · Binding Plan]:::gos
+    NORM[Transcript\nNormalization]:::norm
+    MSR[MSR Pipeline\nASL · VDLP · GEM]:::msr
     RET[Retrieval\nContext Package]:::capture
     SOAP[SOAP Draft\nCompose]:::draft
     DER[Referral · Prescription\nDerived Drafts]:::draft
@@ -109,7 +135,12 @@ flowchart LR
     FIN[Final SOAP\n+ Provenance]:::final
     STOP([withheld]):::terminal
 
-    HAB --> CON --> SES --> CAP --> TRA --> GOS_ACT --> RET --> SOAP --> DER --> GR --> GV
+    HAB --> CON --> SES --> GOS_ACT --> CAP --> TRA --> NORM
+    NORM --> MSR
+    NORM --> RET
+    MSR --> SOAP
+    RET --> SOAP
+    SOAP --> DER --> GR --> GV
     GV -->|approved| FIN
     GV -->|rejected| STOP
 ```
@@ -196,33 +227,30 @@ graph TD
     classDef glass  fill:#fce7f3,stroke:#f472b6,stroke-width:2px,color:#831843
     classDef sys    fill:#f1f5f9,stroke:#94a3b8,stroke-width:1px,color:#475569
 
-    subgraph LAW["  Core Law + Session Runtime  "]
-        SRT[SessionRunner\norchestrates first-slice flow]:::law
-        BR[ScribeFirstSliceBridge\nMediated state surface]:::bridge
-    end
+    SRT[SessionRunner\norchestration]:::law
+    BR[ScribeFirstSliceBridge\nMediated state]:::bridge
+    MVM[ScribeFirstSliceViewModel\n@Observable · @MainActor]:::vm
 
-    subgraph VM["  ViewModel  "]
-        MVM[ScribeFirstSliceViewModel\n@Observable · @MainActor]:::vm
-    end
-
-    subgraph VIEWS["  SwiftUI View Layer  "]
-        RV[ScribeFirstSliceView\nScrollView root]:::view
+    subgraph VIEWS["  SwiftUI View Layer — HealthOSScribeApp  "]
+        APP[WindowGroup\nScribe First Slice]:::view
+        ROOT[ScribeFirstSliceView\nScrollView root]:::view
         C1[SurfaceSummaryCard\nGroupBox → GlassEffectContainer]:::glass
         C2[SessionSetupCard\nGroupBox → glass panel]:::glass
         C3[WorkspaceCard\nGroupBox → glass workspace]:::glass
         C4[SliceOutputsCard\nOutputBlock · thinMaterial → glassEffect]:::glass
         C5[IssuesCard\nDegraded state banner]:::glass
+        SYSGL[System glass auto-applied\nToolbar · NavigationSplitView · Sheet]:::sys
     end
 
-    subgraph SYSUI["  System Liquid Glass (auto)  "]
-        TB[Toolbar]:::sys
-        NV[NavigationSplitView\nsidebar]:::sys
-        SH[Sheet / Panel]:::sys
-    end
-
-    SRT --> BR --> MVM --> RV
-    RV --> C1 & C2 & C3 & C4 & C5
-    TB & NV & SH -->|system-provided glass| RV
+    SRT --> BR
+    BR --> MVM
+    MVM --> APP
+    APP --> ROOT
+    ROOT --> C1
+    ROOT --> C2
+    ROOT --> C3
+    ROOT --> C4
+    ROOT --> C5
 ```
 
 ### ScribeFirstSliceView — Session Lifecycle & Glass Surfaces
@@ -474,11 +502,14 @@ graph LR
     EG[.healthos-steward\n.healthos-settler\n.healthos-territory]:::agent
     AU[.claude/automations\nupdate-claude-md · daily-todo · sync-work-plan]:::agent
 
-    D -->|defines boundaries for| W & T
+    D -->|defines boundaries for| W
+    D -->|defines boundaries for| T
     D -->|canonical doctrine for| EG
-    E -->|governs work order for| W & T
+    E -->|governs work order for| W
+    E -->|governs work order for| T
     E -->|tracks engineering records for| EG
-    S -->|align with| W & T
+    S -->|align with| W
+    S -->|align with| T
     W -->|first executable slice| T
     P -->|offline-only support posture| W
     EG -. outside clinical/runtime hierarchy .-> D
@@ -572,12 +603,14 @@ flowchart TD
     TERR[Territories\nrepository domains]:::territory
     MCP[healthos-mcp\nrepository maintenance\nnot yet implemented]:::boundary
 
-    DOCS --> STEW & TERR
+    DOCS --> STEW
+    DOCS --> TERR
     STEW -->|frames| WORK
     STEW -->|chooses| SETT
     SETT -->|operates within| TERR
     WORK -->|records scope and validation| DOCS
-    MCP -. future typed repo operations .-> STEW & SETT
+    MCP -. future typed repo operations .-> STEW
+    MCP -. future typed repo operations .-> SETT
 ```
 
 **Steward for Xcode** is the Xcode-integration posture: integrates with Xcode Intelligence as an Apple-controlled engineering runtime surface. See `docs/architecture/45-healthos-xcode-agent.md` for target architecture.

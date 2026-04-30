@@ -91,7 +91,7 @@ Constraint: WS-2 is Phase B work. Doc 45 describes the target boundary. This pla
 
 ### WS-3: Deterministic CLI consolidation
 
-Objective: keep `ts/packages/healthos-steward` narrow, deterministic, and CI-safe, while expanding the current hard-reset baseline into explicit repository-maintenance operations over time.
+Objective: keep `ts/agent-infra/healthos-steward` narrow, deterministic, and CI-safe, while expanding the current hard-reset baseline into explicit repository-maintenance operations over time.
 
 Actions:
 - preserve the current baseline commands (`status`, `runtime`, `session`) until replacement operations are implemented
@@ -142,7 +142,7 @@ Phase B may be executed in any order across WS-1, WS-2, WS-3. WS-1 is recommende
 ### Phase C: Steward retirement
 
 Outputs:
-- old provider and prompt orchestration in `ts/packages/healthos-steward` deprecated or removed
+- old provider and prompt orchestration in `ts/agent-infra/healthos-steward` deprecated or removed
 - deterministic CLI retained, renamed, or absorbed into the MCP server implementation as appropriate
 - `docs/architecture/44-project-steward-agent.md` retained as historical reference; not deleted
 - all active docs updated to reflect the current target (no references to the old 7-workstream custom runtime plan as a pending target)

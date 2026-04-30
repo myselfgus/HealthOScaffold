@@ -1,7 +1,7 @@
 {
   "name": "healthos-ts-workspace",
   "private": true,
-  "workspaces": ["packages/*"],
+  "workspaces": ["packages/*", "agent-infra/*"],
   "scripts": {
     "build": "npm run build --workspaces"
   }

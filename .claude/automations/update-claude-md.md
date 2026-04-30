@@ -17,7 +17,7 @@ Atualize o CLAUDE.md com workflows, comandos e padrões descobertos recentemente
 3. Verifique se alguma dessas coisas mudou e está ausente do CLAUDE.md:
    - Novos targets `make` (verifique o `Makefile` por adições desde o último run)
    - Novos documentos canônicos em `docs/execution/` (novos arquivos numerados)
-   - Novos comandos da CLI do Steward (`ts/packages/healthos-steward/src/cli.ts`)
+   - Novos comandos da CLI do Steward (`ts/agent-infra/healthos-steward/src/cli.ts`)
    - Novas convenções de nomeação de branch observadas no git log
    - Novos invariantes ou seções de governança adicionados ao CLAUDE.md do repositório
 4. Se e somente se algo genuíno estiver faltando: faça a edição mínima necessária.

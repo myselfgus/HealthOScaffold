@@ -1288,7 +1288,7 @@ Title format: `chore(closure): sync entry and execution docs for scaffold-rc-1 t
 - Phase: Post-scaffold hardening
 - Priority: Low
 - Skill: `docs/execution/skills/project-steward-skill.md`
-- Owner modules: `ts/packages/healthos-steward/src/providers/*` and tests.
+- Owner modules: `ts/agent-infra/healthos-steward/src/providers/*` and tests.
 - Scope:
   - Improve adapter-specific error typing for OpenAI/Anthropic/xAI
     (auth error vs rate-limit vs schema-mismatch vs network vs server).
@@ -1301,10 +1301,10 @@ Title format: `chore(closure): sync entry and execution docs for scaffold-rc-1 t
   - Consistent output extraction across providers.
   - Tests cover new error paths via mocked `fetch` only.
 - Files expected to change:
-  - `ts/packages/healthos-steward/src/providers/openai.ts`
-  - `ts/packages/healthos-steward/src/providers/anthropic.ts`
-  - `ts/packages/healthos-steward/src/providers/xai.ts`
-  - `ts/packages/healthos-steward/test/providers.test.mjs`
+  - `ts/agent-infra/healthos-steward/src/providers/openai.ts`
+  - `ts/agent-infra/healthos-steward/src/providers/anthropic.ts`
+  - `ts/agent-infra/healthos-steward/src/providers/xai.ts`
+  - `ts/agent-infra/healthos-steward/test/providers.test.mjs`
   - `docs/architecture/44-project-steward-agent.md`
   - `docs/execution/02-status-and-tracking.md`
 - Validation:
@@ -1320,12 +1320,12 @@ Title format: `chore(closure): sync entry and execution docs for scaffold-rc-1 t
 T10 is **already completed** (2026-04-27, ML-008). Do not re-implement.
 
 If you need the implementation reference, read:
-- `ts/packages/healthos-steward/src/providers/types.ts` — expanded
+- `ts/agent-infra/healthos-steward/src/providers/types.ts` — expanded
   `StewardLLMFailure['errorKind']` union (17 cases) and `StewardReviewMetadata`
-- `ts/packages/healthos-steward/src/providers/utils.ts` — mode-aware
+- `ts/agent-infra/healthos-steward/src/providers/utils.ts` — mode-aware
   extractors, `classifyHttpError`, `classifyNetworkError`,
   `formatStewardReviewComment`
-- `ts/packages/healthos-steward/test/providers.test.mjs` — 33 test cases
+- `ts/agent-infra/healthos-steward/test/providers.test.mjs` — 33 test cases
 - `docs/execution/todo/ops-network-ml.md` ML-008 entry for outcome summary
 
 If a follow-up steward task is needed, derive it as a new task and do not

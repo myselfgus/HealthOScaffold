@@ -15,7 +15,7 @@ Canonical architecture docs:
 - `docs/execution/17-healthos-xcode-agent-migration-plan.md`
 
 Current implementation root:
-- `ts/packages/healthos-steward/`
+- `ts/agent-infra/healthos-steward/`
 
 ## Current truth
 
@@ -134,6 +134,6 @@ Goal:
 ### 2026-04-27
 - tracker created
 - target architecture and migration docs created
-- package `ts/packages/healthos-steward/` hard-reset from scratch
+- package `ts/agent-infra/healthos-steward/` hard-reset from scratch
 - new runtime/session baseline created
 - session storage directory established at `.healthos-steward/memory/sessions/`

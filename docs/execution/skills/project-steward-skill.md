@@ -19,7 +19,7 @@ Use `HealthOS Xcode Agent` and `Xcode Agent` only as historical/descriptive refe
 
 ## Scope
 
-- `ts/packages/healthos-steward/`
+- `ts/agent-infra/healthos-steward/`
 - `.healthos-steward/`
 - `CLAUDE.md` and `AGENTS.md` (Steward sections)
 - `docs/architecture/44-project-steward-agent.md` (historical reference only)

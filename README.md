@@ -453,6 +453,7 @@ flowchart LR
 | If you want to… | Start here | Then go to |
 | :--- | :--- | :--- |
 | Understand what HealthOS is | `docs/architecture/01-overview.md` | `19-interface-doctrine.md`, `46-apple-sovereignty-architecture.md` |
+| Understand the consolidated technical product definition | `docs/product/01-healthos-technical-product-specification.md` | `docs/product/README.md`, `docs/architecture/` and `docs/execution/` sources referenced by the spec |
 | Understand the executable slice | `docs/architecture/28-first-slice-executable-path.md` | `swift/Sources/HealthOSSessionRuntime/SessionRunner.swift`, `swift/Sources/HealthOSCore/FirstSliceContracts.swift` |
 | Understand GOS | `docs/architecture/29-governed-operational-spec.md` | `30-gos-authoring-and-compiler.md` → `33-gos-app-consumption-patterns.md` |
 | Understand MSR | `docs/architecture/49-mental-space-runtime.md` | `swift/Sources/HealthOSMSR/`, `swift/Sources/HealthOSCore/MSRRuntime.swift` |

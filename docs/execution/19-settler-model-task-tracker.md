@@ -54,6 +54,16 @@ Outcome:
 - created initial Territory records for `core`, `gos`, `session-runtime`, `msr`, `aaci`, `providers`, `apps`, `type-script-runtimes`, `storage-and-data`, `regulatory-and-interoperability`, `operations-and-observability`, `construction-system`, `validation-and-ci`, and `documentation`
 - kept every Territory record subordinate to official docs and outside the HealthOS clinical/runtime hierarchy
 
+### ST-011B — HealthOS Technical Product Specification baseline
+
+Status: DONE.
+
+Outcome:
+- created `docs/product/README.md`
+- created `docs/product/01-healthos-technical-product-specification.md`
+- consolidated current technical product definition across Core, GOS, Session Runtime, AACI, MSR, Providers, TypeScript runtimes, apps/interfaces, artifacts/provenance, and construction-layer boundaries
+- updated reading-path and construction docs so Steward/Settlers consult the product technical specification baseline before generating future work units
+
 ### ST-012 — Settler Profile Registry
 
 Status: TODO.

@@ -12,6 +12,8 @@ ST-010 started the construction-system track by adding `docs/execution/22-stewar
 
 ST-011 created the Territory Registry under `.healthos-settler/territories/`, including `territory.schema.json` and initial Territory records for repository domains. Territory records are construction metadata only and remain subordinate to official docs.
 
+ST-011B created the product technical specification baseline at `docs/product/01-healthos-technical-product-specification.md`. Future construction and product tasks should read this product baseline together with canonical architecture and execution docs when generating scoped work units.
+
 Future construction-system work should read doc 22 before creating Settler profiles, Settlement templates, prompt generation, PR review drafts, derived memory builders, or `healthos-forge-mcp` surfaces. Product queue work still reads doc 21. APP-011 remains the next product task, but ST-012 is the next construction-system task.
 
 ## CRITICAL: Read the master plan first

@@ -33,6 +33,7 @@ ST tasks are construction-system tasks.
 APP, RT, STR, and CI tasks remain product/repo tasks.
 
 Steward will eventually read doc 21 to generate Settlements. Until that capability exists and is validated, agents must keep reading doc 21 directly for product task selection.
+For product-definition grounding, Steward and Settlers must also consult `docs/product/01-healthos-technical-product-specification.md` as the consolidated technical product baseline, while keeping architecture doctrine and execution governance canonical.
 
 ## Operational primitives
 

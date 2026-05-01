@@ -1143,3 +1143,12 @@ Result: RT-MSR-003 implementation and targeted/full Swift validations passed; va
 Invariants: Inv 1 (Core sovereignty), Inv 17/22 (provider honesty / anti-fake posture), Inv 25a (MSR artifacts derived and gated), Inv 43 (implementation progress != production readiness).
 
 Residual gaps: Apple Foundation Models normalization separate; semantic retrieval separate; SQL async runtime separate; production provider hardening out of scope; STR-002 Skill macOS archival still pending.
+
+## ST-011A — Align runtime taxonomy and Forge MCP naming with README architecture (2026-05-01)
+
+- Objective: align runtime taxonomy and construction MCP naming doctrine with the current README architecture without changing runtime behavior.
+- Files updated: `README.md`, `AGENTS.md`, `CLAUDE.md`, `docs/architecture/17-glossary.md`, `docs/architecture/20-runtime-operational-policy.md`, `docs/architecture/45-healthos-xcode-agent.md`, `docs/architecture/47-steward-settler-engineering-model.md`, `docs/architecture/49-mental-space-runtime.md`, `docs/execution/17-healthos-xcode-agent-migration-plan.md`, `docs/execution/19-settler-model-task-tracker.md`, `docs/execution/22-steward-construction-operating-model.md`, `docs/execution/12-next-agent-handoff.md`, `.healthos-steward/README.md`.
+- Validation commands run: full ST-011A command set (`make validate-docs`, `make validate-schemas`, `make validate-contracts`, `make ts-build`, `make swift-build`, `make swift-test`, `make smoke-cli`, `make smoke-scribe`, `make smoke-sortio`, `make smoke-cloudclinic`, `make validate-all`) plus required grep diagnostics.
+- Result: documentation/ontology alignment completed; no Swift/TS package/module rename, no runtime behavior change.
+- Invariants: Inv 1 (Core sovereignty), Inv 43 (naming/ontology alignment does not imply production readiness), engineering-agent boundary invariants (construction tooling remains outside clinical/runtime hierarchy).
+- Residual gaps: HealthOS Forge MCP is not implemented; `mcp-local` package path/metadata rename to `healthos-forge-mcp` remains future follow-up (ST-018A); HealthOS runtime MCP servers are not implemented; Service Runtime may need deeper implementation documentation; no runtime behavior changed.

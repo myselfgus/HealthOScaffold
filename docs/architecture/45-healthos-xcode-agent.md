@@ -60,8 +60,8 @@ It may recommend, inspect, edit, validate, and summarize. It may not redefine co
 Xcode Intelligence (Apple-controlled engineering runtime surface)
   ├─ consumes HealthOS instructions and skills
   │    (CLAUDE.md, AGENTS.md, skill files, policy guard language)
-  ├─ calls HealthOS MCP server for typed repository operations
-  │    (healthos-mcp: validate-all, scan-status, next-task, check-invariants, ...)
+  ├─ calls HealthOS Forge MCP server for typed repository operations
+  │    (healthos-forge-mcp: validate-all, scan-status, next-task, check-invariants, ...)
   ├─ reads derived repository memory
   │    (.healthos-steward/memory/derived/)
   └─ delegates deterministic CI-safe operations to healthos-steward CLI
@@ -91,7 +91,7 @@ Xcode Intelligence, where available, may host or assist interactions with Stewar
 
 Steward for Xcode is the Xcode-native integration posture for Steward.
 
-`healthos-mcp` is the repository-maintenance MCP for Steward and Settlers. HealthOS runtime MCP servers are separate future Core-governed systems and must not be collapsed into `healthos-mcp`.
+`healthos-forge-mcp` is the repository-maintenance MCP for Steward and Settlers. HealthOS runtime MCP servers are separate future Core-governed systems and must not be collapsed into `healthos-forge-mcp`.
 
 Codex may act as an external executor for Steward-scoped Xcode-facing repository maintenance. Its bounded role is to review and propose PRs for Claude Code automations, scheduled-task definitions, Xcode/Steward instructions, and automation drift. This does not create a new Steward category, does not make Codex an internal Steward provider, and does not grant merge or clinical/runtime authority.
 
@@ -122,7 +122,7 @@ WS-1 (instructions and skills consolidation) is the follow-up work item for this
 
 ### MCP server
 
-Candidate name: `healthos-mcp`
+Candidate name: `healthos-forge-mcp`
 
 A local MCP server exposes typed HealthOS repository operations to Xcode Intelligence or any compatible MCP client. Typed operations allow Steward to invoke HealthOS-specific repository actions as structured tool calls, not free-form shell commands.
 
@@ -279,11 +279,11 @@ Policy guard language covers:
 
 ## MCP boundary
 
-`healthos-mcp` is the repository-maintenance MCP server for Steward. It is outside the HealthOS clinical/runtime hierarchy. It must never be described as a clinical automation server, AACI tool server, GOS runtime server, or Core law server.
+`healthos-forge-mcp` is the repository-maintenance MCP server for Steward. It is outside the HealthOS clinical/runtime hierarchy. It must never be described as a clinical automation server, AACI tool server, GOS runtime server, or Core law server.
 
-If HealthOS later uses MCP servers internally for clinical, operational, or runtime automation, those are separate Core-governed runtime MCP servers. They must obey HealthOS Core invariants: lawfulContext, consent, habilitation, finality, storage layer policy, provenance, audit, and gate. They are not `healthos-mcp`. Do not collapse these two MCP families.
+If HealthOS later uses MCP servers internally for clinical, operational, or runtime automation, those are separate Core-governed runtime MCP servers. They must obey HealthOS Core invariants: lawfulContext, consent, habilitation, finality, storage layer policy, provenance, audit, and gate. They are not `healthos-forge-mcp`. Do not collapse these two MCP families.
 
-When implemented, `healthos-mcp` must conform to:
+When implemented, `healthos-forge-mcp` must conform to:
 
 - local server only; no external network exposure required
 - typed operations with explicit input and output contracts
@@ -339,7 +339,7 @@ This target architecture does not imply:
 |---|---|---|
 | Xcode Intelligence integration | doctrine-only | No end-to-end verification in this work unit; must not be claimed above doctrine-only |
 | Instructions / skills | scaffolded contract (files exist); content consolidation pending | WS-1 follow-up |
-| MCP server (healthos-mcp) | doctrine-only | WS-2 follow-up; not implemented |
+| MCP server (healthos-forge-mcp) | doctrine-only | WS-2 follow-up; not implemented |
 | Derived repository memory | scaffolded contract (.healthos-steward/memory/ exists) | Official docs remain canonical source |
 | Deterministic CLI | implemented seam / tested operational path for existing commands | CI and non-Xcode path; WS-3 consolidation pending |
 | Optional custom surface | doctrine-only | Only if Xcode-native surface proves insufficient for a documented case |

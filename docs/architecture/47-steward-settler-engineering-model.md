@@ -36,11 +36,11 @@ Settlement: bounded engineering work unit assigned to one or more Settlers. A Se
 
 Territory: documented repository domain with canonical docs, code or schema paths, invariants, known gaps, test expectations, validation commands, forbidden moves, and an owner profile.
 
-healthos-mcp: future repository-maintenance MCP for Steward and Settlers. It exposes typed repository operations such as `validate-docs`, `validate-all`, `scan-status`, `next-task`, `read-gap-register`, `get-handoff`, `check-invariants`, `check-doc-drift`, and `generate-pr-review-draft`. It is outside the HealthOS clinical/runtime hierarchy.
+healthos-forge-mcp: future repository-maintenance MCP for Steward and Settlers. It exposes typed repository operations such as `validate-docs`, `validate-all`, `scan-status`, `next-task`, `read-gap-register`, `get-handoff`, `check-invariants`, `check-doc-drift`, and `generate-pr-review-draft`. It is outside the HealthOS clinical/runtime hierarchy.
 
-HealthOS runtime MCP servers: separate future family of Core-governed runtime, clinical, operational, or bureaucratic MCP servers. They must obey lawfulContext, consent, habilitation, finality, storage layer policy, provenance, audit, and gate. They are not `healthos-mcp`.
+HealthOS runtime MCP servers: separate future family of Core-governed runtime, clinical, operational, or bureaucratic MCP servers. They must obey lawfulContext, consent, habilitation, finality, storage layer policy, provenance, audit, and gate. They are not `healthos-forge-mcp`.
 
-`healthos-mcp` is repository-maintenance MCP for Steward and Settlers. HealthOS runtime MCP servers are future Core-governed runtime/clinical/operational MCP servers.
+`healthos-forge-mcp` is repository-maintenance MCP for Steward and Settlers. HealthOS runtime MCP servers are future Core-governed runtime/clinical/operational MCP servers.
 
 ## Repository-local roots
 
@@ -71,7 +71,7 @@ Repository engineering layer (outside hierarchy)
   +-- Steward
   +-- Settlers
   +-- Settlements
-  +-- healthos-mcp
+  +-- healthos-forge-mcp
 ```
 
 No Settler is a Core actor.
@@ -191,13 +191,13 @@ All initial Settler profiles are doctrine-only.
 | App Boundary Settler | Keep Scribe, Sortio, CloudClinic, shared envelopes, safe refs, and app non-authority aligned with mediated contracts. | `11-scribe.md`; `12-sortio.md`; `13-cloudclinic.md`; `19-interface-doctrine.md`; `43-cross-app-coordination-shared-surfaces.md`; app skills. | `swift/Sources/HealthOSScribeApp/`; app-facing Core contracts; shared app schemas. | App-owned Core law; raw CPF/reidentification leaks; navigation refs granting data access; final UI or production claims. | App-boundary Swift tests; Scribe smoke for Scribe UI changes; docs validation. | doctrine-only |
 | Regulatory Settler | Preserve retention, signature, emergency access, audit, interoperability, and no-false-compliance boundaries. | `39-regulatory-interoperability-signature-emergency-governance.md`; `10-invariant-matrix.md`; `regulatory-interoperability-skill.md`. | `RegulatoryGovernance.swift`; regulatory schemas; SQL metadata where relevant. | Fake qualified signature claims; production RNDS/TISS/FHIR claims; regulatory authority by tooling; simulated legal-valid evidence. | Regulatory governance tests; docs validation. | doctrine-only |
 | Operations Settler | Preserve network, fabric, backup/restore, observability, incidents, and operator boundaries. | `04-networking.md`; `14-operations-runbook.md`; `15-mesh-provider.md`; `26-operator-observability-contract.md`; operations skills. | `ops/`; backup governance contracts; runbook docs; validation scripts where relevant. | Public data-plane exposure by default; transport as authorization; backup existence as restore proof; incident tooling as clinical authority. | Policy/document consistency checks; backup/restore tests; validation harness checks when scripts change. | doctrine-only |
-| Xcode Settler | Maintain Steward, Steward for Xcode, `healthos-mcp`, deterministic CLI, Xcode/Apple Intelligence integration posture, engineering tooling, and Xcode-facing automation-maintenance surfaces. | `45-healthos-xcode-agent.md`; `46-apple-sovereignty-architecture.md`; `17-healthos-xcode-agent-migration-plan.md`; `project-steward-skill.md`. | `ts/agent-infra/healthos-steward/`; `.healthos-steward/`; `.claude/automations/`; `.claude/scheduled_tasks.json`; future `healthos-mcp`; Xcode workspace metadata only when scoped. | Claim Xcode Intelligence integration before verification; make `healthos-mcp` clinical; revive custom runtime as default; grant merge authority; let external executors auto-edit automation surfaces without PR review. | Steward package checks for code changes; deterministic CLI smoke; `make validate-docs`; automation definition parse checks. | doctrine-only |
+| Xcode Settler | Maintain Steward, Steward for Xcode, `healthos-forge-mcp`, deterministic CLI, Xcode/Apple Intelligence integration posture, engineering tooling, and Xcode-facing automation-maintenance surfaces. | `45-healthos-xcode-agent.md`; `46-apple-sovereignty-architecture.md`; `17-healthos-xcode-agent-migration-plan.md`; `project-steward-skill.md`. | `ts/agent-infra/healthos-steward/`; `.healthos-steward/`; `.claude/automations/`; `.claude/scheduled_tasks.json`; future `healthos-forge-mcp`; Xcode workspace metadata only when scoped. | Claim Xcode Intelligence integration before verification; make `healthos-forge-mcp` clinical; revive custom runtime as default; grant merge authority; let external executors auto-edit automation surfaces without PR review. | Steward package checks for code changes; deterministic CLI smoke; `make validate-docs`; automation definition parse checks. | doctrine-only |
 | Documentation Settler | Preserve README, agent docs, execution docs, maturity map, gap register, handoff, and documentation drift discipline. | `README.md`; `AGENTS.md`; `CLAUDE.md`; `GEMINI.md`; `docs/execution/`; `documentation-drift-skill.md`. | Entry docs; architecture docs; execution trackers; TODOs; skills; handoff docs. | Stale tracking; false maturity claims; scaffold-as-separate-product language; promotional prose; hidden validation failures. | `make validate-docs`; `git diff --check`; impacted docs consistency checks. | doctrine-only |
 | Validation Settler | Preserve Makefile, validation harness, test commands, contract drift checks, CI posture, and no-masked-failure behavior. | `10-invariant-matrix.md`; `docs/execution/README.md`; `testing/SKILL.md`; validation harness docs. | `Makefile`; `scripts/`; test targets; CI configuration when present. | Masked failures; weakened drift checks; production-hardening claims from local-only validation; parallel commands that create build locks. | Smallest meaningful validation first; required repository harness; exact failure classification. | doctrine-only |
 
-## healthos-mcp boundary
+## healthos-forge-mcp boundary
 
-`healthos-mcp` serves Steward and Settlers.
+`healthos-forge-mcp` serves Steward and Settlers.
 
 It exposes repository-maintenance operations only.
 
@@ -209,7 +209,7 @@ It does not bypass Core/GOS/app boundaries.
 
 Runtime MCP servers are separate future architecture.
 
-`healthos-mcp` may help read docs, scan status, check invariants, run validation, generate draft review material, and retrieve handoff context. It never becomes a HealthOS clinical automation server, AACI tool server, GOS runtime server, or Core law server.
+`healthos-forge-mcp` may help read docs, scan status, check invariants, run validation, generate draft review material, and retrieve handoff context. It never becomes a HealthOS clinical automation server, AACI tool server, GOS runtime server, or Core law server.
 
 ## Non-claims
 
@@ -217,7 +217,7 @@ This document does not implement Settlers.
 
 This document does not implement multiagent orchestration.
 
-This document does not implement `healthos-mcp`.
+This document does not implement `healthos-forge-mcp`.
 
 This document does not create clinical agents.
 

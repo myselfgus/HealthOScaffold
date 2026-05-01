@@ -29,7 +29,7 @@ HealthOS is the full platform. **AACI is one runtime inside HealthOS. GOS is a g
 
 HealthOS is a governance-first platform. Every clinical act flows through a strictly layered, consent- and provenance-governed fabric. Apps and interfaces consume only mediated surfaces — they never become law engines.
 
-Steward, Settlers, Settlements, Territories, and `healthos-mcp` are repository engineering concepts **outside** this clinical/runtime hierarchy. They inspect, edit, validate, and record repository work. They do not become HealthOS law, runtime automation, or clinical effectuation.
+Steward, Settlers, Settlements, Territories, and `healthos-forge-mcp` are repository engineering concepts **outside** this clinical/runtime hierarchy. They inspect, edit, validate, and record repository work. They do not become HealthOS law, runtime automation, or clinical effectuation.
 
 ```mermaid
 %%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#f0f9ff', 'primaryBorderColor': '#bae6fd', 'primaryTextColor': '#0c4a6e', 'clusterBkg': '#fafafa', 'clusterBorder': '#e2e8f0', 'titleColor': '#0f172a', 'edgeLabelBackground': '#f8fafc', 'fontFamily': 'ui-sans-serif, system-ui, -apple-system'}}}%%
@@ -609,7 +609,7 @@ cd ts && npx --yes --workspace @healthos/steward healthos-steward runtime --mess
 cd ts && npx --yes --workspace @healthos/steward healthos-steward session --id <session-id>
 ```
 
-Only `status`, `runtime`, and `session` are implemented CLI commands today. Target operations (`scan-status`, `next-task`, `validate-all`, `validate-docs`, `get-handoff`) belong to the planned `healthos-mcp` workstream. Do not describe them as delivered until implemented.
+Only `status`, `runtime`, and `session` are implemented CLI commands today. Target operations (`scan-status`, `next-task`, `validate-all`, `validate-docs`, `get-handoff`) belong to the planned `healthos-forge-mcp` workstream. Do not describe them as delivered until implemented.
 
 ```mermaid
 %%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#fdf2f8', 'primaryBorderColor': '#f9a8d4', 'primaryTextColor': '#831843', 'clusterBkg': '#ffffff', 'clusterBorder': '#e5e7eb', 'titleColor': '#0f172a', 'edgeLabelBackground': '#f8fafc', 'fontFamily': 'ui-sans-serif, system-ui, -apple-system'}}}%%
@@ -625,7 +625,7 @@ flowchart TD
     SETT[Settler profiles\nspecialized instructions]:::settler
     WORK[Settlements\nbounded work records]:::settler
     TERR[Territories\nrepository domains]:::territory
-    MCP[healthos-mcp\nrepository maintenance\nnot yet implemented]:::boundary
+    MCP[healthos-forge-mcp\nrepository maintenance\nnot yet implemented]:::boundary
 
     DOCS --> STEW
     DOCS --> TERR
@@ -688,7 +688,7 @@ Phase execution prompts in `docs/execution/prompts/`:
 | Prompt file | Phase | Tasks |
 | :--- | :--- | :--- |
 | `phase-1-settler-territory.md` | Phase 1 | ST-006 Territory records · ST-002 Settler profiles · ST-003 Settlement schema |
-| `phase-2-architecture-proposals.md` | Phase 2 | CL-006 Error envelope · OPS-003 Incident command set · ST-004 healthos-mcp spec |
+| `phase-2-architecture-proposals.md` | Phase 2 | CL-006 Error envelope · OPS-003 Incident command set · ST-004 healthos-forge-mcp spec |
 | `phase-3-xcode-agent-streams.md` | Phase 3 | Stream C tool contracts · Stream D backend contract · Stream F Xcode envelope |
 
 ---

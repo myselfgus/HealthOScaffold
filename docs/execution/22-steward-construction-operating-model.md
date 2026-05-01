@@ -12,7 +12,7 @@ Territories are repository domains.
 
 This construction system exists to generate prompts, validate work, preserve memory, and maintain handoffs.
 
-It is outside the HealthOS clinical/runtime hierarchy. Steward, Settlers, Settlements, Territories, `healthos-steward`, and `healthos-mcp` do not become HealthOS Core, GOS, AACI, app runtimes, clinical actors, or authority surfaces.
+It is outside the HealthOS clinical/runtime hierarchy. Steward, Settlers, Settlements, Territories, `healthos-steward`, and `healthos-forge-mcp` do not become HealthOS Core, GOS, AACI, app runtimes, clinical actors, or authority surfaces.
 
 ## Why this exists now
 
@@ -50,7 +50,7 @@ ReviewDraft: derived review material for a Settlement or PR. A ReviewDraft may s
 
 DerivedMemory: repository-local derived memory under `.healthos-steward/memory/`. DerivedMemory accelerates navigation and handoff but never replaces official docs.
 
-healthos-mcp: future repository-maintenance MCP for Steward and Settlers. It may expose typed repository operations such as validation, status scanning, handoff retrieval, invariant checks, doc drift checks, next-task inspection, and PR review draft generation. It is not a HealthOS runtime MCP server.
+healthos-forge-mcp: future repository-maintenance MCP for Steward and Settlers. It may expose typed repository operations such as validation, status scanning, handoff retrieval, invariant checks, doc drift checks, next-task inspection, and PR review draft generation. It is not a HealthOS runtime MCP server.
 
 ## Construction lifecycle
 
@@ -125,7 +125,7 @@ discover
 - ST-015 — Prompt Generation Engine
 - ST-016 — Settlement Validation and PR Review Draft Engine
 - ST-017 — Derived Memory Builder
-- ST-018 — healthos-mcp surface over deterministic operations
+- ST-018 — healthos-forge-mcp surface over deterministic operations
 - ST-019 — Xcode/Codex/Claude integration instructions
 - ST-020 — Use Steward to generate APP-011 prompt
 
@@ -147,6 +147,6 @@ The construction operating model is a scaffolded contract.
 
 Steward/Settler execution remains doctrine-only or scaffolded contract, depending on existing code. Current deterministic `healthos-steward` behavior remains limited to implemented CLI surfaces and must not be expanded by documentation claim.
 
-`healthos-mcp` remains doctrine-only or scaffold.
+`healthos-forge-mcp` remains doctrine-only or scaffold.
 
 No construction component is production-hardened.

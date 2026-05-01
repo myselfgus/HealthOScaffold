@@ -10,7 +10,7 @@ HealthOScaffold is the historical repository name and construction repository fo
 
 ST-010 started the construction-system track by adding `docs/execution/22-steward-construction-operating-model.md` and the initial `.healthos-settler/` / `.healthos-steward/` construction skeletons.
 
-Future construction-system work should read doc 22 before creating Territory records, Settler profiles, Settlement templates, prompt generation, PR review drafts, derived memory builders, or `healthos-mcp` surfaces. Product queue work still reads doc 21. APP-011 remains the next product task, but ST-011 is the next construction-system task.
+Future construction-system work should read doc 22 before creating Territory records, Settler profiles, Settlement templates, prompt generation, PR review drafts, derived memory builders, or `healthos-forge-mcp` surfaces. Product queue work still reads doc 21. APP-011 remains the next product task, but ST-011 is the next construction-system task.
 
 ## CRITICAL: Read the master plan first
 
@@ -110,7 +110,7 @@ Use these docs as the target source of truth for future steward work:
 - `docs/architecture/45-healthos-xcode-agent.md`
 - `docs/execution/17-healthos-xcode-agent-migration-plan.md`
 
-The intended evolution is Steward for Xcode: Xcode Intelligence as the Apple-controlled engineering runtime surface, with HealthOS contributing instructions, `healthos-mcp`, derived repository memory, and an expanded deterministic CLI.
+The intended evolution is Steward for Xcode: Xcode Intelligence as the Apple-controlled engineering runtime surface, with HealthOS contributing instructions, `healthos-forge-mcp`, derived repository memory, and an expanded deterministic CLI.
 
 Settler model note: the Steward / Settler / Settlement / Territory model was added as doctrine-only in `docs/architecture/47-steward-settler-engineering-model.md`, with future implementation tracked in `docs/execution/19-settler-model-task-tracker.md`. Future work should use those docs and must not treat Settlers as clinical or runtime agents.
 
@@ -122,4 +122,13 @@ Repository-local roots now exist for the model:
 - `.healthos-settler/` is a documentation-only root for future Settler profiles and Settlement records.
 - `.healthos-territory/` is a documentation-only root for future Territory records.
 
-These roots are subordinate to official docs and do not implement executable Settlers, a Settlement schema, a Territory loader, or `healthos-mcp`.
+These roots are subordinate to official docs and do not implement executable Settlers, a Settlement schema, a Territory loader, or `healthos-forge-mcp`.
+
+## ST-011A runtime taxonomy + Forge MCP naming note (2026-05-01)
+
+- Prose concept names are: Core, GOS, Session Runtime, AACI, MSR, Providers, Async Runtime, User-Agent Runtime, and Service Runtime.
+- Implementation/module/package names remain: `HealthOSCore`, `HealthOSSessionRuntime`, `HealthOSAACI`, `HealthOSMSR`, `HealthOSProviders`, `runtime-async`, `runtime-user-agent`, `service-runtime`.
+- Session Runtime owns transcript normalization and session orchestration; MSR owns `ASL -> VDLP -> GEM` after normalized transcript input.
+- Service Runtime is a TypeScript service/operations workflow runtime and remains distinct from Session Runtime and Async Runtime.
+- HealthOS Forge MCP (`healthos-forge-mcp`) supersedes the earlier `healthos-mcp` naming for repository-maintenance MCP tooling.
+- Future HealthOS runtime MCP servers remain separate Core-governed systems.

@@ -39,7 +39,7 @@ Target direction is now documented in:
 - `docs/architecture/45-healthos-xcode-agent.md`
 - `docs/execution/17-healthos-xcode-agent-migration-plan.md`
 
-The long-term model is Steward for Xcode: Xcode Intelligence as the Apple-controlled engineering runtime surface, with HealthOS contributing instructions, `healthos-mcp`, derived repository memory, and deterministic CLI operations. Provider config, if retained, is subordinate to that tooling posture rather than being the architectural center.
+The long-term model is Steward for Xcode: Xcode Intelligence as the Apple-controlled engineering runtime surface, with HealthOS contributing instructions, `healthos-forge-mcp`, derived repository memory, and deterministic CLI operations. Provider config, if retained, is subordinate to that tooling posture rather than being the architectural center.
 
 ## Secrets policy
 Never commit API keys/tokens. Use environment variables (`OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, `XAI_API_KEY`).

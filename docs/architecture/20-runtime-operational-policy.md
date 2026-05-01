@@ -101,3 +101,14 @@ Every runtime should surface failures in one of these ways:
 - hidden retry loops on sensitive access checks
 - automatic escalation from denied to privileged path
 - converting a failed retrieval into fabricated content without explicit degraded labeling
+
+
+## Runtime taxonomy alignment
+
+- **Session Runtime** (`HealthOSSessionRuntime`) is the Swift session orchestration layer and owns transcript normalization.
+- **AACI** (`HealthOSAACI`) and **MSR** (`HealthOSMSR`) are Swift runtime peers mediated by Session Runtime.
+- **Providers** (`HealthOSProviders`) are infrastructure adapters and routing surfaces, not runtime authority.
+- **Async Runtime** (`runtime-async`) is TypeScript async substrate only.
+- **User-Agent Runtime** (`runtime-user-agent`) is TypeScript patient-governed query/runtime boundary.
+- **Service Runtime** (`service-runtime`) is TypeScript service/operations workflow envelope and guard runtime.
+- **GOS** remains subordinate operational specification with TypeScript tooling and Swift runtime consumption; it never supersedes Core law.

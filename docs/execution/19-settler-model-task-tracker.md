@@ -14,7 +14,7 @@ No runtime implementation exists yet.
 
 No multiagent runtime is implemented.
 
-No `healthos-mcp` server is implemented.
+No `healthos-forge-mcp` server is implemented.
 
 No Settler profiles are implemented as executable agents.
 
@@ -101,13 +101,13 @@ Goal:
 - build derived handoff memory from official docs and validated repository state
 - keep derived memory non-canonical
 
-### ST-018 — healthos-mcp surface over deterministic operations
+### ST-018 — healthos-forge-mcp surface over deterministic operations
 
 Status: TODO.
 
 Goal:
-- expose deterministic repository-maintenance operations through `healthos-mcp`
-- keep `healthos-mcp` separate from future HealthOS runtime MCP servers
+- expose deterministic repository-maintenance operations through `healthos-forge-mcp`
+- keep `healthos-forge-mcp` separate from future HealthOS runtime MCP servers
 
 ### ST-019 — Xcode/Codex/Claude integration instructions
 
@@ -151,7 +151,7 @@ Define Territory records as documentation-only repository domain records.
 
 Current scaffold root: `.healthos-territory/territories/`.
 
-### ST-3 healthos-mcp operations for Steward/Settlers
+### ST-3 healthos-forge-mcp operations for Steward/Settlers
 
 Expose repository-maintenance tools for Steward and Settlers.
 
@@ -188,7 +188,7 @@ Status: DONE in this work unit.
 Outcome:
 - created canonical architecture doc for Steward / Settler / Settlement / Territory model
 - documented that the model is outside the HealthOS clinical/runtime hierarchy
-- kept `healthos-mcp` as repository-maintenance MCP only
+- kept `healthos-forge-mcp` as repository-maintenance MCP only
 
 ### ST-002 Create Settler profile instruction files
 
@@ -206,7 +206,7 @@ Goal:
 - define the document/schema shape for bounded Settlement work units
 - keep it non-executable until separately implemented
 
-### ST-004 Define healthos-mcp Settler operations
+### ST-004 Define healthos-forge-mcp Settler operations
 
 Status: TODO.
 
@@ -241,7 +241,7 @@ No merge authority is granted.
 
 No production readiness is claimed.
 
-No `healthos-mcp` server is implemented.
+No `healthos-forge-mcp` server is implemented.
 
 No HealthOS runtime MCP server is implemented.
 

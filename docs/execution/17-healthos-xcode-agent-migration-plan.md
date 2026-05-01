@@ -56,13 +56,13 @@ Definition of done:
 
 Constraint: this work unit (the architectural realignment documenting docs 45, 46, 17) is Phase A. WS-1 implementation is Phase B.
 
-### WS-2: Local MCP server (healthos-mcp)
+### WS-2: Local MCP server (healthos-forge-mcp)
 
 Objective: expose typed HealthOS repository-maintenance operations to Xcode Intelligence or any compatible MCP client, so Steward can invoke HealthOS-specific operations as structured tool calls.
 
-Boundary constraint: `healthos-mcp` is the repository-maintenance MCP server only. It is outside the HealthOS clinical/runtime hierarchy. If HealthOS later uses MCP servers for clinical, operational, or runtime automation, those are separate Core-governed runtime MCP servers and must not be named `healthos-mcp`. Do not collapse these two MCP families.
+Boundary constraint: `healthos-forge-mcp` is the repository-maintenance MCP server only. It is outside the HealthOS clinical/runtime hierarchy. If HealthOS later uses MCP servers for clinical, operational, or runtime automation, those are separate Core-governed runtime MCP servers and must not be named `healthos-forge-mcp`. Do not collapse these two MCP families.
 
-Settler boundary: `healthos-mcp` exposes operations for Steward and Settlers. Those operations are repository-maintenance operations. They are not clinical tools and do not execute HealthOS runtime acts.
+Settler boundary: `healthos-forge-mcp` exposes operations for Steward and Settlers. Those operations are repository-maintenance operations. They are not clinical tools and do not execute HealthOS runtime acts.
 
 Actions:
 - build a local MCP server under a new or existing TS package
@@ -132,7 +132,7 @@ Outputs:
 - WS-1: `CLAUDE.md`, `AGENTS.md`, and skill files updated with consolidated HealthOS instructions
 - Codex companion local automation registered for Steward-scoped Xcode-facing repository maintenance
 - Settler profiles exist as doctrine/instruction artifacts before any multiagent implementation
-- WS-2: `healthos-mcp` local MCP server implemented with typed operations
+- WS-2: `healthos-forge-mcp` local MCP server implemented with typed operations
 - WS-3: deterministic CLI consolidated, provider orchestration removed as primary path
 - validation docs updated to reflect new operations
 - `make validate-docs` passes against updated doc set

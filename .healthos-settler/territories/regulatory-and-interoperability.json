@@ -1,0 +1,74 @@
+{
+  "id": "regulatory-and-interoperability",
+  "name": "Regulatory and Interoperability",
+  "summary": "Regulatory audit, emergency access, legal retention, digital-signature scaffold, interoperability package governance, and no-false-compliance posture.",
+  "maturity": "scaffolded contract",
+  "canonicalDocs": [
+    "docs/architecture/39-regulatory-interoperability-signature-emergency-governance.md",
+    "docs/architecture/06-core-services.md",
+    "docs/architecture/46-apple-sovereignty-architecture.md",
+    "docs/execution/10-invariant-matrix.md",
+    "docs/execution/14-final-gap-register.md",
+    "docs/execution/skills/regulatory-interoperability-skill.md"
+  ],
+  "primaryPaths": [
+    "swift/Sources/HealthOSCore/RegulatoryGovernance.swift",
+    "schemas/contracts/regulatory-interoperability-signature-emergency-governance.schema.json"
+  ],
+  "secondaryPaths": [
+    "sql/migrations/001_init.sql",
+    "docs/execution/todo/core-laws.md",
+    "docs/execution/todo/data-storage.md"
+  ],
+  "forbiddenPaths": [
+    "swift/Sources/HealthOSAACI",
+    "swift/Sources/HealthOSScribeApp",
+    "swift/Sources/HealthOSSortioApp",
+    "swift/Sources/HealthOSCloudClinicApp",
+    "ts/agent-infra"
+  ],
+  "invariants": [
+    "Core remains sovereign for regulatory contracts and gate-required effects.",
+    "AACI, GOS, apps, providers, and construction tooling are not regulatory authorities.",
+    "Emergency, signature, audit, retention, and interoperability pathways must fail closed without required basis, scope, rationale, lawfulContext, and gate where applicable.",
+    "Scaffold signature/interoperability records are not real legal integrations."
+  ],
+  "allowedWork": [
+    "Maintain regulatory, emergency, signature, retention, and interoperability scaffold contracts.",
+    "Add fail-closed validation tests and schema alignment.",
+    "Clarify docs to avoid compliance or certification overclaims.",
+    "Record legal/provider endpoint gaps explicitly."
+  ],
+  "forbiddenWork": [
+    "Claim regulatory compliance, production certification, or final legal authority.",
+    "Claim real ICP-Brasil, RNDS, TISS, FHIR, or qualified signature integration without implementation and evidence.",
+    "Use construction tooling as regulatory authority.",
+    "Simulate legal-valid evidence or signature success."
+  ],
+  "validationCommands": [
+    "make swift-build",
+    "make swift-test",
+    "make validate-schemas",
+    "make validate-contracts",
+    "make validate-docs",
+    "make validate-all"
+  ],
+  "knownGaps": [
+    "Real qualified signature provider integration is absent.",
+    "Real regulatory and interoperability endpoint integrations are absent.",
+    "Production certification remains out of scope."
+  ],
+  "defaultSettlerIds": [
+    "regulatory-settler"
+  ],
+  "relatedTerritoryIds": [
+    "core",
+    "storage-and-data",
+    "apps",
+    "operations-and-observability"
+  ],
+  "notes": [
+    "This territory preserves explicit non-claims as much as implementation contracts.",
+    "Territory metadata does not create legal effect."
+  ]
+}

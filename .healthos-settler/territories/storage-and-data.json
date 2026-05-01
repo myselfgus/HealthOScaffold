@@ -1,0 +1,74 @@
+{
+  "id": "storage-and-data",
+  "name": "Storage and Data",
+  "summary": "Schemas, SQL, file-backed storage posture, APFS/FileVault/Secure Enclave doctrine, lawfulContext, direct-identifier, and reidentification boundaries.",
+  "maturity": "tested operational path",
+  "canonicalDocs": [
+    "docs/architecture/05-data-layers.md",
+    "docs/architecture/07-storage-and-sql.md",
+    "docs/architecture/21-object-integrity-strategy.md",
+    "docs/architecture/46-apple-sovereignty-architecture.md",
+    "docs/execution/14-final-gap-register.md",
+    "schemas/README.md"
+  ],
+  "primaryPaths": [
+    "schemas",
+    "sql/migrations/001_init.sql",
+    "swift/Sources/HealthOSCore/StorageContracts.swift"
+  ],
+  "secondaryPaths": [
+    "swift/Sources/HealthOSCore/ReidentificationGovernance.swift",
+    "swift/Sources/HealthOSCore/BackupGovernance.swift",
+    "docs/execution/skills/storage-data-layer-skill.md",
+    "docs/execution/skills/storage-and-deidentification-skill.md",
+    "docs/execution/todo/data-storage.md"
+  ],
+  "forbiddenPaths": [
+    "swift/Sources/HealthOSScribeApp",
+    "swift/Sources/HealthOSSortioApp",
+    "swift/Sources/HealthOSCloudClinicApp",
+    "ts/agent-infra"
+  ],
+  "invariants": [
+    "Filesystem-as-record posture remains primary; SQL/object layers do not replace Core storage law.",
+    "lawfulContext is required for governed storage access.",
+    "Direct identifiers and reidentification remain tightly governed.",
+    "APFS, FileVault, and Secure Enclave posture reduce substrate trust but do not replace Core law."
+  ],
+  "allowedWork": [
+    "Maintain JSON Schemas, SQL shape, and Swift storage contracts.",
+    "Update mirrors together when shared storage/data contracts change.",
+    "Maintain lawfulContext, direct-identifier, and reidentification checks.",
+    "Record storage and restore gaps honestly."
+  ],
+  "forbiddenWork": [
+    "Treat SQL or object backend as a replacement for filesystem-as-record governance.",
+    "Weaken lawfulContext requirements.",
+    "Introduce direct identifiers where forbidden.",
+    "Treat backup existence as proof of restore readiness."
+  ],
+  "validationCommands": [
+    "make validate-schemas",
+    "make validate-contracts",
+    "make swift-build",
+    "make swift-test",
+    "make validate-all"
+  ],
+  "knownGaps": [
+    "Production backup, restore, retention, and DR automation remain future hardening.",
+    "SQL-backed async executor remains blocked/future work."
+  ],
+  "defaultSettlerIds": [
+    "storage-settler"
+  ],
+  "relatedTerritoryIds": [
+    "core",
+    "regulatory-and-interoperability",
+    "operations-and-observability",
+    "type-script-runtimes"
+  ],
+  "notes": [
+    "Storage/data work commonly touches cross-language contracts and must avoid partial mirror updates.",
+    "Territory metadata does not grant storage access."
+  ]
+}

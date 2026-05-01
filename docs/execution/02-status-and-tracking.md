@@ -6,6 +6,36 @@ Current phase: Controlled implementation — first vertical slice started
 
 ## Completed recently
 
+## ST-011 — Create Territory Registry (2026-05-01)
+
+- Objective: create the first structured Territory Registry for the Steward / Settler / Settlement construction system without implementing Settlers, Settlement instances, prompt generation, Steward CLI, Forge MCP, or runtime behavior.
+- Files created:
+  - `.healthos-settler/territories/territory.schema.json`
+  - `.healthos-settler/territories/core.json`
+  - `.healthos-settler/territories/gos.json`
+  - `.healthos-settler/territories/session-runtime.json`
+  - `.healthos-settler/territories/msr.json`
+  - `.healthos-settler/territories/aaci.json`
+  - `.healthos-settler/territories/providers.json`
+  - `.healthos-settler/territories/apps.json`
+  - `.healthos-settler/territories/type-script-runtimes.json`
+  - `.healthos-settler/territories/storage-and-data.json`
+  - `.healthos-settler/territories/regulatory-and-interoperability.json`
+  - `.healthos-settler/territories/operations-and-observability.json`
+  - `.healthos-settler/territories/construction-system.json`
+  - `.healthos-settler/territories/validation-and-ci.json`
+  - `.healthos-settler/territories/documentation.json`
+- Files updated:
+  - `.healthos-settler/territories/README.md`
+  - `.healthos-settler/README.md`
+  - `docs/execution/22-steward-construction-operating-model.md`
+  - `docs/execution/19-settler-model-task-tracker.md`
+  - `docs/execution/12-next-agent-handoff.md`
+  - `docs/execution/02-status-and-tracking.md`
+- Result: ST-011 complete after validation; Territory records are construction metadata only and remain subordinate to official docs.
+- Invariants: Inv 1 (Core sovereignty), Inv 43 (scaffold/foundation maturity is not production readiness), engineering-agent boundary invariants (Territories organize repository work and do not become HealthOS runtime or clinical authority).
+- Residual gaps: Settler Profile Registry, Settlement instances, Steward CLI consumption, prompt generation, PR review/validation engine, derived memory builder, and HealthOS Forge MCP remain future work. ST-012 is next.
+
 ## RT-PROVIDER-001 — Real Apple Foundation Models integration for normalization (2026-04-30)
 
 - Objective: replace the always-stubbed Apple language-model provider with a real local Foundation Models adapter for transcript normalization only.

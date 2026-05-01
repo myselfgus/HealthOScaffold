@@ -26,12 +26,14 @@ Official docs remain canonical. Files in this folder are instruction scaffolds a
 
 ## Intended layout
 
-- `territories/` — future Territory Registry records.
+- `territories/` — Territory Registry metadata records and schema for bounded repository domains.
 - `settlers/` — future Settler Profile Registry records.
 - `profiles/` — historical placeholder for profile instruction files.
 - `settlements/` — historical placeholder for bounded Settlement record files.
 
 No Settler profiles or Settlement records are executable by virtue of being present here.
+
+The Territory Registry is construction metadata only. It helps future Steward and Settler workflows scope work against official docs, invariants, validation commands, and forbidden moves; it does not create law, runtime behavior, clinical authority, or merge authority.
 
 ## Maturity
 

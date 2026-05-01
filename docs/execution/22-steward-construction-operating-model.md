@@ -111,14 +111,14 @@ discover
 
 `.healthos-steward/prompts/templates/` will hold prompt templates that preserve HealthOS invariants and non-claims.
 
-`.healthos-settler/territories/` will hold Territory records after ST-011. Territory records map docs, files, invariants, tests, and maturity boundaries.
+`.healthos-settler/territories/` holds the ST-011 Territory Registry. Territory records map docs, files, invariants, tests, maturity boundaries, validation expectations, known gaps, and forbidden moves.
 
 `.healthos-settler/settlers/` will hold Settler profile records after ST-012. Settler records define specialized engineering profiles without authority.
 
 ## Planned construction task sequence
 
 - ST-010 — Construction Operating Model baseline
-- ST-011 — Territory Registry
+- ST-011 — Territory Registry (DONE): schema plus initial Territory records for Core, GOS, Session Runtime, MSR, AACI, Providers, apps, TypeScript runtimes, storage/data, regulatory/interoperability, operations/observability, construction-system, validation/CI, and documentation
 - ST-012 — Settler Profile Registry
 - ST-013 — Settlement Record Schema and templates
 - ST-014 — Deterministic Steward CLI inspect/next/list
@@ -150,3 +150,26 @@ Steward/Settler execution remains doctrine-only or scaffolded contract, dependin
 `healthos-forge-mcp` remains doctrine-only or scaffold.
 
 No construction component is production-hardened.
+
+## ST-011 Territory Registry output
+
+ST-011 creates the first structured Territory Registry under `.healthos-settler/territories/`.
+
+Each record is a construction-system domain contract with:
+
+- repository-domain identity and maturity
+- canonical docs
+- primary, secondary, and forbidden paths
+- invariants, allowed work, and forbidden work
+- validation commands and known gaps
+- expected future Settler IDs and related Territory IDs
+
+Future Settler profiles will reference Territory IDs to inherit scope boundaries, invariant posture, validation expectations, and forbidden moves.
+
+Future Settlement records will reference Territory IDs to define bounded work units and prevent scope drift.
+
+Future prompt generation will read Territory records alongside official docs and Settlement records to produce bounded implementation prompts.
+
+Future review/validation and HealthOS Forge MCP tooling may use Territory records for deterministic repository-maintenance checks.
+
+Territory records do not replace official docs, implement Settlers, create Settlement instances, implement prompt generation, implement `healthos-forge-mcp`, or authorize runtime behavior.

@@ -1,0 +1,78 @@
+{
+  "id": "apps",
+  "name": "Apps",
+  "summary": "Scribe, Sortio, and CloudClinic app/interface surfaces that consume mediated Core, GOS, Session Runtime, AACI, and MSR state.",
+  "maturity": "implemented seam",
+  "canonicalDocs": [
+    "docs/architecture/11-scribe.md",
+    "docs/architecture/12-sortio.md",
+    "docs/architecture/13-cloudclinic.md",
+    "docs/architecture/19-interface-doctrine.md",
+    "docs/architecture/43-cross-app-coordination-shared-surfaces.md",
+    "docs/architecture/48-native-macos-ui-design-system-and-app-shells.md"
+  ],
+  "primaryPaths": [
+    "swift/Sources/HealthOSScribeApp",
+    "swift/Sources/HealthOSSortioApp",
+    "swift/Sources/HealthOSCloudClinicApp"
+  ],
+  "secondaryPaths": [
+    "swift/Sources/HealthOSSessionRuntime",
+    "schemas/contracts/cross-app-coordination-shared-surfaces.schema.json",
+    "schemas/contracts/user-agent-patient-sovereignty-sortio.schema.json",
+    "schemas/contracts/service-operations-cloudclinic.schema.json",
+    "docs/execution/skills/app-boundary-skill.md",
+    "docs/execution/todo/apps-and-interfaces.md"
+  ],
+  "forbiddenPaths": [
+    "swift/Sources/HealthOSCore",
+    "swift/Sources/HealthOSAACI",
+    "swift/Sources/HealthOSMSR",
+    "ts/agent-infra"
+  ],
+  "invariants": [
+    "Apps are interfaces, not law engines.",
+    "Apps consume mediated surfaces and do not own Core law, GOS policy, or clinical authority.",
+    "App surfaces must avoid direct raw clinical data exposure and direct identifiers.",
+    "Native macOS UI remains scaffold/foundation maturity until explicitly implemented and validated."
+  ],
+  "allowedWork": [
+    "Maintain app-safe mediated surfaces for Scribe, Sortio, and CloudClinic.",
+    "Add or repair smoke-testable app executable paths.",
+    "Align app docs with interface doctrine and macOS 26+ Liquid Glass baseline.",
+    "Validate app changes through Swift tests and app smoke commands."
+  ],
+  "forbiddenWork": [
+    "Move Core law into apps.",
+    "Claim final UI delivery without implementation.",
+    "Expose raw direct identifiers or unmediated clinical payloads.",
+    "Give apps clinical, regulatory, signature, prescription, referral, or finalization authority."
+  ],
+  "validationCommands": [
+    "make swift-build",
+    "make swift-test",
+    "make smoke-scribe",
+    "make smoke-sortio",
+    "make smoke-cloudclinic",
+    "make validate-all"
+  ],
+  "knownGaps": [
+    "APP-011 remains READY for Sortio session path work.",
+    "APP-012 remains READY for CloudClinic session path work.",
+    "Final app UI shells are not implemented."
+  ],
+  "defaultSettlerIds": [
+    "app-boundary-settler"
+  ],
+  "relatedTerritoryIds": [
+    "core",
+    "session-runtime",
+    "aaci",
+    "gos",
+    "msr"
+  ],
+  "notes": [
+    "This territory covers app/interface boundaries, not product task completion.",
+    "ST-011 does not change APP-011 or APP-012 status."
+  ]
+}

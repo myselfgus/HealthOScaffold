@@ -1,0 +1,81 @@
+{
+  "id": "construction-system",
+  "name": "Construction System",
+  "summary": "Steward, Settlers, Settlements, Territories, HealthOS Forge MCP doctrine, repository-local construction roots, and agent infrastructure.",
+  "maturity": "scaffolded contract",
+  "canonicalDocs": [
+    "docs/architecture/45-healthos-xcode-agent.md",
+    "docs/architecture/47-steward-settler-engineering-model.md",
+    "docs/execution/17-healthos-xcode-agent-migration-plan.md",
+    "docs/execution/19-settler-model-task-tracker.md",
+    "docs/execution/22-steward-construction-operating-model.md"
+  ],
+  "primaryPaths": [
+    ".healthos-settler",
+    ".healthos-steward",
+    "ts/agent-infra/healthos-steward",
+    "ts/agent-infra/mcp-local"
+  ],
+  "secondaryPaths": [
+    "AGENTS.md",
+    "CLAUDE.md",
+    "README.md",
+    "docs/execution/skills/project-steward-skill.md",
+    ".claude"
+  ],
+  "forbiddenPaths": [
+    "swift/Sources/HealthOSCore",
+    "swift/Sources/HealthOSAACI",
+    "swift/Sources/HealthOSSessionRuntime",
+    "swift/Sources/HealthOSMSR",
+    "swift/Sources/HealthOSProviders",
+    "swift/Sources/HealthOSScribeApp",
+    "swift/Sources/HealthOSSortioApp",
+    "swift/Sources/HealthOSCloudClinicApp"
+  ],
+  "invariants": [
+    "Steward, Settlers, Settlements, Territories, and HealthOS Forge MCP are outside the HealthOS clinical/runtime hierarchy.",
+    "Official docs remain canonical; derived memory and construction records remain subordinate.",
+    "Construction tooling has no merge, clinical, Core-law, regulatory, or production-readiness authority.",
+    "HealthOS Forge MCP and healthos-forge-mcp naming supersede deprecated repository-maintenance MCP naming."
+  ],
+  "allowedWork": [
+    "Maintain construction-system docs, schemas, territory records, future Settler profiles, and future Settlement records.",
+    "Maintain deterministic healthos-steward behavior only where implemented and validated.",
+    "Prepare future HealthOS Forge MCP doctrine without claiming implementation.",
+    "Update trackers and handoff notes for construction tasks."
+  ],
+  "forbiddenWork": [
+    "Make construction tooling clinical runtime or Core law.",
+    "Give Steward or Settlers merge, clinical, regulatory, or autonomous execution authority.",
+    "Use deprecated repository-maintenance MCP naming as canonical.",
+    "Claim HealthOS Forge MCP, prompt generation, PR review engine, or Settler execution exists before implementation."
+  ],
+  "validationCommands": [
+    "python3 -m json.tool .healthos-settler/territories/territory.schema.json >/dev/null",
+    "for f in .healthos-settler/territories/*.json; do python3 -m json.tool \"$f\" >/dev/null; done",
+    "make ts-build",
+    "make validate-docs",
+    "git diff --check"
+  ],
+  "knownGaps": [
+    "Settler Profile Registry is not implemented.",
+    "Settlement instances are not implemented.",
+    "Steward CLI does not consume territories yet.",
+    "Prompt generation, PR review, derived memory builder, and HealthOS Forge MCP remain future work."
+  ],
+  "defaultSettlerIds": [
+    "xcode-settler",
+    "documentation-settler",
+    "validation-settler"
+  ],
+  "relatedTerritoryIds": [
+    "documentation",
+    "validation-and-ci",
+    "type-script-runtimes"
+  ],
+  "notes": [
+    "This ST-011 registry is construction metadata only.",
+    "The existing `ts/agent-infra/mcp-local` path is not renamed in ST-011."
+  ]
+}

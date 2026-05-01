@@ -18,12 +18,14 @@ No `healthos-forge-mcp` server is implemented.
 
 No Settler profiles are implemented as executable agents.
 
+The Territory Registry exists under `.healthos-settler/territories/` as construction metadata only.
+
 `docs/architecture/47-steward-settler-engineering-model.md` is the canonical architecture document for the model.
 
 `docs/execution/22-steward-construction-operating-model.md` is the canonical construction operating model for future Steward-generated prompts, Settlement records, validation drafts, and derived handoff memory.
 
 Repository-local documentation roots exist:
-- `.healthos-settler/territories/` for future Territory Registry records
+- `.healthos-settler/territories/` for Territory Registry records
 - `.healthos-settler/settlers/` for future Settler Profile Registry records
 - `.healthos-steward/settlements/` for future Settlement records
 - `.healthos-steward/prompts/` for future generated prompts and prompt templates
@@ -45,12 +47,12 @@ Outcome:
 
 ### ST-011 — Territory Registry
 
-Status: TODO.
+Status: DONE.
 
-Goal:
-- define initial Territory records under `.healthos-settler/territories/`
-- map docs, files, invariants, tests, maturity, and known gaps
-- keep every Territory record subordinate to official docs
+Outcome:
+- created `.healthos-settler/territories/territory.schema.json`
+- created initial Territory records for `core`, `gos`, `session-runtime`, `msr`, `aaci`, `providers`, `apps`, `type-script-runtimes`, `storage-and-data`, `regulatory-and-interoperability`, `operations-and-observability`, `construction-system`, `validation-and-ci`, and `documentation`
+- kept every Territory record subordinate to official docs and outside the HealthOS clinical/runtime hierarchy
 
 ### ST-012 — Settler Profile Registry
 

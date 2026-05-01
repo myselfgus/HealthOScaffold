@@ -10,7 +10,9 @@ HealthOScaffold is the historical repository name and construction repository fo
 
 ST-010 started the construction-system track by adding `docs/execution/22-steward-construction-operating-model.md` and the initial `.healthos-settler/` / `.healthos-steward/` construction skeletons.
 
-Future construction-system work should read doc 22 before creating Territory records, Settler profiles, Settlement templates, prompt generation, PR review drafts, derived memory builders, or `healthos-forge-mcp` surfaces. Product queue work still reads doc 21. APP-011 remains the next product task, but ST-011 is the next construction-system task.
+ST-011 created the Territory Registry under `.healthos-settler/territories/`, including `territory.schema.json` and initial Territory records for repository domains. Territory records are construction metadata only and remain subordinate to official docs.
+
+Future construction-system work should read doc 22 before creating Settler profiles, Settlement templates, prompt generation, PR review drafts, derived memory builders, or `healthos-forge-mcp` surfaces. Product queue work still reads doc 21. APP-011 remains the next product task, but ST-012 is the next construction-system task.
 
 ## CRITICAL: Read the master plan first
 
@@ -114,15 +116,15 @@ The intended evolution is Steward for Xcode: Xcode Intelligence as the Apple-con
 
 Settler model note: the Steward / Settler / Settlement / Territory model was added as doctrine-only in `docs/architecture/47-steward-settler-engineering-model.md`, with future implementation tracked in `docs/execution/19-settler-model-task-tracker.md`. Future work should use those docs and must not treat Settlers as clinical or runtime agents.
 
-Construction operating model note: `docs/execution/22-steward-construction-operating-model.md` now defines the lifecycle, directories, ST-010 through ST-020 sequence, and non-claims for operationalizing Steward construction work. The next construction-system task is ST-011 — Create Territory Registry.
+Construction operating model note: `docs/execution/22-steward-construction-operating-model.md` now defines the lifecycle, directories, ST-010 through ST-020 sequence, and non-claims for operationalizing Steward construction work. The Territory Registry exists; the next construction-system task is ST-012 — Create Settler Profile Registry.
 
 Codex may support Steward-scoped Xcode-facing repository maintenance as an external executor. The local Codex automation is `$CODEX_HOME/automations/steward-xcode-facing-maintenance/`; use it for PR-based review of Claude Code automations, scheduled-task definitions, Xcode/Steward instructions, and automation drift. Do not treat this as a new Steward authority category, merge authority, or clinical/runtime capability.
 
 Repository-local roots now exist for the model:
-- `.healthos-settler/` is a documentation-only root for future Settler profiles and Settlement records.
-- `.healthos-territory/` is a documentation-only root for future Territory records.
+- `.healthos-settler/` is a documentation-only root for Territory Registry records and future Settler profiles.
+- `.healthos-territory/` is a prior documentation-only root for historical Territory scaffold references.
 
-These roots are subordinate to official docs and do not implement executable Settlers, a Settlement schema, a Territory loader, or `healthos-forge-mcp`.
+These roots are subordinate to official docs and do not implement executable Settlers, Settlement instances, a Territory loader, or `healthos-forge-mcp`.
 
 ## ST-011A runtime taxonomy + Forge MCP naming note (2026-05-01)
 

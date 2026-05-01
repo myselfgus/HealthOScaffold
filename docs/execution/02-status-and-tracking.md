@@ -6,6 +6,22 @@ Current phase: Controlled implementation — first vertical slice started
 
 ## Completed recently
 
+## ST-011B — Create HealthOS Technical Product Specification baseline (2026-05-01)
+
+- Objective: create the first consolidated technical product specification baseline for HealthOS without changing runtime behavior.
+- Files created:
+  - `docs/product/README.md`
+  - `docs/product/01-healthos-technical-product-specification.md`
+- Files updated:
+  - `README.md`
+  - `docs/execution/22-steward-construction-operating-model.md`
+  - `docs/execution/19-settler-model-task-tracker.md`
+  - `docs/execution/12-next-agent-handoff.md`
+  - `docs/execution/02-status-and-tracking.md`
+- Result: baseline technical product specification now consolidates current technical product definition and explicit maturity/non-claims while preserving architecture/execution canon.
+- Invariants: Inv 1 (Core sovereignty), Inv 43 (scaffold/foundation maturity is not production readiness), construction boundary invariants (Steward/Settlers/Forge MCP remain outside clinical/runtime hierarchy).
+- Residual gaps: detailed follow-on technical specs remain future work (GOS primitives, Session Runtime, STT/normalization, MSR artifacts, Service Runtime, provider policy, app interfaces, construction-system detail). ST-012 remains next construction-system task.
+
 ## ST-011 — Create Territory Registry (2026-05-01)
 
 - Objective: create the first structured Territory Registry for the Steward / Settler / Settlement construction system without implementing Settlers, Settlement instances, prompt generation, Steward CLI, Forge MCP, or runtime behavior.

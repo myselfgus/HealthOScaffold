@@ -22,6 +22,20 @@ Current phase: Controlled implementation — first vertical slice started
 - Invariants: Inv 1 (Core sovereignty), Inv 43 (scaffold/foundation maturity is not production readiness), construction boundary invariants (Steward/Settlers/Forge MCP remain outside clinical/runtime hierarchy).
 - Residual gaps: detailed follow-on technical specs remain future work (GOS primitives, Session Runtime, STT/normalization, MSR artifacts, Service Runtime, provider policy, app interfaces, construction-system detail). ST-012 remains next construction-system task.
 
+## Daily TODO/status audit (2026-05-01 local / 2026-05-02 UTC)
+
+- Objective: audit READY / in-progress task trackers against recent git history and current code evidence without implementing new runtime or app behavior.
+- Evidence checked: `git log --oneline -30`, historical commits for APP-008 / OPS-003 / CL-006 / DS-007 / RT-008 / AACI-009, current adapter/test files, and all files under `docs/execution/todo/`.
+- Result: TODO trackers were corrected so completed items no longer remain under READY:
+  - APP-008 cross-app envelope propagation is completed at scaffold-contract maturity; APP-011 and APP-012 remain READY for separate Sortio/CloudClinic smoke-testable session wiring.
+  - CL-006 shared service-boundary outcome envelope is completed; no Core-law TODO is currently promoted by the TODO tracker.
+  - DS-007 lawfulContext/layer-guard parity is completed; SQL/object backend hardening remains a post-scaffold gap.
+  - OPS-003 incident-response command vocabulary is completed as documentation/contract vocabulary, not an implemented operator console.
+  - RT-008 runtime-boundary adapter tests and AACI-009 capability-honesty signaling are completed; RT-ASYNC-001 and RT-RETRIEVAL-001 remain blocked in doc 21.
+- Current promoted pending product/repo tasks after this audit: APP-011, APP-012, and CI-001 are READY in `docs/execution/21-structural-ontology-and-product-readiness-plan.md`; RT-ASYNC-001 and RT-RETRIEVAL-001 remain BLOCKED there.
+- Current promoted construction-system task: ST-012 Settler Profile Registry remains TODO after ST-011/ST-011A; it is tracked in `docs/execution/19-settler-model-task-tracker.md` and `docs/execution/22-steward-construction-operating-model.md`.
+- Non-claims preserved: no production readiness, no final UI, no real semantic retrieval, no regulatory/provider effectuation, and no movement of consent/habilitation/gate/finality law out of Core.
+
 ## ST-011 — Create Territory Registry (2026-05-01)
 
 - Objective: create the first structured Territory Registry for the Steward / Settler / Settlement construction system without implementing Settlers, Settlement instances, prompt generation, Steward CLI, Forge MCP, or runtime behavior.
@@ -1071,7 +1085,7 @@ Whenever a work unit ends, update:
 - created explicit finalization plan sequencing last closure actions, merge criteria, validation criteria, and next HealthOS maturity handoff: `docs/execution/15-scaffold-finalization-plan.md`
 - synchronized entry/read-order docs (`README.md`, `AGENTS.md`, `CLAUDE.md`, `docs/execution/README.md`) to include scaffold RC closure references and anti-overclaim posture
 - synchronized maturity/handoff docs (`11-current-maturity-map.md`, `12-next-agent-handoff.md`) with closure classification and blocker-aware next task selection
-- current explicit scaffold blockers for strict closure: GAP-001 (cross-app adapter propagation) and GAP-002 (incident command set)
+- historical strict-closure blockers GAP-001 (cross-app adapter propagation) and GAP-002 (incident command set) are no longer active TODO blockers after APP-008 and OPS-003 evidence was reconciled; remaining work is tracked as post-scaffold/product maturity unless a future RC audit reclassifies it.
 
 Validation executed in this work unit:
 - `make validate-all` => PASS (local harness)

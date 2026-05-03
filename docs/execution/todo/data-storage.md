@@ -47,14 +47,20 @@ Files touched:
 - `docs/execution/06-scaffold-coverage-matrix.md`
 - `docs/execution/10-invariant-matrix.md`
 
+### DS-007 Propagate lawfulContext and layer guard parity beyond first-slice call sites
+Outcome:
+- propagated lawfulContext and storage-layer guard parity beyond the original first-slice call sites
+- added evidence for governed-vs-operational boundary behavior without replacing the canonical file-backed record posture
+Files touched:
+- `swift/Sources/HealthOSCore/StorageContracts.swift`
+- `swift/Sources/HealthOSCore/FirstSliceServices.swift`
+- `swift/Tests/HealthOSTests/GOSRuntimeAdoptionTests.swift`
+- `docs/execution/02-status-and-tracking.md`
+- `docs/execution/todo/data-storage.md`
+
 ## READY
 
-### DS-007 Propagate lawfulContext and layer guard parity beyond first-slice call sites
-Priority: High
-Skill: `docs/execution/skills/storage-data-layer-skill.md`
-Definition of done:
-- remaining Core storage/retrieval/ops entrypoints reuse same fail-closed context/layer checks
-- tests prove parity for governed-vs-operational boundaries
+No READY data/storage TODO is currently promoted by this tracker. SQL/object backend hardening remains a post-scaffold gap, not a parity replacement for file-backed canonical storage.
 
 
 ## TESTS / VALIDATION

@@ -70,6 +70,19 @@ Primary executable slice orchestration lives in:
 Reference ordering:
 habilitation validate → consent validate → session start → capture → transcript provenance → retrieval provenance → SOAP draft provenance → gate request → gate resolve → final artifact (only if approved) + provenance.
 
+## MSR and transcript normalization workflow
+
+Transcript normalization is owned by `HealthOSSessionRuntime`, not by MSR. The session pipeline is:
+capture/transcription → transcript normalization → MSR (`ASL -> VDLP -> GEM`).
+
+For v1, normalization may use the local Apple Foundation Models adapter when compiled in and available for the current locale. Remote fallback remains denied unless future policy explicitly changes this. Stub-only or unavailable providers must produce explicit degraded state and must not persist stub output as a real normalized transcript.
+
+When touching transcript normalization, MSR, or provider behavior, read `docs/architecture/49-mental-space-runtime.md` and validate at minimum with:
+```bash
+cd swift && swift build
+cd swift && swift test
+```
+
 ## Real command baseline
 
 ```bash
@@ -143,6 +156,7 @@ Steward is the canonical engineering agent for this repository. `healthos-stewar
 
 - CLI and package: `ts/agent-infra/healthos-steward/`
 - Derived memory, sessions, handoffs, policies, state: `.healthos-steward/`
+- Territory Registry: `.healthos-settler/territories/`
 - Construction operating model: `docs/execution/22-steward-construction-operating-model.md`
 
 Steward for Xcode is the Xcode-integration posture for Steward. Steward for Xcode integrates with Xcode Intelligence as an Apple-controlled engineering runtime surface, while HealthOS contributes instructions, `healthos-forge-mcp`, derived repository memory, and deterministic CLI operations. See `docs/architecture/45-healthos-xcode-agent.md` and `docs/architecture/46-apple-sovereignty-architecture.md`.

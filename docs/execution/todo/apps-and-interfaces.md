@@ -2,6 +2,19 @@
 
 ## COMPLETED
 
+### APP-008 Propagate cross-app shared envelope consumption into non-Scribe adapters
+Outcome:
+- propagated `AppSurfaceEnvelope` validation into Sortio/User-Agent and CloudClinic/Service Runtime adapter seams without granting app-owned legal authority
+- added boundary evidence for `legalAuthorizing = false`, raw direct identifier denial, app-kind mismatch, role/action mismatch, and safe-ref enforcement
+- confirmed this closes the cross-app adapter propagation TODO at scaffold-contract maturity only; it does not implement final Sortio or CloudClinic UI/session flows
+Files touched:
+- `swift/Sources/HealthOSCore/CrossAppCoordinationContracts.swift`
+- `swift/Tests/HealthOSTests/CrossAppCoordinationContractsTests.swift`
+- `ts/packages/runtime-user-agent/src/index.ts`
+- `ts/packages/service-runtime/src/index.ts`
+- `docs/execution/02-status-and-tracking.md`
+- `docs/execution/todo/apps-and-interfaces.md`
+
 ### STR-005 Add placeholder Swift executable targets for Sortio and CloudClinic
 Outcome:
 - added `HealthOSSortioApp` and `HealthOSCloudClinicApp` as minimal Swift executable scaffold targets so the HealthOS product graph no longer represents only Scribe as an app/interface surface
@@ -299,13 +312,6 @@ Files touched:
 - `docs/execution/todo/apps-and-interfaces.md`
 
 ## READY
-
-### APP-008 Propagate cross-app shared envelope consumption into non-Scribe adapters
-Priority: High
-Skill: `docs/execution/skills/cross-app-surfaces-skill.md` + `docs/execution/skills/app-boundary-skill.md`
-Definition of done:
-- Sortio/CloudClinic adapter seams consume shared envelope contracts without raw payload leaks
-- boundary tests added/updated for app-kind + role mismatch and safe-ref enforcement
 
 ### APP-011 Sortio: smoke-testable executable path
 Priority: Medium

@@ -291,5 +291,5 @@ What remains is mostly optional hardening and procedural refinement, not identit
 - [x] objective RC criteria documented (`docs/execution/13-scaffold-release-candidate-criteria.md`)
 - [x] final gap register documented (`docs/execution/14-final-gap-register.md`)
 - [x] scaffold finalization plan documented (`docs/execution/15-scaffold-finalization-plan.md`)
-- [~] strict closure still blocked by open small-closure items tracked as scaffold blockers (GAP-001, GAP-002)
+- [x] strict closure blocker tracking for GAP-001 and GAP-002 has been reconciled; remaining gaps are post-scaffold/product hardening unless a future RC audit reclassifies them
 - [x] non-blocking future HealthOS maturity/production-phase gaps are explicitly separated from scaffold/foundation phase closure

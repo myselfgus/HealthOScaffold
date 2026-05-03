@@ -31,20 +31,25 @@ This document is the authoritative priority-ordered work plan as of 2026-04-29. 
 - The canonical Git + PR workflow every task must follow
 - Ontology invariants that must never be violated
 
-**The priority order is:**
+**The product/repo priority order after the latest TODO audit is:**
 
 | Tier | What | Why |
 |------|------|-----|
-| **P0** | STR-001 → RT-MSR-001 → RT-MSR-002 → RT-MSR-003 | Activates the 400-patient validated clinical pipeline (ASL/VDLP/GEM) — highest clinical value, currently all stubs |
-| **P1** | STR-002, STR-003, STR-004 (independent, can parallel) | Corrects product/build/agent ontology at the filesystem level; eliminates structural confusion |
-| **P2** | STR-005, APP-011, APP-012 | Adds missing Sortio and CloudClinic Swift targets to the product graph |
+| **P0/P1 completed** | STR-001, RT-MSR-001, RT-MSR-002, RT-MSR-003, STR-002, STR-003, STR-004 | MSR provider-backed stages and structural cleanup are already landed; do not reselect them from stale TODO text |
+| **P2 active** | APP-011, APP-012 | Wire existing Sortio and CloudClinic boundary contracts into smoke-testable session paths |
 | **P3** | RT-PROVIDER-001, RT-ASYNC-001, RT-RETRIEVAL-001 | Runtime hardening (real providers, SQL-backed executor, semantic retrieval) |
 | **P4** | CI-001 | GitHub Actions CI integration |
+
+Current status details:
+- RT-PROVIDER-001 is DONE.
+- APP-011, APP-012, and CI-001 remain READY.
+- RT-ASYNC-001 and RT-RETRIEVAL-001 remain BLOCKED in doc 21.
+- APP-008, CL-006, DS-007, OPS-003, RT-008, and AACI-009 were reconciled as completed in the TODO trackers during the 2026-05-01 local / 2026-05-02 UTC audit.
 
 ## How to choose next task
 
 1. Read `docs/execution/21-structural-ontology-and-product-readiness-plan.md` → Priority Grid.
-2. Find highest-priority task with Status = `READY` and all prerequisites `DONE`.
+2. Find highest-priority task with Status = `READY` and all prerequisites `DONE`; after the latest audit, that means APP-011 or APP-012 for product app wiring unless the operator explicitly selects CI-001 or construction-system work.
 3. Read that task's full spec in doc 21 (branch name, files, DoD, validation, git workflow).
 4. Use the deterministic Steward baseline for repository state context:
    `cd ts && npx --yes --workspace @healthos/steward healthos-steward status`
@@ -65,7 +70,7 @@ This document is the authoritative priority-ordered work plan as of 2026-04-29. 
 - `HealthOSSessionRuntime` is a scaffold module, not a product concept. STR-004 renames it to `HealthOSSessionRuntime`.
 - `Skill macOS/` TS scripts are reference implementations, not the active pipeline. STR-002 archives them.
 - `ts/packages/` conflates PRODUCT, BUILD, and AGENT packages. STR-003 separates them.
-- Sortio and CloudClinic have no Swift executable targets. STR-005 adds them.
+- Sortio and CloudClinic now have minimal Swift executable scaffold targets from STR-005. APP-011 and APP-012 wire existing boundary contracts into smoke-testable session paths.
 - `HealthOSMSR` depends on `HealthOSCore` and `HealthOSProviders`; transcript normalization is owned by `HealthOSSessionRuntime`.
 
 ## Native UI note
@@ -136,3 +141,7 @@ These roots are subordinate to official docs and do not implement executable Set
 - Service Runtime is a TypeScript service/operations workflow runtime and remains distinct from Session Runtime and Async Runtime.
 - HealthOS Forge MCP (`healthos-forge-mcp`) supersedes the earlier `healthos-mcp` naming for repository-maintenance MCP tooling.
 - Future HealthOS runtime MCP servers remain separate Core-governed systems.
+
+## TODO audit note (2026-05-01 local / 2026-05-02 UTC)
+
+Do not reopen stale READY entries for APP-008, CL-006, DS-007, OPS-003, RT-008, AACI-009, STR-001, RT-MSR-001, RT-MSR-002, RT-MSR-003, or RT-PROVIDER-001 without new contradictory evidence. The current TODO files have been corrected to remove those completed items from READY.

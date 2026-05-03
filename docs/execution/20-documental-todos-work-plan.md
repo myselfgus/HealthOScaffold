@@ -44,6 +44,8 @@ These tasks are self-contained, require no code, and are prerequisites for Phase
 
 ### Task 1 of 9 — ST-006: Define Territory record files
 
+> ✅ CONCLUÍDA em: 2026-05-01 via ST-011 | Evidência: PR #89 (feat/st-011-territory-registry), commits 8b6bde7/8007356, `.healthos-settler/territories/*.json` (15 registros criados), `docs/execution/02-status-and-tracking.md` → entrada ST-011. Nota: diretório alterado de `.healthos-territory/territories/` (spec original) para `.healthos-settler/territories/` (entregável real); escopo expandido de 11 para 15 territórios.
+
 **Source tracker**: `docs/execution/19-settler-model-task-tracker.md` → ST-006.
 
 **Objective**: Create initial Territory records under `.healthos-territory/territories/`. Each record describes one documented repository domain so that a Settler profile or Steward can read it and stay within invariants.
@@ -94,6 +96,8 @@ These tasks are self-contained, require no code, and are prerequisites for Phase
 ---
 
 ### Task 2 of 9 — ST-002: Create Settler profile instruction files
+
+> 🔓 DESBLOQUEADA em 2026-05-01 — ST-006/ST-011 (Territory Registry) concluída. Tarefa pode iniciar agora; no tracker corresponde a ST-012 (Settler Profile Registry).
 
 **Source tracker**: `docs/execution/19-settler-model-task-tracker.md` → ST-002.
 
@@ -184,6 +188,8 @@ These tasks extend existing architecture documents. They require reading the rel
 
 ### Task 4 of 9 — CL-006: Shared error-envelope proposal for local service boundaries
 
+> ✅ CONCLUÍDA em: 2026-05-01 | Evidência: commit `28826c4 feat(core): implement shared service boundary outcome envelope (CL-006)`, `docs/execution/todo/core-laws.md` → CL-006 movida para COMPLETED (daily audit 2026-05-01).
+
 **Source tracker**: `docs/execution/todo/core-laws.md` → CL-006.
 
 **Objective**: Extend `docs/architecture/06-core-services.md` with a proposal section that defines whether denied/failure outputs share one transport envelope at the loopback HTTP seam. The goal is consistency: success, deny, and failure must be representable without ambiguity.
@@ -223,6 +229,8 @@ Add a new section `## Shared error envelope for local service boundaries` that c
 
 ### Task 5 of 9 — OPS-003: Define incident-response command set
 
+> ✅ CONCLUÍDA em: 2026-05-01 | Evidência: commit `3ae3345 docs(ops): define incident-response command vocabulary for operator tools (OPS-003)`, `docs/execution/todo/ops-network-ml.md` → OPS-003 movida para COMPLETED (daily audit 2026-05-01).
+
 **Source tracker**: `docs/execution/todo/ops-network-ml.md` → OPS-003.
 
 **Objective**: Extend `docs/architecture/14-operations-runbook.md` with an explicit incident-response command vocabulary. An operator reading this section must be able to map a visible incident to a concrete action without ambiguity.
@@ -258,6 +266,8 @@ A new section `## Incident-response command vocabulary` following the existing b
 ---
 
 ### Task 6 of 9 — ST-004: Define healthos-mcp Settler operations spec
+
+> ⚠️ Nota de nomenclatura (2026-05-01): `healthos-mcp` foi renomeado para `healthos-forge-mcp` via ST-011A (commits c433b72/3562320). Esta spec deve usar a nova nomenclatura `healthos-forge-mcp` em toda a escrita.
 
 **Source tracker**: `docs/execution/19-settler-model-task-tracker.md` → ST-004.
 
@@ -527,13 +537,29 @@ Refactors completados que afetam referências neste plano:
 - **ST-010**: `docs/execution/22-steward-construction-operating-model.md` criado — baseline do construction operating model
 - **Novo doc**: `docs/execution/21-structural-ontology-and-product-readiness-plan.md` — plano de readiness estrutural
 
+### Mudanças estruturais relevantes (2026-05-01) — Territory Registry e Forge MCP naming
+
+**Fonte**: git log + `docs/execution/19-settler-model-task-tracker.md` + `docs/execution/12-next-agent-handoff.md`
+
+- **ST-011 (Territory Registry)**: concluída em 2026-05-01 via PR #89. Territory records criados sob `.healthos-settler/territories/` (não `.healthos-territory/territories/` como especificado originalmente no plano). 15 registros criados (vs. 11 planejados); escopo expandido com `construction-system`, `regulatory-and-interoperability`, `validation-and-ci`, `documentation`.
+- **ST-011A (Runtime taxonomy + Forge MCP naming)**: `healthos-mcp` renomeado para `healthos-forge-mcp` em 2026-05-01 (commits c433b72, 3562320). Task 6 (ST-004) desta spec deve usar a nova nomenclatura.
+- **ST-012 é o próximo**: A tarefa de construção seguinte no tracker é ST-012 (Settler Profile Registry), correspondente à Task 2 (ST-002) deste plano. Pode iniciar agora que ST-011 está concluída.
+
+### Mudanças estruturais relevantes (2026-05-02) — Product Spec e daily audit
+
+**Fonte**: git log + `docs/execution/02-status-and-tracking.md`
+
+- **ST-011B (Product Specification)**: `docs/product/01-healthos-technical-product-specification.md` criado em 2026-05-01 via PR #90. Não é uma das 9 tarefas deste plano. É o primeiro documento consolidado de especificação técnica de produto para HealthOS.
+- **Daily audit (2026-05-01)**: trackers de TODO auditados e corrigidos. CL-006, OPS-003, DS-007, RT-008, AACI-009, APP-008 foram movidos de READY para COMPLETED nos seus respectivos todo files. Tasks 4 (CL-006) e 5 (OPS-003) deste plano agora confirmadas DONE.
+- **Estado atual do plano**: 3 de 9 concluídas (ST-006, CL-006, OPS-003). Fase 2 está 2 de 3 concluída; Fase 1 está 1 de 3 concluída. Fase 3 permanece não iniciada.
+
 ---
 
 ## Status
 
-Este plano está: **READY — não iniciado**.
+Este plano está: **EM PROGRESSO**.
 
-Tarefas concluídas: 0 de 9.
+Tarefas concluídas: 3 de 9.
 
-Última sincronização: 2026-04-30 (sync-work-plan automation).
+Última sincronização: 2026-05-02 (sync-work-plan automation).
 Próxima sincronização: automática — segunda/quarta/sexta 08:47.

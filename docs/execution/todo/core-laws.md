@@ -33,20 +33,16 @@ Outcome:
 Files touched:
 - `docs/architecture/18-schema-governance-audit.md`
 
+### CL-006 Add shared error-envelope proposal for local service boundaries
+Outcome:
+- added a shared service boundary outcome envelope so loopback/service boundaries can represent success, denied, and failure outcomes consistently
+- preserved deny-as-governance semantics and kept Core law ownership in Core rather than transport/app surfaces
+Files touched:
+- `docs/architecture/06-core-services.md`
+
 ## READY
 
-### CL-006 Add shared error-envelope proposal for local service boundaries
-Priority: Medium
-Skill: `docs/execution/skills/core-law-skill.md`
-Objective:
-- define whether denied/failure outputs should share one transport envelope for loopback HTTP seam
-Files:
-- `docs/architecture/06-core-services.md`
-- optional new contract file under `schemas/contracts/`
-Dependencies:
-- CL-003, CL-004
-Definition of done:
-- local service boundary can represent success, deny, and failure outcomes consistently
+No READY core-law TODO is currently promoted by this tracker. Re-check `docs/execution/21-structural-ontology-and-product-readiness-plan.md` and current git history before selecting new Core work.
 
 ## TESTS / VALIDATION
 

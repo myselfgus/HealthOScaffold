@@ -18,6 +18,16 @@ Files touched:
 - `docs/execution/12-next-agent-handoff.md`
 - `docs/execution/todo/ops-network-ml.md`
 
+### OPS-003 Define incident-response command set for first operator tools
+Outcome:
+- added incident-response command vocabulary for runtime failure, queue saturation, backup concern, and integrity incident handling
+- mapped incident classes to event kinds and canonical operator action vocabulary without claiming an implemented operator console
+Files touched:
+- `docs/architecture/14-operations-runbook.md`
+- `docs/architecture/26-operator-observability-contract.md`
+- `docs/execution/02-status-and-tracking.md`
+- `docs/execution/todo/ops-network-ml.md`
+
 ### OPS-004 Clarify online-only mesh doctrine and sovereign fabric projection
 Outcome:
 - networking/mesh doctrine now states online-only access posture and rejects offline-mode drift
@@ -342,19 +352,6 @@ Definition of done:
 - deterministic repository-maintenance commands beyond `status`/`runtime`/`session` are added only when implemented and validated
 - provider-centric orchestration is no longer the primary entry point
 - `make validate-docs` and `make ts-build` pass
-
-### OPS-003 Define incident-response command set for first operator tools
-Priority: High
-Skill: `docs/execution/skills/network-fabric-skill.md` + `docs/execution/skills/backup-restore-retention-export-skill.md`
-Objective:
-- list canonical operator actions for runtime failure, queue saturation, backup concern, and integrity incident handling
-Files:
-- `docs/architecture/14-operations-runbook.md`
-- `docs/architecture/26-operator-observability-contract.md`
-Dependencies:
-- OPS-001, OPS-002
-Definition of done:
-- first operator tooling can map visible incidents to explicit action vocabulary
 
 ## TESTS / VALIDATION
 

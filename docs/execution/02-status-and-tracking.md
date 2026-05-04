@@ -1254,3 +1254,38 @@ Residual gaps: Apple Foundation Models normalization separate; semantic retrieva
 - Result: documentation/ontology alignment completed; no Swift/TS package/module rename, no runtime behavior change.
 - Invariants: Inv 1 (Core sovereignty), Inv 43 (naming/ontology alignment does not imply production readiness), engineering-agent boundary invariants (construction tooling remains outside clinical/runtime hierarchy).
 - Residual gaps: HealthOS Forge MCP is not implemented; `mcp-local` package path/metadata rename to `healthos-forge-mcp` remains future follow-up (ST-018A); HealthOS runtime MCP servers are not implemented; Service Runtime may need deeper implementation documentation; no runtime behavior changed.
+
+
+## ST-014 — Deterministic Steward CLI inspect/next/list (2026-05-04)
+
+Task: ST-014 — Deterministic Steward CLI inspect/next/list
+Status: DONE
+Commands added: `list <territories|settlers|settlements>`, `inspect <territory|settler|settlement> <id>`, `next`
+
+Files created:
+- `ts/agent-infra/healthos-steward/src/repo-root.ts`
+- `ts/agent-infra/healthos-steward/src/commands/list.ts`
+- `ts/agent-infra/healthos-steward/src/commands/inspect.ts`
+- `ts/agent-infra/healthos-steward/src/commands/next.ts`
+
+Files updated:
+- `ts/agent-infra/healthos-steward/src/index.ts` — added list/inspect/next to StewardCommand type; updated runStewardCommand
+- `ts/agent-infra/healthos-steward/src/cli.ts` — passes args slice to runStewardCommand
+- `CLAUDE.md` — baseline note updated to list all 6 implemented commands
+- `docs/execution/19-settler-model-task-tracker.md` — ST-014 marked DONE
+- `docs/execution/22-steward-construction-operating-model.md` — ST-014 entry updated
+
+Smoke test results:
+- `list territories`: 14 Territory records printed (id/name/maturity)
+- `list settlers`: 9 Settler profiles printed (profile-id/territory-id/maturity)
+- `list settlements`: st-012-settler-profile-registry [completed]
+- `inspect territory core`: Territory/Name/Maturity/Canonical docs/Known gaps printed
+- `inspect settler settler-core-law`: Settler/Territory/Maturity/Invariants(6)/Forbidden moves(6) printed
+- `inspect settlement st-012-settler-profile-registry`: 30-line preview printed [completed]
+- `next`: returned ST-014 as first TODO (correct pre-update; returns ST-015 post-update)
+- `list bogus`: exits 1 with error message (PASS)
+- `status`, `runtime`, `session`: original scaffold placeholders unchanged
+
+Invariants: no model calls, no writes, no new npm dependencies, fail-closed on missing/malformed records, no clinical authority, no merge authority.
+Maturity: implemented seam
+Residual gaps: ST-015 (Prompt Generation Engine), ST-016 (Settlement Validation/PR Review Draft Engine), ST-017 (Derived Memory Builder), ST-018 (healthos-forge-mcp), ST-019 (Xcode/Codex/Claude integration instructions), ST-020 (generate APP-011 prompt) remain TODO.

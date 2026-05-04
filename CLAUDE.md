@@ -174,9 +174,16 @@ make ts-build
 cd ts && npx --yes --workspace @healthos/steward healthos-steward status
 cd ts && npx --yes --workspace @healthos/steward healthos-steward runtime
 cd ts && npx --yes --workspace @healthos/steward healthos-steward session
+cd ts && npx --yes --workspace @healthos/steward healthos-steward list territories
+cd ts && npx --yes --workspace @healthos/steward healthos-steward list settlers
+cd ts && npx --yes --workspace @healthos/steward healthos-steward list settlements
+cd ts && npx --yes --workspace @healthos/steward healthos-steward inspect territory <id>
+cd ts && npx --yes --workspace @healthos/steward healthos-steward inspect settler <id>
+cd ts && npx --yes --workspace @healthos/steward healthos-steward inspect settlement <id>
+cd ts && npx --yes --workspace @healthos/steward healthos-steward next
 ```
 
-Treat `status`, `runtime`, and `session` as the only implemented `healthos-steward` CLI commands unless `ts/agent-infra/healthos-steward/src/` and a local smoke run prove otherwise. Do not describe `scan-status`, `next-task`, `validate-docs`, `validate-all`, or other target repository-maintenance operations as delivered CLI behavior until implemented.
+Six `healthos-steward` CLI commands are implemented as of ST-014 (2026-05-04): `status`, `runtime`, `session` (scaffold placeholders); `list <territories|settlers|settlements>`, `inspect <territory|settler|settlement> <id>`, and `next` (deterministic read-only registry inspection, implemented in `ts/agent-infra/healthos-steward/src/commands/`). The `list`/`inspect`/`next` commands read Territory JSON records, Settler profile .md files, Settlement .md records, and the ST tracker using Node built-ins only — no model calls, no writes, no new npm dependencies. Do not describe `scan-status`, `validate-docs`, `validate-all`, or other repository-maintenance operations as delivered CLI behavior until implemented.
 
 Codex, Claude Code, and other external coding assistants are external executors operating on this repository. They are not internal Steward providers.
 

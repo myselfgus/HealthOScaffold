@@ -79,9 +79,10 @@
 
 ## Observações
 
-- **Digest 2026-05-03 ausente**: a execução anterior do daily-todo-tracker foi interrompida antes de escrever e commitar o digest de 2026-05-03. Este digest de 2026-05-04 representa o primeiro digest completo após o run de 2026-05-02.
-- **ST-011B**: `docs/product/01-healthos-technical-product-specification.md` criado em 2026-05-01 — primeiro documento consolidado de especificação técnica de produto. Agentes devem ler este doc juntamente com doc 21 e doc 22 antes de selecionar tarefas de produto ou construção.
-- **healthos-forge-mcp**: nome canônico atual para o MCP de manutenção de repositório (substituiu `healthos-mcp` em ST-011A). WS-2 deve usar este nome.
-- **Nenhum blocker de scaffold RC ativo**: GAP-001 e GAP-002 estão RESOLVED. Os 8 gaps remanescentes (GAP-003 a GAP-010) são explicitamente aceitos para fases futuras de hardening/produção.
-- **Stash ativo**: um stash WIP pré-automação está salvo (`.claude/scheduled_tasks.json`); será restaurado no PASSO 6.
-- **Invariantes absolutos**: nenhum app (APP-011/012) pode mover lei Core, consentimento, habilitação, gate, finalidade, ou lei de armazenamento para dentro do target Swift. Toda lógica de governança permanece em `HealthOSCore`.
+- **Re-run 2026-05-04**: este é um segundo run do dia; o run anterior (commit 9c12db6) foi gerado pelo automação agendada às 08:07. Run manual acionado junto com sync-work-plan e update-claude-md.
+- **CLAUDE.md atualizado (update-claude-md 2026-05-04)**: doc 21 e `docs/product/01-healthos-technical-product-specification.md` adicionados à lista de leitura obrigatória. Seção `## Prompt architecture template` adicionada.
+- **Prompt architecture template criado**: `.healthos-steward/prompts/prompt-architecture-template.md` é agora o template mestre para geração de prompts de implementação por qualquer IA/LLM no repositório.
+- **ST-011B**: `docs/product/01-healthos-technical-product-specification.md` criado em 2026-05-01. Agentes devem ler junto com doc 21 e doc 22 antes de selecionar tarefas de produto ou construção.
+- **healthos-forge-mcp**: nome canônico atual para o MCP de manutenção de repositório. WS-2 deve usar este nome.
+- **Nenhum blocker de scaffold RC ativo**: GAP-001 e GAP-002 RESOLVED. 8 gaps remanescentes (GAP-003 a GAP-010) aceitos para fases futuras.
+- **Invariantes absolutos**: nenhum app (APP-011/012) pode mover lei Core, consentimento, habilitação, gate, finalidade, ou lei de armazenamento para dentro do target Swift.

@@ -2,8 +2,8 @@
 
 ## Último run
 
-**Data**: 2026-05-02
-**Executado por**: Claude Code (Sonnet 4.6), automação agendada
+**Data**: 2026-05-04
+**Executado por**: Claude Code (Sonnet 4.6), automação agendada + manual (segunda-feira)
 
 ## Tabela de verdade construída
 
@@ -19,15 +19,10 @@
 | Stream D backend contract | TODO | ausente | PENDING |
 | Stream F Xcode envelope | TODO | ausente | PENDING |
 
-## Mudanças feitas no plano (2026-05-02)
+## Mudanças feitas no plano (2026-05-04)
 
-- Task 1 (ST-006) marcada ✅ CONCLUÍDA via ST-011 (2026-05-01)
-- Task 2 (ST-002) com 🔓 DESBLOQUEADA (2026-05-01)
-- Task 4 (CL-006) marcada ✅ CONCLUÍDA (2026-05-01)
-- Task 5 (OPS-003) marcada ✅ CONCLUÍDA (2026-05-01)
-- Task 6 (ST-004) com ⚠️ naming note: healthos-mcp → healthos-forge-mcp
-- Seção "Itens descobertos" com mudanças 2026-05-01 (ST-011, ST-011A, ST-011B, ST-012 next)
-- ## Status atualizado: "EM PROGRESSO / 3 de 9 | 2026-05-02"
+- ## Status atualizado: "EM PROGRESSO / 3 de 9 | 2026-05-04" (apenas data de sincronização)
+- Nenhuma mudança de status de tarefa — nenhuma nova tarefa concluída desde 2026-05-02
 
 ## Itens UNCERTAIN
 
@@ -41,6 +36,7 @@ Nenhum item UNCERTAIN restante nas 9 tarefas rastreadas.
 - ST-012 (Settler Profile Registry) é a próxima tarefa de construção, equivalente a Task 2 (ST-002). Profiles vão em `.healthos-settler/settlers/`.
 - ST-013 maturará o Settlement schema — equivalente a Task 3 (ST-003).
 - Tasks 6/7/8/9 (ST-004, Streams C/D/F) permanecem não iniciadas.
+- **Novo (2026-05-04)**: `.healthos-steward/prompts/prompt-architecture-template.md` criado como template mestre de geração de prompts; referenciado em CLAUDE.md na nova seção `## Prompt architecture template`.
 
 ## Próxima ação recomendada de maior impacto
 
@@ -59,3 +55,4 @@ Nenhum item UNCERTAIN restante nas 9 tarefas rastreadas.
 | 2026-04-30 | 0 de 9 (2 UNCERTAIN: CL-006, OPS-003) | Contexto UNCERTAIN + novas tasks + mudanças estruturais |
 | 2026-05-01 | 1 de 9 (ST-006 via ST-011) | Task 1 DONE, Task 2 desbloqueada, Task 6 naming note |
 | 2026-05-02 | 3 de 9 (+CL-006, +OPS-003) | Tasks 4 e 5 DONE após daily audit confirmar COMPLETED; ST-011B novo doc produto |
+| 2026-05-04 | 3 de 9 (sem mudança) | Apenas data de sincronização atualizada; prompt-architecture-template.md criado |

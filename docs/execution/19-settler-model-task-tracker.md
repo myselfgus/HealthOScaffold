@@ -66,12 +66,27 @@ Outcome:
 
 ### ST-012 — Settler Profile Registry
 
-Status: TODO.
+Status: DONE.
 
 Goal:
 - define Settler profile records under `.healthos-settler/settlers/`
 - include territory assignment, invariants, forbidden moves, validation expectations, and handoff requirements
 - keep Settlers non-authoritative and non-clinical
+
+Outcome (2026-05-04):
+- Created `.healthos-settler/settlers/README.md` — registry index table with all 9 profiles
+- Created `.healthos-settler/settlers/settler-core-law.md` — Territory: core
+- Created `.healthos-settler/settlers/settler-storage.md` — Territory: storage-and-data
+- Created `.healthos-settler/settlers/settler-gos.md` — Territory: gos
+- Created `.healthos-settler/settlers/settler-aaci.md` — Territory: aaci
+- Created `.healthos-settler/settlers/settler-ops.md` — Territory: operations-and-observability
+- Created `.healthos-settler/settlers/settler-apps.md` — Territory: apps
+- Created `.healthos-settler/settlers/settler-xcode-tooling.md` — Territory: construction-system
+- Created `.healthos-settler/settlers/settler-documentation.md` — Territory: documentation
+- Created `.healthos-settler/settlers/settler-validation.md` — Territory: validation-and-ci
+- Each profile contains: territory-id, profile-id, description, canonical-docs, files-in-scope, invariants (≥ 6), forbidden-moves (≥ 6), validation-expectations, maturity (doctrine-only), handoff-requirements, non-claims block
+- Maturity: doctrine-only (all 9 profiles)
+- Non-claims: no clinical agent, no runtime actor, no merge authority, no production-readiness, no Settler execution runtime implemented
 
 ### ST-013 — Settlement Record Schema and templates
 

@@ -114,13 +114,13 @@ discover
 
 `.healthos-settler/territories/` holds the ST-011 Territory Registry. Territory records map docs, files, invariants, tests, maturity boundaries, validation expectations, known gaps, and forbidden moves.
 
-`.healthos-settler/settlers/` will hold Settler profile records after ST-012. Settler records define specialized engineering profiles without authority.
+`.healthos-settler/settlers/` holds Settler profile records created in ST-012. Settler records define specialized engineering profiles without authority.
 
 ## Planned construction task sequence
 
 - ST-010 — Construction Operating Model baseline
 - ST-011 — Territory Registry (DONE): schema plus initial Territory records for Core, GOS, Session Runtime, MSR, AACI, Providers, apps, TypeScript runtimes, storage/data, regulatory/interoperability, operations/observability, construction-system, validation/CI, and documentation
-- ST-012 — Settler Profile Registry
+- ST-012 — Settler Profile Registry (DONE 2026-05-04): `.healthos-settler/settlers/` now populated with 9 profiles + README
 - ST-013 — Settlement Record Schema and templates
 - ST-014 — Deterministic Steward CLI inspect/next/list
 - ST-015 — Prompt Generation Engine

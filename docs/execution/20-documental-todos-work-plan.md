@@ -97,7 +97,9 @@ These tasks are self-contained, require no code, and are prerequisites for Phase
 
 ### Task 2 of 9 — ST-002: Create Settler profile instruction files
 
-> 🔓 DESBLOQUEADA em 2026-05-01 — ST-006/ST-011 (Territory Registry) concluída. Tarefa pode iniciar agora; no tracker corresponde a ST-012 (Settler Profile Registry).
+> ✅ CONCLUÍDA em: 2026-05-04 via ST-012 | Evidência: branch `feat/st-012-settler-profile-registry`, 10 arquivos criados sob `.healthos-settler/settlers/` (README.md + 9 perfis), 4 tracking docs atualizados. Cada perfil contém: territory-id, profile-id, description, canonical-docs, files-in-scope, invariants (≥ 6), forbidden-moves (≥ 6), validation-expectations, maturity (doctrine-only), handoff-requirements, non-claims. Nota: diretório final é `.healthos-settler/settlers/` (não `.healthos-settler/profiles/` como na spec original).
+
+> ~~🔓 DESBLOQUEADA em 2026-05-01 — ST-006/ST-011 (Territory Registry) concluída. Tarefa pode iniciar agora; no tracker corresponde a ST-012 (Settler Profile Registry).~~
 
 **Source tracker**: `docs/execution/19-settler-model-task-tracker.md` → ST-002.
 

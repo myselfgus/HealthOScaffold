@@ -561,5 +561,5 @@ Este plano está: **EM PROGRESSO**.
 
 Tarefas concluídas: 3 de 9.
 
-Última sincronização: 2026-05-02 (sync-work-plan automation).
+Última sincronização: 2026-05-04 (sync-work-plan automation).
 Próxima sincronização: automática — segunda/quarta/sexta 08:47.

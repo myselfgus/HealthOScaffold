@@ -148,6 +148,8 @@ These tasks are self-contained, require no code, and are prerequisites for Phase
 
 ### Task 3 of 9 — ST-003: Define Settlement record schema
 
+> ✅ CONCLUÍDA em: 2026-05-04 via ST-013 | Evidência: branch `feat/st-013-settlement-schema-templates`, 3 arquivos criados (`.healthos-settler/settlements/SCHEMA.md`, `.healthos-steward/settlements/templates/settlement-template.md`, `.healthos-steward/settlements/completed/st-012-settler-profile-registry.md`), 1 arquivo atualizado (`.healthos-steward/settlements/templates/settlement.schema.json` — patched: objective, restrictions, handoff added), 4 tracking docs atualizados. JSON Schema válido. Nota: SCHEMA.md criado em `.healthos-settler/settlements/` conforme spec original; template e completed example criados em `.healthos-steward/settlements/` conforme directory model do ST-010.
+
 **Source tracker**: `docs/execution/19-settler-model-task-tracker.md` → ST-003.
 
 **Objective**: Write a schema description document that defines the shape of a Settlement work unit. This is a documentation-only schema — not a JSON Schema or executable contract. The goal is to give future agents and humans a clear, unambiguous template when creating a Settlement record.

@@ -6,6 +6,24 @@ Current phase: Controlled implementation — first vertical slice started
 
 ## Completed recently
 
+## ST-013 — Settlement Record Schema and Templates (2026-05-04)
+
+- Objective: mature the Settlement record infrastructure by creating SCHEMA.md (authoritative Markdown spec of all Settlement fields), a blank Markdown template, and one completed example Settlement record (ST-012 factual basis). Review and patch the existing JSON Schema scaffold.
+- Files created:
+  - `.healthos-settler/settlements/SCHEMA.md` — authoritative human-readable Markdown spec of all 13 Settlement record fields
+  - `.healthos-steward/settlements/templates/settlement-template.md` — blank template with placeholder values for creating new Settlements
+  - `.healthos-steward/settlements/completed/st-012-settler-profile-registry.md` — completed example Settlement record (ST-012 factual basis)
+- Files updated:
+  - `.healthos-steward/settlements/templates/settlement.schema.json` — reviewed and patched: added `objective` (string), `restrictions` (array), and `handoff` (string) fields which were absent from the initial ST-010 scaffold; added `$comment` noting ST-013 review
+  - `docs/execution/02-status-and-tracking.md` (this file)
+  - `docs/execution/19-settler-model-task-tracker.md`
+  - `docs/execution/20-documental-todos-work-plan.md`
+  - `docs/execution/22-steward-construction-operating-model.md`
+- Result: Settlement schema, blank template, and example Settlement completed. JSON Schema remains valid (`python3 -m json.tool` PASS). No Swift, TypeScript, schema, or SQL source was modified.
+- Invariants preserved: construction-system boundary (no clinical authority, no merge authority, no runtime behavior changed), official docs canonical, healthos-forge-mcp naming correct, HealthOSSessionRuntime naming correct, no production-readiness claim.
+- Maturity: scaffolded contract (Settlement schema and template); doctrine-only (example Settlement record, no CLI/MCP/runner implemented).
+- Residual gaps: ST-014 (Deterministic Steward CLI), ST-015 (Prompt Generation Engine), ST-016 (Settlement Validation/PR Review Draft Engine), ST-017 (Derived Memory Builder), ST-018 (healthos-forge-mcp), ST-019 (Xcode/Codex/Claude integration instructions), ST-020 (Use Steward to generate APP-011 prompt) remain TODO.
+
 ## ST-012 — Create Settler Profile Registry (2026-05-04)
 
 - Objective: create 9 Settler profile records and a registry index under `.healthos-settler/settlers/` without implementing Settlers as executable agents, Settlement instances, Steward CLI, Forge MCP, or runtime behavior.

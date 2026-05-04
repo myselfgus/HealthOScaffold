@@ -1,8 +1,9 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://healthos.local/schemas/steward/settlement.schema.json",
+  "$comment": "Reviewed and patched in ST-013 (2026-05-04): added objective (string), restrictions (array), and handoff (string) fields which were required by the Markdown spec (SCHEMA.md) but absent from the initial ST-010 scaffold.",
   "title": "Steward Settlement Record",
-  "description": "Initial scaffold contract for bounded construction work units. This schema validates shape only and does not implement Steward execution.",
+  "description": "Scaffold contract for bounded construction work units. This schema validates shape only and does not implement Steward execution.",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -11,18 +12,21 @@
     "title",
     "status",
     "priority",
+    "objective",
     "territoryIds",
     "settlerIds",
     "sourceDocs",
     "filesInScope",
     "forbiddenFiles",
     "invariants",
+    "restrictions",
     "allowedChanges",
     "forbiddenChanges",
     "validationCommands",
     "doneCriteria",
     "residualGaps",
-    "handoffRequired"
+    "handoffRequired",
+    "handoff"
   ],
   "properties": {
     "id": {
@@ -36,6 +40,24 @@
     "title": {
       "type": "string",
       "minLength": 1
+    },
+    "objective": {
+      "type": "string",
+      "minLength": 1,
+      "description": "One-paragraph statement of what this Settlement delivers. Required per SCHEMA.md."
+    },
+    "restrictions": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "description": "Additional restrictions beyond Territory invariants that apply specifically to this Settlement."
+    },
+    "handoff": {
+      "type": "string",
+      "minLength": 1,
+      "description": "What is produced for the next agent: artifacts created, tracking docs updated, recommended next Settlement."
     },
     "status": {
       "type": "string",
@@ -136,29 +158,85 @@
   },
   "examples": [
     {
-      "id": "APP-011-sortio-session-path",
-      "taskId": "APP-011",
-      "title": "Sortio smoke-testable executable path",
-      "status": "draft",
-      "priority": "P2",
+      "id": "SETTLEMENT-20260504-settler-profile-registry",
+      "taskId": "ST-012",
+      "title": "ST-012 Settler Profile Registry",
+      "status": "completed",
+      "priority": "P1",
+      "objective": "Create 9 Settler profile records and a registry index under .healthos-settler/settlers/ without implementing Settlers as executable agents, Settlement instances, Steward CLI, Forge MCP, or runtime behavior.",
       "territoryIds": [
-        "apps",
-        "session-runtime"
+        "construction-system",
+        "documentation"
       ],
       "settlerIds": [
-        "app-boundary-settler",
-        "validation-settler"
+        "settler-xcode-tooling",
+        "settler-documentation"
       ],
-      "sourceDocs": [],
-      "filesInScope": [],
-      "forbiddenFiles": [],
-      "invariants": [],
-      "allowedChanges": [],
-      "forbiddenChanges": [],
-      "validationCommands": [],
-      "doneCriteria": [],
-      "residualGaps": [],
-      "handoffRequired": true
+      "sourceDocs": [
+        "docs/execution/22-steward-construction-operating-model.md",
+        "docs/architecture/47-steward-settler-engineering-model.md",
+        "docs/execution/19-settler-model-task-tracker.md"
+      ],
+      "filesInScope": [
+        ".healthos-settler/settlers/README.md",
+        ".healthos-settler/settlers/settler-core-law.md",
+        ".healthos-settler/settlers/settler-storage.md",
+        ".healthos-settler/settlers/settler-gos.md",
+        ".healthos-settler/settlers/settler-aaci.md",
+        ".healthos-settler/settlers/settler-ops.md",
+        ".healthos-settler/settlers/settler-apps.md",
+        ".healthos-settler/settlers/settler-xcode-tooling.md",
+        ".healthos-settler/settlers/settler-documentation.md",
+        ".healthos-settler/settlers/settler-validation.md",
+        "docs/execution/02-status-and-tracking.md",
+        "docs/execution/19-settler-model-task-tracker.md",
+        "docs/execution/20-documental-todos-work-plan.md",
+        "docs/execution/22-steward-construction-operating-model.md"
+      ],
+      "forbiddenFiles": [
+        "swift/Sources/",
+        "ts/",
+        "schemas/",
+        "sql/",
+        ".healthos-settler/territories/"
+      ],
+      "invariants": [
+        "Construction-system boundary: no clinical authority, no merge authority, no runtime behavior modified.",
+        "Settler profiles are documentation scaffolds only; no profile may claim executable agent status.",
+        "Official docs remain canonical; Settler profile records are subordinate.",
+        "healthos-forge-mcp naming must be used (not healthos-mcp)."
+      ],
+      "restrictions": [
+        "Do not modify Swift source under swift/Sources/ or swift/Tests/.",
+        "Do not modify TypeScript source under ts/.",
+        "Do not modify Territory records under .healthos-settler/territories/.",
+        "Do not create Settlement instances, Steward CLI, Forge MCP, or prompt generation engine."
+      ],
+      "allowedChanges": [
+        "Create Settler profile .md files under .healthos-settler/settlers/.",
+        "Update 4 tracking docs."
+      ],
+      "forbiddenChanges": [
+        "Any Swift or TypeScript source modification.",
+        "Any production-readiness, clinical authority, or merge authority claim."
+      ],
+      "validationCommands": [
+        "make validate-docs",
+        "make validate-all"
+      ],
+      "doneCriteria": [
+        ".healthos-settler/settlers/README.md exists with registry table.",
+        "9 Settler profile files exist under .healthos-settler/settlers/.",
+        "4 tracking docs updated."
+      ],
+      "residualGaps": [
+        "ST-013 Settlement Record Schema: TODO.",
+        "ST-014 Deterministic Steward CLI: TODO.",
+        "ST-015 Prompt Generation Engine: TODO.",
+        "ST-018 healthos-forge-mcp: doctrine-only, not implemented."
+      ],
+      "handoffRequired": true,
+      "handoff": "10 files created under .healthos-settler/settlers/ (README.md + 9 profiles). 4 tracking docs updated. Validation: make validate-docs PASS, make validate-all PASS. ST-013 is the next construction-system task."
     }
   ]
 }

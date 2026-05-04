@@ -90,11 +90,19 @@ Outcome (2026-05-04):
 
 ### ST-013 — Settlement Record Schema and templates
 
-Status: TODO.
+Status: DONE.
 
 Goal:
 - mature the initial Settlement schema and templates
 - keep records deterministic and non-executable unless a later CLI task implements readers
+
+Outcome (2026-05-04):
+- Created `.healthos-settler/settlements/SCHEMA.md` — authoritative Markdown spec defining all 13 Settlement record fields with descriptions, grouped into Identity, Scope, Governance, and Lifecycle categories; includes How-to section and non-claims block
+- Created `.healthos-steward/settlements/templates/settlement-template.md` — blank template with `<PLACEHOLDER>` values and HTML comment guidance for all 13 fields
+- Created `.healthos-steward/settlements/completed/st-012-settler-profile-registry.md` — completed example Settlement record (factual basis: ST-012 tracking docs and actual repository state)
+- Updated `.healthos-steward/settlements/templates/settlement.schema.json` — patched to add `objective`, `restrictions`, and `handoff` fields which were absent; updated example; added `$comment` noting ST-013 review; JSON remains valid
+- Maturity: scaffolded contract (schema, template, JSON Schema); no CLI, MCP server, runner, or executable Settlement implemented
+- Non-claims: no clinical authority, no merge authority, no runtime behavior, no production-readiness claim
 
 ### ST-014 — Deterministic Steward CLI inspect/next/list
 

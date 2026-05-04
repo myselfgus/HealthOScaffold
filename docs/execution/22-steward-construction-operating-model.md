@@ -122,7 +122,7 @@ discover
 - ST-011 — Territory Registry (DONE): schema plus initial Territory records for Core, GOS, Session Runtime, MSR, AACI, Providers, apps, TypeScript runtimes, storage/data, regulatory/interoperability, operations/observability, construction-system, validation/CI, and documentation
 - ST-012 — Settler Profile Registry (DONE 2026-05-04): `.healthos-settler/settlers/` now populated with 9 profiles + README; example Settlement record created in ST-013
 - ST-013 — Settlement Record Schema and templates (DONE 2026-05-04): SCHEMA.md, settlement-template.md, and st-012 example Settlement completed; settlement.schema.json patched for field coverage; ST-014 is next
-- ST-014 — Deterministic Steward CLI inspect/next/list
+- ST-014 — Deterministic Steward CLI inspect/next/list (DONE 2026-05-04): deterministic inspect/list/next CLI seam implemented in `@healthos/steward`; 6 commands now operational; ST-015 is next
 - ST-015 — Prompt Generation Engine
 - ST-016 — Settlement Validation and PR Review Draft Engine
 - ST-017 — Derived Memory Builder

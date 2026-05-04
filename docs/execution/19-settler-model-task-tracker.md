@@ -106,11 +106,23 @@ Outcome (2026-05-04):
 
 ### ST-014 — Deterministic Steward CLI inspect/next/list
 
-Status: TODO.
+Status: DONE.
 
 Goal:
 - add deterministic inspection/listing support after records exist
 - do not implement model calls or multiagent orchestration
+
+Outcome (2026-05-04):
+- Created `ts/agent-infra/healthos-steward/src/repo-root.ts` — resolves repo root from compiled dist/ path using import.meta.url
+- Created `ts/agent-infra/healthos-steward/src/commands/list.ts` — `list territories|settlers|settlements`
+- Created `ts/agent-infra/healthos-steward/src/commands/inspect.ts` — `inspect territory|settler|settlement <id>`
+- Created `ts/agent-infra/healthos-steward/src/commands/next.ts` — returns first TODO ST task from tracker
+- Updated `ts/agent-infra/healthos-steward/src/index.ts` — added list/inspect/next to StewardCommand type and switch
+- Updated `ts/agent-infra/healthos-steward/src/cli.ts` — passes args slice to runStewardCommand
+- Updated `CLAUDE.md` baseline note to list all 6 implemented commands
+- Node built-ins only (node:fs, node:path, node:url); no new npm dependencies
+- Maturity: implemented seam
+- Non-claims: no model calls, no writes, no multiagent, no clinical authority, no MCP server, no merge authority
 
 ### ST-015 — Prompt Generation Engine
 
@@ -282,6 +294,8 @@ No HealthOS runtime MCP server is implemented.
 
 No Territory loader is implemented.
 
-No Settlement CLI is implemented.
+Deterministic Steward CLI inspection seam implemented (ST-014): `list territories|settlers|settlements`, `inspect territory|settler|settlement <id>`, and `next` are delivered. All are read-only, deterministic, no model calls, no writes, no new npm deps.
+
+No Settlement write/create CLI is implemented.
 
 No prompt generation engine is implemented.

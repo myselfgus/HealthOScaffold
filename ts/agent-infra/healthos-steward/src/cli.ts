@@ -4,8 +4,11 @@ import { runStewardCommand, type StewardCommand } from "./index.js";
 const cmd = process.argv[2] as StewardCommand | undefined;
 
 if (!cmd) {
-  console.error("Usage: healthos-steward <status|runtime|session>");
+  console.error(
+    "Usage: healthos-steward <status|runtime|session|list|inspect|next>"
+  );
   process.exit(1);
 }
 
-process.exit(runStewardCommand(cmd));
+const args = process.argv.slice(3);
+process.exit(runStewardCommand(cmd, args));

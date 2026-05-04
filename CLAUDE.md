@@ -32,10 +32,12 @@ Use "scaffold" only to describe maturity or bootstrap/foundation phase, never to
 12. `docs/execution/15-scaffold-finalization-plan.md`
 13. `docs/execution/16-next-10-actions-plan.md`
 14. `docs/execution/20-documental-todos-work-plan.md` — living plan for open documentation tasks (auto-synced)
-15. relevant `docs/execution/todo/*.md`
-16. relevant `docs/architecture/*.md`
-17. matching `docs/execution/skills/*.md` (HealthOS domain skills)
-18. if touching Swift/SwiftUI/Xcode/Apple platform code: matching `docs/execution/skills/<name>/SKILL.md` (macOS skills — see `docs/execution/skills/README.md` for index)
+15. `docs/execution/21-structural-ontology-and-product-readiness-plan.md` — canonical priority-ordered task selection plan; **read before selecting any implementation task**
+16. `docs/product/01-healthos-technical-product-specification.md` — technical product specification baseline; read before generating construction or product work units
+17. relevant `docs/execution/todo/*.md`
+18. relevant `docs/architecture/*.md`
+19. matching `docs/execution/skills/*.md` (HealthOS domain skills)
+20. if touching Swift/SwiftUI/Xcode/Apple platform code: matching `docs/execution/skills/<name>/SKILL.md` (macOS skills — see `docs/execution/skills/README.md` for index)
 
 Task selection order:
 1. `READY` task in current phase
@@ -211,3 +213,20 @@ Three durable Claude Code automations maintain repository state automatically. A
 Latest digest: `.healthos-steward/memory/automations/daily-todo-tracker/latest.md`
 
 Companion Codex automation: `$CODEX_HOME/automations/steward-xcode-facing-maintenance/` reviews Steward-scoped Xcode-facing automation and instruction drift and should publish changes by branch/PR.
+
+## Prompt architecture template
+
+Any AI coding agent (Codex, Claude Code, Xcode Intelligence, or any LLM) generating an implementation prompt for a HealthOS work unit **must** follow the master prompt architecture template at:
+
+`.healthos-steward/prompts/prompt-architecture-template.md`
+
+The template defines the required prompt structure, task classification rules, canonical nomenclature, boundary preservation rules, maturity language, validation command library, tracking update rules, Git workflow rules, and self-validation checklist.
+
+Use the **short form** from the template when generating prompts in conversation. Use the **full form** when acting as a formal prompt architect agent.
+
+Key rules enforced by the template:
+- Every generated prompt must be atomic, bounded, and governance-preserving.
+- No prompt may allow broad refactors, production-readiness claims, clinical authority, or `healthos-mcp` as canonical MCP name.
+- Use `healthos-forge-mcp` / HealthOS Forge MCP for repository-maintenance MCP.
+- Use `HealthOSSessionRuntime` as the Swift module name; "Session Runtime" as the concept.
+- Never use `HealthOSFirstSliceSupport`.

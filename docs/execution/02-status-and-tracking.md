@@ -6,6 +6,30 @@ Current phase: Controlled implementation — first vertical slice started
 
 ## Completed recently
 
+## ST-012 — Create Settler Profile Registry (2026-05-04)
+
+- Objective: create 9 Settler profile records and a registry index under `.healthos-settler/settlers/` without implementing Settlers as executable agents, Settlement instances, Steward CLI, Forge MCP, or runtime behavior.
+- Files created:
+  - `.healthos-settler/settlers/README.md`
+  - `.healthos-settler/settlers/settler-core-law.md`
+  - `.healthos-settler/settlers/settler-storage.md`
+  - `.healthos-settler/settlers/settler-gos.md`
+  - `.healthos-settler/settlers/settler-aaci.md`
+  - `.healthos-settler/settlers/settler-ops.md`
+  - `.healthos-settler/settlers/settler-apps.md`
+  - `.healthos-settler/settlers/settler-xcode-tooling.md`
+  - `.healthos-settler/settlers/settler-documentation.md`
+  - `.healthos-settler/settlers/settler-validation.md`
+- Files updated:
+  - `docs/execution/02-status-and-tracking.md`
+  - `docs/execution/19-settler-model-task-tracker.md`
+  - `docs/execution/20-documental-todos-work-plan.md`
+  - `docs/execution/22-steward-construction-operating-model.md`
+- Result: Settler Profile Registry created. Each profile defines territory assignment, canonical docs, files in scope, invariants (≥ 6 per profile), forbidden moves (≥ 6 per profile), validation expectations, maturity (doctrine-only), handoff requirements, and non-claims block. README contains registry table with all 9 profiles.
+- Invariants preserved: construction-system boundary (no clinical authority, no merge authority, no runtime behavior changed), official docs canonical, healthos-forge-mcp naming correct, HealthOSSessionRuntime naming correct, no production-readiness claim.
+- Maturity: doctrine-only (Settler profiles); scaffolded contract (construction system overall).
+- Residual gaps: ST-013 (Settlement Record Schema), ST-014 (Deterministic Steward CLI), ST-015 (Prompt Generation Engine), ST-016 (Settlement Validation/PR Review Draft Engine), ST-017 (Derived Memory Builder), ST-018 (healthos-forge-mcp), ST-019 (Xcode/Codex/Claude integration instructions), ST-020 (Use Steward to generate APP-011 prompt) remain TODO.
+
 ## ST-011B — Create HealthOS Technical Product Specification baseline (2026-05-01)
 
 - Objective: create the first consolidated technical product specification baseline for HealthOS without changing runtime behavior.

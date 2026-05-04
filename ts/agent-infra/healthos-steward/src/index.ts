@@ -1,6 +1,7 @@
 import { runList } from "./commands/list.js";
 import { runInspect } from "./commands/inspect.js";
 import { runNext } from "./commands/next.js";
+import { runGeneratePrompt } from "./commands/generate-prompt.js";
 
 export type StewardCommand =
   | "status"
@@ -8,7 +9,8 @@ export type StewardCommand =
   | "session"
   | "list"
   | "inspect"
-  | "next";
+  | "next"
+  | "generate-prompt";
 
 export function runStewardCommand(
   command: StewardCommand,
@@ -30,6 +32,8 @@ export function runStewardCommand(
       return runInspect(args);
     case "next":
       return runNext();
+    case "generate-prompt":
+      return runGeneratePrompt(args);
     default:
       return 1;
   }

@@ -126,11 +126,22 @@ Outcome (2026-05-04):
 
 ### ST-015 — Prompt Generation Engine
 
-Status: TODO.
+Status: DONE.
 
 Goal:
 - generate prompts from official docs, Settlement records, and templates
 - preserve HealthOS invariants and non-claims
+
+Outcome (2026-05-04):
+- Created `ts/agent-infra/healthos-steward/src/lib/settlement-parser.ts` — line-based Settlement Markdown parser; fail-closed on missing required fields (id, title, objective, territory)
+- Created `ts/agent-infra/healthos-steward/src/lib/territory-reader.ts` — reads Territory JSON records from `.healthos-settler/territories/<id>.json`
+- Created `ts/agent-infra/healthos-steward/src/lib/settler-reader.ts` — parses Settler profile Markdown; extracts invariants and forbidden-moves from `## invariants` / `## forbidden-moves` sections
+- Created `ts/agent-infra/healthos-steward/src/lib/prompt-assembler.ts` — assembles 16-section PromptSpec from Settlement + Territory + Settler data; `canonical_nomenclature` is a hard-coded constant never varying per Settlement
+- Created `ts/agent-infra/healthos-steward/src/commands/generate-prompt.ts` — command handler for `generate-prompt <settlement-id>`; searches active/ then completed/; writes to `.healthos-steward/prompts/generated/`
+- Updated `ts/agent-infra/healthos-steward/src/index.ts` — added `"generate-prompt"` to StewardCommand type and switch dispatcher
+- Smoke: `generate-prompt st-012-settler-profile-registry` → 16-section PromptSpec written; grep count = 16; no undefined artifacts; exit 0
+- Maturity: implemented seam
+- Non-claims: no LLM calls, no model routing, no HTTP requests, no new npm dependencies, no clinical authority, no merge authority, no MCP server, no writes except `.healthos-steward/prompts/generated/`
 
 ### ST-016 — Settlement Validation and PR Review Draft Engine
 

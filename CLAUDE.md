@@ -181,9 +181,10 @@ cd ts && npx --yes --workspace @healthos/steward healthos-steward inspect territ
 cd ts && npx --yes --workspace @healthos/steward healthos-steward inspect settler <id>
 cd ts && npx --yes --workspace @healthos/steward healthos-steward inspect settlement <id>
 cd ts && npx --yes --workspace @healthos/steward healthos-steward next
+cd ts && npx --yes --workspace @healthos/steward healthos-steward generate-prompt <settlement-id>
 ```
 
-Six `healthos-steward` CLI commands are implemented as of ST-014 (2026-05-04): `status`, `runtime`, `session` (scaffold placeholders); `list <territories|settlers|settlements>`, `inspect <territory|settler|settlement> <id>`, and `next` (deterministic read-only registry inspection, implemented in `ts/agent-infra/healthos-steward/src/commands/`). The `list`/`inspect`/`next` commands read Territory JSON records, Settler profile .md files, Settlement .md records, and the ST tracker using Node built-ins only — no model calls, no writes, no new npm dependencies. Do not describe `scan-status`, `validate-docs`, `validate-all`, or other repository-maintenance operations as delivered CLI behavior until implemented.
+Seven `healthos-steward` CLI commands are implemented as of ST-015 (2026-05-04): `status`, `runtime`, `session` (scaffold placeholders); `list <territories|settlers|settlements>`, `inspect <territory|settler|settlement> <id>`, and `next` (deterministic read-only registry inspection, implemented in `ts/agent-infra/healthos-steward/src/commands/`); and `generate-prompt <settlement-id>` (deterministic PromptSpec assembler — reads Settlement, Territory JSON, and Settler profile records; writes 16-section PromptSpec Markdown to `.healthos-steward/prompts/generated/`; no LLM calls, no new npm deps, fail-closed). The `list`/`inspect`/`next` commands read Territory JSON records, Settler profile .md files, Settlement .md records, and the ST tracker using Node built-ins only — no model calls, no writes, no new npm dependencies. Do not describe `scan-status`, `validate-docs`, `validate-all`, or other repository-maintenance operations as delivered CLI behavior until implemented.
 
 Codex, Claude Code, and other external coding assistants are external executors operating on this repository. They are not internal Steward providers.
 

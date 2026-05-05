@@ -52,7 +52,7 @@
     "make validate-all"
   ],
   "knownGaps": [
-    "Sortio and CloudClinic session wiring remain product tasks, not ST-011 work.",
+    "Veridia and CloudClinic session wiring remain product tasks, not ST-011 work.",
     "Final app UI shells are not implemented."
   ],
   "defaultSettlerIds": [

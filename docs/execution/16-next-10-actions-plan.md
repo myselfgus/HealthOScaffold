@@ -129,7 +129,7 @@ In order:
 11. `swift/Tests/HealthOSTests/CrossAppCoordinationContractsTests.swift` —
     existing tests; you extend them
 12. `ts/packages/runtime-user-agent/src/index.ts` — Veridia adapter seam
-13. `docs/architecture/11-scribe.md`, `12-sortio.md`, `13-cloudclinic.md` —
+13. `docs/architecture/11-scribe.md`, `12-veridia.md`, `13-cloudclinic.md` —
     app-layer posture reference
 
 **Task objective**
@@ -628,7 +628,7 @@ Title format: `feat(storage): propagate lawfulContext and layer-guard parity bey
 - Blocked by: T01 (claims must reflect actual adapter posture).
 - Skill: `docs/execution/skills/documentation-drift-skill.md`
 - Scope:
-  - Sync app docs (`11-scribe.md`, `12-sortio.md`, `13-cloudclinic.md`,
+  - Sync app docs (`11-scribe.md`, `12-veridia.md`, `13-cloudclinic.md`,
     `19-interface-doctrine.md`) and execution tracking
     (`06-scaffold-coverage-matrix.md`, `10-invariant-matrix.md`,
     `11-current-maturity-map.md`) on current maturity.
@@ -669,7 +669,7 @@ In order:
 7. `docs/execution/todo/apps-and-interfaces.md` (find APP-009)
 8. `docs/execution/skills/documentation-drift-skill.md`
 9. `docs/architecture/11-scribe.md`
-10. `docs/architecture/12-sortio.md`
+10. `docs/architecture/12-veridia.md`
 11. `docs/architecture/13-cloudclinic.md`
 12. `docs/architecture/19-interface-doctrine.md`
 13. `scripts/check-docs.sh` — understand what the drift check tests
@@ -683,7 +683,7 @@ drift discovered by reading each doc against the actual implementation state.
 **Exact scope**
 
 What to do:
-1. For each of `11-scribe.md`, `12-sortio.md`, `13-cloudclinic.md`,
+1. For each of `11-scribe.md`, `12-veridia.md`, `13-cloudclinic.md`,
    `19-interface-doctrine.md`:
    - Remove or qualify any phrase that implies final UI delivery, production
      availability, or real provider/signature/interoperability behavior.
@@ -708,7 +708,7 @@ What not to do:
 **Files to change (minimum)**
 
 - `docs/architecture/11-scribe.md`
-- `docs/architecture/12-sortio.md`
+- `docs/architecture/12-veridia.md`
 - `docs/architecture/13-cloudclinic.md`
 - `docs/architecture/19-interface-doctrine.md`
 - `docs/execution/06-scaffold-coverage-matrix.md`

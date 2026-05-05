@@ -22,7 +22,7 @@
 
 ## Layer 3: apps
 - Scribe first slice
-- Sortio consent/audit screens
+- Veridia consent/audit screens
 - CloudClinic service dashboard
 
 ## Layer 4: ML/offline

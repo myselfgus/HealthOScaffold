@@ -16,7 +16,7 @@ It is outside the HealthOS clinical/runtime hierarchy. Steward, Settlers, Settle
 
 ## Why this exists now
 
-P0/P1/P2 structural cleanup made the repository ontology clearer: Mental Space Runtime has a named runtime boundary, legacy material has been archived, agent infrastructure has been separated from product packages, session runtime vocabulary has been corrected, and Sortio/CloudClinic now have honest scaffold executable targets.
+P0/P1/P2 structural cleanup made the repository ontology clearer: Mental Space Runtime has a named runtime boundary, legacy material has been archived, agent infrastructure has been separated from product packages, session runtime vocabulary has been corrected, and Veridia/CloudClinic now have honest scaffold executable targets.
 
 Manual prompt generation is now becoming the bottleneck. The repository can continue to execute APP/RT/STR tasks manually, but repeated hand-authored prompts make scope, invariants, validation, and residual-gap recording harder to keep consistent.
 
@@ -51,7 +51,7 @@ ReviewDraft: derived review material for a Settlement or PR. A ReviewDraft may s
 
 DerivedMemory: repository-local derived memory under `.healthos-steward/memory/`. DerivedMemory accelerates navigation and handoff but never replaces official docs.
 
-healthos-forge-mcp: repository-maintenance MCP server for Steward and Settlers. Implemented as a stdio JSON-RPC MCP server at `ts/agent-infra/healthos-forge-mcp/` (`@healthos/forge-mcp` 0.1.0, ST-018, 2026-05-05). Exposes 10 deterministic repository-maintenance tools wrapping `@healthos/steward` lib functions: steward_next_task, steward_scan_status, steward_get_handoff, steward_list_territories, steward_inspect_territory, steward_list_settlers, steward_list_settlements, steward_validate_settlement, steward_generate_prompt, steward_build_memory. It is not a HealthOS runtime MCP server. (`ts/agent-infra/mcp-local` was a pre-ST-018 stub with clinical tool names; it was removed in ST-019 (2026-05-05) — `healthos-forge-mcp` is the sole repository-maintenance MCP surface.)
+healthos-forge-mcp: repository-maintenance MCP server for Steward and Settlers. Implemented as a stdio JSON-RPC MCP server at `ts/agent-infra/healthos-forge-mcp/` (`@healthos/forge-mcp` 0.1.0, ST-018, 2026-05-05). Exposes 10 deterministic repository-maintenance tools wrapping `@healthos/steward` lib functions: steward_next_task, steward_scan_status, steward_get_handoff, steward_list_territories, steward_inspect_territory, steward_list_settlers, steward_list_settlements, steward_validate_settlement, steward_generate_prompt, steward_build_memory. It is not a HealthOS runtime MCP server. (`ts/agent-infra/mcp-local` was a pre-ST-018 stub with clinical tool names; it was removed in ST-019 (2026-05-05) — `healthos-forge-mcp` is the sole repository-maintenance MCP surface.) (FORGE-MCP-V2, 2026-05-05): upgraded to McpServer high-level API + Zod-validated inputs; handler business logic extracted to `src/handlers.ts`; `src/tools.ts` uses `McpServer.registerTool()` with Zod `inputSchema`; `README.md` added with Claude Desktop and generic stdio client configuration. SDK updated to `^1.29.0`. Known workaround: `// @ts-nocheck` in `src/tools-id-arg.ts` for TS2589 depth-limit issue with Zod 4 + MCP SDK 1.29.0 dual-compat types — runtime Zod validation unaffected.
 
 ## Construction lifecycle
 

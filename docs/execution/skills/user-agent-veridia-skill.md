@@ -25,4 +25,4 @@ User-Agent Runtime cannot perform clinical/regulatory acts; Veridia app surfaces
 Boundary checks and docs reflect contract-only vs runtime maturity truth. Veridia is defined as the patient health identity app throughout.
 
 ## What not to do
-No chatbot/product claims. No "patient sovereignty interface" as primary definition. No Sortio naming in new code or docs.
+No chatbot/product claims. No "patient sovereignty interface" as primary definition. No legacy patient-app naming in new code or docs.

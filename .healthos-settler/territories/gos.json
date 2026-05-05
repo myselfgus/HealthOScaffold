@@ -40,7 +40,7 @@
   "allowedWork": [
     "Maintain GOS authoring, compiler, bundle, lifecycle, and review records.",
     "Maintain Swift GOS runtime consumption boundaries in Core/AACI where present.",
-    "Preserve app-safe GOS summaries for Scribe/Sortio/CloudClinic.",
+    "Preserve app-safe GOS summaries for Scribe/Veridia/CloudClinic.",
     "Update GOS schemas, TS tooling, Swift contracts, and docs together when contracts change."
   ],
   "forbiddenWork": [

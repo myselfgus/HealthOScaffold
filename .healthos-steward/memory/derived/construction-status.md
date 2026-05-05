@@ -19,11 +19,11 @@ Source: docs/execution/19-settler-model-task-tracker.md
 | ST-014 | Deterministic Steward CLI inspect/next/list | DONE |
 | ST-015 | Prompt Generation Engine | DONE |
 | ST-016 | Settlement Validation and PR Review Draft Engine | DONE |
-| ST-017 | Derived Memory Builder | TODO |
-| ST-018 | healthos-forge-mcp surface over deterministic operations | TODO |
-| ST-019 | Xcode/Codex/Claude integration instructions | TODO |
-| ST-020 | Use Steward to generate APP-011 prompt | TODO |
+| ST-017 | Derived Memory Builder | DONE |
+| ST-018 | healthos-forge-mcp surface over deterministic operations | DONE |
+| ST-019 | Xcode/Codex/Claude integration instructions | DONE |
+| ST-020 | Use Steward to generate APP-012 (CloudClinic) prompt | TODO |
 
 ## Summary
 
-7 of 11 tasks DONE. Next TODO: ST-017 — Derived Memory Builder.
+10 of 11 tasks DONE. Next TODO: ST-020 — Use Steward to generate APP-012 (CloudClinic) prompt.

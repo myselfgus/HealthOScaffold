@@ -74,7 +74,7 @@
   ],
   "notes": [
     "This territory covers app/interface boundaries, not product task completion.",
-    "APP-013 renamed Sortio to Veridia (2026-05-04). All future work uses Veridia naming.",
+    "APP-013 established Veridia as the canonical patient app name (2026-05-04). All future work uses Veridia naming.",
     "ST-011 does not change APP-011 or APP-012 status."
   ]
 }

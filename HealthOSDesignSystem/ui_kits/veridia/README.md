@@ -1,6 +1,6 @@
 # Veridia UI kit
 
-**Status:** Scaffolded contract — no implementation exists yet in the source repo. (Formerly: Sortio UI kit, renamed as part of APP-013.)
+**Status:** Scaffolded contract — no implementation exists yet in the source repo.
 
 Veridia is the **patient health identity surface** described in `docs/architecture/12-veridia.md` and `docs/architecture/24-veridia-screen-contracts.md`.
 

@@ -17,7 +17,7 @@ O HealthOS é uma plataforma soberana para dados de saúde e operações clínic
 - **GOS (Governed Operational Spec):** Camada de tradução operacional subordinada ao Core.
 - **Runtimes:** AACI, Async, User-Agent.
 - **Atores/Agentes:** Bounded, governados por papéis.
-- **Apps/Interfaces:** Scribe (profissional), Sortio (paciente), CloudClinic (serviço).
+- **Apps/Interfaces:** Scribe (profissional), Veridia (paciente), CloudClinic (serviço).
 
 ## 2. Princípios de Execução (Mandatos)
 - **Constitucionalidade:** HealthOS é o sistema completo; apps são apenas consumidores de superfícies mediadas. O Core define a lei; as apps/GOS nunca definem leis constitucionais.
@@ -44,7 +44,7 @@ Antes de qualquer codificação, siga rigorosamente:
 - `swift/`: Core, AACI, Provedores, CLI e app Scribe.
 - `ts/`: Ferramentas de governança (GOS, Steward, Runtimes).
 - `gos/`: Especificações operacionais.
-- `apps/`: Fronteiras de interface (Scribe, Sortio, CloudClinic).
+- `apps/`: Fronteiras de interface (Scribe, Veridia, CloudClinic).
 
 ## 6. Restrições Absolutas
 - **NUNCA:** Substitua a autoridade clínica, bypass de gates, injete narrativas fictícias ou coloque segredos no repositório.

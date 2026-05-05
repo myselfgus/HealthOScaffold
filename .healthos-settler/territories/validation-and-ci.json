@@ -55,7 +55,7 @@
     "make swift-test",
     "make smoke-cli",
     "make smoke-scribe",
-    "make smoke-sortio",
+    "make smoke-veridia",
     "make smoke-cloudclinic",
     "make validate-all"
   ],

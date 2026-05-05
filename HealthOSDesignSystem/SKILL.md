@@ -71,7 +71,7 @@ assets/
   glyph-cloudclinic.svg  ← service-ops surface app glyph
 colors_and_type.css      ← every token. Import with @import or <link>.
 ui_kits/scribe/          ← React components + click-thru of the implemented Scribe surface.
-ui_kits/veridia/         ← Documented surface, no Swift implementation yet. (formerly ui_kits/sortio/)
+ui_kits/veridia/         ← Documented surface, no Swift implementation yet. (formerly ui_kits/veridia/)
 ui_kits/cloudclinic/     ← Documented surface, no Swift implementation yet.
 preview/                 ← Static preview cards, one per token group.
 ```

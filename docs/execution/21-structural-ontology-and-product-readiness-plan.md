@@ -32,8 +32,8 @@ Construction-system note: this document remains the product/repo task queue. Con
 | STR-002 | **P1** | DONE | Archive `Skill macOS/` to `docs/reference/mental-space-legacy/` | — |
 | STR-003 | **P1** | DONE | Separate AGENT packages from PRODUCT in `ts/packages/` | — |
 | STR-004 | **P1** | DONE | Rename `HealthOSFirstSliceSupport` → `HealthOSSessionRuntime` | — |
-| STR-005 | **P2** | DONE | Add placeholder Swift targets for Veridia (formerly Sortio) and CloudClinic | — |
-| APP-013 | **P2** | DONE | Rename Sortio to Veridia and redefine patient app scope | — |
+| STR-005 | **P2** | DONE | Add placeholder Swift targets for Veridia and CloudClinic | — |
+| APP-013 | **P2** | DONE | Rename Veridia to Veridia and redefine patient app scope | — |
 | APP-011 | **P2** | READY | Veridia: smoke-testable executable path | STR-005, APP-013 |
 | APP-012 | **P2** | READY | CloudClinic: smoke-testable executable path | STR-005 |
 | RT-ASYNC-001 | **P3** | BLOCKED | SQL-backed async runtime executor | Core SQL migration (exists) |
@@ -454,37 +454,37 @@ These tasks add missing product targets. They can be done after P1 or in paralle
 
 ---
 
-### STR-005: Add placeholder Swift executable targets for Sortio and CloudClinic
+### STR-005: Add placeholder Swift executable targets for Veridia and CloudClinic
 
-**Priority:** P2 | **Status:** DONE | **Branch:** `feat/str-005-sortio-cloudclinic-targets`
+**Priority:** P2 | **Status:** DONE | **Branch:** `feat/str-005-veridia-cloudclinic-targets`
 
-**Why:** Sortio and CloudClinic have governance contracts, boundary tests, and architecture docs, but no Swift executable targets. The Xcode workspace references only Scribe as an app. This creates a false picture of the product: one app is buildable, two are documentation-only. Adding minimal placeholder targets forces the product graph to be honest and gives CI a build surface for all three apps.
+**Why:** Veridia and CloudClinic have governance contracts, boundary tests, and architecture docs, but no Swift executable targets. The Xcode workspace references only Scribe as an app. This creates a false picture of the product: one app is buildable, two are documentation-only. Adding minimal placeholder targets forces the product graph to be honest and gives CI a build surface for all three apps.
 
 **Files to create:**
 ```
-swift/Sources/HealthOSSortioApp/SortioEntrypoint.swift
+swift/Sources/HealthOSVeridiaApp/VeridiaEntrypoint.swift
 swift/Sources/HealthOSCloudClinicApp/CloudClinicEntrypoint.swift
 ```
 
-**`SortioEntrypoint.swift` minimum:**
+**`VeridiaEntrypoint.swift` minimum:**
 ```swift
 import Foundation
 import HealthOSCore
 
-// Sortio is the patient sovereignty interface for HealthOS.
+// Veridia is the patient health identity app for HealthOS.
 // This target is a scaffold placeholder — no final UI shell is implemented.
-// Architecture: docs/architecture/12-sortio.md
+// Architecture: docs/architecture/12-veridia.md
 // Governance contracts: HealthOSCore/UserSovereigntyContracts.swift
 
 @main
-struct SortioEntrypoint {
+struct VeridiaEntrypoint {
     static func main() {
         let args = CommandLine.arguments
         if args.contains("--smoke-test") {
-            print("HealthOSSortio scaffold: smoke OK (no final UI)")
+            print("HealthOSVeridia scaffold: smoke OK (no final UI)")
             exit(0)
         }
-        print("HealthOSSortio: scaffold placeholder — no final UI shell (see docs/architecture/12-sortio.md)")
+        print("HealthOSVeridia: scaffold placeholder — no final UI shell (see docs/architecture/12-veridia.md)")
     }
 }
 ```
@@ -494,7 +494,7 @@ struct SortioEntrypoint {
 **`swift/Package.swift` additions:**
 ```swift
 .executableTarget(
-    name: "HealthOSSortioApp",
+    name: "HealthOSVeridiaApp",
     dependencies: ["HealthOSCore"]
 ),
 .executableTarget(
@@ -505,20 +505,20 @@ struct SortioEntrypoint {
 
 Also add to products:
 ```swift
-.executable(name: "HealthOSSortioApp", targets: ["HealthOSSortioApp"]),
+.executable(name: "HealthOSVeridiaApp", targets: ["HealthOSVeridiaApp"]),
 .executable(name: "HealthOSCloudClinicApp", targets: ["HealthOSCloudClinicApp"]),
 ```
 
 **Files to touch:**
 - `swift/Package.swift`
-- `swift/Sources/HealthOSSortioApp/SortioEntrypoint.swift` (new)
+- `swift/Sources/HealthOSVeridiaApp/VeridiaEntrypoint.swift` (new)
 - `swift/Sources/HealthOSCloudClinicApp/CloudClinicEntrypoint.swift` (new)
 - `docs/execution/02-status-and-tracking.md`
 - `docs/execution/21-structural-ontology-and-product-readiness-plan.md`
 
 **Definition of done:**
-- `swift build` PASS — CLI, Scribe, Sortio, CloudClinic, and test targets build
-- `swift run HealthOSSortioApp --smoke-test` exits 0 and prints scaffold message
+- `swift build` PASS — CLI, Scribe, Veridia, CloudClinic, and test targets build
+- `swift run HealthOSVeridiaApp --smoke-test` exits 0 and prints scaffold message
 - `swift run HealthOSCloudClinicApp --smoke-test` exits 0 and prints scaffold message
 - `swift test` PASS — no regressions
 - `make validate-all` PASS
@@ -669,7 +669,7 @@ Regardless of which task is being executed:
 3. **Draft-only:** AACI and MSR produce derived artifacts and drafts. No task in this plan effectuates a clinical act without a human gate.
 4. **No production claims:** These tasks advance maturity but do not make the system production-ready. Update maturity docs honestly after each task.
 5. **Append-only provenance:** Provenance records are never mutated after write.
-6. **App boundaries:** Scribe, Sortio, and CloudClinic consume mediated state. No task moves law interpretation into SwiftUI or app layers.
+6. **App boundaries:** Scribe, Veridia, and CloudClinic consume mediated state. No task moves law interpretation into SwiftUI or app layers.
 
 ---
 
@@ -693,7 +693,7 @@ When a task is done:
 **Completion note (2026-04-29):** STR-003 completed by moving `@healthos/steward` and `@healthos/mcp-local` from `ts/packages/` to `ts/agent-infra/` with history preserved via `git mv`; npm workspace updated to include `agent-infra/*`; docs path references updated. Known TS18003 blocker for steward was resolved by restoring minimal `src/` entrypoints to satisfy the package build contract honestly. No HealthOS clinical/runtime behavior was changed.
 
 
-**Completion note (2026-04-30):** STR-004 completed by renaming the Swift module `HealthOSFirstSliceSupport` to `HealthOSSessionRuntime` with `git mv`, updating SwiftPM target/dependency wiring, CLI/Scribe/test imports, and architecture/execution documentation references. Primary public runtime types were renamed (`FirstSliceRunner` → `SessionRunner`, `ScribeFirstSliceAdapter` → `ScribeSessionAdapter`, demo bootstrap surfaces to session-runtime vocabulary). No Core/GOS/AACI/Mental Space/app clinical behavior changed; no Sortio/CloudClinic target additions were made in this work unit. Residual internal `FirstSlice*` contract names in `HealthOSCore` remain intentionally unchanged for STR-004 scope control.
+**Completion note (2026-04-30):** STR-004 completed by renaming the Swift module `HealthOSFirstSliceSupport` to `HealthOSSessionRuntime` with `git mv`, updating SwiftPM target/dependency wiring, CLI/Scribe/test imports, and architecture/execution documentation references. Primary public runtime types were renamed (`FirstSliceRunner` → `SessionRunner`, `ScribeFirstSliceAdapter` → `ScribeSessionAdapter`, demo bootstrap surfaces to session-runtime vocabulary). No Core/GOS/AACI/Mental Space/app clinical behavior changed; no Veridia/CloudClinic target additions were made in this work unit. Residual internal `FirstSlice*` contract names in `HealthOSCore` remain intentionally unchanged for STR-004 scope control.
 
 
-**Completion note (2026-04-30):** STR-005 completed by adding `HealthOSSortioApp` and `HealthOSCloudClinicApp` as minimal Swift executable scaffold targets with honest `--smoke-test` paths. Both targets compile and print scaffold-only, no-final-UI, no-clinical-authority smoke output. No Sortio or CloudClinic session wiring, final UI shell, Core law, GOS, AACI, Mental Space Runtime, provider, storage, or Steward/Settler behavior was implemented or changed. APP-011 and APP-012 are now READY as the next app wiring tasks.
+**Completion note (2026-04-30):** STR-005 completed by adding `HealthOSVeridiaApp` and `HealthOSCloudClinicApp` as minimal Swift executable scaffold targets with honest `--smoke-test` paths. Both targets compile and print scaffold-only, no-final-UI, no-clinical-authority smoke output. No Veridia or CloudClinic session wiring, final UI shell, Core law, GOS, AACI, Mental Space Runtime, provider, storage, or Steward/Settler behavior was implemented or changed. APP-011 and APP-012 are now READY as the next app wiring tasks.

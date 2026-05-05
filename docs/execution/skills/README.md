@@ -46,7 +46,7 @@ Each skill lives in its own subdirectory: `docs/execution/skills/<name>/SKILL.md
 | `build-run-debug/SKILL.md` | Build scripts, launch configuration, debug workflows |
 | `testing/SKILL.md` | Swift Testing or XCTest additions/changes |
 | `view-refactor/SKILL.md` | SwiftUI view restructuring or component extraction |
-| `native-macos-ui/SKILL.md` | HealthOS native macOS 26+ app-shell, Liquid Glass, and shared UI/design-system scope for Scribe, Sortio, CloudClinic, or the control panel |
+| `native-macos-ui/SKILL.md` | HealthOS native macOS 26+ app-shell, Liquid Glass, and shared UI/design-system scope for Scribe, Veridia, CloudClinic, or the control panel |
 | `performance/SKILL.md` | Profiling, rendering, memory, or latency work |
 | `appkit-interop/SKILL.md` | AppKit/SwiftUI interop or macOS-specific platform code |
 | `scaffolding/SKILL.md` | New Swift targets, modules, or directory scaffolding |

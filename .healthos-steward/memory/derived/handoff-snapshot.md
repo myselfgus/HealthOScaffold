@@ -14,7 +14,7 @@ docs/execution/19-settler-model-task-tracker.md
 
 ## Construction phase summary
 
-DONE: 7 tasks. TODO: 4 tasks. Next: ST-017 — Derived Memory Builder.
+DONE: 10 tasks. TODO: 1 tasks. Next: ST-020 — Use Steward to generate APP-012 (CloudClinic) prompt.
 
 ## Handoff note (first 30 lines)
 

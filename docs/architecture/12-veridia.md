@@ -1,6 +1,6 @@
 # Veridia
 
-Veridia supersedes the earlier Sortio naming and replaces the previous patient-sovereignty-interface wording with patient health identity app.
+Veridia is the canonical patient app name and uses patient health identity app wording.
 
 ## Purpose
 

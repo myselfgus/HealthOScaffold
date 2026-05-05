@@ -292,17 +292,17 @@ Definition of done:
 - `grep -r "HealthOSFirstSliceSupport" swift/` → no results
 Branch: `feat/str-004-session-runtime-rename`
 
-### STR-005 Add placeholder Swift executable targets for Sortio and CloudClinic
+### STR-005 Add placeholder Swift executable targets for Veridia and CloudClinic
 Priority: **P2** — after P1 complete or in parallel
 Plan: `docs/execution/21-structural-ontology-and-product-readiness-plan.md` → STR-005
 Definition of done:
-- `swift/Sources/HealthOSSortioApp/SortioEntrypoint.swift` created (minimal `@main` with `--smoke-test` flag)
+- `swift/Sources/HealthOSVeridiaApp/VeridiaEntrypoint.swift` created (minimal `@main` with `--smoke-test` flag)
 - `swift/Sources/HealthOSCloudClinicApp/CloudClinicEntrypoint.swift` created (same pattern)
 - `Package.swift`: both added as `.executableTarget` products
-- `swift run HealthOSSortioApp --smoke-test` exits 0
+- `swift run HealthOSVeridiaApp --smoke-test` exits 0
 - `swift run HealthOSCloudClinicApp --smoke-test` exits 0
 - `swift build && swift test` PASS; `make validate-all` PASS
-Branch: `feat/str-005-sortio-cloudclinic-targets`
+Branch: `feat/str-005-veridia-cloudclinic-targets`
 
 ### CI-001 Wire `make validate-all` into GitHub Actions
 Priority: **P4** — after P0–P2 complete

@@ -69,7 +69,7 @@ As long as they remain explicitly classified as gaps (not hidden), the following
 After scaffold/foundation phase closure, prioritize the next maturity phase of the same HealthOS project:
 
 1. provider and semantic retrieval real integrations with unchanged fail-closed governance
-2. runtime adapter propagation for Sortio/CloudClinic and cross-app shared envelope usage
+2. runtime adapter propagation for Veridia/CloudClinic and cross-app shared envelope usage
 3. operational hardening: incident command set, CI gates, restore drill automation, distributed async execution
 4. regulatory endpoint/signature integration without over-claiming legal validity until complete
 

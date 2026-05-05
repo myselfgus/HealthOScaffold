@@ -1,7 +1,7 @@
 # Skill: app boundary discipline
 
 ## Purpose
-Keep Scribe, Sortio, and CloudClinic from drifting into core-law ownership.
+Keep Scribe, Veridia, and CloudClinic from drifting into core-law ownership.
 
 ## Scope
 - screen and flow design

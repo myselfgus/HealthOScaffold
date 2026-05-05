@@ -9,11 +9,13 @@
     "healthos-forge-mcp": "dist/server.js"
   },
   "scripts": {
-    "build": "tsc -p tsconfig.json"
+    "build": "tsc -p tsconfig.json",
+    "prepare": "tsc -p tsconfig.json"
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.0.0",
-    "@healthos/steward": "0.2.0"
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "@healthos/steward": "0.2.0",
+    "zod": "^3.23.0"
   },
   "devDependencies": {
     "@types/node": "^22.10.2",

@@ -17,7 +17,7 @@ This map measures maturity of HealthOS components in the HealthOScaffold reposit
 | Network/fabric | doctrine-only / scaffolded contract | private-mesh doctrine + ops posture documented | docs-level only | no production sovereign fabric implementation | operator command set and hardened ACL tooling |
 | Backup/restore/export/retention | scaffolded contract / tested operational path | fail-closed governance validators in Core | backup governance tests present | no full operational automation | map contracts to persistent ops workflows |
 | Regulatory/signature/interoperability/emergency | scaffolded contract / tested operational path | fail-closed validators + placeholder delivery posture | regulatory tests present | no real endpoint/signature provider integration | state-machine + role approval workflow hardening |
-| User Agent / Sortio | scaffolded contract / tested operational path (boundary) | prohibited clinical capability + app-safe sovereignty surfaces | user sovereignty tests present | no final Sortio app/runtime shell | adapter/runtime wiring on existing contracts |
+| User Agent / Veridia | scaffolded contract / tested operational path (boundary) | prohibited clinical capability + app-safe sovereignty surfaces | user sovereignty tests present | no final Veridia app/runtime shell | adapter/runtime wiring on existing contracts |
 | Service Ops / CloudClinic | scaffolded contract / tested operational path (boundary) | service context/membership/queue/gate boundaries enforced | service operations tests present | no persisted workflow engine/UI shell | runtime adapter + persisted projections |
 | Scribe | implemented seam / tested operational path (minimal UI) | professional workspace boundary + gate/finalization mediation | Scribe boundary tests + smoke path | not final product UI | incremental session state integration with full spine |
 | Cross-app surfaces | scaffolded contract / tested operational path (contract) | shared envelope + safe refs + notification boundary validators | cross-app tests present | non-Scribe adapters incomplete | propagate envelope to all app adapters |
@@ -40,7 +40,7 @@ This map measures maturity of HealthOS components in the HealthOScaffold reposit
 | Network/mesh/fabric | needs-small-closure |
 | Backup/restore/retention/export/DR | partial-but-acceptable-with-explicit-gap |
 | Regulatory/signature/interoperability/emergency | partial-but-acceptable-with-explicit-gap |
-| User Agent/Sortio | partial-but-acceptable-with-explicit-gap |
+| User Agent/Veridia | partial-but-acceptable-with-explicit-gap |
 | Service Ops/CloudClinic | partial-but-acceptable-with-explicit-gap |
 | Scribe | ready-for-scaffold-closure |
 | Cross-app shared surfaces | needs-small-closure |

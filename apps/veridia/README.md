@@ -12,7 +12,7 @@ Veridia is where the patient interacts with HealthOS for:
 - export controls
 - patient agent interaction
 
-Veridia supersedes the earlier Sortio naming.
+Veridia is the canonical patient app name in this repository.
 
 Primary screens:
 - identity

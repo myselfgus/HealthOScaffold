@@ -537,7 +537,7 @@ Porém os arquivos todo correspondentes **ainda mostram status READY**, não COM
 Refactors completados que afetam referências neste plano:
 - **STR-003**: `ts/packages/healthos-steward/` → `ts/agent-infra/healthos-steward/` (produto separado de infraestrutura de agente)
 - **STR-004**: `HealthOSFirstSliceSupport` → `HealthOSSessionRuntime` (vocabulário de desenvolvimento removido)
-- **STR-005**: Sortio e CloudClinic agora têm targets Swift executáveis (`make smoke-sortio`, `make smoke-cloudclinic`)
+- **STR-005**: Veridia e CloudClinic agora têm targets Swift executáveis (`make smoke-veridia`, `make smoke-cloudclinic`)
 - **ST-010**: `docs/execution/22-steward-construction-operating-model.md` criado — baseline do construction operating model
 - **Novo doc**: `docs/execution/21-structural-ontology-and-product-readiness-plan.md` — plano de readiness estrutural
 

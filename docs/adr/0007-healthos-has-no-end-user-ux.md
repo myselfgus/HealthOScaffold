@@ -14,7 +14,7 @@ Its canonical operator surfaces are:
 
 End-user UX belongs to apps/interfaces built on top of HealthOS, such as:
 - Scribe
-- Sortio
+- Veridia
 - CloudClinic
 - future apps/interfaces
 

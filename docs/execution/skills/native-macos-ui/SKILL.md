@@ -2,7 +2,7 @@
 
 ## Overview
 
-Use this skill when defining or changing HealthOS native macOS 26+ app shells, SwiftUI views, desktop interaction patterns, Liquid Glass treatment, or shared UI/design-system scope for Scribe, Sortio, CloudClinic, or the HealthOS control panel.
+Use this skill when defining or changing HealthOS native macOS 26+ app shells, SwiftUI views, desktop interaction patterns, Liquid Glass treatment, or shared UI/design-system scope for Scribe, Veridia, CloudClinic, or the HealthOS control panel.
 
 This skill is subordinate to HealthOS app-boundary doctrine. UI work consumes mediated Core/runtime contracts; it never owns consent, habilitation, gate, finality, storage law, or GOS policy.
 
@@ -11,8 +11,8 @@ This skill is subordinate to HealthOS app-boundary doctrine. UI work consumes me
 Read in order:
 1. `docs/architecture/19-interface-doctrine.md`
 2. `docs/architecture/48-native-macos-ui-design-system-and-app-shells.md`
-3. the app-specific doc: `11-scribe.md`, `12-sortio.md`, or `13-cloudclinic.md`
-4. the matching screen-contract doc: `23-scribe-screen-contracts.md`, `24-sortio-screen-contracts.md`, or `25-cloudclinic-screen-contracts.md`
+3. the app-specific doc: `11-scribe.md`, `12-veridia.md`, or `13-cloudclinic.md`
+4. the matching screen-contract doc: `23-scribe-screen-contracts.md`, `24-veridia-screen-contracts.md`, or `25-cloudclinic-screen-contracts.md`
 5. `docs/execution/skills/app-boundary-skill.md`
 6. the relevant macOS skill under `docs/execution/skills/` (`swiftpm`, `scaffolding`, `view-refactor`, `appkit-interop`, `build-run-debug`, or `testing`)
 7. `docs/execution/skills/liquid-glass/SKILL.md` for macOS 26+ visual treatment or custom glass surfaces
@@ -28,7 +28,7 @@ Read in order:
 - Keep app targets split by responsibility: `App/`, `Views/`, `Models/`, `Stores/`, `Services/`, and `Support/`.
 - Create shared UI components only when they accept already-mediated app-safe input.
 - Treat Scribe as the only currently implemented native app validation surface.
-- Treat Sortio, CloudClinic, and the HealthOS control panel as scope-defined until executable targets are intentionally introduced.
+- Treat Veridia, CloudClinic, and the HealthOS control panel as scope-defined until executable targets are intentionally introduced.
 
 ## Absolute restrictions
 

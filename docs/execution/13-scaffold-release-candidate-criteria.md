@@ -16,7 +16,7 @@ The foundation/scaffold phase can be considered RC-closure-ready only when all o
 3. Critical invariants are protected by automated negative tests in Swift suites and tracked in `10-invariant-matrix.md`.
 4. Local validation harness exists and is executable (`make validate-all`) with fail-closed behavior.
 5. Contract drift and doc drift checks exist and are runnable locally.
-6. App boundaries are contract-protected (Scribe, Sortio, CloudClinic, cross-app shared surfaces) and do not absorb Core law.
+6. App boundaries are contract-protected (Scribe, Veridia, CloudClinic, cross-app shared surfaces) and do not absorb Core law.
 7. Maturity map is honest and uses the canonical ladder (`doctrine-only`, `scaffolded contract`, `implemented seam`, `tested operational path`, `production-hardened`).
 8. Open gaps are explicitly classified (scaffold/foundation blocker vs next HealthOS maturity hardening vs production requirement) in `14-final-gap-register.md`.
 9. Next-agent handoff is current and sufficient for continuity without reconstructing prior chat context.
@@ -27,7 +27,7 @@ Even with scaffold/foundation phase closure, HealthOS is **not** yet:
 
 - final product release
 - complete EHR
-- final UI for Scribe/Sortio/CloudClinic
+- final UI for Scribe/Veridia/CloudClinic
 - production cloud/fabric
 - production KMS and key lifecycle operations
 - real qualified digital signature provider
@@ -59,7 +59,7 @@ Even with scaffold/foundation phase closure, HealthOS is **not** yet:
 | Network/mesh/fabric | needs-small-closure | doctrine is clear but incident command surface still thin | finish ops command vocabulary docs |
 | Backup/restore/retention/export/DR | partial-but-acceptable-with-explicit-gap | contracts/tests exist; operational automation missing | classify as next HealthOS maturity hardening |
 | Regulatory/signature/interoperability/emergency | partial-but-acceptable-with-explicit-gap | fail-closed scaffold contracts/tests exist | keep non-integration claims explicit |
-| User Agent/Sortio | partial-but-acceptable-with-explicit-gap | boundary contracts/tests exist; adapter/UI incomplete | keep adapter tasks explicit |
+| User Agent/Veridia | partial-but-acceptable-with-explicit-gap | boundary contracts/tests exist; adapter/UI incomplete | keep adapter tasks explicit |
 | Service Ops/CloudClinic | partial-but-acceptable-with-explicit-gap | core service boundary contracts/tests exist | keep persistence/runtime adapter gap explicit |
 | Scribe | ready-for-scaffold-closure | minimal executable surface + boundary tests exist | keep non-final-UI claim explicit |
 | Cross-app shared surfaces | needs-small-closure | contracts/tests exist; non-Scribe adapter propagation pending | close APP-008 or classify as accepted gap |

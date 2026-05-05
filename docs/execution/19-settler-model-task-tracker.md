@@ -145,11 +145,20 @@ Outcome (2026-05-04):
 
 ### ST-016 — Settlement Validation and PR Review Draft Engine
 
-Status: TODO.
+Status: DONE.
 
 Goal:
 - generate deterministic validation/review drafts from Settlement records and repository evidence
 - never create merge authority
+
+Outcome (2026-05-04):
+- Created `ts/agent-infra/healthos-steward/src/lib/validation-report-builder.ts` — pure function; exports `CriterionResult`, `FileCheckResult`, `ValidationEvidence`, `buildValidationReport`
+- Created `ts/agent-infra/healthos-steward/src/lib/pr-draft-builder.ts` — pure function; exports `buildPrDraft`
+- Created `ts/agent-infra/healthos-steward/src/commands/validate-settlement.ts` — PASS/FAIL/UNVERIFIED heuristic on done-criteria; exits 1 on any FAIL
+- Created `ts/agent-infra/healthos-steward/src/commands/pr-draft.ts` — PR body Markdown from Settlement fields
+- Smoke st-012: validate-settlement → 5 PASS, 0 FAIL, 2 UNVERIFIED; pr-draft → PR draft created; both exit 0
+- Maturity: implemented seam
+- Non-claims: no shell execution, no LLM calls, no merge authority, no clinical authority, no new npm deps, fail-closed on all error paths
 
 ### ST-017 — Derived Memory Builder
 

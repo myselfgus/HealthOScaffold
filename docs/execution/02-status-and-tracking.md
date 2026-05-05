@@ -6,6 +6,37 @@ Current phase: Controlled implementation — first vertical slice started
 
 ## Completed recently
 
+## ST-016 — Settlement Validation and PR Review Draft Engine (2026-05-04)
+
+- Objective: add `validate-settlement <id>` and `pr-draft <id>` commands to `@healthos/steward` that deterministically check Settlement done-criteria against filesystem evidence and generate PR body Markdown from Settlement fields.
+- Files created:
+  - `ts/agent-infra/healthos-steward/src/lib/validation-report-builder.ts` — pure function; exports `buildValidationReport(settlement, evidence): string`; no FS calls
+  - `ts/agent-infra/healthos-steward/src/lib/pr-draft-builder.ts` — pure function; exports `buildPrDraft(settlement): string`; no FS calls
+  - `ts/agent-infra/healthos-steward/src/commands/validate-settlement.ts` — command handler; path extraction heuristic (PASS/FAIL/UNVERIFIED); exits 1 on any FAIL
+  - `ts/agent-infra/healthos-steward/src/commands/pr-draft.ts` — command handler; writes PR body Markdown; exits 0 on success
+  - `.healthos-steward/prompts/generated/st-012-settler-profile-registry-validation.md` — smoke-generated ValidationReport (non-canonical derived artifact)
+  - `.healthos-steward/prompts/generated/st-012-settler-profile-registry-pr-draft.md` — smoke-generated ReviewDraft (non-canonical derived artifact)
+- Files updated:
+  - `ts/agent-infra/healthos-steward/src/index.ts` — added `"validate-settlement"` and `"pr-draft"` to `StewardCommand` type and switch
+  - `docs/execution/02-status-and-tracking.md` (this file)
+  - `docs/execution/19-settler-model-task-tracker.md`
+  - `docs/execution/22-steward-construction-operating-model.md`
+  - `CLAUDE.md` — added `validate-settlement`, `pr-draft` to implemented commands list (now 9 total)
+- Smoke `validate-settlement st-012-settler-profile-registry`:
+  - Output: `Validation report: .healthos-steward/prompts/generated/st-012-settler-profile-registry-validation.md`
+  - Results: **5 PASS, 0 FAIL, 2 UNVERIFIED** — exit 0
+  - ValidationReport section count (grep for 4 section headers): **4** ✓
+  - Undefined/[object Object] artifacts: **0** ✓
+- Smoke `pr-draft st-012-settler-profile-registry`:
+  - Output: `PR draft: .healthos-steward/prompts/generated/st-012-settler-profile-registry-pr-draft.md`
+  - Exit: **0** ✓
+  - PR draft section count (grep for 4 section headers): **4** ✓
+  - Undefined/[object Object] artifacts: **0** ✓
+- Validation: `make ts-build` PASS, `make validate-docs` PASS, `make validate-all` PASS (all 11 gates)
+- Invariants preserved: no shell execution; no LLM calls; no HTTP requests; no new npm dependencies (Node built-ins only); fail-closed on missing/malformed Settlement (exit 1); exits 1 on any FAIL criterion (CI-compatible); no clinical authority; no merge authority; no MCP server; writes only to `.healthos-steward/prompts/generated/`
+- Maturity: implemented seam
+- Residual gaps: ST-017 (Derived Memory Builder), ST-018 (healthos-forge-mcp surface), ST-019 (Xcode/Codex/Claude integration instructions), ST-020 (Use Steward to generate APP-011 prompt) remain TODO
+
 ## ST-015 — Prompt Generation Engine (2026-05-04)
 
 - Objective: add `generate-prompt <settlement-id>` command to `@healthos/steward` that deterministically assembles a bounded 16-section PromptSpec Markdown file from a Settlement record, referenced Territory JSON records, and Settler profile records.

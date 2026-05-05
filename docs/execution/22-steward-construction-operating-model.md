@@ -124,7 +124,7 @@ discover
 - ST-013 — Settlement Record Schema and templates (DONE 2026-05-04): SCHEMA.md, settlement-template.md, and st-012 example Settlement completed; settlement.schema.json patched for field coverage; ST-014 is next
 - ST-014 — Deterministic Steward CLI inspect/next/list (DONE 2026-05-04): deterministic inspect/list/next CLI seam implemented in `@healthos/steward`; 6 commands now operational; ST-015 is next
 - ST-015 — Prompt Generation Engine (DONE 2026-05-04): deterministic prompt assembly from Settlement + Territory + Settler records implemented; `generate-prompt <settlement-id>` writes 16-section PromptSpec to `.healthos-steward/prompts/generated/`; ST-016 is next
-- ST-016 — Settlement Validation and PR Review Draft Engine
+- ST-016 — Settlement Validation and PR Review Draft Engine (DONE 2026-05-04): `validate-settlement <id>` and `pr-draft <id>` implemented in `@healthos/steward`; ValidationReport and ReviewDraft engines operational; exits 1 on any FAIL criterion (CI-compatible); no shell execution, no LLM, no merge authority; ST-017 is next
 - ST-017 — Derived Memory Builder
 - ST-018 — healthos-forge-mcp surface over deterministic operations
 - ST-019 — Xcode/Codex/Claude integration instructions

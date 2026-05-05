@@ -6,6 +6,28 @@ Current phase: Controlled implementation — first vertical slice started
 
 ## Completed recently
 
+## FORGE-MCP-V2 — healthos-forge-mcp Zod rewrite (2026-05-05)
+
+- Objective: upgrade `@healthos/forge-mcp` from low-level `Server+setRequestHandler` to `McpServer` high-level API; add Zod input validation for all 10 tools; extract handler business logic to `src/handlers.ts`; add package README.
+- Branch: `feat/forge-mcp-v2-zod-typed`
+- Files created:
+  - `ts/agent-infra/healthos-forge-mcp/src/handlers.ts` — all 10 handler functions with try/catch, `HandlerResult` return type, `_non_canonical` in every response
+  - `ts/agent-infra/healthos-forge-mcp/src/tools-id-arg.ts` — id-arg tool registrations (separate module to work around TS2589 depth limit with Zod 4 + MCP SDK 1.29.0 dual compat types)
+  - `ts/agent-infra/healthos-forge-mcp/README.md` — build instructions, tool listing, Claude Desktop + generic stdio MCP client configuration
+- Files rewritten:
+  - `ts/agent-infra/healthos-forge-mcp/src/server.ts` — now uses `McpServer` from `@modelcontextprotocol/sdk/server/mcp.js`; calls `registerTools(server)`; connects `StdioServerTransport`
+  - `ts/agent-infra/healthos-forge-mcp/src/tools.ts` — registers 7 no-arg tools via `server.registerTool()` with descriptions; imports `registerIdArgTools` from `tools-id-arg.ts`; no more `TOOLS` array or `callTool` dispatcher
+  - `ts/agent-infra/healthos-forge-mcp/package.json` — `@modelcontextprotocol/sdk` bumped to `^1.29.0`; `zod ^3.23.0` added (Zod 4.4.3 installs in practice per MCP SDK peer dep resolution)
+- Validation: `make ts-build` PASS (zero TypeScript errors); smoke test `tools/list` → 10 tools PASS; `grep 'as string|as any' src/tools.ts src/handlers.ts` → 0 matches PASS
+- Invariants: no clinical tools; no shell execution; no LLM calls; no merge authority; healthos-forge-mcp remains outside clinical/runtime hierarchy; `_non_canonical` field in every tool response
+- Known limitation: `// @ts-nocheck` in `tools-id-arg.ts` works around TS2589 caused by MCP SDK 1.29.0's `AnySchema = z3.ZodTypeAny | z4.$ZodType` dual-compat union with Zod 4.x; runtime Zod validation is unaffected; `handlers.ts` remains fully type-checked
+- Maturity: implemented seam (upgraded to McpServer high-level API + Zod-validated inputs)
+- Residual gaps:
+  - TS2589 type-depth workaround in `tools-id-arg.ts` — track when MCP SDK or TypeScript resolves the Zod v3/v4 compat depth issue
+  - No resources or prompts capability (tools only)
+  - `dist/` not committed — clients must run `make ts-build` before first use
+- Next: ST-020 — Use Steward to generate APP-012 (CloudClinic) prompt
+
 ## DOC-README-001 — Repository README alignment with current implementation state (2026-05-05)
 
 - Objective: update `README.md` to accurately reflect implemented state through ST-018 DONE, PR #99.

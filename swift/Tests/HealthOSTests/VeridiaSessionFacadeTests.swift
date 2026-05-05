@@ -55,6 +55,17 @@ final class VeridiaSessionFacadeTests: XCTestCase {
         XCTAssertEqual(result.disposition, .validationFailure)
     }
 
+    func testVeridiaSessionEndFailsWithMissingLawfulContextForKnownSession() async throws {
+        let adapter = VeridiaSessionAdapter()
+        let userId = UUID()
+        let startResult = await adapter.startSession(makeStartRequest(userId: userId))
+        XCTAssertEqual(startResult.disposition, .sessionStarted)
+
+        // endSession with empty lawfulContext must be denied even for a valid sessionId
+        let endResult = await adapter.endSession(sessionId: startResult.sessionId, lawfulContext: [:])
+        XCTAssertEqual(endResult.disposition, .governedDeny)
+    }
+
     func testVeridiaSessionProvenanceRefsAreNonNilAndDistinct() async throws {
         let adapter = VeridiaSessionAdapter()
         let userId = UUID()

@@ -89,7 +89,7 @@ public actor VeridiaSessionAdapter: VeridiaSessionFacade {
     }
 
     public func endSession(sessionId: UUID, lawfulContext: [String: String]) async -> VeridiaSessionResult {
-        guard sessions[sessionId] != nil else {
+        guard let session = sessions[sessionId] else {
             return VeridiaSessionResult(
                 sessionId: sessionId,
                 disposition: .validationFailure,
@@ -97,9 +97,36 @@ public actor VeridiaSessionAdapter: VeridiaSessionFacade {
             )
         }
 
+        let scope = UserAgentScope(
+            userId: session.request.userId,
+            cpfHashRef: session.request.cpfHashRef,
+            actorId: session.request.actorId,
+            runtimeId: session.request.runtimeId,
+            dataLayersAllowed: [.governanceMetadata],
+            dataLayersDenied: [.operationalContent, .reidentificationMapping]
+        )
+        let agentRequest = UserAgentRequest(
+            scope: scope,
+            requestedCapability: .retrieveOwnContext,
+            lawfulContext: lawfulContext
+        )
+
+        do {
+            _ = try UserAgentGovernanceValidator.validateRequest(agentRequest)
+        } catch {
+            return VeridiaSessionResult(
+                sessionId: sessionId,
+                disposition: .governedDeny,
+                issueMessage: "Lawful context validation failed for session termination: \(error.localizedDescription)"
+            )
+        }
+
         sessions.removeValue(forKey: sessionId)
 
-        let endRecord = ProvenanceRecord(operation: "veridia.session.end")
+        let endRecord = ProvenanceRecord(
+            actorId: session.request.actorId,
+            operation: "veridia.session.end"
+        )
         let auditRef = UUID()
 
         return VeridiaSessionResult(

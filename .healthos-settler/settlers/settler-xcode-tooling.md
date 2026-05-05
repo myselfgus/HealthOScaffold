@@ -46,7 +46,7 @@ Primary paths this Settler may read and propose writes to:
 - `.healthos-settler/` — Settler profile registry, territory registry, and future settlement records
 - `.healthos-steward/` — Steward derived memory, sessions, prompts, and automation state
 - `ts/agent-infra/healthos-steward/` — deterministic Steward CLI source
-- `ts/agent-infra/mcp-local/` — local MCP infrastructure
+- `ts/agent-infra/healthos-forge-mcp/` — HealthOS Forge MCP stdio server (ST-018)
 - `.claude/` — Claude Code automation definitions and settings
 - `AGENTS.md` — agent instruction surface
 - `CLAUDE.md` — Claude Code instruction surface (read carefully before proposing changes)

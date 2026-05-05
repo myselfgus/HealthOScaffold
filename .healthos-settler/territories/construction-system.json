@@ -14,7 +14,7 @@
     ".healthos-settler",
     ".healthos-steward",
     "ts/agent-infra/healthos-steward",
-    "ts/agent-infra/mcp-local"
+    "ts/agent-infra/healthos-forge-mcp"
   ],
   "secondaryPaths": [
     "AGENTS.md",
@@ -76,6 +76,6 @@
   ],
   "notes": [
     "This ST-011 registry is construction metadata only.",
-    "The existing `ts/agent-infra/mcp-local` path is not renamed in ST-011."
+    "`ts/agent-infra/mcp-local` was removed in ST-019 (2026-05-05) — it was an unused stub with clinical tool names; `ts/agent-infra/healthos-forge-mcp` (ST-018) is the implemented repository-maintenance MCP surface."
   ]
 }

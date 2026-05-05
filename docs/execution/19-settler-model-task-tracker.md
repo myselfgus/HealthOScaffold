@@ -202,19 +202,30 @@ Outcome (2026-05-05):
 
 ### ST-019 — Xcode/Codex/Claude integration instructions
 
-Status: TODO.
+Status: DONE.
 
 Goal:
 - align assistant instructions with the construction operating model
 - do not claim Xcode Intelligence, Codex, or Claude can execute Steward capabilities not yet implemented
 
-### ST-020 — Use Steward to generate APP-011 prompt
+Outcome (2026-05-05):
+- Updated `CLAUDE.md` — bash code block now includes all 10 implemented `healthos-steward` CLI commands (added missing `validate-settlement <settlement-id>`, `pr-draft <settlement-id>`, `build-memory` lines); forge-mcp boundary section corrected from stale planned tool names to actual implemented `steward_*` names; both forge-mcp paragraphs now consistent
+- Updated `docs/execution/22-steward-construction-operating-model.md` — ST-019 marked DONE; ST-020 goal revised from APP-011 (DONE) to APP-012 (CloudClinic) with explanatory note
+- Updated `docs/execution/02-status-and-tracking.md` — ST-019 completion entry added
+- Updated `docs/execution/19-settler-model-task-tracker.md` (this file) — ST-019 DONE with this Outcome block
+- Also removed `ts/agent-infra/mcp-local/` — unused stub with clinical tool names (`patient_context`, `service_context`, `session_drafts`); `construction-system.json`, `settler-xcode-tooling.md`, `README.md`, `CLAUDE.md`, doc 22 updated; `ts/package-lock.json` updated via `npm install`; `make ts-build` PASS
+- Validation: `make validate-docs` PASS; `make ts-build` PASS
+- Invariants: construction-system boundary preserved; no clinical authority; no runtime scope; `healthos-forge-mcp` remains the sole repository-maintenance MCP surface
+- Maturity: instruction surface aligned and boundary violation resolved (scaffolded contract)
+- Residual gaps: none (mcp-local boundary violation resolved in this task)
+
+### ST-020 — Use Steward to generate APP-012 (CloudClinic) prompt
 
 Status: TODO.
 
 Goal:
-- use the construction system to generate the APP-011 prompt after the needed construction pieces exist
-- APP-011 remains the next product task until executed separately
+- use the construction system to generate the APP-012 (CloudClinic smoke-testable executable path) prompt after the needed construction pieces exist
+- note: APP-011 is DONE (VeridiaSessionFacade, PR #98, 2026-05-04); ST-020 goal revised to target APP-012
 
 ## Historical streams
 

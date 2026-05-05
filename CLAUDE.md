@@ -182,6 +182,9 @@ cd ts && npx --yes --workspace @healthos/steward healthos-steward inspect settle
 cd ts && npx --yes --workspace @healthos/steward healthos-steward inspect settlement <id>
 cd ts && npx --yes --workspace @healthos/steward healthos-steward next
 cd ts && npx --yes --workspace @healthos/steward healthos-steward generate-prompt <settlement-id>
+cd ts && npx --yes --workspace @healthos/steward healthos-steward validate-settlement <settlement-id>
+cd ts && npx --yes --workspace @healthos/steward healthos-steward pr-draft <settlement-id>
+cd ts && npx --yes --workspace @healthos/steward healthos-steward build-memory
 ```
 
 Ten `healthos-steward` CLI commands are implemented as of ST-017 (2026-05-04): `status`, `runtime`, `session` (scaffold placeholders); `list <territories|settlers|settlements>`, `inspect <territory|settler|settlement> <id>`, and `next` (deterministic read-only registry inspection, implemented in `ts/agent-infra/healthos-steward/src/commands/`); `generate-prompt <settlement-id>` (deterministic PromptSpec assembler — reads Settlement, Territory JSON, and Settler profile records; writes 16-section PromptSpec Markdown to `.healthos-steward/prompts/generated/`; no LLM calls, no new npm deps, fail-closed); `validate-settlement <settlement-id>` (deterministic ValidationReport — checks done-criteria against filesystem evidence using PASS/FAIL/UNVERIFIED heuristic, lists validation-commands as manual steps; exits 1 on any FAIL; no shell execution, no LLM); `pr-draft <settlement-id>` (deterministic ReviewDraft — generates PR body Markdown from Settlement fields; always exits 0 on success); and `build-memory` (deterministic DerivedMemory builder — reads ST tracker, Territory JSON records, Settler README, Settlement .md files, and handoff doc; writes 6 non-canonical snapshot files to `.healthos-steward/memory/derived/`; overwritten on each run; no LLM, no shell, no new npm deps, fail-tolerant per-file). The `list`/`inspect`/`next` commands read Territory JSON records, Settler profile .md files, Settlement .md records, and the ST tracker using Node built-ins only — no model calls, no writes, no new npm dependencies. Do not describe `scan-status`, `validate-docs`, `validate-all`, or other repository-maintenance operations as delivered CLI behavior until implemented.
@@ -194,15 +197,11 @@ The local Codex automation for this posture is `$CODEX_HOME/automations/steward-
 
 ## Steward and healthos-forge-mcp boundary
 
-`healthos-forge-mcp` is the repository-maintenance MCP server for Steward. It exposes typed operations for maintaining the HealthOS construction repository: `validate-all`, `validate-docs`, `scan-status`, `next-task`, `read-gap-register`, `get-handoff`, `check-invariants`, `check-doc-drift`, `generate-pr-review-draft`, and others.
+`healthos-forge-mcp` is the repository-maintenance MCP server for Steward. It is implemented as a stdio MCP server at `ts/agent-infra/healthos-forge-mcp/` (maturity: implemented seam, ST-018, 2026-05-05). It exposes 10 deterministic repository-maintenance tools: `steward_next_task`, `steward_scan_status`, `steward_get_handoff`, `steward_list_territories`, `steward_inspect_territory`, `steward_list_settlers`, `steward_list_settlements`, `steward_validate_settlement`, `steward_generate_prompt`, `steward_build_memory`.
 
 `healthos-forge-mcp` is outside the HealthOS clinical/runtime hierarchy. It is used by Steward for Xcode, Xcode Intelligence where available, CI tools, or external coding assistants operating on this repository. It must never be described as a clinical automation server, AACI tool server, GOS runtime server, or Core law server.
 
-If HealthOS later uses MCP servers internally for clinical, operational, or runtime automation, those are separate Core-governed runtime MCP servers. They must obey HealthOS Core invariants: lawfulContext, consent, habilitation, finality, storage layer policy, provenance, audit, and gate. They are not `healthos-forge-mcp`. Do not collapse these two MCP families.
-
-`healthos-forge-mcp` is implemented as a stdio MCP server at `ts/agent-infra/healthos-forge-mcp/` (maturity: implemented seam, ST-018, 2026-05-05). It exposes 10 deterministic repository-maintenance tools: steward_next_task, steward_scan_status, steward_get_handoff, steward_list_territories, steward_inspect_territory, steward_list_settlers, steward_list_settlements, steward_validate_settlement, steward_generate_prompt, steward_build_memory. It remains separate from future HealthOS runtime MCP servers.
-
-Known gap: `ts/agent-infra/mcp-local/` has clinical tool names (`patient_context`, `service_context`, `session_drafts`) — this is a boundary violation and should be cleaned up in a future task.
+If HealthOS later uses MCP servers internally for clinical, operational, or runtime automation, those are separate Core-governed runtime MCP servers. They must obey HealthOS Core invariants: lawfulContext, consent, habilitation, finality, storage layer policy, provenance, audit, and gate. They are not `healthos-forge-mcp`. Do not collapse these two MCP families. It remains separate from future HealthOS runtime MCP servers.
 
 Steward provider safety:
 - Provider usage is optional and must remain fail-closed.

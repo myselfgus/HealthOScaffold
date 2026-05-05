@@ -578,7 +578,7 @@ graph LR
 - `docs/execution/` — governed execution protocol, status tracking, coverage, invariants, TODOs, maturity/handoff
 - `schemas/` — JSON Schema entity contracts and GOS schemas
 - `swift/` — Core, AACI, Providers, MSR, SessionRuntime, CLI, Scribe app, XCTest suites
-- `ts/` — workspace packages (`contracts`, `runtime-async`, `runtime-user-agent`, `mcp-local`, `healthos-gos-tooling`, `healthos-steward`)
+- `ts/` — workspace packages (`contracts`, `runtime-async`, `runtime-user-agent`, `healthos-gos-tooling`, `healthos-steward`, `healthos-forge-mcp`)
 - `python/` — offline ML governance scaffolds only
 - `sql/migrations/001_init.sql` — canonical metadata schema scaffold
 - `ops/` and `scripts/` — local operational scaffolding, bootstrap, network and backup notes

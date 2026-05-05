@@ -228,7 +228,7 @@ HealthOS native macOS surfaces target macOS 26+ and adopt **Liquid Glass as the 
 
 Standard SwiftUI/AppKit controls and navigation surfaces (sidebars, toolbars, sheets, `NavigationSplitView`) inherit system Liquid Glass behavior automatically. Custom `glassEffect`, `GlassEffectContainer`, and glass button styles are reserved for app-specific HealthOS surfaces not covered by standard controls.
 
-**Current scaffold state:** `HealthOSScribeApp` uses `GroupBox` + `.thinMaterial` with standard SwiftUI controls. Full Liquid Glass adoption is in progress as the macOS 26+ native app shell matures.
+**Current scaffold state:** `HealthOSScribeApp` uses `GroupBox` + `.thinMaterial` with standard SwiftUI controls. `HealthOSDesignSystem` is the implemented design system baseline (DS-001, 2026-05-05). Full Liquid Glass adoption is in progress as the macOS 26+ native app shell matures.
 
 <p align="center">
   <img src="docs/assets/liquidglass_intro.gif" width="100%" alt="Demonstração do Liquid Glass UI — HealthOS Scribe First Slice">
@@ -331,7 +331,7 @@ stateDiagram-v2
 
 ---
 
-## 📋 Current Repository Posture (April 2026)
+## 📋 Current Repository Posture (May 2026)
 
 This repository is in **controlled implementation / scaffold hardening**:
 
@@ -342,13 +342,14 @@ This repository is in **controlled implementation / scaffold hardening**:
 | **AACI First Slice** | 🚧 Scaffold Hardening | Boundary enforcement + GOS-mediated derived drafts |
 | **MSR Pipeline** | 🚧 Scaffold | ASL · VDLP · GEM stages, provenance metadata |
 | **Provider / ML** | ⚠️ Stub / Contract | `AppleFoundationProvider` adapter; deterministic safety posture |
-| **Apps / UI** | 🧩 Contract-First | Minimal Scribe validation surface; Sortio/CloudClinic placeholder |
-| **Liquid Glass UI** | 🎯 macOS 26+ Baseline | Design system defined in architecture docs; glass adoption in progress |
+| **Apps / UI** | 🧩 Contract-First | Minimal Scribe validation surface; Veridia/CloudClinic placeholder |
+| **Liquid Glass UI** | 🎯 macOS 26+ Baseline | HealthOSDesignSystem baseline (DS-001); glass adoption in progress |
+| **Construction System** | ✅ Implemented Seam | 10 CLI commands (healthos-steward) + 10 MCP tools (healthos-forge-mcp) |
 
 **This repository is not:**
 - a production-ready product
 - a complete EHR
-- a final UI delivery of Scribe, Sortio, or CloudClinic
+- a final UI delivery of Scribe, Veridia, or CloudClinic
 - a real regulatory-signature or interoperability integration
 - a real semantic retrieval stack with embeddings/vector index
 - a real external provider deployment (LM/STT/embedding remain scaffold/stub posture)
@@ -463,6 +464,9 @@ flowchart LR
 | Understand maturity and gaps | `docs/execution/11-current-maturity-map.md` | `13-scaffold-release-candidate-criteria.md`, `14-final-gap-register.md` |
 | Start coding safely | `docs/execution/README.md` | `01-agent-operating-protocol.md`, `02-status-and-tracking.md`, relevant `todo/*.md` |
 | Understand Steward for Xcode | `docs/architecture/45-healthos-xcode-agent.md` | `docs/execution/17-healthos-xcode-agent-migration-plan.md` |
+| Understand the construction system | `docs/execution/22-steward-construction-operating-model.md` | `docs/execution/19-settler-model-task-tracker.md`, `.healthos-settler/territories/` |
+| Use Steward CLI | `CLAUDE.md` Steward usage section | `ts/agent-infra/healthos-steward/` |
+| Use healthos-forge-mcp | `ts/agent-infra/healthos-forge-mcp/` | `docs/execution/22-steward-construction-operating-model.md` |
 | See open documentation tasks | `docs/execution/20-documental-todos-work-plan.md` | `docs/execution/prompts/` |
 | See latest daily digest | `.healthos-steward/memory/automations/daily-todo-tracker/latest.md` | `docs/execution/02-status-and-tracking.md` |
 
@@ -524,7 +528,7 @@ graph LR
     W[swift/\nCore · AACI · MSR · apps · tests]:::code
     T[ts/\ncontracts · runtimes · tooling · steward]:::code
     P[python/\nOffline ML governance scaffolds]:::code
-    EG[.healthos-steward\n.healthos-settler\n.healthos-territory]:::agent
+    EG[.healthos-steward\n.healthos-settler]:::agent
     AU[.claude/automations\nupdate-claude-md · daily-todo · sync-work-plan]:::agent
 
     D -->|defines boundaries for| W
@@ -569,6 +573,7 @@ graph LR
 | `docs/execution/` | [README](docs/execution/README.md) | Execution protocol, status tracking, TODO tracker, maturity/handoff |
 | `ts/` | [README](ts/README.md) | TypeScript workspace: contracts, GOS tooling, async runtime, Steward CLI |
 | `.healthos-steward/` | [README](.healthos-steward/README.md) | Steward derived state, session memory, automation logs |
+| `ts/agent-infra/healthos-forge-mcp/` | — | Forge MCP stdio server — 10 deterministic repository-maintenance tools wrapping @healthos/steward lib |
 
 ---
 
@@ -585,8 +590,7 @@ graph LR
 - `apps/` — interface boundary scaffolds/documentation
 - `.healthos-steward/` — derived Steward state, policies, prompts, session memory
 - `.healthos-steward/memory/automations/` — automation run logs and daily TODO digests
-- `.healthos-settler/` — Settler profile scaffolds (documentation only)
-- `.healthos-territory/` — Territory record scaffolds (documentation only)
+- `.healthos-settler/` — Settler profiles (`.healthos-settler/settlers/`) and Territory Registry (`.healthos-settler/territories/`)
 - `.claude/automations/` — Claude Code automation definitions
 - `.claude/scheduled_tasks.json` — durable cron job registry
 
@@ -605,12 +609,22 @@ Settlers are specialized engineering agent profiles. Settlements are bounded eng
 ```bash
 make ts-build
 cd ts && npx --yes --workspace @healthos/steward healthos-steward status
-cd ts && npx --yes --workspace @healthos/steward healthos-steward runtime --message "inspect repository posture" --dry-run
-# session requires an existing session id:
-cd ts && npx --yes --workspace @healthos/steward healthos-steward session --id <session-id>
+cd ts && npx --yes --workspace @healthos/steward healthos-steward runtime
+cd ts && npx --yes --workspace @healthos/steward healthos-steward session
+cd ts && npx --yes --workspace @healthos/steward healthos-steward list territories
+cd ts && npx --yes --workspace @healthos/steward healthos-steward list settlers
+cd ts && npx --yes --workspace @healthos/steward healthos-steward list settlements
+cd ts && npx --yes --workspace @healthos/steward healthos-steward inspect territory <id>
+cd ts && npx --yes --workspace @healthos/steward healthos-steward inspect settler <id>
+cd ts && npx --yes --workspace @healthos/steward healthos-steward inspect settlement <id>
+cd ts && npx --yes --workspace @healthos/steward healthos-steward next
+cd ts && npx --yes --workspace @healthos/steward healthos-steward generate-prompt <settlement-id>
+cd ts && npx --yes --workspace @healthos/steward healthos-steward validate-settlement <settlement-id>
+cd ts && npx --yes --workspace @healthos/steward healthos-steward pr-draft <settlement-id>
+cd ts && npx --yes --workspace @healthos/steward healthos-steward build-memory
 ```
 
-Only `status`, `runtime`, and `session` are implemented CLI commands today. Target operations (`scan-status`, `next-task`, `validate-all`, `validate-docs`, `get-handoff`) belong to the planned `healthos-forge-mcp` workstream. Do not describe them as delivered until implemented.
+Ten `healthos-steward` CLI commands are implemented (ST-010 through ST-017). `dist/` is not committed — run `make ts-build` once before invoking.
 
 ```mermaid
 %%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#fdf2f8', 'primaryBorderColor': '#f9a8d4', 'primaryTextColor': '#831843', 'clusterBkg': '#ffffff', 'clusterBorder': '#e5e7eb', 'titleColor': '#0f172a', 'edgeLabelBackground': '#f8fafc', 'fontFamily': 'ui-sans-serif, system-ui, -apple-system'}}}%%
@@ -626,7 +640,7 @@ flowchart TD
     SETT[Settler profiles\nspecialized instructions]:::settler
     WORK[Settlements\nbounded work records]:::settler
     TERR[Territories\nrepository domains]:::territory
-    MCP[healthos-forge-mcp\nrepository maintenance\nnot yet implemented]:::boundary
+    MCP[healthos-forge-mcp\nrepository maintenance\nimplemented seam\nST-018 · 10 tools]:::boundary
 
     DOCS --> STEW
     DOCS --> TERR
@@ -634,11 +648,42 @@ flowchart TD
     STEW -->|chooses| SETT
     SETT -->|operates within| TERR
     WORK -->|records scope and validation| DOCS
-    MCP -. future typed repo operations .-> STEW
-    MCP -. future typed repo operations .-> SETT
+    MCP -. deterministic repo operations .-> STEW
+    MCP -. deterministic repo operations .-> SETT
 ```
 
 **Steward for Xcode** is the Xcode-integration posture: integrates with Xcode Intelligence as an Apple-controlled engineering runtime surface. See `docs/architecture/45-healthos-xcode-agent.md` for target architecture.
+
+### 🏗️ Construction System Lifecycle
+
+```mermaid
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#fdf2f8', 'primaryBorderColor': '#f9a8d4', 'primaryTextColor': '#831843', 'clusterBkg': '#ffffff', 'clusterBorder': '#e5e7eb', 'titleColor': '#0f172a', 'edgeLabelBackground': '#f8fafc', 'fontFamily': 'ui-sans-serif, system-ui, -apple-system'}}}%%
+flowchart TD
+    classDef steward   fill:#fdf2f8,stroke:#ec4899,stroke-width:2px,color:#831843
+    classDef settler   fill:#f5f3ff,stroke:#8b5cf6,stroke-width:2px,color:#4c1d95
+    classDef territory fill:#ecfeff,stroke:#06b6d4,stroke-width:2px,color:#164e63
+    classDef docs      fill:#ecfdf5,stroke:#22c55e,stroke-width:2px,color:#14532d
+    classDef mcp       fill:#fff7ed,stroke:#f59e0b,stroke-width:2px,color:#7c2d12
+    classDef mem       fill:#f1f5f9,stroke:#94a3b8,stroke-width:2px,color:#334155
+
+    DOCS[Official docs\ncanonical truth]:::docs
+    STEW[Steward\n10 CLI commands]:::steward
+    SETTLER[Settler profiles\n9 profiles · settlers/]:::settler
+    TERR[Territory Registry\n15 territories · territories/]:::territory
+    SETTLE[Settlements\nbounded work records]:::settler
+    MCP[healthos-forge-mcp\nimplemented seam · ST-018\n10 steward_* MCP tools]:::mcp
+    MEM[Derived Memory\nmemory/derived/\nnon-canonical snapshots]:::mem
+
+    DOCS --> STEW
+    DOCS --> TERR
+    STEW -->|selects| SETTLER
+    STEW -->|frames| SETTLE
+    SETTLER -->|operates within| TERR
+    SETTLE -->|records scope and validation| DOCS
+    MCP -->|wraps| STEW
+    STEW -->|build-memory writes| MEM
+    MEM -. non-canonical do not cite .-> DOCS
+```
 
 Canonical truth resides in `docs/` and project manifests. Steward memory, Settler scaffolds, Settlement records, and Territory records are derived or instructional engineering surfaces — non-clinical, non-constitutional, and non-authorizing.
 
@@ -711,9 +756,11 @@ Read in order before coding:
 11. `docs/execution/14-final-gap-register.md`
 12. `docs/execution/15-scaffold-finalization-plan.md`
 13. `docs/execution/16-next-10-actions-plan.md`
-14. relevant `docs/execution/todo/*.md`
-15. matching `docs/execution/skills/*.md`
-16. if touching Swift/SwiftUI/Xcode: `docs/architecture/48-native-macos-ui-design-system-and-app-shells.md` and matching `docs/execution/skills/<name>/SKILL.md`
+14. `docs/execution/22-steward-construction-operating-model.md` — construction system operating model
+15. `docs/execution/19-settler-model-task-tracker.md` — ST task sequence and status
+16. relevant `docs/execution/todo/*.md`
+17. matching `docs/execution/skills/*.md`
+18. if touching Swift/SwiftUI/Xcode: `docs/architecture/48-native-macos-ui-design-system-and-app-shells.md` and matching `docs/execution/skills/<name>/SKILL.md`
 
 ---
 
@@ -750,7 +797,8 @@ Full detail: `docs/execution/11-current-maturity-map.md`.
 - **GOS authoring/compiler/lifecycle:** implemented seam / tested operational path (scaffold hardening)
 - **AACI + first slice orchestration:** implemented seam / tested operational path (bounded scope)
 - **MSR pipeline:** scaffold — executors present, provenance metadata defined, provider integration pending
-- **Liquid Glass UI:** design baseline established; native macOS 26+ adoption in progress
+- **Liquid Glass UI:** design baseline established; HealthOSDesignSystem implemented (DS-001)
+- **Construction system (Steward + Forge MCP):** implemented seam — 10 CLI commands + 10 MCP tools deterministic; no LLM, no merge authority, no clinical scope
 
 ## Scaffold/Foundation Phase Closure References
 

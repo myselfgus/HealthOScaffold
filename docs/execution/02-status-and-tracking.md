@@ -6,6 +6,33 @@ Current phase: Controlled implementation — first vertical slice started
 
 ## Completed recently
 
+## DOC-README-001 — Repository README alignment with current implementation state (2026-05-05)
+
+- Objective: update `README.md` to accurately reflect implemented state through ST-018 DONE, PR #99.
+- Branch: `docs/readme-alignment-st018`
+- Files updated:
+  - `README.md` — all 12 goals completed (see below)
+- Goals completed:
+  1. All Sortio → Veridia references fixed (posture table + non-claims)
+  2. Repository Posture heading updated April → May 2026; Construction System row added
+  3. Steward CLI block rewritten: all 10 commands shown; false "only 3 commands" claim removed; fake flags removed
+  4. Steward mermaid updated: forge-mcp node "not yet implemented" → "implemented seam ST-018 · 10 tools"; edge labels updated
+  5. Repository Atlas mermaid EG node: `.healthos-territory` removed (correct path is `.healthos-settler/territories/`)
+  6. Repository Map text: `.healthos-territory/` entry removed; `.healthos-settler/` updated with correct subdirs
+  7. `healthos-forge-mcp` added to Internal Documentation Index
+  8. Reading Paths table: construction system entries added (doc 22, doc 19, Steward CLI, forge-mcp)
+  9. "Where Agents Should Start": docs 14 and 15 added (doc 22 + doc 19); subsequent items renumbered
+  10. Construction System lifecycle mermaid added in Steward section
+  11. Maturity Snapshot updated with construction system entry
+  12. HealthOSDesignSystem (DS-001) referenced in Liquid Glass scaffold state
+- Validation: `grep -n "Sortio" README.md` → 0; `grep -n "not yet implemented" README.md` → 0; `grep -n "healthos-territory" README.md` → 0; 14 npx CLI command lines (≥ 10); false claim removed
+- Invariants: no source code changed (.ts, .swift, .json, .sql, Makefile); construction-system boundary preserved; no clinical authority; official docs remain canonical
+- Maturity: instruction surface aligned (documentation-only task)
+- Residual gaps:
+  - APP-012 CloudClinic smoke-testable path — separate product task
+  - CI-001 GitHub Actions validate-all — separate task
+- Next: ST-020 — Use Steward to generate APP-012 (CloudClinic) prompt
+
 ## APP-011 — Veridia: smoke-testable executable session boundary (2026-05-04)
 
 - Objective: wire `UserSovereigntyContracts.swift` into a minimal `VeridiaSessionFacade` so Veridia has an executable governance session boundary, not just contract-only posture.

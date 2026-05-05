@@ -219,6 +219,22 @@ Outcome (2026-05-05):
 - Maturity: instruction surface aligned and boundary violation resolved (scaffolded contract)
 - Residual gaps: none (mcp-local boundary violation resolved in this task)
 
+### DOC-README-001 — Repository README alignment with current implementation state
+
+Status: DONE (2026-05-05).
+
+Goal:
+- update README.md to reflect actual implemented state through ST-018 (PR #99)
+- fix all stale Sortio references, stale CLI block, stale forge-mcp mermaid, wrong directory paths
+- add construction system reading paths, lifecycle mermaid, maturity snapshot entry
+
+Outcome (2026-05-05):
+- All 12 goals completed; see `docs/execution/02-status-and-tracking.md` DOC-README-001 entry for full detail
+- Branch: `docs/readme-alignment-st018`
+- Validation: Sortio → 0 matches; "not yet implemented" → 0; `.healthos-territory` → 0; 14 npx CLI lines; false claim removed
+- Invariants: no source code changed; construction-system boundary preserved; no clinical authority
+- Residual gaps: APP-012 and CI-001 remain separate future tasks
+
 ### ST-020 — Use Steward to generate APP-012 (CloudClinic) prompt
 
 Status: TODO.

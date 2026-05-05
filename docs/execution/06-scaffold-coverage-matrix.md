@@ -89,7 +89,7 @@ Legend:
 - [x] authoring/compiler architecture document established
 - [x] runtime-binding architecture document established
 - [x] lifecycle/storage architecture document established
-- [x] app consumption patterns documented for Scribe, Sortio, and CloudClinic
+- [x] app consumption patterns documented for Scribe, Veridia, and CloudClinic
 - [x] canonical JSON schema established for compiled GOS form
 - [x] lightweight authoring schema established for YAML source documents
 - [x] bundle-manifest schema established for compiled-bundle lifecycle representation
@@ -153,7 +153,7 @@ Legend:
 
 ## 7. Apps / interfaces
 - [x] Scribe defined
-- [x] Sortio defined
+- [x] Veridia defined
 - [x] CloudClinic defined
 - [x] app/core separation established
 - [x] shared state vocabulary exists
@@ -175,12 +175,12 @@ Legend:
 - [x] Scribe bridge GOS runtime app surface now carries an explicit non-authorizing flag (`legalAuthorizing = false`) so bundle/spec identifiers remain informational and provenance-facing only
 - [x] Scribe bridge/UI/CLI now expose minimal active GOS bundle/workflow visibility, bound actor/family summaries, reasoning-boundary summaries, and SOAP/referral/prescription `gos.use.*` mediation markers without exposing raw compiled spec/runtime-binding JSON
 - [x] Swift XCTest app-boundary coverage now verifies both active-GOS and no-active-GOS Scribe bridge paths return only safe GOS runtime surfaces while preserving gate-required + draft-only app semantics
-- [x] native macOS 26+ app-shell/design-system scope is defined for Scribe, Sortio, CloudClinic, and a future HealthOS control panel
+- [x] native macOS 26+ app-shell/design-system scope is defined for Scribe, Veridia, CloudClinic, and a future HealthOS control panel
 - [x] SwiftPM package manifest now declares PackageDescription 6.2 and `.macOS(.v26)` for the native Apple build graph
 - [~] Liquid Glass is a documented design baseline for future native UI work, but no final macOS 26 app shell or shared production design-system package has been implemented
-- [x] user-agent/patient-sovereignty contracts now exist in Swift Core + TS contracts for capability scope, consent surface, patient audit surface, export request/status surface, visibility-vs-retention summaries, and Sortio interaction envelope boundaries
+- [x] user-agent/patient-sovereignty contracts now exist in Swift Core + TS contracts for capability scope, consent surface, patient audit surface, export request/status surface, visibility-vs-retention summaries, and Veridia interaction envelope boundaries
 - [x] User Agent guard layer now fail-closes prohibited clinical/regulatory capabilities (`diagnose`, `prescribe`, `issue-referral`, `finalize-record`, `sign-document`, retention/habilitation bypass attempts), missing lawfulContext, denied sensitive layers, and non-informational outputs
-- [x] Swift XCTest coverage now includes explicit patient sovereignty negative tests for consent revocation policy acknowledgements, cross-patient audit view denial, reidentification export denial-by-default, direct-identifier policy gates, and Sortio app-safe payload boundaries
+- [x] Swift XCTest coverage now includes explicit patient sovereignty negative tests for consent revocation policy acknowledgements, cross-patient audit view denial, reidentification export denial-by-default, direct-identifier policy gates, and Veridia app-safe payload boundaries
 - [x] service-operations/CloudClinic core contracts now exist in Swift+TS+schema for service context, membership roles, habilitation surface, patient-service relationship, operational queue, document/draft surface, gate worklist, and administrative task governance
 - [x] Swift XCTest coverage now includes service-operations governance negatives/positives (lawfulContext/finality guards, role/membership denials, habilitation expiry/inactive denials, queue non-authorization, draft/final gate protections, admin gate-resolution denial, and admin-task allowlist enforcement)
 - [x] cross-app shared app-surface envelope contract now exists (`AppSurfaceEnvelope`) with typed app kind, actor role, safe refs, allowed/denied actions, degraded issues, provenance/audit refs, redaction posture, and explicit `legalAuthorizing = false`

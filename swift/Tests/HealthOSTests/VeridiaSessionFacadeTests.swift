@@ -31,7 +31,7 @@ final class VeridiaSessionFacadeTests: XCTestCase {
         let adapter = VeridiaSessionAdapter()
         let userId = UUID()
         let result = await adapter.startSession(makeStartRequest(userId: userId))
-        // SortioBoundaryValidator.validateAppSafePayload with .retrieveOwnContext must pass
+        // VeridiaBoundaryValidator.validateAppSafePayload with .retrieveOwnContext must pass
         XCTAssertEqual(result.disposition, .sessionStarted)
     }
 

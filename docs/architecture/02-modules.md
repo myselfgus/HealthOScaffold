@@ -28,5 +28,5 @@
 
 ## Apps
 - Scribe: professional-facing interface
-- Sortio: patient/user sovereignty interface
+- Veridia: patient health identity app
 - CloudClinic: service operations interface

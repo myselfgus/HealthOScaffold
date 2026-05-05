@@ -66,7 +66,7 @@ Actors / Agents
   └─ AACI subagents
 Apps / Interfaces
   ├─ Scribe
-  ├─ Sortio
+  ├─ Veridia
   └─ CloudClinic
 Artifacts / Effects
   ├─ transcripts

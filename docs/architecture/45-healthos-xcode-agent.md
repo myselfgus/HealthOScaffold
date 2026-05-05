@@ -47,7 +47,7 @@ Steward must never be:
 - Async runtime
 - User-Agent runtime
 - a clinical actor
-- an app runtime (not Scribe, Sortio, or CloudClinic)
+- an app runtime (not Scribe, Veridia, or CloudClinic)
 - a merge approver
 - a gate resolver
 - a regulatory authority
@@ -74,7 +74,7 @@ HealthOS clinical and runtime hierarchy (never collapses into engineering layer)
     └─ HealthOS Core
       └─ GOS
         └─ Runtimes (AACI, Async, User-Agent)
-          └─ Apps (Scribe, Sortio, CloudClinic)
+          └─ Apps (Scribe, Veridia, CloudClinic)
 ```
 
 These two structures never merge. Steward does not enter the clinical/runtime hierarchy. The clinical/runtime hierarchy does not depend on Steward.

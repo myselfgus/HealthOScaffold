@@ -106,5 +106,5 @@ Detailed doctrine for how runtime truth appears in apps lives in:
 
 ## Role-specific emphasis
 - Scribe emphasizes SessionContext, DraftReviewState, GateReviewState, RuntimeHealthState
-- Sortio emphasizes ConsentManagementState, AuditTrailState, RuntimeHealthState
+- Veridia emphasizes ConsentManagementState, AuditTrailState, RuntimeHealthState
 - CloudClinic emphasizes QueueState, GateReviewState, AuditTrailState, RuntimeHealthState

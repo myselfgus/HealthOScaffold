@@ -34,6 +34,21 @@ Current phase: Controlled implementation — first vertical slice started
 - Validation: all make targets PASS.
 - Residual gaps: Veridia final UI not implemented; patient agent runtime wiring completed in APP-011 (see above).
 
+## ST-019 — Xcode/Codex/Claude integration instructions (2026-05-05)
+
+- Objective: align CLAUDE.md and tracking docs with the actual implemented state of ST-018; add all 10 CLI commands to CLAUDE.md bash block; correct forge-mcp tool list from stale planned names to actual steward_* names; revise ST-020 goal from APP-011 (DONE) to APP-012 (CloudClinic).
+- Branch: `feat/st-019-integration-instructions`
+- Files updated:
+  - `CLAUDE.md` — bash code block now includes all 10 implemented `healthos-steward` CLI commands (added `validate-settlement <settlement-id>`, `pr-draft <settlement-id>`, `build-memory`); forge-mcp boundary section corrected from stale planned tool names (`validate-all`, `validate-docs`, etc.) to actual implemented `steward_*` names; both forge-mcp paragraphs merged into a single coherent description
+  - `docs/execution/22-steward-construction-operating-model.md` — ST-019 marked DONE; ST-020 goal revised to APP-012 (CloudClinic) with note that APP-011 is DONE (PR #98)
+  - `docs/execution/19-settler-model-task-tracker.md` — ST-019 marked DONE with full Outcome block
+  - `docs/execution/02-status-and-tracking.md` (this file) — ST-019 entry added
+- Validation: `make validate-docs` PASS
+- Invariants: construction-system boundary preserved; no clinical authority; no runtime scope; no new capability claimed; no TypeScript, Swift, JSON schema, or contract files changed
+- Maturity: instruction surface aligned (scaffolded contract)
+- Residual gaps: `mcp-local` clinical tool name cleanup (`patient_context`, `service_context`, `session_drafts`) — boundary violation, separate future task
+- Next: ST-020 — Use Steward to generate APP-012 (CloudClinic) prompt
+
 ## ST-018 — healthos-forge-mcp stdio MCP server (2026-05-05)
 
 - Objective: create `ts/agent-infra/healthos-forge-mcp/` (`@healthos/forge-mcp` 0.1.0) — a stdio JSON-RPC MCP server exposing 10 deterministic repository-maintenance tools wrapping `@healthos/steward` lib functions.

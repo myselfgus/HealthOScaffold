@@ -313,15 +313,15 @@ Files touched:
 
 ## READY
 
-### APP-011 Sortio: smoke-testable executable path
+### APP-011 Veridia: smoke-testable executable path
 Priority: Medium
-Status: READY after STR-005
-Skill: `docs/execution/skills/native-macos-ui/SKILL.md` + relevant app skill + `docs/execution/skills/liquid-glass/SKILL.md`
+Status: READY after STR-005 and APP-013
+Skill: `docs/execution/skills/native-macos-ui/SKILL.md` + `docs/execution/skills/user-agent-veridia-skill.md` + `docs/execution/skills/liquid-glass/SKILL.md`
 Definition of done:
-- wire the existing Sortio boundary contracts into a minimal smoke-testable executable path
-- consume only mediated contracts already available for Sortio
+- wire the existing Veridia boundary contracts into a minimal smoke-testable executable path
+- consume only mediated contracts already available for Veridia
 - do not move consent, habilitation, gate, finality, storage law, or clinical authority into the app target
-- validate with SwiftPM and the Sortio smoke path
+- validate with SwiftPM and the Veridia smoke path (`make smoke-veridia`)
 
 ### APP-012 CloudClinic: smoke-testable executable path
 Priority: Medium
@@ -346,5 +346,5 @@ Definition of done:
 - `swift run HealthOSCLI --audio-file /System/Library/Sounds/Glass.aiff`
 - `swift run HealthOSScribeApp --smoke-test`
 - `swift run HealthOSScribeApp --smoke-test-audio`
-- `swift run HealthOSSortioApp --smoke-test`
+- `swift run HealthOSVeridiaApp --smoke-test`
 - `swift run HealthOSCloudClinicApp --smoke-test`

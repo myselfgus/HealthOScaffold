@@ -32,8 +32,9 @@ Construction-system note: this document remains the product/repo task queue. Con
 | STR-002 | **P1** | DONE | Archive `Skill macOS/` to `docs/reference/mental-space-legacy/` | — |
 | STR-003 | **P1** | DONE | Separate AGENT packages from PRODUCT in `ts/packages/` | — |
 | STR-004 | **P1** | DONE | Rename `HealthOSFirstSliceSupport` → `HealthOSSessionRuntime` | — |
-| STR-005 | **P2** | DONE | Add placeholder Swift targets for Sortio and CloudClinic | — |
-| APP-011 | **P2** | READY | Sortio: smoke-testable executable path | STR-005 |
+| STR-005 | **P2** | DONE | Add placeholder Swift targets for Veridia (formerly Sortio) and CloudClinic | — |
+| APP-013 | **P2** | DONE | Rename Sortio to Veridia and redefine patient app scope | — |
+| APP-011 | **P2** | READY | Veridia: smoke-testable executable path | STR-005, APP-013 |
 | APP-012 | **P2** | READY | CloudClinic: smoke-testable executable path | STR-005 |
 | RT-ASYNC-001 | **P3** | BLOCKED | SQL-backed async runtime executor | Core SQL migration (exists) |
 | RT-PROVIDER-001 | **P3** | DONE | Real Apple Foundation Models integration for normalization stage | — |
@@ -524,18 +525,18 @@ Also add to products:
 
 ---
 
-### APP-011: Sortio — wire existing boundary contracts to session runtime
+### APP-011: Veridia — wire existing boundary contracts to session runtime
 
-**Priority:** P2 | **Status:** READY | **Branch:** `feat/app-011-sortio-session-wire`
+**Priority:** P2 | **Status:** READY | **Branch:** `feat/app-011-veridia-session-wire`
 
 **Prerequisite:** STR-005 DONE. Also depends on STR-004 if already done.
 
-**Scope:** Wire `UserSovereigntyContracts.swift` contracts into a minimal `SortioSessionFacade` (equivalent pattern to `ScribeFirstSliceFacade`) so Sortio has an executable session boundary, not just a contract-only posture.
+**Scope:** Wire `UserSovereigntyContracts.swift` contracts into a minimal `VeridiaSessionFacade` (equivalent pattern to `ScribeFirstSliceFacade`) so Veridia has an executable session boundary, not just a contract-only posture.
 
 **Definition of done:**
-- `HealthOSSortioApp` can run a governed user-agent session scaffold (seeded input, governed output, honest degraded state)
-- Provenance records at least `sortio.session.start` and `sortio.session.end`
-- `make swift-test` PASS with new Sortio boundary smoke test added
+- `HealthOSVeridiaApp` can run a governed user-agent session scaffold (seeded input, governed output, honest degraded state)
+- Provenance records at least `veridia.session.start` and `veridia.session.end`
+- `make swift-test` PASS with new Veridia boundary smoke test added
 - `make smoke-scribe` still PASS (no regression)
 
 ---

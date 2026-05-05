@@ -6,6 +6,23 @@ Current phase: Controlled implementation — first vertical slice started
 
 ## Completed recently
 
+## APP-013 — Rename Sortio to Veridia and redefine patient app scope (2026-05-04)
+
+- Objective: rename the Sortio patient app concept to Veridia and redefine it as the patient health identity app for HealthOS across all active docs, source, schema, and construction metadata.
+- Files moved (git mv):
+  - `docs/architecture/12-sortio.md` → `docs/architecture/12-veridia.md`
+  - `docs/architecture/24-sortio-screen-contracts.md` → `docs/architecture/24-veridia-screen-contracts.md`
+  - `apps/sortio/` → `apps/veridia/`
+  - `swift/Sources/HealthOSSortioApp/` → `swift/Sources/HealthOSVeridiaApp/`
+  - `swift/Sources/HealthOSVeridiaApp/SortioEntrypoint.swift` → `swift/Sources/HealthOSVeridiaApp/VeridiaEntrypoint.swift`
+  - `docs/execution/skills/user-agent-sortio-skill.md` → `docs/execution/skills/user-agent-veridia-skill.md`
+  - `schemas/contracts/user-agent-patient-sovereignty-sortio.schema.json` → `schemas/contracts/user-agent-patient-identity-veridia.schema.json`
+- Key files updated: `swift/Package.swift`, `swift/Sources/HealthOSCore/UserSovereigntyContracts.swift`, `swift/Sources/HealthOSCore/CrossAppCoordinationContracts.swift`, `swift/Tests/HealthOSTests/UserSovereigntyGovernanceTests.swift`, `swift/Tests/HealthOSTests/CrossAppCoordinationContractsTests.swift`, `ts/packages/contracts/src/index.ts`, `Makefile`, `README.md`, `AGENTS.md`, `CLAUDE.md`, `docs/product/01-healthos-technical-product-specification.md`, `docs/execution/12-next-agent-handoff.md`, `docs/execution/21-structural-ontology-and-product-readiness-plan.md`, `docs/execution/todo/apps-and-interfaces.md`, `.healthos-settler/territories/apps.json`, `.healthos-settler/territories/type-script-runtimes.json`, and all settler profile files.
+- Smoke target: `make smoke-sortio` replaced by `make smoke-veridia`.
+- Validation: `python3 -m json.tool schemas/contracts/user-agent-patient-identity-veridia.schema.json` PASS; `cd swift && swift build` PASS; `cd swift && swift run HealthOSVeridiaApp --smoke-test` PASS; `cd swift && swift test` PASS; `make swift-build` PASS; `make swift-test` PASS; `make smoke-veridia` PASS; `make validate-docs` PASS; `make validate-schemas` PASS; `make validate-contracts` PASS; `make ts-build` PASS; `make validate-all` PASS.
+- Invariants: Inv 1 (Core sovereignty preserved), Inv 43 (rename/scaffold maturity does not imply production readiness), app/interface boundary invariants (Veridia consumes Core-mediated surfaces and does not own Core law).
+- Residual gaps: Veridia final UI not implemented; patient agent runtime wiring remains future work (APP-011); key custody remains Core/Apple-substrate mediated; no clinical authority added; no production behavior implemented. Historical dated automation digest files contain Sortio references as expected (non-canonical snapshots).
+
 ## ST-017 — Derived Memory Builder (2026-05-04)
 
 - Objective: add `build-memory` command to `@healthos/steward` that reads current repo state from official sources and writes 6 non-canonical derived memory snapshot files to `.healthos-steward/memory/derived/`.

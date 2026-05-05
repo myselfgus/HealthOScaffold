@@ -53,7 +53,7 @@ Forbidden paths (must not propose writes here):
 - `swift/Sources/HealthOSCore/`
 - `swift/Sources/HealthOSAACI/`
 - `swift/Sources/HealthOSScribeApp/`
-- `swift/Sources/HealthOSSortioApp/`
+- `swift/Sources/HealthOSVeridiaApp/`
 - `swift/Sources/HealthOSCloudClinicApp/`
 - `ts/agent-infra/`
 

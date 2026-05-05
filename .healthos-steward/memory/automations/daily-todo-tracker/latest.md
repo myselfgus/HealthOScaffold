@@ -73,7 +73,7 @@
 
 ## Top 3 próximas ações de maior impacto
 
-1. **APP-011** — Sortio: smoke-testable executable path — P2/Medium. Wires existing Sortio boundary contracts into a minimal smoke-testable session path. Não move lei Core para o app. Valida com `make smoke-sortio`. Branch: `feat/app-011-sortio-session-path`.
+1. **APP-011** — Veridia: smoke-testable executable path — P2/Medium. Wires existing Veridia boundary contracts into a minimal smoke-testable session path. Não move lei Core para o app. Valida com `make smoke-veridia`. Branch: `feat/app-011-veridia-session-path`.
 2. **APP-012** — CloudClinic: smoke-testable executable path — P2/Medium. Paralelo com APP-011. Wires CloudClinic service-operations contracts. Branch: `feat/app-012-cloudclinic-session-path`.
 3. **ST-012** — Settler Profile Registry — Create 9 Settler profile records em `.healthos-settler/settlers/` conforme spec do plano documental (Task 2 de 9 no `docs/execution/20-documental-todos-work-plan.md`). Desbloqueada desde ST-011.
 

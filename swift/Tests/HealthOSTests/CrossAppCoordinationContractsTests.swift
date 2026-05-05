@@ -92,9 +92,9 @@ final class CrossAppCoordinationContractsTests: XCTestCase {
         }
     }
 
-    func testSortioCannotReceiveCloudClinicAction() {
+    func testVeridiaCannotReceiveCloudClinicAction() {
         let envelope = AppSurfaceEnvelope(
-            appKind: .sortio,
+            appKind: .veridia,
             actorRole: .patient,
             subjectRefs: makeSubjectRefs(),
             allowedActions: [AppAllowedAction(action: .inspectQueue, coreCommandRef: "core://cloud.queue", requiresCoreMediation: true, legalAuthorizing: false)],
@@ -146,12 +146,12 @@ final class CrossAppCoordinationContractsTests: XCTestCase {
         }
     }
 
-    func testScribeSurfaceCannotExposeSortioGovernanceControls() {
+    func testScribeSurfaceCannotExposeVeridiaGovernanceControls() {
         let envelope = AppSurfaceEnvelope(
             appKind: .scribe,
             actorRole: .professional,
             subjectRefs: makeSubjectRefs(),
-            allowedActions: [AppAllowedAction(action: .requestConsentRevocation, coreCommandRef: "core://sortio.consent.revoke", requiresCoreMediation: true, legalAuthorizing: false)],
+            allowedActions: [AppAllowedAction(action: .requestConsentRevocation, coreCommandRef: "core://veridia.consent.revoke", requiresCoreMediation: true, legalAuthorizing: false)],
             deniedActions: [],
             redaction: makeRedaction()
         )
@@ -190,9 +190,9 @@ final class CrossAppCoordinationContractsTests: XCTestCase {
         )
     }
 
-    func testSortioAdapterRejectRawCPF() {
+    func testVeridiaAdapterRejectRawCPF() {
         let envelope = AppSurfaceEnvelope(
-            appKind: .sortio,
+            appKind: .veridia,
             actorRole: .patient,
             subjectRefs: makeSubjectRefs(),
             allowedActions: [],

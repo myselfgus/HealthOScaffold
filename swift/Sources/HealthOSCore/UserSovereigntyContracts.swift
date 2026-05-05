@@ -476,7 +476,7 @@ public enum VisibilityRetentionGovernanceValidator {
     }
 }
 
-public struct SortioDashboardSummary: Codable, Sendable {
+public struct VeridiaDashboardSummary: Codable, Sendable {
     public let userId: UUID
     public let consentSummaryCount: Int
     public let auditSummaryCount: Int
@@ -484,42 +484,42 @@ public struct SortioDashboardSummary: Codable, Sendable {
     public let userAgentState: String
 }
 
-public struct SortioConsentSummary: Codable, Sendable {
+public struct VeridiaConsentSummary: Codable, Sendable {
     public let active: Int
     public let revoked: Int
     public let expiringSoon: Int
 }
 
-public struct SortioAccessAuditSummary: Codable, Sendable {
+public struct VeridiaAccessAuditSummary: Codable, Sendable {
     public let totalEvents: Int
     public let emergencyEvents: Int
     public let regulatoryEvents: Int
 }
 
-public struct SortioExportSummary: Codable, Sendable {
+public struct VeridiaExportSummary: Codable, Sendable {
     public let pending: Int
     public let completed: Int
     public let denied: Int
 }
 
-public struct SortioUserAgentInteractionEnvelope: Codable, Sendable {
+public struct VeridiaUserAgentInteractionEnvelope: Codable, Sendable {
     public let request: UserAgentRequest
     public let response: UserAgentResponse
 }
 
-public struct SortioDataVisibilitySummary: Codable, Sendable {
+public struct VeridiaDataVisibilitySummary: Codable, Sendable {
     public let visibleItems: Int
     public let retainedButHiddenItems: Int
     public let legalHoldItems: Int
 }
 
-public struct SortioNotificationObligationsSummary: Codable, Sendable {
+public struct VeridiaNotificationObligationsSummary: Codable, Sendable {
     public let pendingPatientNotifications: Int
     public let pendingPostEmergencyReview: Int
     public let pendingExportNotifications: Int
 }
 
-public enum SortioBoundaryFailure: Error, LocalizedError, Sendable, Equatable {
+public enum VeridiaBoundaryFailure: Error, LocalizedError, Sendable, Equatable {
     case forbiddenDirectIdentifierExposure
     case forbiddenStoragePathExposure
     case forbiddenClinicalCapabilitySurface
@@ -527,30 +527,30 @@ public enum SortioBoundaryFailure: Error, LocalizedError, Sendable, Equatable {
     public var errorDescription: String? {
         switch self {
         case .forbiddenDirectIdentifierExposure:
-            return "Sortio app-safe surfaces must not expose direct identifiers by default."
+            return "Veridia app-safe surfaces must not expose direct identifiers by default."
         case .forbiddenStoragePathExposure:
-            return "Sortio app-safe surfaces must not expose raw storage internals."
+            return "Veridia app-safe surfaces must not expose raw storage internals."
         case .forbiddenClinicalCapabilitySurface:
-            return "Sortio/User-Agent envelope cannot include prohibited clinical capabilities."
+            return "Veridia/User-Agent envelope cannot include prohibited clinical capabilities."
         }
     }
 }
 
-public enum SortioBoundaryValidator {
-    public static func validateUserAgentEnvelope(_ envelope: SortioUserAgentInteractionEnvelope) throws {
+public enum VeridiaBoundaryValidator {
+    public static func validateUserAgentEnvelope(_ envelope: VeridiaUserAgentInteractionEnvelope) throws {
         _ = try UserAgentGovernanceValidator.validateRequest(envelope.request)
         try UserAgentGovernanceValidator.validateResponse(envelope.response)
     }
 
     public static func validateAppSafePayload(rawCPF: String?, rawStoragePath: String?, capability: UserAgentCapability) throws {
         if let rawCPF, rawCPF.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty == false {
-            throw SortioBoundaryFailure.forbiddenDirectIdentifierExposure
+            throw VeridiaBoundaryFailure.forbiddenDirectIdentifierExposure
         }
         if let rawStoragePath, rawStoragePath.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty == false {
-            throw SortioBoundaryFailure.forbiddenStoragePathExposure
+            throw VeridiaBoundaryFailure.forbiddenStoragePathExposure
         }
         if capability.isProhibitedForUserAgent {
-            throw SortioBoundaryFailure.forbiddenClinicalCapabilitySurface
+            throw VeridiaBoundaryFailure.forbiddenClinicalCapabilitySurface
         }
     }
 }

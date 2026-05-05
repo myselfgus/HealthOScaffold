@@ -2,7 +2,7 @@ import Foundation
 
 public enum AppKind: String, Codable, Sendable {
     case scribe = "Scribe"
-    case sortio = "Sortio"
+    case veridia = "Veridia"
     case cloudClinic = "CloudClinic"
 }
 
@@ -337,7 +337,7 @@ public enum CrossAppSurfaceValidator {
         case .scribe:
             guard role == .professional || role == nil else { return [] }
             return [.startProfessionalSession, .submitCapture, .requestContextRetrieval, .requestDraftGeneration, .submitGateReview, .viewFinalizationStatus]
-        case .sortio:
+        case .veridia:
             guard role == .patient || role == nil else { return [] }
             return [.inspectConsent, .requestConsentRevocation, .inspectAccessAudit, .requestExport, .askUserAgent, .inspectVisibilityStatus]
         case .cloudClinic:
@@ -351,7 +351,7 @@ public enum CrossAppSurfaceValidator {
         case .gatePending, .documentFinalized, .signatureRequested, .signatureStatusChanged:
             return [.scribe, .cloudClinic]
         case .consentChanged, .exportReady, .emergencyAccessOccurred, .regulatoryAuditOccurred:
-            return [.sortio, .cloudClinic]
+            return [.veridia, .cloudClinic]
         case .backupExportFailed, .providerDegraded, .asyncJobFailed:
             return [.cloudClinic, .scribe]
         }

@@ -12,7 +12,7 @@ let package = Package(
         .library(name: "HealthOSSessionRuntime", targets: ["HealthOSSessionRuntime"]),
         .executable(name: "HealthOSCLI", targets: ["HealthOSCLI"]),
         .executable(name: "HealthOSScribeApp", targets: ["HealthOSScribeApp"]),
-        .executable(name: "HealthOSSortioApp", targets: ["HealthOSSortioApp"]),
+        .executable(name: "HealthOSVeridiaApp", targets: ["HealthOSVeridiaApp"]),
         .executable(name: "HealthOSCloudClinicApp", targets: ["HealthOSCloudClinicApp"])
     ],
     targets: [
@@ -24,7 +24,7 @@ let package = Package(
         .target(name: "HealthOSSessionRuntime", dependencies: ["HealthOSCore", "HealthOSAACI", "HealthOSProviders", "HealthOSMSR"]),
         .executableTarget(name: "HealthOSCLI", dependencies: ["HealthOSCore", "HealthOSSessionRuntime"]),
         .executableTarget(name: "HealthOSScribeApp", dependencies: ["HealthOSCore", "HealthOSSessionRuntime"]),
-        .executableTarget(name: "HealthOSSortioApp", dependencies: ["HealthOSCore"]),
+        .executableTarget(name: "HealthOSVeridiaApp", dependencies: ["HealthOSCore"]),
         .executableTarget(name: "HealthOSCloudClinicApp", dependencies: ["HealthOSCore"]),
         .testTarget(
             name: "HealthOSTests",

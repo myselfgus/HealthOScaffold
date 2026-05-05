@@ -61,7 +61,7 @@ Forbidden paths (must not propose writes here):
 - `swift/Sources/HealthOSMSR/`
 - `swift/Sources/HealthOSProviders/`
 - `swift/Sources/HealthOSScribeApp/`
-- `swift/Sources/HealthOSSortioApp/`
+- `swift/Sources/HealthOSVeridiaApp/`
 - `swift/Sources/HealthOSCloudClinicApp/`
 
 ---

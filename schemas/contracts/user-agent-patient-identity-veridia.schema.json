@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "UserAgentPatientSovereigntySortioContracts",
+  "title": "PatientHealthIdentityVeridiaContracts",
   "type": "object",
   "required": [
     "userAgentRequest",
@@ -9,7 +9,7 @@
     "patientAccessAuditView",
     "patientExportRequestSurface",
     "dataVisibilityRetentionItem",
-    "sortioUserAgentInteractionEnvelope"
+    "veridiaUserAgentInteractionEnvelope"
   ],
   "properties": {
     "userAgentRequest": { "$ref": "#/definitions/UserAgentRequest" },
@@ -18,7 +18,7 @@
     "patientAccessAuditView": { "$ref": "#/definitions/PatientAccessAuditView" },
     "patientExportRequestSurface": { "$ref": "#/definitions/PatientExportRequestSurface" },
     "dataVisibilityRetentionItem": { "$ref": "#/definitions/DataVisibilityRetentionItem" },
-    "sortioUserAgentInteractionEnvelope": { "$ref": "#/definitions/SortioUserAgentInteractionEnvelope" }
+    "veridiaUserAgentInteractionEnvelope": { "$ref": "#/definitions/VeridiaUserAgentInteractionEnvelope" }
   },
   "definitions": {
     "StorageLayer": {
@@ -176,7 +176,7 @@
         "patientRequestedRestriction": { "type": "boolean" }
       }
     },
-    "SortioUserAgentInteractionEnvelope": {
+    "VeridiaUserAgentInteractionEnvelope": {
       "type": "object",
       "required": ["request", "response"],
       "properties": {

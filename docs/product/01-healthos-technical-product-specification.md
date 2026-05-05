@@ -45,7 +45,7 @@ TypeScript runtimes
   └─ Service Runtime
 Apps / Interfaces
   ├─ Scribe
-  ├─ Sortio
+  ├─ Veridia
   └─ CloudClinic
 Construction layer
   └─ Steward, Settlers, Territories, Settlements, HealthOS Forge MCP
@@ -229,7 +229,7 @@ User-Agent Runtime is the TypeScript patient/user-agent governed query runtime (
 
 It enforces prohibited-capability posture and governed request boundaries.
 
-It relates to Sortio as runtime substrate, but is not Sortio UI itself.
+It relates to Veridia as runtime substrate, but is not Veridia itself.
 
 It is not Core law authority.
 
@@ -254,8 +254,8 @@ Scribe:
 - executable scaffold smoke path exists
 - scaffold placeholders remain (no final UI claims)
 
-Sortio:
-- patient/user sovereignty interface
+Veridia:
+- patient health identity app
 - executable scaffold placeholder exists
 - runtime/adapter maturation remains ongoing
 
@@ -335,7 +335,7 @@ Construction components have no merge authority and no clinical authority.
 | User-Agent Runtime | implemented seam |
 | Service Runtime | doctrine-only |
 | Scribe | tested operational path |
-| Sortio | scaffolded contract |
+| Veridia | scaffolded contract |
 | CloudClinic | scaffolded contract |
 | Steward/Settler construction system | scaffolded contract |
 | Forge MCP | doctrine-only |
@@ -361,7 +361,7 @@ Required follow-up technical specifications:
 - MSR artifact technical specification
 - Service Runtime technical specification
 - Provider policy technical specification
-- App interface technical specifications for Scribe/Sortio/CloudClinic
+- App interface technical specifications for Scribe/Veridia/CloudClinic
 - Construction-system technical specification for Steward/Settlers/Forge MCP
 
 ## Source documents
@@ -372,7 +372,7 @@ Required follow-up technical specifications:
 - `docs/architecture/06-core-services.md`
 - `docs/architecture/09-aaci.md`
 - `docs/architecture/11-scribe.md`
-- `docs/architecture/12-sortio.md`
+- `docs/architecture/12-veridia.md`
 - `docs/architecture/13-cloudclinic.md`
 - `docs/architecture/16-providers-and-ml.md`
 - `docs/architecture/17-glossary.md`

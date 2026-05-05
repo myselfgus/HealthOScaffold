@@ -1,11 +1,11 @@
 {
   "id": "apps",
   "name": "Apps",
-  "summary": "Scribe, Sortio, and CloudClinic app/interface surfaces that consume mediated Core, GOS, Session Runtime, AACI, and MSR state.",
+  "summary": "Scribe, Veridia, and CloudClinic app/interface surfaces that consume mediated Core, GOS, Session Runtime, AACI, and MSR state.",
   "maturity": "implemented seam",
   "canonicalDocs": [
     "docs/architecture/11-scribe.md",
-    "docs/architecture/12-sortio.md",
+    "docs/architecture/12-veridia.md",
     "docs/architecture/13-cloudclinic.md",
     "docs/architecture/19-interface-doctrine.md",
     "docs/architecture/43-cross-app-coordination-shared-surfaces.md",
@@ -13,15 +13,16 @@
   ],
   "primaryPaths": [
     "swift/Sources/HealthOSScribeApp",
-    "swift/Sources/HealthOSSortioApp",
+    "swift/Sources/HealthOSVeridiaApp",
     "swift/Sources/HealthOSCloudClinicApp"
   ],
   "secondaryPaths": [
     "swift/Sources/HealthOSSessionRuntime",
     "schemas/contracts/cross-app-coordination-shared-surfaces.schema.json",
-    "schemas/contracts/user-agent-patient-sovereignty-sortio.schema.json",
+    "schemas/contracts/user-agent-patient-identity-veridia.schema.json",
     "schemas/contracts/service-operations-cloudclinic.schema.json",
     "docs/execution/skills/app-boundary-skill.md",
+    "docs/execution/skills/user-agent-veridia-skill.md",
     "docs/execution/todo/apps-and-interfaces.md"
   ],
   "forbiddenPaths": [
@@ -37,7 +38,7 @@
     "Native macOS UI remains scaffold/foundation maturity until explicitly implemented and validated."
   ],
   "allowedWork": [
-    "Maintain app-safe mediated surfaces for Scribe, Sortio, and CloudClinic.",
+    "Maintain app-safe mediated surfaces for Scribe, Veridia, and CloudClinic.",
     "Add or repair smoke-testable app executable paths.",
     "Align app docs with interface doctrine and macOS 26+ Liquid Glass baseline.",
     "Validate app changes through Swift tests and app smoke commands."
@@ -52,12 +53,12 @@
     "make swift-build",
     "make swift-test",
     "make smoke-scribe",
-    "make smoke-sortio",
+    "make smoke-veridia",
     "make smoke-cloudclinic",
     "make validate-all"
   ],
   "knownGaps": [
-    "APP-011 remains READY for Sortio session path work.",
+    "APP-011 remains READY for Veridia session path work.",
     "APP-012 remains READY for CloudClinic session path work.",
     "Final app UI shells are not implemented."
   ],
@@ -73,6 +74,7 @@
   ],
   "notes": [
     "This territory covers app/interface boundaries, not product task completion.",
+    "APP-013 renamed Sortio to Veridia (2026-05-04). All future work uses Veridia naming.",
     "ST-011 does not change APP-011 or APP-012 status."
   ]
 }

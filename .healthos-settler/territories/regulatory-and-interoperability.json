@@ -23,7 +23,7 @@
   "forbiddenPaths": [
     "swift/Sources/HealthOSAACI",
     "swift/Sources/HealthOSScribeApp",
-    "swift/Sources/HealthOSSortioApp",
+    "swift/Sources/HealthOSVeridiaApp",
     "swift/Sources/HealthOSCloudClinicApp",
     "ts/agent-infra"
   ],

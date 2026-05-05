@@ -21,7 +21,7 @@ Read when working on governance, runtimes, contracts, or cross-layer concerns:
 - `aaci-skill.md`
 - `app-boundary-skill.md`
 - `scribe-professional-workspace-skill.md`
-- `user-agent-sortio-skill.md`
+- `user-agent-veridia-skill.md`
 - `service-operations-cloudclinic-skill.md`
 - `cross-app-surfaces-skill.md`
 - `storage-data-layer-skill.md`

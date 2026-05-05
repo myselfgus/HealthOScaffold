@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Color — semantic states</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  html,body{margin:0;padding:0;height:100%}
+  .card{box-sizing:border-box;width:100%;height:100%;padding:18px 20px;background:var(--bg-content);display:flex;flex-direction:column;gap:10px}
+  .h{font:600 11px/1.2 var(--font-text);color:var(--fg-3);text-transform:uppercase;letter-spacing:0.08em}
+  .row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+  .sw{display:flex;flex-direction:column;gap:4px;padding:10px;border-radius:var(--radius-md)}
+  .lbl{font:600 11px/1.2 var(--font-text)}
+  .meta{font:400 10px/1.2 var(--font-mono);color:var(--fg-3)}
+</style></head>
+<body><div class="card">
+  <div class="h">Disposition / state colors — every state surface uses these</div>
+  <div class="row">
+    <div class="sw" style="background:var(--state-ready-bg);color:var(--state-ready)"><span class="lbl">ready</span><span class="meta">#2D7A4F</span></div>
+    <div class="sw" style="background:var(--state-degraded-bg);color:var(--state-degraded)"><span class="lbl">degraded</span><span class="meta">#B5651D</span></div>
+    <div class="sw" style="background:var(--state-denied-bg);color:var(--state-denied)"><span class="lbl">governed_deny</span><span class="meta">#B22C3F</span></div>
+    <div class="sw" style="background:var(--state-failed-bg);color:var(--state-failed)"><span class="lbl">failed</span><span class="meta">#8B2330</span></div>
+  </div>
+  <div class="row">
+    <div class="sw" style="background:var(--state-pending-bg);color:var(--state-pending)"><span class="lbl">pending</span><span class="meta">#5B6B7C</span></div>
+    <div class="sw" style="background:var(--state-final-bg);color:var(--state-final)"><span class="lbl">final</span><span class="meta">#0E7C86</span></div>
+    <div class="sw" style="background:var(--state-withheld-bg);color:var(--state-withheld)"><span class="lbl">withheld</span><span class="meta">#6B4A7C</span></div>
+    <div class="sw" style="background:var(--state-info-bg);color:var(--state-info)"><span class="lbl">info</span><span class="meta">#2C5BA0</span></div>
+  </div>
+</div></body></html>

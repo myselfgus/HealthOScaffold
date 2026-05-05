@@ -311,6 +311,21 @@ Files touched:
 - `docs/execution/02-status-and-tracking.md`
 - `docs/execution/todo/apps-and-interfaces.md`
 
+### DS-001 HealthOSDesignSystem: commit and Veridia alignment
+Outcome:
+- committed the untracked HealthOSDesignSystem/ directory as a construction artifact (presentation layer only; no Core law, consent, habilitation, gate, finality, or GOS)
+- renamed all Sortio references to Veridia following APP-013: ui_kits/sortio/ → ui_kits/veridia/, glyph-sortio.svg → glyph-veridia.svg
+- updated stale architecture doc pointers in README.md (12-sortio.md → 12-veridia.md, 24-sortio-screen-contracts.md → 24-veridia-screen-contracts.md) and SKILL.md
+- maturity: Scribe kit = implemented seam; Veridia kit = scaffolded contract (placeholder); CloudClinic kit = scaffolded contract (placeholder)
+Files touched:
+- `HealthOSDesignSystem/README.md`
+- `HealthOSDesignSystem/SKILL.md`
+- `HealthOSDesignSystem/assets/glyph-sortio.svg` → `HealthOSDesignSystem/assets/glyph-veridia.svg`
+- `HealthOSDesignSystem/ui_kits/sortio/` → `HealthOSDesignSystem/ui_kits/veridia/` (README.md and index.html updated)
+- `HealthOSDesignSystem/preview/brand-glyphs.html`
+- `docs/execution/02-status-and-tracking.md`
+- `docs/execution/todo/apps-and-interfaces.md`
+
 ## READY
 
 ### APP-011 Veridia: smoke-testable executable path

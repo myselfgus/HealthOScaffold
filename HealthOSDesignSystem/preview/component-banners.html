@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Banners</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  html,body{margin:0;padding:0;height:100%}
+  .card{box-sizing:border-box;width:100%;height:100%;padding:20px;background:var(--bg-content);display:flex;flex-direction:column;gap:10px}
+  .banner{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:var(--radius-md);font:500 12px/1.4 var(--font-text)}
+  .banner .ttl{font-weight:600}
+  .banner.degraded{background:var(--state-degraded-bg);color:var(--state-degraded);box-shadow:inset 0 0 0 0.5px color-mix(in srgb,var(--state-degraded) 35%,transparent)}
+  .banner.denied{background:var(--state-denied-bg);color:var(--state-denied);box-shadow:inset 0 0 0 0.5px color-mix(in srgb,var(--state-denied) 35%,transparent)}
+  .banner.failed{background:var(--state-failed-bg);color:var(--state-failed);box-shadow:inset 0 0 0 0.5px color-mix(in srgb,var(--state-failed) 35%,transparent)}
+  .banner.info{background:var(--state-info-bg);color:var(--state-info);box-shadow:inset 0 0 0 0.5px color-mix(in srgb,var(--state-info) 35%,transparent)}
+  .ic{flex:0 0 16px;width:16px;height:16px;border-radius:50%;background:currentColor;opacity:0.85;display:inline-flex;align-items:center;justify-content:center;color:#fff;font:700 11px/1 var(--font-text)}
+</style></head>
+<body><div class="card">
+  <div class="banner degraded"><span class="ic">!</span><span><span class="ttl">Transcription degraded</span> · provider unavailable; capture preserved.</span></div>
+  <div class="banner denied"><span class="ic">×</span><span><span class="ttl">Governed deny</span> · habilitation context could not be validated for this service.</span></div>
+  <div class="banner failed"><span class="ic">×</span><span><span class="ttl">Operational failure</span> · session bridge returned no state.</span></div>
+  <div class="banner info"><span class="ic">i</span><span><span class="ttl">Scaffold surface</span> · this is a validation app, not a final UI.</span></div>
+</div></body></html>

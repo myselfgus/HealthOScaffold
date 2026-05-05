@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>Veridia — placeholder</title>
+<link rel="stylesheet" href="../../colors_and_type.css"/>
+<style>
+  html,body{margin:0;padding:0;height:100%;background:radial-gradient(circle at 30% 0%, color-mix(in srgb, var(--hos-mediated) 12%, transparent), transparent 50%), var(--bg-window);font-family:var(--font-text)}
+  .wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:40px}
+  .card{max-width:560px;background:var(--bg-content);border-radius:var(--radius-xl);padding:32px;box-shadow:var(--shadow-floating);display:flex;flex-direction:column;gap:16px}
+  h1{font:700 32px/1.1 var(--font-display);letter-spacing:-0.022em;margin:0}
+  h1 .o{background:linear-gradient(135deg,#0E7C86,#3B4A6B);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .lede{font:400 14px/1.5 var(--font-text);color:var(--fg-2);margin:0}
+  .meta-row{display:flex;flex-wrap:wrap;gap:6px}
+  .doc-list{margin:0;padding-left:18px;font:400 12px/1.7 var(--font-mono);color:var(--fg-2)}
+  .foot{font:400 11px/1.5 var(--font-text);color:var(--fg-3);border-top:0.5px solid var(--border-hairline);padding-top:14px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="card">
+    <div style="display:flex;align-items:center;gap:14px">
+      <img src="../../assets/glyph-veridia.svg" width="56" height="56" alt=""/>
+      <h1>Veri<span class="o">dia</span></h1>
+    </div>
+    <p class="lede">Patient health identity surface — the patient's mediated access to their HealthOS data and consent tokens. macOS, bounded, never effectuating.</p>
+    <div class="meta-row">
+      <span class="capsule" data-state="info">macOS</span>
+      <span class="capsule" data-state="pending">scaffolded contract · not implemented</span>
+      <span class="capsule" data-state="withheld">mediated-only</span>
+    </div>
+    <div>
+      <div style="font:600 11px/1.2 var(--font-text);color:var(--fg-3);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px">Source documents</div>
+      <ul class="doc-list">
+        <li>docs/architecture/12-veridia.md</li>
+        <li>docs/architecture/24-veridia-screen-contracts.md</li>
+      </ul>
+    </div>
+    <div class="foot">Recreate at Scribe-level fidelity once Swift sources land in the source repo.</div>
+  </div>
+</div>
+</body></html>

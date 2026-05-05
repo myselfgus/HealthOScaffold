@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Spacing</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  html,body{margin:0;padding:0;height:100%}
+  .card{box-sizing:border-box;width:100%;height:100%;padding:18px 20px;background:var(--bg-content);display:flex;flex-direction:column;gap:8px}
+  .h{font:600 11px/1.2 var(--font-text);color:var(--fg-3);text-transform:uppercase;letter-spacing:0.08em}
+  .row{display:grid;grid-template-columns:64px 1fr 80px;gap:10px;align-items:center;font:500 12px/1 var(--font-text);color:var(--fg-1)}
+  .bar{height:14px;background:linear-gradient(90deg,#3B4A6B,#0E7C86);border-radius:3px}
+  .meta{font:400 11px/1 var(--font-mono);color:var(--fg-3);text-align:right}
+</style></head>
+<body><div class="card">
+  <div class="h">8-pt rhythm · token scale</div>
+  <div class="row"><span>--space-1</span><div class="bar" style="width:4px"></div><span class="meta">4px</span></div>
+  <div class="row"><span>--space-2</span><div class="bar" style="width:8px"></div><span class="meta">8px</span></div>
+  <div class="row"><span>--space-3</span><div class="bar" style="width:12px"></div><span class="meta">12px</span></div>
+  <div class="row"><span>--space-4</span><div class="bar" style="width:16px"></div><span class="meta">16px</span></div>
+  <div class="row"><span>--space-5</span><div class="bar" style="width:20px"></div><span class="meta">20px</span></div>
+  <div class="row"><span>--space-6</span><div class="bar" style="width:24px"></div><span class="meta">24px</span></div>
+  <div class="row"><span>--space-8</span><div class="bar" style="width:32px"></div><span class="meta">32px</span></div>
+  <div class="row"><span>--space-12</span><div class="bar" style="width:48px"></div><span class="meta">48px</span></div>
+</div></body></html>

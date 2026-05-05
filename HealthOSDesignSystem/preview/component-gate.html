@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Gate panel</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  html,body{margin:0;padding:0;height:100%}
+  .card{box-sizing:border-box;width:100%;height:100%;padding:20px;background:
+    radial-gradient(circle at 0% 100%, rgba(59,74,107,0.10), transparent 50%),
+    var(--bg-window)}
+  .panel{padding:18px;border-radius:var(--radius-lg);display:flex;flex-direction:column;gap:10px}
+  .head{display:flex;align-items:center;justify-content:space-between}
+  .ttl{font:600 14px/1 var(--font-display);color:var(--fg-1);letter-spacing:-0.01em}
+  .meta{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+  .m{display:flex;flex-direction:column;gap:2px}
+  .k{font:600 10px/1.2 var(--font-text);color:var(--fg-3);text-transform:uppercase;letter-spacing:0.06em}
+  .v{font:500 12px/1.3 var(--font-text);color:var(--fg-1)}
+  .actions{display:flex;gap:10px;margin-top:4px}
+  .b{flex:1;font:600 13px/1 var(--font-text);padding:9px 14px;border:none;border-radius:var(--radius-md);cursor:pointer}
+  .ok{background:var(--state-ready-bg);color:var(--state-ready);box-shadow:inset 0 0 0 0.5px color-mix(in srgb,var(--state-ready) 40%,transparent)}
+  .no{background:var(--state-denied-bg);color:var(--state-denied);box-shadow:inset 0 0 0 0.5px color-mix(in srgb,var(--state-denied) 40%,transparent)}
+</style></head>
+<body><div class="card">
+  <div class="panel glass-regular">
+    <div class="head"><span class="ttl">Gate review</span><span class="capsule" data-state="pending">pending</span></div>
+    <div class="meta">
+      <div class="m"><span class="k">Review type</span><span class="v">soap_finalization</span></div>
+      <div class="m"><span class="k">Target</span><span class="v">final_document</span></div>
+      <div class="m"><span class="k">Reviewer</span><span class="v">professional</span></div>
+    </div>
+    <div class="actions"><button class="b ok">✓ Approve</button><button class="b no">✕ Reject</button></div>
+  </div>
+</div></body></html>

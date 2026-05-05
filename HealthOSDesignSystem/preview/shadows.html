@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Shadows</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  html,body{margin:0;padding:0;height:100%}
+  .card{box-sizing:border-box;width:100%;height:100%;padding:24px 20px;background:var(--bg-window);display:grid;grid-template-columns:repeat(3,1fr);gap:18px;align-items:center}
+  .item{display:flex;flex-direction:column;align-items:center;gap:10px}
+  .box{width:120px;height:80px;border-radius:var(--radius-lg);background:var(--bg-content)}
+  .lbl{font:600 12px/1 var(--font-text);color:var(--fg-1)}
+  .meta{font:400 10px/1.3 var(--font-mono);color:var(--fg-3);text-align:center}
+</style></head>
+<body><div class="card">
+  <div class="item"><div class="box" style="box-shadow:var(--shadow-recess);background:var(--bg-recess)"></div><div class="lbl">recess</div><div class="meta">inputs · pressed</div></div>
+  <div class="item"><div class="box" style="box-shadow:var(--shadow-card)"></div><div class="lbl">card</div><div class="meta">resting elevation</div></div>
+  <div class="item"><div class="box" style="box-shadow:var(--shadow-floating)"></div><div class="lbl">floating</div><div class="meta">popover · sheet · modal</div></div>
+</div></body></html>

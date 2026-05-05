@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="HealthOS mark">
+  <defs>
+    <linearGradient id="hosg" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#3B4A6B"></stop>
+      <stop offset="1" stop-color="#0E7C86"></stop>
+    </linearGradient>
+  </defs>
+  
+  <path d="M32 4 L56 18 L56 46 L32 60 L8 46 L8 18 Z" fill="none" stroke="url(#hosg)" stroke-width="2.5" stroke-linejoin="round"></path>
+  
+  <path d="M32 16 L46 24 L46 40 L32 48 L18 40 L18 24 Z" fill="url(#hosg)" opacity="0.14"></path>
+  
+  <circle cx="32" cy="32" r="4.5" fill="url(#hosg)"></circle>
+  
+  <g stroke="url(#hosg)" stroke-width="1.5" stroke-linecap="round" opacity="0.7">
+    <line x1="32" y1="16" x2="32" y2="27.5"></line>
+    <line x1="46" y1="24" x2="36" y2="30"></line>
+    <line x1="46" y1="40" x2="36" y2="34"></line>
+    <line x1="32" y1="48" x2="32" y2="36.5"></line>
+    <line x1="18" y1="40" x2="28" y2="34"></line>
+    <line x1="18" y1="24" x2="28" y2="30"></line>
+  </g>
+</svg>

@@ -43,10 +43,11 @@ Current phase: Controlled implementation — first vertical slice started
   - `docs/execution/22-steward-construction-operating-model.md` — ST-019 marked DONE; ST-020 goal revised to APP-012 (CloudClinic) with note that APP-011 is DONE (PR #98)
   - `docs/execution/19-settler-model-task-tracker.md` — ST-019 marked DONE with full Outcome block
   - `docs/execution/02-status-and-tracking.md` (this file) — ST-019 entry added
-- Validation: `make validate-docs` PASS
-- Invariants: construction-system boundary preserved; no clinical authority; no runtime scope; no new capability claimed; no TypeScript, Swift, JSON schema, or contract files changed
-- Maturity: instruction surface aligned (scaffolded contract)
-- Residual gaps: `mcp-local` clinical tool name cleanup (`patient_context`, `service_context`, `session_drafts`) — boundary violation, separate future task
+- Also removed `ts/agent-infra/mcp-local/` — unused stub with clinical tool names (`patient_context`, `service_context`, `session_drafts`); `construction-system.json`, `settler-xcode-tooling.md`, `README.md`, `CLAUDE.md`, doc 22 updated; `ts/package-lock.json` updated via `npm install`
+- Validation: `make validate-docs` PASS; `make ts-build` PASS
+- Invariants: construction-system boundary preserved; no clinical authority; no runtime scope; `healthos-forge-mcp` is the sole repository-maintenance MCP surface
+- Maturity: instruction surface aligned and boundary violation resolved (scaffolded contract)
+- Residual gaps: none (mcp-local boundary violation resolved in this task)
 - Next: ST-020 — Use Steward to generate APP-012 (CloudClinic) prompt
 
 ## ST-018 — healthos-forge-mcp stdio MCP server (2026-05-05)
@@ -73,8 +74,8 @@ Current phase: Controlled implementation — first vertical slice started
 - Validation: `make ts-build` PASS (all 8 workspace packages), `@healthos/steward` existing 10 commands unchanged
 - Invariants: no clinical tools; no LLM calls; no shell execution; no HTTP requests; no merge authority; every tool response includes `_non_canonical` field; no writes outside settlement/prompt/memory dirs; separate from future HealthOS runtime MCP servers
 - Maturity: implemented seam (stdio MCP, 10 deterministic tools)
-- Known gap: `mcp-local` (`ts/agent-infra/mcp-local/`) has clinical tool names (`patient_context`, `service_context`, `session_drafts`) — boundary violation, pending cleanup (future task, not ST-018)
-- Residual gaps: ST-019 (Xcode/Codex/Claude integration instructions), ST-020 remain TODO
+- Known gap (resolved in ST-019 2026-05-05): `mcp-local` (`ts/agent-infra/mcp-local/`) had clinical tool names — removed; `healthos-forge-mcp` is the sole repository-maintenance MCP surface
+- Residual gaps: ST-019 DONE, ST-020 TODO
 
 ## DS-001 — HealthOSDesignSystem: commit and Veridia alignment (2026-05-05)
 

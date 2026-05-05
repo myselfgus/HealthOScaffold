@@ -213,10 +213,11 @@ Outcome (2026-05-05):
 - Updated `docs/execution/22-steward-construction-operating-model.md` — ST-019 marked DONE; ST-020 goal revised from APP-011 (DONE) to APP-012 (CloudClinic) with explanatory note
 - Updated `docs/execution/02-status-and-tracking.md` — ST-019 completion entry added
 - Updated `docs/execution/19-settler-model-task-tracker.md` (this file) — ST-019 DONE with this Outcome block
-- Validation: `make validate-docs` PASS
-- Invariants: construction-system boundary preserved; no clinical authority; no runtime scope; no new capability claimed; no TypeScript, Swift, JSON schema, or contract files changed
-- Maturity: instruction surface aligned (scaffolded contract)
-- Residual gaps: `mcp-local` clinical tool name cleanup (`patient_context`, `service_context`, `session_drafts`) — boundary violation, separate future task; ST-020 goal revision recorded
+- Also removed `ts/agent-infra/mcp-local/` — unused stub with clinical tool names (`patient_context`, `service_context`, `session_drafts`); `construction-system.json`, `settler-xcode-tooling.md`, `README.md`, `CLAUDE.md`, doc 22 updated; `ts/package-lock.json` updated via `npm install`; `make ts-build` PASS
+- Validation: `make validate-docs` PASS; `make ts-build` PASS
+- Invariants: construction-system boundary preserved; no clinical authority; no runtime scope; `healthos-forge-mcp` remains the sole repository-maintenance MCP surface
+- Maturity: instruction surface aligned and boundary violation resolved (scaffolded contract)
+- Residual gaps: none (mcp-local boundary violation resolved in this task)
 
 ### ST-020 — Use Steward to generate APP-012 (CloudClinic) prompt
 

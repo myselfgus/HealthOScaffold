@@ -203,8 +203,6 @@ The local Codex automation for this posture is `$CODEX_HOME/automations/steward-
 
 If HealthOS later uses MCP servers internally for clinical, operational, or runtime automation, those are separate Core-governed runtime MCP servers. They must obey HealthOS Core invariants: lawfulContext, consent, habilitation, finality, storage layer policy, provenance, audit, and gate. They are not `healthos-forge-mcp`. Do not collapse these two MCP families. It remains separate from future HealthOS runtime MCP servers.
 
-Known gap: `ts/agent-infra/mcp-local/` has clinical tool names (`patient_context`, `service_context`, `session_drafts`) — this is a boundary violation and should be cleaned up in a future task.
-
 Steward provider safety:
 - Provider usage is optional and must remain fail-closed.
 - Never commit provider local config with secrets.

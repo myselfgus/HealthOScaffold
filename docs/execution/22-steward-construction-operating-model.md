@@ -51,7 +51,7 @@ ReviewDraft: derived review material for a Settlement or PR. A ReviewDraft may s
 
 DerivedMemory: repository-local derived memory under `.healthos-steward/memory/`. DerivedMemory accelerates navigation and handoff but never replaces official docs.
 
-healthos-forge-mcp: repository-maintenance MCP server for Steward and Settlers. Implemented as a stdio JSON-RPC MCP server at `ts/agent-infra/healthos-forge-mcp/` (`@healthos/forge-mcp` 0.1.0, ST-018, 2026-05-05). Exposes 10 deterministic repository-maintenance tools wrapping `@healthos/steward` lib functions: steward_next_task, steward_scan_status, steward_get_handoff, steward_list_territories, steward_inspect_territory, steward_list_settlers, steward_list_settlements, steward_validate_settlement, steward_generate_prompt, steward_build_memory. It is not a HealthOS runtime MCP server. Known gap: `mcp-local` has clinical tool names (pending cleanup, future task).
+healthos-forge-mcp: repository-maintenance MCP server for Steward and Settlers. Implemented as a stdio JSON-RPC MCP server at `ts/agent-infra/healthos-forge-mcp/` (`@healthos/forge-mcp` 0.1.0, ST-018, 2026-05-05). Exposes 10 deterministic repository-maintenance tools wrapping `@healthos/steward` lib functions: steward_next_task, steward_scan_status, steward_get_handoff, steward_list_territories, steward_inspect_territory, steward_list_settlers, steward_list_settlements, steward_validate_settlement, steward_generate_prompt, steward_build_memory. It is not a HealthOS runtime MCP server. (`ts/agent-infra/mcp-local` was a pre-ST-018 stub with clinical tool names; it was removed in ST-019 (2026-05-05) — `healthos-forge-mcp` is the sole repository-maintenance MCP surface.)
 
 ## Construction lifecycle
 

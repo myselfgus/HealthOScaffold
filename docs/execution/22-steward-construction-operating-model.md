@@ -51,7 +51,7 @@ ReviewDraft: derived review material for a Settlement or PR. A ReviewDraft may s
 
 DerivedMemory: repository-local derived memory under `.healthos-steward/memory/`. DerivedMemory accelerates navigation and handoff but never replaces official docs.
 
-healthos-forge-mcp: future repository-maintenance MCP for Steward and Settlers. It may expose typed repository operations such as validation, status scanning, handoff retrieval, invariant checks, doc drift checks, next-task inspection, and PR review draft generation. It is not a HealthOS runtime MCP server.
+healthos-forge-mcp: repository-maintenance MCP server for Steward and Settlers. Implemented as a stdio JSON-RPC MCP server at `ts/agent-infra/healthos-forge-mcp/` (`@healthos/forge-mcp` 0.1.0, ST-018, 2026-05-05). Exposes 10 deterministic repository-maintenance tools wrapping `@healthos/steward` lib functions: steward_next_task, steward_scan_status, steward_get_handoff, steward_list_territories, steward_inspect_territory, steward_list_settlers, steward_list_settlements, steward_validate_settlement, steward_generate_prompt, steward_build_memory. It is not a HealthOS runtime MCP server. Known gap: `mcp-local` has clinical tool names (pending cleanup, future task).
 
 ## Construction lifecycle
 
@@ -126,14 +126,13 @@ discover
 - ST-015 — Prompt Generation Engine (DONE 2026-05-04): deterministic prompt assembly from Settlement + Territory + Settler records implemented; `generate-prompt <settlement-id>` writes 16-section PromptSpec to `.healthos-steward/prompts/generated/`; ST-016 is next
 - ST-016 — Settlement Validation and PR Review Draft Engine (DONE 2026-05-04): `validate-settlement <id>` and `pr-draft <id>` implemented in `@healthos/steward`; ValidationReport and ReviewDraft engines operational; exits 1 on any FAIL criterion (CI-compatible); no shell execution, no LLM, no merge authority; ST-017 is next
 - ST-017 — Derived Memory Builder (DONE 2026-05-04): `build-memory` command writes 6 non-canonical derived snapshot files to `.healthos-steward/memory/derived/` (INDEX.md, construction-status.md, territory-index.md, settler-index.md, settlement-index.md, handoff-snapshot.md); files are overwritten on each run; no LLM, no shell, no new npm deps; ST-018 is next
-- ST-018 — healthos-forge-mcp surface over deterministic operations
+- ST-018 — healthos-forge-mcp surface over deterministic operations (DONE 2026-05-05): `ts/agent-infra/healthos-forge-mcp/` created; 10 deterministic tools exposed via stdio MCP; `@healthos/steward` lib re-exports added; ST-019 is next
 - ST-019 — Xcode/Codex/Claude integration instructions
-- ST-020 — Use Steward to generate APP-011 prompt
+- ST-020 — Use Steward to generate APP-011 prompt (note: APP-011 is DONE; ST-020 goal may need revision)
 
 ## Non-claims
 
 - no autonomous multiagent execution yet
-- no MCP server yet
 - no LLM calls yet
 - no model routing yet
 - no clinical authority

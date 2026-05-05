@@ -50,3 +50,30 @@ export function runStewardCommand(
       return 1;
   }
 }
+
+// Lib exports for forge-mcp consumption
+export type { TrackerTask } from "./lib/tracker-reader.js";
+export { readAllTrackerTasks } from "./lib/tracker-reader.js";
+export type { TerritoryRecord } from "./lib/territory-reader.js";
+export { readTerritory } from "./lib/territory-reader.js";
+export type { SettlerRecord } from "./lib/settler-reader.js";
+export { readSettler } from "./lib/settler-reader.js";
+export type { SettlementRecord } from "./lib/settlement-parser.js";
+export { parseSettlement } from "./lib/settlement-parser.js";
+export { repoRoot } from "./repo-root.js";
+export { assemblePromptSpec } from "./lib/prompt-assembler.js";
+export type { AssemblyInput } from "./lib/prompt-assembler.js";
+export {
+  buildIndex,
+  buildConstructionStatus,
+  buildTerritoryIndex,
+  buildSettlerIndex,
+  buildSettlementIndex,
+  buildHandoffSnapshot,
+} from "./lib/memory-builder.js";
+export type {
+  CriterionResult,
+  FileCheckResult,
+  ValidationEvidence,
+} from "./lib/validation-report-builder.js";
+export { buildValidationReport } from "./lib/validation-report-builder.js";

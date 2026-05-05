@@ -34,6 +34,33 @@ Current phase: Controlled implementation — first vertical slice started
 - Validation: all make targets PASS.
 - Residual gaps: Veridia final UI not implemented; patient agent runtime wiring completed in APP-011 (see above).
 
+## ST-018 — healthos-forge-mcp stdio MCP server (2026-05-05)
+
+- Objective: create `ts/agent-infra/healthos-forge-mcp/` (`@healthos/forge-mcp` 0.1.0) — a stdio JSON-RPC MCP server exposing 10 deterministic repository-maintenance tools wrapping `@healthos/steward` lib functions.
+- Branch: `feat/st-018-healthos-forge-mcp`
+- Package created: `ts/agent-infra/healthos-forge-mcp/` (`@healthos/forge-mcp` 0.1.0)
+- Files created:
+  - `ts/agent-infra/healthos-forge-mcp/package.json` — npm workspace package; deps: `@modelcontextprotocol/sdk ^1.0.0`, `@healthos/steward 0.2.0`
+  - `ts/agent-infra/healthos-forge-mcp/tsconfig.json` — same compiler options as steward (ES2022, NodeNext, strict)
+  - `ts/agent-infra/healthos-forge-mcp/src/server.ts` — stdio MCP entry point; uses `Server` + `StdioServerTransport` from MCP SDK; registers `ListToolsRequestSchema` and `CallToolRequestSchema` handlers
+  - `ts/agent-infra/healthos-forge-mcp/src/tools.ts` — 10 tool definitions (TOOLS array) and `callTool` async dispatcher; all handlers call lib functions directly; repoRoot declared locally (4-level resolution from dist/)
+- Files updated:
+  - `ts/agent-infra/healthos-steward/src/index.ts` — added 17 lib re-exports for forge-mcp consumption (TrackerTask, readAllTrackerTasks, TerritoryRecord, readTerritory, SettlerRecord, readSettler, SettlementRecord, parseSettlement, repoRoot, assemblePromptSpec, AssemblyInput, 6 memory builder functions, CriterionResult, FileCheckResult, ValidationEvidence, buildValidationReport)
+  - `ts/package-lock.json` — updated (86 packages added, including `@modelcontextprotocol/sdk` and its dependencies)
+- Tools exposed (10): `steward_next_task`, `steward_scan_status`, `steward_get_handoff`, `steward_list_territories`, `steward_inspect_territory`, `steward_list_settlers`, `steward_list_settlements`, `steward_validate_settlement`, `steward_generate_prompt`, `steward_build_memory`
+- Smoke:
+  - `initialize` → `{"serverInfo":{"name":"healthos-forge-mcp","version":"0.1.0"}}` ✓
+  - `tools/list` → 10 tools, all `steward_` prefix ✓
+  - `steward_next_task` → ST-018 (first TODO in tracker before this update) ✓
+  - `steward_inspect_territory core` → `{id: "core", name: "Core", maturity: "tested operational path", invariants: 4}` ✓
+  - `steward_list_territories` → 14 territories ✓
+  - Clinical tool name grep → 0 ✓
+- Validation: `make ts-build` PASS (all 8 workspace packages), `@healthos/steward` existing 10 commands unchanged
+- Invariants: no clinical tools; no LLM calls; no shell execution; no HTTP requests; no merge authority; every tool response includes `_non_canonical` field; no writes outside settlement/prompt/memory dirs; separate from future HealthOS runtime MCP servers
+- Maturity: implemented seam (stdio MCP, 10 deterministic tools)
+- Known gap: `mcp-local` (`ts/agent-infra/mcp-local/`) has clinical tool names (`patient_context`, `service_context`, `session_drafts`) — boundary violation, pending cleanup (future task, not ST-018)
+- Residual gaps: ST-019 (Xcode/Codex/Claude integration instructions), ST-020 remain TODO
+
 ## ST-017 — Derived Memory Builder (2026-05-04)
 
 - Objective: add `build-memory` command to `@healthos/steward` that reads current repo state from official sources and writes 6 non-canonical derived memory snapshot files to `.healthos-steward/memory/derived/`.

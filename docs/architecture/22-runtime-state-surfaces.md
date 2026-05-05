@@ -42,7 +42,7 @@ Must never imply:
 - active GOS means consent, habilitation, gate, or finality is satisfied
 - GOS draft mediation means referral/prescription effectuation occurred
 
-## Sortio
+## Veridia
 Must surface:
 - user-agent runtime health
 - consent load/update state

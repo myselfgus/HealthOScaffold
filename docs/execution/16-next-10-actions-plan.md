@@ -50,7 +50,7 @@ Each task block uses the same fields so an agent can execute deterministically.
 
 ---
 
-### T01 — APP-008 Cross-app envelope propagation into Sortio/CloudClinic adapters
+### T01 — APP-008 Cross-app envelope propagation into Veridia/CloudClinic adapters
 
 - TODO id: `APP-008` in `docs/execution/todo/apps-and-interfaces.md`
 - Closure mapping: `GAP-001` (scaffold blocker) in `14-final-gap-register.md`
@@ -60,11 +60,11 @@ Each task block uses the same fields so an agent can execute deterministically.
   `docs/execution/skills/app-boundary-skill.md`
 - Owner modules:
   - existing contract surface: `swift/Sources/HealthOSCore/CrossAppCoordinationContracts.swift`
-  - non-Scribe adapters: `ts/packages/runtime-user-agent/` (Sortio path) and
+  - non-Scribe adapters: `ts/packages/runtime-user-agent/` (Veridia path) and
     the service-runtime equivalent (CloudClinic) under `ts/packages/` plus
     Swift seams that surface them
 - Scope:
-  - Make Sortio and CloudClinic adapters consume `AppSurfaceEnvelope` and the
+  - Make Veridia and CloudClinic adapters consume `AppSurfaceEnvelope` and the
     typed safe-ref taxonomy (`SafeUserRef`, `SafePatientRef`,
     `SafeProfessionalRef`, `SafeServiceRef`, `SafeSessionRef`, `SafeDraftRef`,
     `SafeGateRef`, `SafeArtifactRef`, `SafeExportRef`, `SafeAuditRef`,
@@ -74,7 +74,7 @@ Each task block uses the same fields so an agent can execute deterministically.
   - Enforce `legalAuthorizing = false` and role/app-aware
     allowed/denied actions.
 - Definition of done:
-  - Sortio/CloudClinic adapter seams consume shared envelope contracts without
+  - Veridia/CloudClinic adapter seams consume shared envelope contracts without
     raw payload leaks.
   - Swift XCTest negatives extended for app-kind + role mismatch and
     safe-ref enforcement on these adapters.
@@ -106,7 +106,7 @@ this entire prompt before touching any file.
 **Repository identity (never collapse)**
 
 HealthOS is the whole platform. AACI is one runtime inside it. GOS is subordinate
-to Core law. Scribe/Sortio/CloudClinic are app-layer interfaces consuming mediated
+to Core law. Scribe/Veridia/CloudClinic are app-layer interfaces consuming mediated
 surfaces. Core law (consent, habilitation, gate, finality, provenance) never moves
 into AACI, GOS, or apps. This repo contains HealthOS work at scaffold/foundation
 maturity — not production-ready, not a full EHR, not a real regulatory integration.
@@ -128,13 +128,13 @@ In order:
     fully; this is the contract you propagate
 11. `swift/Tests/HealthOSTests/CrossAppCoordinationContractsTests.swift` —
     existing tests; you extend them
-12. `ts/packages/runtime-user-agent/src/index.ts` — Sortio adapter seam
+12. `ts/packages/runtime-user-agent/src/index.ts` — Veridia adapter seam
 13. `docs/architecture/11-scribe.md`, `12-sortio.md`, `13-cloudclinic.md` —
     app-layer posture reference
 
 **Task objective**
 
-Close GAP-001 (scaffold blocker): Sortio and CloudClinic adapters must consume
+Close GAP-001 (scaffold blocker): Veridia and CloudClinic adapters must consume
 `AppSurfaceEnvelope` and the `Safe*Ref` taxonomy from
 `CrossAppCoordinationContracts.swift` without raw payload leaks.
 
@@ -149,7 +149,7 @@ Invariant 32 states: patient sovereignty is mediated, not raw access.
 **Exact scope**
 
 What to do:
-- In `ts/packages/runtime-user-agent/src/index.ts` (Sortio adapter seam):
+- In `ts/packages/runtime-user-agent/src/index.ts` (Veridia adapter seam):
   wire `AppSurfaceEnvelope` and enforce role/app-kind boundary. Reject raw CPF,
   raw storage paths, reidentification mappings at the TypeScript adapter level.
   Use `legalAuthorizing: false` explicitly. Map `allowedActions`/`deniedActions`
@@ -160,7 +160,7 @@ What to do:
   contract only.
 - Extend `swift/Tests/HealthOSTests/CrossAppCoordinationContractsTests.swift`
   with negative tests covering:
-  - app-kind mismatch (Sortio envelope used with CloudClinic role and vice versa)
+  - app-kind mismatch (Veridia envelope used with CloudClinic role and vice versa)
   - role mismatch denial
   - raw CPF present in a `Safe*Ref` → denied
   - raw storage path present → denied
@@ -170,7 +170,7 @@ What to do:
 What not to do:
 - Do not add consent, habilitation, gate, or finalization logic inside any
   adapter. These stay in Core.
-- Do not invent new Sortio or CloudClinic UI features or screens.
+- Do not invent new Veridia or CloudClinic UI features or screens.
 - Do not claim production-readiness in any doc or comment.
 - Do not introduce raw clinical payloads even for tests — use well-governed
   test fixtures.
@@ -200,7 +200,7 @@ make validate-all
 **Commit discipline**
 
 Single commit. Include all source changes + all doc/tracking updates together.
-Title format: `feat(cross-app): propagate AppSurfaceEnvelope into Sortio/CloudClinic adapters (APP-008, GAP-001)`
+Title format: `feat(cross-app): propagate AppSurfaceEnvelope into Veridia/CloudClinic adapters (APP-008, GAP-001)`
 
 ---
 
@@ -652,7 +652,7 @@ any file. **T01 (APP-008) must be completed before this task runs.**
 
 **Repository identity (never collapse)**
 
-HealthOS is the whole platform. App docs (Scribe, Sortio, CloudClinic) must
+HealthOS is the whole platform. App docs (Scribe, Veridia, CloudClinic) must
 accurately reflect scaffold posture — no final-UI claims, no production-ready
 phrasing, no false capability claims. This is a scaffold, not a product release.
 
@@ -693,7 +693,7 @@ What to do:
    - Ensure each doc has a clear "Scaffold posture / non-claims" statement or
      equivalent section.
 2. In `06-scaffold-coverage-matrix.md` and `11-current-maturity-map.md`:
-   - Confirm maturity levels for Scribe/Sortio/CloudClinic rows reflect the
+   - Confirm maturity levels for Scribe/Veridia/CloudClinic rows reflect the
      current post-T01 state.
    - Add T01 closure as a maturity uplift if appropriate.
 3. Run `scripts/check-docs.sh` and fix every failure it surfaces.

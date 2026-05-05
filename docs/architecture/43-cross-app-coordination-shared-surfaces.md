@@ -2,13 +2,13 @@
 
 ## Purpose
 
-Define a single app-safe vocabulary for Scribe, Sortio, and CloudClinic so cross-app coordination remains Core-mediated and no app acquires legal authority.
+Define a single app-safe vocabulary for Scribe, Veridia, and CloudClinic so cross-app coordination remains Core-mediated and no app acquires legal authority.
 
 ## Shared envelope
 
 `AppSurfaceEnvelope` carries:
 - request id
-- app kind (`Scribe`, `Sortio`, `CloudClinic`)
+- app kind (`Scribe`, `Veridia`, `CloudClinic`)
 - actor role
 - safe subject refs
 - allowed actions
@@ -49,7 +49,7 @@ Navigation references are never treated as data access rights.
 
 Allowed actions are constrained by app and actor role:
 - Scribe (professional workspace actions)
-- Sortio (patient sovereignty actions)
+- Veridia (patient sovereignty actions)
 - CloudClinic (service operations actions)
 
 Any app mismatch, role mismatch, or non-`core://` command reference fails closed.

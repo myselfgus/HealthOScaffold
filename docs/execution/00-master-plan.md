@@ -42,7 +42,7 @@ Outputs: bounded AACI orchestration, draft-only posture, governed retrieval, pro
 ### Phase 05 — Scribe + first executable slice
 Outputs: mediated professional workspace surface + gate/finalization discipline.
 
-### Phase 06 — User Agent + Sortio
+### Phase 06 — User Agent + Veridia
 Outputs: app-safe sovereignty surfaces and user-agent boundary governance.
 
 ### Phase 07 — CloudClinic

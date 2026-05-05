@@ -92,7 +92,7 @@
       "required": ["requestId", "appKind", "actorRole", "subjectRefs", "allowedActions", "deniedActions", "issues", "provenanceRefs", "auditRefs", "redaction", "generatedAt", "legalAuthorizing"],
       "properties": {
         "requestId": { "type": "string", "format": "uuid" },
-        "appKind": { "enum": ["Scribe", "Sortio", "CloudClinic"] },
+        "appKind": { "enum": ["Scribe", "Veridia", "CloudClinic"] },
         "actorRole": { "enum": ["professional", "patient", "service_admin", "operational_coordinator", "observer_auditor"] },
         "subjectRefs": { "$ref": "#/$defs/AppSubjectRefs" },
         "allowedActions": { "type": "array", "items": { "$ref": "#/$defs/AppAllowedAction" } },
@@ -111,7 +111,7 @@
       "required": ["id", "appKind", "actorRole", "kind", "summary", "refs", "payloadContainsSensitiveData", "grantsAccess"],
       "properties": {
         "id": { "type": "string", "format": "uuid" },
-        "appKind": { "enum": ["Scribe", "Sortio", "CloudClinic"] },
+        "appKind": { "enum": ["Scribe", "Veridia", "CloudClinic"] },
         "actorRole": { "enum": ["professional", "patient", "service_admin", "operational_coordinator", "observer_auditor"] },
         "kind": {
           "enum": ["gate_pending", "document_finalized", "consent_changed", "export_ready", "emergency_access_occurred", "regulatory_audit_occurred", "signature_requested", "signature_status_changed", "backup_export_failed", "provider_degraded", "async_job_failed"]

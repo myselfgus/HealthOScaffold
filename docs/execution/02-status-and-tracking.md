@@ -6,6 +6,18 @@ Current phase: Controlled implementation — first vertical slice started
 
 ## Completed recently
 
+## APP-011 — Veridia: smoke-testable executable session boundary (2026-05-04)
+
+- Objective: wire `UserSovereigntyContracts.swift` into a minimal `VeridiaSessionFacade` so Veridia has an executable governance session boundary, not just contract-only posture.
+- Branch: `feat/app-011-veridia-session-wire`
+- Files created:
+  - `swift/Sources/HealthOSCore/VeridiaSessionContracts.swift` — `VeridiaSessionStartRequest`, `VeridiaSessionResult`, `VeridiaSessionDisposition`, `VeridiaSessionFacade` protocol
+  - `swift/Sources/HealthOSCore/VeridiaSessionAdapter.swift` — actor implementation; validates via `UserAgentGovernanceValidator` and `VeridiaBoundaryValidator`; records `veridia.session.start` and `veridia.session.end` `ProvenanceRecord` in-memory
+  - `swift/Tests/HealthOSTests/VeridiaSessionFacadeTests.swift` — 8 boundary smoke tests (start/end happy path, deny on missing lawful context, double-end, distinct provenance refs)
+- Files updated:
+  - `swift/Sources/HealthOSVeridiaApp/VeridiaEntrypoint.swift` — wires `VeridiaSessionAdapter` in async smoke path; exits 0 only when start+end boundary both pass
+- Validation: 268 Swift tests pass, `make smoke-veridia` OK (`veridia.session.start + veridia.session.end boundary verified`)
+
 ## APP-013 — Rename Sortio to Veridia and redefine patient app scope (2026-05-04)
 
 - Objective: rename the Sortio patient app concept to Veridia and redefine it as the patient health identity app for HealthOS across all active docs, source, schema, and construction metadata.
@@ -19,9 +31,8 @@ Current phase: Controlled implementation — first vertical slice started
   - `schemas/contracts/user-agent-patient-sovereignty-sortio.schema.json` → `schemas/contracts/user-agent-patient-identity-veridia.schema.json`
 - Key files updated: `swift/Package.swift`, `swift/Sources/HealthOSCore/UserSovereigntyContracts.swift`, `swift/Sources/HealthOSCore/CrossAppCoordinationContracts.swift`, `swift/Tests/HealthOSTests/UserSovereigntyGovernanceTests.swift`, `swift/Tests/HealthOSTests/CrossAppCoordinationContractsTests.swift`, `ts/packages/contracts/src/index.ts`, `Makefile`, `README.md`, `AGENTS.md`, `CLAUDE.md`, `docs/product/01-healthos-technical-product-specification.md`, `docs/execution/12-next-agent-handoff.md`, `docs/execution/21-structural-ontology-and-product-readiness-plan.md`, `docs/execution/todo/apps-and-interfaces.md`, `.healthos-settler/territories/apps.json`, `.healthos-settler/territories/type-script-runtimes.json`, and all settler profile files.
 - Smoke target: `make smoke-sortio` replaced by `make smoke-veridia`.
-- Validation: `python3 -m json.tool schemas/contracts/user-agent-patient-identity-veridia.schema.json` PASS; `cd swift && swift build` PASS; `cd swift && swift run HealthOSVeridiaApp --smoke-test` PASS; `cd swift && swift test` PASS; `make swift-build` PASS; `make swift-test` PASS; `make smoke-veridia` PASS; `make validate-docs` PASS; `make validate-schemas` PASS; `make validate-contracts` PASS; `make ts-build` PASS; `make validate-all` PASS.
-- Invariants: Inv 1 (Core sovereignty preserved), Inv 43 (rename/scaffold maturity does not imply production readiness), app/interface boundary invariants (Veridia consumes Core-mediated surfaces and does not own Core law).
-- Residual gaps: Veridia final UI not implemented; patient agent runtime wiring remains future work (APP-011); key custody remains Core/Apple-substrate mediated; no clinical authority added; no production behavior implemented. Historical dated automation digest files contain Sortio references as expected (non-canonical snapshots).
+- Validation: all make targets PASS.
+- Residual gaps: Veridia final UI not implemented; patient agent runtime wiring completed in APP-011 (see above).
 
 ## ST-017 — Derived Memory Builder (2026-05-04)
 

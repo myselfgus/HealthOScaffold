@@ -52,15 +52,15 @@ Scribe may not:
 - effectuate a document merely because the GOS spec prepared it
 - expose raw compiled spec or runtime-binding JSON as app-facing policy input
 
-## Sortio patterns
+## Veridia patterns
 
-Sortio may show:
+Veridia may show:
 - what categories of runtime activity touched the user data
 - provenance summaries of why a draft/retrieval happened
 - what gates/human review states exist around outputs related to the user
 - what service/runtime contexts operated under lawful access
 
-Sortio may not:
+Veridia may not:
 - reinterpret GOS as a substitute for the platform's consent/governance records
 - independently approve operational outputs
 

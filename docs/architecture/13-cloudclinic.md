@@ -51,12 +51,12 @@ See:
 
 ## Boundaries
 - CloudClinic may show service-scoped work and visibility
-- CloudClinic may not impersonate patient sovereignty functions from Sortio
+- CloudClinic may not impersonate patient sovereignty functions from Veridia
 - CloudClinic may not replace Scribe as the live professional workspace
 - CloudClinic may not redefine service access law in its own UI state
 
 ## Boundary
-CloudClinic is service-facing. It must not absorb patient sovereignty functions from Sortio or professional session functions from Scribe.
+CloudClinic is service-facing. It must not absorb patient sovereignty functions from Veridia or professional session functions from Scribe.
 
 ## Scaffold posture / non-claims
 

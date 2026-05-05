@@ -527,7 +527,7 @@ Porém os arquivos todo correspondentes **ainda mostram status READY**, não COM
 | STR-001 | Mental Space / Providers | **P0** | código Swift (Package.swift + HealthOSProviders dep) |
 | RT-PROVIDER-001 | Mental Space / Apple Models | P3 | código Swift (FoundationModels API) |
 | CI-001 | Repository governance | P4 | GitHub Actions workflow |
-| APP-011 | Apps (Sortio) | Medium | código Swift (smoke-testable path) |
+| APP-011 | Apps (Veridia) | Medium | código Swift (smoke-testable path) |
 | APP-012 | Apps (CloudClinic) | Medium | código Swift (smoke-testable path) |
 
 ### Mudanças estruturais relevantes (2026-04-29 a 2026-04-30)

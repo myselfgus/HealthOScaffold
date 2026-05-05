@@ -125,7 +125,7 @@ discover
 - ST-014 — Deterministic Steward CLI inspect/next/list (DONE 2026-05-04): deterministic inspect/list/next CLI seam implemented in `@healthos/steward`; 6 commands now operational; ST-015 is next
 - ST-015 — Prompt Generation Engine (DONE 2026-05-04): deterministic prompt assembly from Settlement + Territory + Settler records implemented; `generate-prompt <settlement-id>` writes 16-section PromptSpec to `.healthos-steward/prompts/generated/`; ST-016 is next
 - ST-016 — Settlement Validation and PR Review Draft Engine (DONE 2026-05-04): `validate-settlement <id>` and `pr-draft <id>` implemented in `@healthos/steward`; ValidationReport and ReviewDraft engines operational; exits 1 on any FAIL criterion (CI-compatible); no shell execution, no LLM, no merge authority; ST-017 is next
-- ST-017 — Derived Memory Builder
+- ST-017 — Derived Memory Builder (DONE 2026-05-04): `build-memory` command writes 6 non-canonical derived snapshot files to `.healthos-steward/memory/derived/` (INDEX.md, construction-status.md, territory-index.md, settler-index.md, settlement-index.md, handoff-snapshot.md); files are overwritten on each run; no LLM, no shell, no new npm deps; ST-018 is next
 - ST-018 — healthos-forge-mcp surface over deterministic operations
 - ST-019 — Xcode/Codex/Claude integration instructions
 - ST-020 — Use Steward to generate APP-011 prompt

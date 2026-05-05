@@ -4,6 +4,7 @@ import { runNext } from "./commands/next.js";
 import { runGeneratePrompt } from "./commands/generate-prompt.js";
 import { runValidateSettlement } from "./commands/validate-settlement.js";
 import { runPrDraft } from "./commands/pr-draft.js";
+import { runBuildMemory } from "./commands/build-memory.js";
 
 export type StewardCommand =
   | "status"
@@ -14,7 +15,8 @@ export type StewardCommand =
   | "next"
   | "generate-prompt"
   | "validate-settlement"
-  | "pr-draft";
+  | "pr-draft"
+  | "build-memory";
 
 export function runStewardCommand(
   command: StewardCommand,
@@ -42,6 +44,8 @@ export function runStewardCommand(
       return runValidateSettlement(args);
     case "pr-draft":
       return runPrDraft(args);
+    case "build-memory":
+      return runBuildMemory(args);
     default:
       return 1;
   }

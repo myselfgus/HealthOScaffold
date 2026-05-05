@@ -162,11 +162,21 @@ Outcome (2026-05-04):
 
 ### ST-017 — Derived Memory Builder
 
-Status: TODO.
+Status: DONE.
 
 Goal:
 - build derived handoff memory from official docs and validated repository state
 - keep derived memory non-canonical
+
+Outcome (2026-05-04):
+- Created `ts/agent-infra/healthos-steward/src/lib/tracker-reader.ts` — reads all ST tasks from tracker (all ### ST-\d+ sections); exports `TrackerTask` and `readAllTrackerTasks()`
+- Created `ts/agent-infra/healthos-steward/src/lib/memory-builder.ts` — 6 pure builder functions; no FS calls; exports `buildIndex`, `buildConstructionStatus`, `buildTerritoryIndex`, `buildSettlerIndex`, `buildSettlementIndex`, `buildHandoffSnapshot`
+- Created `ts/agent-infra/healthos-steward/src/commands/build-memory.ts` — command handler; reads ST tracker, Territory JSON files, Settler README, Settlement .md files, and handoff doc; writes 6 files to `.healthos-steward/memory/derived/`; per-file error tolerance; fail-closed only on mkdirSync failure
+- Updated `ts/agent-infra/healthos-steward/src/index.ts` — added `"build-memory"` to StewardCommand type and switch (total: 10 commands)
+- Smoke: `build-memory` → "Built 6 derived memory files to .healthos-steward/memory/derived/"; 0 warnings; exit 0
+- All 6 derived files carry NON-CANONICAL header; files are overwritten on each run (idempotent)
+- Maturity: implemented seam
+- Non-claims: no LLM calls, no shell execution, no HTTP requests, no new npm deps, no writes outside memory/derived/, no clinical authority, no merge authority, derived memory never replaces official docs
 
 ### ST-018 — healthos-forge-mcp surface over deterministic operations
 

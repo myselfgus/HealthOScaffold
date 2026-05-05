@@ -8,15 +8,20 @@ Scaffold describes maturity or foundation phase. It does not describe a separate
 
 ## Current truth
 
-The Steward / Settler construction model is now a scaffolded contract because `docs/execution/22-steward-construction-operating-model.md` and the initial construction directory skeleton exist.
+The Steward / Settler construction model is an implemented seam for deterministic construction tooling. ST-010 through ST-019 are DONE. ST-020 is the only remaining TODO.
 
-No runtime implementation exists yet.
+**Implemented (deterministic, read-only, no LLM, no shell):**
+- Territory Registry: 14 territory JSON records under `.healthos-settler/territories/`
+- Settler Profile Registry: 9 settler profiles under `.healthos-settler/settlers/`
+- Settlement Schema + templates under `.healthos-steward/settlements/templates/`
+- `@healthos/steward` CLI (10 commands): `list`, `inspect`, `next`, `validate-settlement`, `generate-prompt`, `build-memory`, `pr-draft`
+- `@healthos/forge-mcp` stdio MCP server: 10 `steward_` tools, registered via `.mcp.json` at repo root
+- Derived memory snapshots under `.healthos-steward/memory/derived/`
 
-No multiagent runtime is implemented.
-
-No `healthos-forge-mcp` server is implemented.
-
-No Settler profiles are implemented as executable agents.
+**Not implemented (no executable agent runtime exists):**
+- No multiagent runtime; Settler profiles are doctrine-only instruction documents
+- No autonomous Settler execution; Settlement lifecycle is tracked via Markdown records only
+- Xcode Intelligence direct MCP integration not yet validated
 
 The Territory Registry exists under `.healthos-settler/territories/` as construction metadata only.
 

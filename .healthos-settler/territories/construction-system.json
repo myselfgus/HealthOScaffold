@@ -14,6 +14,7 @@
     ".healthos-settler",
     ".healthos-steward",
     "ts/agent-infra/healthos-steward",
+    "ts/agent-infra/healthos-forge-mcp",
     "ts/agent-infra/mcp-local"
   ],
   "secondaryPaths": [
@@ -40,16 +41,17 @@
     "HealthOS Forge MCP and healthos-forge-mcp naming supersede deprecated repository-maintenance MCP naming."
   ],
   "allowedWork": [
-    "Maintain construction-system docs, schemas, territory records, future Settler profiles, and future Settlement records.",
-    "Maintain deterministic healthos-steward behavior only where implemented and validated.",
-    "Prepare future HealthOS Forge MCP doctrine without claiming implementation.",
+    "Maintain construction-system docs, schemas, territory records, Settler profiles, and Settlement records.",
+    "Maintain and extend deterministic healthos-steward CLI and healthos-forge-mcp behavior.",
+    "Maintain .mcp.json registration and forge-mcp tool definitions.",
     "Update trackers and handoff notes for construction tasks."
   ],
   "forbiddenWork": [
     "Make construction tooling clinical runtime or Core law.",
     "Give Steward or Settlers merge, clinical, regulatory, or autonomous execution authority.",
     "Use deprecated repository-maintenance MCP naming as canonical.",
-    "Claim HealthOS Forge MCP, prompt generation, PR review engine, or Settler execution exists before implementation."
+    "Claim Settler profiles are executable agents — they are doctrine-only instruction documents.",
+    "Claim multiagent runtime or runtime Settler execution exists — it does not."
   ],
   "validationCommands": [
     "python3 -m json.tool .healthos-settler/territories/territory.schema.json >/dev/null",
@@ -59,10 +61,11 @@
     "git diff --check"
   ],
   "knownGaps": [
-    "Settler Profile Registry is not implemented.",
-    "Settlement instances are not implemented.",
-    "Steward CLI does not consume territories yet.",
-    "Prompt generation, PR review, derived memory builder, and HealthOS Forge MCP remain future work."
+    "Settler profiles are doctrine-only instruction documents — no executable agent runtime exists.",
+    "No multiagent runtime is implemented; Steward, Settlers, and Settlements are deterministic construction tooling only.",
+    "ts/agent-infra/mcp-local has clinical tool names (patient_context, service_context, session_drafts) — boundary violation, deferred cleanup.",
+    "No test suite exists for healthos-steward or healthos-forge-mcp packages.",
+    "Xcode Intelligence direct MCP integration not yet validated."
   ],
   "defaultSettlerIds": [
     "xcode-settler",

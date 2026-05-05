@@ -6,6 +6,43 @@ Current phase: Controlled implementation — first vertical slice started
 
 ## Completed recently
 
+## ST-017 — Derived Memory Builder (2026-05-04)
+
+- Objective: add `build-memory` command to `@healthos/steward` that reads current repo state from official sources and writes 6 non-canonical derived memory snapshot files to `.healthos-steward/memory/derived/`.
+- Files created (source):
+  - `ts/agent-infra/healthos-steward/src/lib/tracker-reader.ts` — reads all ST tasks from tracker; exports `TrackerTask` and `readAllTrackerTasks()`
+  - `ts/agent-infra/healthos-steward/src/lib/memory-builder.ts` — 6 pure builder functions (no FS calls); exports `buildIndex`, `buildConstructionStatus`, `buildTerritoryIndex`, `buildSettlerIndex`, `buildSettlementIndex`, `buildHandoffSnapshot`
+  - `ts/agent-infra/healthos-steward/src/commands/build-memory.ts` — command handler; orchestrates reads, calls builders, writes to derived/; per-file error tolerance; mkdirSync failure → exit 1
+- Files written (derived — produced by smoke run, not hand-authored):
+  - `.healthos-steward/memory/derived/INDEX.md`
+  - `.healthos-steward/memory/derived/construction-status.md`
+  - `.healthos-steward/memory/derived/territory-index.md`
+  - `.healthos-steward/memory/derived/settler-index.md`
+  - `.healthos-steward/memory/derived/settlement-index.md`
+  - `.healthos-steward/memory/derived/handoff-snapshot.md`
+- Files updated:
+  - `ts/agent-infra/healthos-steward/src/index.ts` — added `"build-memory"` to `StewardCommand` type and switch (now 10 commands)
+  - `docs/execution/02-status-and-tracking.md` (this file)
+  - `docs/execution/19-settler-model-task-tracker.md`
+  - `docs/execution/22-steward-construction-operating-model.md`
+  - `CLAUDE.md` — updated command count from 9 to 10; added `build-memory` description
+- Smoke `build-memory`:
+  - Output: `Built 6 derived memory files to .healthos-steward/memory/derived/`
+  - Files listed: `INDEX.md, construction-status.md, territory-index.md, settler-index.md, settlement-index.md, handoff-snapshot.md`
+  - Exit: **0**, 0 warnings ✓
+- Validation checks:
+  - NON-CANONICAL header present in all 6 files: **6** ✓
+  - ST-0 entries in construction-status.md: **12** (≥ 11) ✓
+  - Pipe lines in territory-index.md: **15** (≥ 15) ✓
+  - Undefined/[object Object] artifacts: **0** ✓
+  - Idempotency: second run → same output, exit 0 ✓
+  - project-state.json exists (not deleted): ✓
+  - construction-status.md: 7 DONE, 10 TODO of 17 total ST tasks
+- Validation: `make ts-build` PASS, `make validate-docs` PASS, `make validate-all` PASS (all 11 gates)
+- Invariants preserved: no shell execution; no LLM calls; no HTTP requests; no new npm dependencies (Node built-ins only); no writes outside `.healthos-steward/memory/derived/`; per-file error tolerance (warnings do not abort run); no clinical authority; no merge authority; all 6 files carry NON-CANONICAL header; derived memory never replaces official docs
+- Maturity: implemented seam
+- Residual gaps: ST-018 (healthos-forge-mcp surface), ST-019 (Xcode/Codex/Claude integration instructions), ST-020 (Use Steward to generate APP-011 prompt) remain TODO
+
 ## ST-016 — Settlement Validation and PR Review Draft Engine (2026-05-04)
 
 - Objective: add `validate-settlement <id>` and `pr-draft <id>` commands to `@healthos/steward` that deterministically check Settlement done-criteria against filesystem evidence and generate PR body Markdown from Settlement fields.

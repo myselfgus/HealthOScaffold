@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Color — accents</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  html,body{margin:0;padding:0;height:100%}
+  .card{box-sizing:border-box;width:100%;height:100%;padding:20px;background:var(--bg-content);display:flex;flex-direction:column;gap:14px}
+  .h{font:600 11px/1.2 var(--font-text);color:var(--fg-3);text-transform:uppercase;letter-spacing:0.08em}
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+  .sw{display:flex;flex-direction:column;gap:6px}
+  .chip{height:60px;border-radius:var(--radius-md);box-shadow:var(--shadow-card)}
+  .lbl{font:600 12px/1.2 var(--font-text);color:var(--fg-1)}
+  .meta{font:400 10px/1.2 var(--font-mono);color:var(--fg-3)}
+</style></head>
+<body><div class="card">
+  <div class="h">HealthOS accents — used semantically</div>
+  <div class="grid">
+    <div class="sw"><div class="chip" style="background:#3B4A6B"></div><div class="lbl">Sovereign</div><div class="meta">#3B4A6B · primary brand</div></div>
+    <div class="sw"><div class="chip" style="background:#0E7C86"></div><div class="lbl">Mediated</div><div class="meta">#0E7C86 · links · flow</div></div>
+    <div class="sw"><div class="chip" style="background:#5B6B7C"></div><div class="lbl">Glass tint</div><div class="meta">#5B6B7C · custom glass</div></div>
+  </div>
+</div></body></html>

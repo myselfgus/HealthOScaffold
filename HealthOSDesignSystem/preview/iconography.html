@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Iconography</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<style>
+  html,body{margin:0;padding:0;height:100%}
+  .card{box-sizing:border-box;width:100%;height:100%;padding:20px;background:var(--bg-content);display:flex;flex-direction:column;gap:12px}
+  .h{font:600 11px/1.2 var(--font-text);color:var(--fg-3);text-transform:uppercase;letter-spacing:0.08em}
+  .grid{display:grid;grid-template-columns:repeat(8,1fr);gap:14px}
+  .ic{display:flex;flex-direction:column;align-items:center;gap:5px;color:var(--fg-1)}
+  .ic svg{width:20px;height:20px;stroke-width:1.5}
+  .lbl{font:500 9px/1.1 var(--font-text);color:var(--fg-3);text-align:center}
+</style></head>
+<body><div class="card">
+  <div class="h">SF Symbols (production) · Lucide substitution shown</div>
+  <div class="grid">
+    <div class="ic"><i data-lucide="user"></i><span class="lbl">patient</span></div>
+    <div class="ic"><i data-lucide="mic"></i><span class="lbl">capture</span></div>
+    <div class="ic"><i data-lucide="file-text"></i><span class="lbl">draft</span></div>
+    <div class="ic"><i data-lucide="shield-check"></i><span class="lbl">consent</span></div>
+    <div class="ic"><i data-lucide="check-circle-2"></i><span class="lbl">approve</span></div>
+    <div class="ic"><i data-lucide="x-circle"></i><span class="lbl">reject</span></div>
+    <div class="ic"><i data-lucide="clock"></i><span class="lbl">pending</span></div>
+    <div class="ic"><i data-lucide="alert-triangle"></i><span class="lbl">degraded</span></div>
+    <div class="ic"><i data-lucide="lock"></i><span class="lbl">denied</span></div>
+    <div class="ic"><i data-lucide="search"></i><span class="lbl">search</span></div>
+    <div class="ic"><i data-lucide="settings"></i><span class="lbl">settings</span></div>
+    <div class="ic"><i data-lucide="list"></i><span class="lbl">queue</span></div>
+    <div class="ic"><i data-lucide="history"></i><span class="lbl">audit</span></div>
+    <div class="ic"><i data-lucide="hexagon"></i><span class="lbl">node</span></div>
+    <div class="ic"><i data-lucide="git-branch"></i><span class="lbl">provenance</span></div>
+    <div class="ic"><i data-lucide="download"></i><span class="lbl">export</span></div>
+  </div>
+  <script>lucide.createIcons();</script>
+</div></body></html>

@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Cards</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  html,body{margin:0;padding:0;height:100%}
+  .card{box-sizing:border-box;width:100%;height:100%;padding:20px;background:
+    radial-gradient(circle at 80% 0%, rgba(14,124,134,0.10), transparent 50%),
+    var(--bg-window);display:flex;gap:16px;align-items:stretch}
+  .pane{flex:1;padding:18px;border-radius:var(--radius-lg);display:flex;flex-direction:column;gap:10px}
+  .pane .ttl{font:600 13px/1 var(--font-text);color:var(--fg-1);display:flex;align-items:center;gap:8px}
+  .pane .body{font:400 12px/1.5 var(--font-text);color:var(--fg-2)}
+  .row{display:flex;gap:6px}
+  .out{background:var(--bg-recess);padding:8px 10px;border-radius:var(--radius-md);font:500 11px/1.4 var(--font-mono);color:var(--fg-1)}
+</style></head>
+<body><div class="card">
+  <div class="pane glass-thin">
+    <div class="ttl">Session setup<span class="capsule" data-state="active">active</span></div>
+    <div class="body">Sessão aberta. Captura por texto seeded ou áudio local disponível.</div>
+    <div class="out">session_id · 2F8A4B1C-7D9E-4A2B</div>
+  </div>
+  <div class="pane glass-thin">
+    <div class="ttl">SOAP draft preview<span class="capsule" data-state="pending">awaiting_gate</span></div>
+    <div class="body">S: cefaleia · insônia · piora do sono.<br/>O: vigil. AF preservada.<br/>A: insônia primária provável.</div>
+  </div>
+</div></body></html>

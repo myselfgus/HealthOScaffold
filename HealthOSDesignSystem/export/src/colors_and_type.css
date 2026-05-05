@@ -1,0 +1,197 @@
+/* HealthOS Design System — colors, type, spacing, radii, shadows, glass
+ * macOS 26+ Liquid Glass baseline. Mirrors system-adaptive behavior in light/dark.
+ * SF Pro / SF Mono are the production fonts; Inter / JetBrains Mono are web substitutes.
+ */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Nunito:wght@400;500;600;700&display=swap');
+
+:root {
+  /* ─── Type families ──────────────────────────────────────────────────── */
+  --font-display: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Inter', sans-serif;
+  --font-text:    'SF Pro Text',    -apple-system, BlinkMacSystemFont, 'Inter', sans-serif;
+  --font-rounded: 'SF Pro Rounded', -apple-system, BlinkMacSystemFont, 'Nunito', 'Inter', sans-serif;
+  --font-mono:    'SF Mono', ui-monospace, 'JetBrains Mono', Menlo, Consolas, monospace;
+
+  /* ─── Type scale (macOS 26 native sizes) ─────────────────────────────── */
+  --type-largeTitle:  26px;  --type-largeTitle-lh:  32px;  --type-largeTitle-w:  700;
+  --type-title1:      22px;  --type-title1-lh:      28px;  --type-title1-w:      600;
+  --type-title2:      17px;  --type-title2-lh:      22px;  --type-title2-w:      600;
+  --type-title3:      15px;  --type-title3-lh:      20px;  --type-title3-w:      600;
+  --type-headline:    13px;  --type-headline-lh:    16px;  --type-headline-w:    600;
+  --type-body:        13px;  --type-body-lh:        18px;  --type-body-w:        400;
+  --type-callout:     12px;  --type-callout-lh:     16px;  --type-callout-w:     400;
+  --type-subhead:     11px;  --type-subhead-lh:     14px;  --type-subhead-w:     500;
+  --type-footnote:    11px;  --type-footnote-lh:    14px;  --type-footnote-w:    400;
+  --type-caption1:    10px;  --type-caption1-lh:    13px;  --type-caption1-w:    500;
+  --type-caption2:    10px;  --type-caption2-lh:    13px;  --type-caption2-w:    400;
+
+  /* ─── Foreground (label) hierarchy — system semantic ─────────────────── */
+  --fg-1:        oklch(20% 0.01 250);                         /* labelColor */
+  --fg-2:        color-mix(in oklch, var(--fg-1) 65%, transparent);   /* secondary */
+  --fg-3:        color-mix(in oklch, var(--fg-1) 40%, transparent);   /* tertiary */
+  --fg-4:        color-mix(in oklch, var(--fg-1) 22%, transparent);   /* quaternary */
+  --fg-link:     var(--hos-mediated);
+  --fg-on-tint:  oklch(98% 0.005 250);
+
+  /* ─── Background (system surfaces) ───────────────────────────────────── */
+  --bg-window:   oklch(98% 0.003 250);
+  --bg-sidebar:  oklch(96% 0.004 250);
+  --bg-content:  oklch(100% 0 0);
+  --bg-recess:   oklch(94% 0.005 250);
+  --bg-divider:  color-mix(in oklch, var(--fg-1) 8%, transparent);
+
+  /* ─── HealthOS accent palette (custom — used semantically) ───────────── */
+  --hos-sovereign:    #3B4A6B;   /* deep indigo — primary brand accent */
+  --hos-sovereign-lt: #5C6E92;
+  --hos-sovereign-dk: #2A3551;
+
+  --hos-mediated:     #0E7C86;   /* cyan-teal — flow, links, mediation markers */
+  --hos-mediated-lt:  #2EA0AA;
+  --hos-mediated-dk:  #095A62;
+
+  --hos-glass-tint:   #5B6B7C;   /* slate — Liquid Glass tint for custom surfaces */
+
+  /* ─── Semantic state — for badges, banners, capsules ─────────────────── */
+  --state-ready:    #2D7A4F;   --state-ready-bg:    color-mix(in srgb, #2D7A4F 12%, transparent);
+  --state-active:   #2D7A4F;   --state-active-bg:   color-mix(in srgb, #2D7A4F 14%, transparent);
+  --state-degraded: #B5651D;   --state-degraded-bg: color-mix(in srgb, #B5651D 12%, transparent);
+  --state-denied:   #B22C3F;   --state-denied-bg:   color-mix(in srgb, #B22C3F 12%, transparent);
+  --state-failed:   #8B2330;   --state-failed-bg:   color-mix(in srgb, #8B2330 12%, transparent);
+  --state-pending:  #5B6B7C;   --state-pending-bg:  color-mix(in srgb, #5B6B7C 12%, transparent);
+  --state-final:    #0E7C86;   --state-final-bg:    color-mix(in srgb, #0E7C86 12%, transparent);
+  --state-withheld: #6B4A7C;   --state-withheld-bg: color-mix(in srgb, #6B4A7C 12%, transparent);
+  --state-info:     #2C5BA0;   --state-info-bg:     color-mix(in srgb, #2C5BA0 12%, transparent);
+
+  /* ─── Spacing (8-pt rhythm) ──────────────────────────────────────────── */
+  --space-1:  4px;
+  --space-2:  8px;
+  --space-3:  12px;
+  --space-4:  16px;
+  --space-5:  20px;
+  --space-6:  24px;
+  --space-8:  32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+
+  /* ─── Corner radii ───────────────────────────────────────────────────── */
+  --radius-sm:   6px;
+  --radius-md:   8px;
+  --radius-lg:   12px;
+  --radius-xl:   16px;
+  --radius-pill: 9999px;
+
+  /* ─── Borders ────────────────────────────────────────────────────────── */
+  --border-hairline: color-mix(in srgb, currentColor 12%, transparent);
+  --border-strong:   color-mix(in srgb, currentColor 22%, transparent);
+
+  /* ─── Shadows / elevation ────────────────────────────────────────────── */
+  --shadow-recess:    inset 0 1px 0 0 rgba(0,0,0,0.04), inset 0 0 0 0.5px rgba(0,0,0,0.06);
+  --shadow-card:      0 1px 0 0 rgba(0,0,0,0.04), 0 1px 3px 0 rgba(0,0,0,0.06);
+  --shadow-floating:  0 8px 24px -4px rgba(0,0,0,0.16), 0 2px 6px 0 rgba(0,0,0,0.08);
+  --shadow-modal:     0 24px 64px -8px rgba(0,0,0,0.24), 0 4px 12px 0 rgba(0,0,0,0.08);
+
+  /* ─── Glass / material ───────────────────────────────────────────────── */
+  --glass-thin-bg:    rgba(255, 255, 255, 0.55);
+  --glass-regular-bg: rgba(255, 255, 255, 0.72);
+  --glass-thick-bg:   rgba(255, 255, 255, 0.86);
+  --glass-blur:       blur(20px) saturate(1.6);
+  --glass-blur-thick: blur(32px) saturate(1.8);
+  --glass-tint:       color-mix(in srgb, var(--hos-glass-tint) 4%, transparent);
+  --glass-border:     inset 0 0 0 0.5px rgba(255, 255, 255, 0.4),
+                      inset 0 0.5px 0 0 rgba(255, 255, 255, 0.6);
+
+  /* ─── Motion ─────────────────────────────────────────────────────────── */
+  --ease-out:    cubic-bezier(0.25, 0.1, 0.25, 1);
+  --ease-inout:  cubic-bezier(0.4, 0, 0.6, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --dur-quick:   120ms;
+  --dur-base:    200ms;
+  --dur-glass:   320ms;
+
+  /* ─── Focus ──────────────────────────────────────────────────────────── */
+  --focus-ring: 0 0 0 1px var(--bg-window), 0 0 0 3px color-mix(in srgb, var(--hos-mediated) 70%, transparent);
+}
+
+/* ─── Dark scheme (system-adaptive) ────────────────────────────────────── */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --fg-1:       oklch(96% 0.005 250);
+    --bg-window:  oklch(16% 0.008 250);
+    --bg-sidebar: oklch(13% 0.008 250);
+    --bg-content: oklch(20% 0.008 250);
+    --bg-recess:  oklch(11% 0.008 250);
+
+    --glass-thin-bg:    rgba(28, 28, 30, 0.55);
+    --glass-regular-bg: rgba(28, 28, 30, 0.72);
+    --glass-thick-bg:   rgba(28, 28, 30, 0.86);
+    --glass-border:     inset 0 0 0 0.5px rgba(255, 255, 255, 0.08),
+                        inset 0 0.5px 0 0 rgba(255, 255, 255, 0.12);
+
+    --hos-sovereign-lt: #8294BD;
+  }
+}
+
+/* ─── Semantic typography classes ──────────────────────────────────────── */
+.t-largeTitle { font: var(--type-largeTitle-w) var(--type-largeTitle)/var(--type-largeTitle-lh) var(--font-display); letter-spacing: -0.022em; }
+.t-title1     { font: var(--type-title1-w)     var(--type-title1)/var(--type-title1-lh)         var(--font-display); letter-spacing: -0.018em; }
+.t-title2     { font: var(--type-title2-w)     var(--type-title2)/var(--type-title2-lh)         var(--font-display); letter-spacing: -0.014em; }
+.t-title3     { font: var(--type-title3-w)     var(--type-title3)/var(--type-title3-lh)         var(--font-text);    letter-spacing: -0.010em; }
+.t-headline   { font: var(--type-headline-w)   var(--type-headline)/var(--type-headline-lh)     var(--font-text);    letter-spacing: -0.005em; }
+.t-body       { font: var(--type-body-w)       var(--type-body)/var(--type-body-lh)             var(--font-text); }
+.t-callout    { font: var(--type-callout-w)    var(--type-callout)/var(--type-callout-lh)       var(--font-text); }
+.t-subhead    { font: var(--type-subhead-w)    var(--type-subhead)/var(--type-subhead-lh)       var(--font-text);    text-transform: uppercase; letter-spacing: 0.06em; }
+.t-footnote   { font: var(--type-footnote-w)   var(--type-footnote)/var(--type-footnote-lh)     var(--font-text); }
+.t-caption1   { font: var(--type-caption1-w)   var(--type-caption1)/var(--type-caption1-lh)     var(--font-text); }
+.t-caption2   { font: var(--type-caption2-w)   var(--type-caption2)/var(--type-caption2-lh)     var(--font-text); }
+.t-mono       { font-family: var(--font-mono); font-size: 12px; line-height: 16px; }
+
+/* ─── Glass surfaces ───────────────────────────────────────────────────── */
+.glass-thin {
+  background: var(--glass-thin-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  box-shadow: var(--glass-border), var(--shadow-card);
+}
+.glass-regular {
+  background: var(--glass-regular-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  box-shadow: var(--glass-border), var(--shadow-card);
+}
+.glass-thick {
+  background: var(--glass-thick-bg);
+  backdrop-filter: var(--glass-blur-thick);
+  -webkit-backdrop-filter: var(--glass-blur-thick);
+  box-shadow: var(--glass-border), var(--shadow-floating);
+}
+
+/* ─── Capsule / status pill ────────────────────────────────────────────── */
+.capsule {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 9px;
+  border-radius: var(--radius-pill);
+  font: 600 11px/14px var(--font-text);
+  letter-spacing: 0.01em;
+}
+.capsule[data-state="ready"]    { color: var(--state-ready);    background: var(--state-ready-bg); }
+.capsule[data-state="active"]   { color: var(--state-active);   background: var(--state-active-bg); }
+.capsule[data-state="degraded"] { color: var(--state-degraded); background: var(--state-degraded-bg); }
+.capsule[data-state="denied"]   { color: var(--state-denied);   background: var(--state-denied-bg); }
+.capsule[data-state="failed"]   { color: var(--state-failed);   background: var(--state-failed-bg); }
+.capsule[data-state="pending"]  { color: var(--state-pending);  background: var(--state-pending-bg); }
+.capsule[data-state="final"]    { color: var(--state-final);    background: var(--state-final-bg); }
+.capsule[data-state="withheld"] { color: var(--state-withheld); background: var(--state-withheld-bg); }
+.capsule[data-state="info"]     { color: var(--state-info);     background: var(--state-info-bg); }
+
+/* ─── Body baseline ────────────────────────────────────────────────────── */
+body {
+  font-family: var(--font-text);
+  color: var(--fg-1);
+  background: var(--bg-window);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}

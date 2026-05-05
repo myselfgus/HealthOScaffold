@@ -61,6 +61,16 @@ Current phase: Controlled implementation — first vertical slice started
 - Known gap: `mcp-local` (`ts/agent-infra/mcp-local/`) has clinical tool names (`patient_context`, `service_context`, `session_drafts`) — boundary violation, pending cleanup (future task, not ST-018)
 - Residual gaps: ST-019 (Xcode/Codex/Claude integration instructions), ST-020 remain TODO
 
+## DS-001 — HealthOSDesignSystem: commit and Veridia alignment (2026-05-05)
+
+- Objective: commit the untracked HealthOSDesignSystem/ directory as a construction artifact, rename all Sortio references to Veridia following APP-013, update stale architecture doc pointers, and rename ui_kits/sortio/ → ui_kits/veridia/.
+- Branch: feat/ds-001-design-system-veridia-align
+- Files renamed: assets/glyph-sortio.svg → assets/glyph-veridia.svg, ui_kits/sortio/ → ui_kits/veridia/
+- Files updated: README.md (brand table, sources section, index, type/casing/person sections), SKILL.md (product layer table, asset locations, design guidance), ui_kits/veridia/README.md (full content update), ui_kits/veridia/index.html (title, glyph ref, copy, source docs), preview/brand-glyphs.html (glyph ref and label)
+- Validation: grep -r "Sortio" HealthOSDesignSystem/ → 0 naming-context results (1 historical traceability note in veridia/README.md permitted by task spec); make validate-docs [see result]; make swift-build PASS
+- Maturity: Scribe kit = implemented seam; Veridia kit = scaffolded contract (placeholder); CloudClinic kit = scaffolded contract (placeholder)
+- Residual gaps: no native SwiftUI design token integration; Veridia and CloudClinic kits remain placeholder; no font files committed (substitution flags in README are accurate)
+
 ## ST-017 — Derived Memory Builder (2026-05-04)
 
 - Objective: add `build-memory` command to `@healthos/steward` that reads current repo state from official sources and writes 6 non-canonical derived memory snapshot files to `.healthos-steward/memory/derived/`.

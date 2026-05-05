@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Color — neutrals</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  html,body{margin:0;padding:0;height:100%}
+  .card{box-sizing:border-box;width:100%;height:100%;padding:20px;background:var(--bg-content);display:flex;flex-direction:column;gap:12px}
+  .h{font:600 11px/1.2 var(--font-text);color:var(--fg-3);text-transform:uppercase;letter-spacing:0.08em}
+  .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+  .sw{display:flex;flex-direction:column;gap:4px}
+  .chip{height:54px;border-radius:var(--radius-md);box-shadow:inset 0 0 0 1px var(--border-hairline)}
+  .lbl{font:600 11px/1.2 var(--font-text);color:var(--fg-1)}
+  .meta{font:400 10px/1.2 var(--font-mono);color:var(--fg-3)}
+</style></head>
+<body><div class="card">
+  <div class="h">System-adaptive neutrals · light scheme shown</div>
+  <div class="grid">
+    <div class="sw"><div class="chip" style="background:var(--bg-window)"></div><div class="lbl">window</div><div class="meta">--bg-window</div></div>
+    <div class="sw"><div class="chip" style="background:var(--bg-sidebar)"></div><div class="lbl">sidebar</div><div class="meta">--bg-sidebar</div></div>
+    <div class="sw"><div class="chip" style="background:var(--bg-content)"></div><div class="lbl">content</div><div class="meta">--bg-content</div></div>
+    <div class="sw"><div class="chip" style="background:var(--bg-recess)"></div><div class="lbl">recess</div><div class="meta">--bg-recess</div></div>
+  </div>
+  <div class="grid">
+    <div class="sw"><div class="chip" style="background:var(--fg-1)"></div><div class="lbl" style="color:var(--fg-1)">fg-1</div><div class="meta">label</div></div>
+    <div class="sw"><div class="chip" style="background:var(--fg-2)"></div><div class="lbl">fg-2</div><div class="meta">secondary 65%</div></div>
+    <div class="sw"><div class="chip" style="background:var(--fg-3)"></div><div class="lbl">fg-3</div><div class="meta">tertiary 40%</div></div>
+    <div class="sw"><div class="chip" style="background:var(--fg-4)"></div><div class="lbl">fg-4</div><div class="meta">quaternary 22%</div></div>
+  </div>
+</div></body></html>

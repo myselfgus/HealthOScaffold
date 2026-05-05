@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Buttons</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  html,body{margin:0;padding:0;height:100%}
+  .card{box-sizing:border-box;width:100%;height:100%;padding:20px;background:var(--bg-content);display:flex;flex-direction:column;gap:14px}
+  .h{font:600 11px/1.2 var(--font-text);color:var(--fg-3);text-transform:uppercase;letter-spacing:0.08em}
+  .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  button{font:500 13px/1 var(--font-text);padding:7px 14px;border-radius:var(--radius-md);border:none;cursor:pointer;display:inline-flex;align-items:center;gap:6px;letter-spacing:-0.005em}
+  .b-default{background:var(--bg-recess);color:var(--fg-1);box-shadow:inset 0 0 0 0.5px var(--border-strong),var(--shadow-card)}
+  .b-primary{background:linear-gradient(180deg,#4C5E84,#3B4A6B);color:#fff;box-shadow:var(--shadow-card),inset 0 1px 0 rgba(255,255,255,0.18)}
+  .b-glass-prom-ready{background:var(--state-ready-bg);color:var(--state-ready);box-shadow:inset 0 0 0 0.5px color-mix(in srgb,var(--state-ready) 40%,transparent)}
+  .b-glass-prom-deny{background:var(--state-denied-bg);color:var(--state-denied);box-shadow:inset 0 0 0 0.5px color-mix(in srgb,var(--state-denied) 40%,transparent)}
+  .b-disabled{background:var(--bg-recess);color:var(--fg-3);box-shadow:none;cursor:not-allowed}
+  .b-text{background:transparent;color:var(--hos-mediated)}
+</style></head>
+<body><div class="card">
+  <div class="h">Default · Primary · Text</div>
+  <div class="row">
+    <button class="b-default">Select patient</button>
+    <button class="b-primary">Open professional session</button>
+    <button class="b-text">Choose audio file</button>
+    <button class="b-disabled">Submit capture</button>
+  </div>
+  <div class="h">Gate-prominent · semantic tint</div>
+  <div class="row">
+    <button class="b-glass-prom-ready">✓ Approve gate</button>
+    <button class="b-glass-prom-deny">✕ Reject gate</button>
+  </div>
+</div></body></html>

@@ -180,11 +180,25 @@ Outcome (2026-05-04):
 
 ### ST-018 — healthos-forge-mcp surface over deterministic operations
 
-Status: TODO.
+Status: DONE.
 
 Goal:
 - expose deterministic repository-maintenance operations through `healthos-forge-mcp`
 - keep `healthos-forge-mcp` separate from future HealthOS runtime MCP servers
+
+Outcome (2026-05-05):
+- Created `ts/agent-infra/healthos-forge-mcp/` (`@healthos/forge-mcp` 0.1.0) — new npm workspace package
+- Created `ts/agent-infra/healthos-forge-mcp/package.json` — deps: `@modelcontextprotocol/sdk ^1.0.0`, `@healthos/steward 0.2.0`
+- Created `ts/agent-infra/healthos-forge-mcp/tsconfig.json` — ES2022 / NodeNext / strict
+- Created `ts/agent-infra/healthos-forge-mcp/src/server.ts` — stdio MCP server entry point (shebang, Server + StdioServerTransport)
+- Created `ts/agent-infra/healthos-forge-mcp/src/tools.ts` — TOOLS array (10 tools) + callTool dispatcher; all handlers call @healthos/steward lib functions directly; repoRoot declared locally
+- Updated `ts/agent-infra/healthos-steward/src/index.ts` — 17 lib re-exports added (tracker, territory, settler, settlement, prompt assembler, memory builders, validation types)
+- 10 tools: steward_next_task, steward_scan_status, steward_get_handoff, steward_list_territories, steward_inspect_territory, steward_list_settlers, steward_list_settlements, steward_validate_settlement, steward_generate_prompt, steward_build_memory
+- Smoke: initialize OK; tools/list → 10 tools; steward_next_task → ST-018 (first TODO); steward_inspect_territory core → core data; steward_list_territories → 14 territories; clinical tool grep → 0
+- `make ts-build` PASS; @healthos/steward all 10 existing commands unchanged
+- Known gap recorded: mcp-local has clinical tool names (patient_context, service_context, session_drafts) — boundary violation, future cleanup task
+- Maturity: implemented seam (stdio MCP, 10 deterministic tools)
+- Non-claims: no clinical tools, no LLM calls, no shell execution, no merge authority, separate from HealthOS runtime MCPs
 
 ### ST-019 — Xcode/Codex/Claude integration instructions
 

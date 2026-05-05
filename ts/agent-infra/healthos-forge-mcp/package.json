@@ -1,0 +1,22 @@
+{
+  "name": "@healthos/forge-mcp",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "HealthOS Forge MCP — repository-maintenance MCP server for Steward",
+  "main": "dist/server.js",
+  "bin": {
+    "healthos-forge-mcp": "dist/server.js"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0",
+    "@healthos/steward": "0.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "typescript": "^5.6.3"
+  }
+}

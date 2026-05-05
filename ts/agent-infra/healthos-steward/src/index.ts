@@ -2,6 +2,8 @@ import { runList } from "./commands/list.js";
 import { runInspect } from "./commands/inspect.js";
 import { runNext } from "./commands/next.js";
 import { runGeneratePrompt } from "./commands/generate-prompt.js";
+import { runValidateSettlement } from "./commands/validate-settlement.js";
+import { runPrDraft } from "./commands/pr-draft.js";
 
 export type StewardCommand =
   | "status"
@@ -10,7 +12,9 @@ export type StewardCommand =
   | "list"
   | "inspect"
   | "next"
-  | "generate-prompt";
+  | "generate-prompt"
+  | "validate-settlement"
+  | "pr-draft";
 
 export function runStewardCommand(
   command: StewardCommand,
@@ -34,6 +38,10 @@ export function runStewardCommand(
       return runNext();
     case "generate-prompt":
       return runGeneratePrompt(args);
+    case "validate-settlement":
+      return runValidateSettlement(args);
+    case "pr-draft":
+      return runPrDraft(args);
     default:
       return 1;
   }

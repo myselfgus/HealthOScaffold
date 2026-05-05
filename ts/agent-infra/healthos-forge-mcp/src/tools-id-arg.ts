@@ -1,20 +1,34 @@
 // @ts-nocheck
-// TypeScript type checking is intentionally disabled for this module.
-// Reason: McpServer.registerTool() with Zod inputSchema causes TS2589 ("Type instantiation
-// is excessively deep") when Zod 4.x is installed with the MCP SDK 1.29.0 dual-compat
-// type union (AnySchema = z3.ZodTypeAny | z4.$ZodType). This is a TypeScript tooling
-// limitation, not a runtime issue — Zod validates inputs correctly at runtime.
-// The handler contracts in handlers.ts (fully type-checked) enforce correctness.
+// TypeScript type checking intentionally disabled for this file.
+//
+// Root cause: McpServer.registerTool() with any Zod inputSchema causes TS2589
+// ("Type instantiation is excessively deep") in MCP SDK 1.29.0 + Zod 4.x.
+// The error fires at multiple points inside multi-line call expressions
+// (call site, callback signature, return type), making per-line @ts-ignore
+// insufficient. The underlying cause is ShapeOutput<{id:ZodString}> triggering
+// the SDK's dual-compat conditional type: SchemaOutput<S> = S extends
+// z3.ZodTypeAny ? z3.infer<S> : S extends z4.$ZodType ? z4.output<S> : never.
+// TypeScript's instantiation depth limit of 100 is exceeded during inference.
+//
+// Correctness guarantees despite @ts-nocheck:
+//   - handler contracts are fully typed in handlers.ts
+//   - all callbacks carry explicit ({ id }: { id: string }) parameter annotations
+//   - Zod validates inputs at runtime before handlers are called
+//   - ok() result shape is structurally compatible with CallToolResult
+//
+// Remove @ts-nocheck when MCP SDK resolves the z3/z4 compat depth issue.
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { z } from "zod";
+import { z } from "zod/v3";
 import {
   handleInspectTerritory,
   handleValidateSettlement,
   handleGeneratePrompt,
 } from "./handlers.js";
 
-function ok(content, isError) {
-  const r = { content: [{ type: "text", text: content }] };
+function ok(content: string, isError?: boolean) {
+  const r: { content: Array<{ type: "text"; text: string }>; isError?: boolean } = {
+    content: [{ type: "text", text: content }],
+  };
   if (isError) r.isError = true;
   return r;
 }
@@ -34,7 +48,7 @@ export function registerIdArgTools(server: McpServer): void {
           ),
       },
     },
-    async ({ id }) => {
+    async ({ id }: { id: string }) => {
       const r = handleInspectTerritory(id);
       return ok(r.content, r.isError);
     }
@@ -52,7 +66,7 @@ export function registerIdArgTools(server: McpServer): void {
           .describe("Settlement ID — e.g. 'st-012-settler-profile-registry'"),
       },
     },
-    async ({ id }) => {
+    async ({ id }: { id: string }) => {
       const r = handleValidateSettlement(id);
       return ok(r.content, r.isError);
     }
@@ -70,7 +84,7 @@ export function registerIdArgTools(server: McpServer): void {
           .describe("Settlement ID — e.g. 'st-012-settler-profile-registry'"),
       },
     },
-    async ({ id }) => {
+    async ({ id }: { id: string }) => {
       const r = handleGeneratePrompt(id);
       return ok(r.content, r.isError);
     }

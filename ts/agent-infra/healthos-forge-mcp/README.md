@@ -8,13 +8,19 @@
 
 ## Build instructions
 
-`dist/` is not committed. You must build before first use:
+`dist/` is built automatically by npm's `prepare` lifecycle when you run `npm install` in the workspace:
+
+```bash
+cd ts && npm install
+```
+
+This builds all workspace packages including `@healthos/forge-mcp`. For a targeted rebuild:
 
 ```bash
 make ts-build
 ```
 
-Or build only this package:
+Or rebuild only this package:
 
 ```bash
 cd ts && npm run build --workspace @healthos/forge-mcp
@@ -39,6 +45,8 @@ cd ts && npm run build --workspace @healthos/forge-mcp
 
 All tools are deterministic (no LLM calls, no network requests, no shell execution). Tools with an `id` argument accept a Zod-validated `string` (min length 1).
 
+This server exposes **tools only** by design. Resources and prompts MCP capabilities are out of scope for the repository-maintenance surface.
+
 ---
 
 ## MCP client configuration
@@ -56,7 +64,7 @@ All tools are deterministic (no LLM calls, no network requests, no shell executi
 }
 ```
 
-Replace the path with the absolute path to `dist/server.js` in your clone.
+Replace the path with the absolute path to `dist/server.js` in your clone. After adding this config, `cd ts && npm install` will ensure `dist/server.js` is present.
 
 ### b) Generic stdio MCP client
 
@@ -68,12 +76,12 @@ The server communicates over stdin/stdout using the MCP JSON-RPC protocol.
 
 ### c) Via npx (workspace)
 
-Build first, then:
-
 ```bash
-make ts-build
+cd ts && npm install
 cd ts && npx --yes --workspace @healthos/forge-mcp healthos-forge-mcp
 ```
+
+`npm install` runs `prepare` which builds `dist/` automatically — no separate build step needed.
 
 ---
 
@@ -89,8 +97,23 @@ Do not cite tool responses as clinical evidence, official HealthOS documentation
 
 ---
 
-## Notes
+## Known limitations
 
-- `dist/` is not committed — clients must run `make ts-build` before first use.
-- No resources or prompts capability — tools only.
-- mcp-local clinical tool names (`patient_context`, `service_context`, `session_drafts`) are absent — they belong to a separate cleanup task and must not be added here.
+### TypeScript TS2589 in `src/tools-id-arg.ts`
+
+`McpServer.registerTool()` with Zod `inputSchema` causes TypeScript error TS2589 ("Type instantiation is excessively deep") in MCP SDK 1.29.0 + Zod 4.x. The depth limit fires at multiple points within the multi-line call expression, making per-line suppression insufficient. The file uses `// @ts-nocheck` as the narrowest available workaround.
+
+Correctness guarantees:
+- Business logic lives in `handlers.ts` (fully type-checked)
+- All callbacks carry explicit `({ id }: { id: string })` parameter annotations
+- Zod validates inputs at runtime before any handler is called
+
+Remove `// @ts-nocheck` when MCP SDK resolves the z3/z4 compat depth issue (track against SDK releases > 1.29.0).
+
+### Tools only — no resources or prompts
+
+This server exposes tools only, by design. The repository-maintenance surface has no use case for MCP resources or prompts capabilities.
+
+### `dist/` not committed to git
+
+Compiled output is excluded from version control (standard for TypeScript packages). Running `cd ts && npm install` is sufficient to build `dist/` via the `prepare` lifecycle script.

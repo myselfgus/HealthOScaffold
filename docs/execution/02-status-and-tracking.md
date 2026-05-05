@@ -61,6 +61,25 @@ Current phase: Controlled implementation — first vertical slice started
 - Known gap: `mcp-local` (`ts/agent-infra/mcp-local/`) has clinical tool names (`patient_context`, `service_context`, `session_drafts`) — boundary violation, pending cleanup (future task, not ST-018)
 - Residual gaps: ST-019 (Xcode/Codex/Claude integration instructions), ST-020 remain TODO
 
+## ST-019 — Forge MCP Activation + inspect settler command (2026-05-05)
+
+- Objective: activate `healthos-forge-mcp` as a usable stdio MCP server for Claude Code and Xcode by adding `.mcp.json`; confirm and validate `inspect settler <id>` standalone command; add forge-mcp README.
+- Branch: `feat/forge-mcp-activation`
+- Settlement: SETTLEMENT-20260505-forge-mcp-activation
+- Files created:
+  - `.mcp.json` — registers `healthos-forge-mcp` as stdio MCP server via `node ts/agent-infra/healthos-forge-mcp/dist/server.js`
+  - `ts/agent-infra/healthos-forge-mcp/README.md` — documents server purpose, build, registration, and all 10 tool names
+  - `.healthos-steward/settlements/active/st-019-forge-mcp-activation.md` — Settlement record
+  - `.healthos-steward/prompts/generated/st-019-forge-mcp-activation.md` — generated PromptSpec
+- Smoke:
+  - `make ts-build` PASS (all 8 workspace packages) ✓
+  - `inspect settler settler-xcode-tooling` → Territory: construction-system, Maturity: scaffolded contract, Invariants: 6, Forbidden moves: 6 ✓
+  - `list settlers` → 9 profiles ✓
+  - `node dist/server.js` + MCP initialize → `{"serverInfo":{"name":"healthos-forge-mcp","version":"0.1.0"}}` ✓
+- Invariants preserved: construction-system boundary; no clinical authority; no merge authority; no runtime behavior changed; official docs canonical; no production-readiness claim
+- Maturity: implemented seam (forge-mcp registered and active via `.mcp.json`)
+- Residual gaps: no test suite for steward/forge-mcp (deferred); mcp-local boundary violation deferred; Xcode Intelligence direct MCP not yet validated; ST-020 remains TODO
+
 ## DS-001 — HealthOSDesignSystem: commit and Veridia alignment (2026-05-05)
 
 - Objective: commit the untracked HealthOSDesignSystem/ directory as a construction artifact, rename all Sortio references to Veridia following APP-013, update stale architecture doc pointers, and rename ui_kits/sortio/ → ui_kits/veridia/.

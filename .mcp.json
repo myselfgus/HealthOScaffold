@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "healthos-forge-mcp": {
+      "command": "node",
+      "args": ["ts/agent-infra/healthos-forge-mcp/dist/server.js"]
+    }
+  }
+}

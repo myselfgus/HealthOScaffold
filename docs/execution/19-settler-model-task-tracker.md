@@ -200,13 +200,24 @@ Outcome (2026-05-05):
 - Maturity: implemented seam (stdio MCP, 10 deterministic tools)
 - Non-claims: no clinical tools, no LLM calls, no shell execution, no merge authority, separate from HealthOS runtime MCPs
 
-### ST-019 — Xcode/Codex/Claude integration instructions
+### ST-019 — Forge MCP Activation + inspect settler command
 
-Status: TODO.
+Status: DONE.
 
 Goal:
-- align assistant instructions with the construction operating model
-- do not claim Xcode Intelligence, Codex, or Claude can execute Steward capabilities not yet implemented
+- activate `healthos-forge-mcp` as a real stdio MCP server usable from Claude Code and Xcode
+- add `.mcp.json` at repo root pointing to `dist/server.js`
+- implement (confirm) `healthos-steward inspect settler <id>` standalone command
+- add `ts/agent-infra/healthos-forge-mcp/README.md` with usage, build, registration, and tool list
+
+Outcome:
+- `.mcp.json` created at repo root: `{ "mcpServers": { "healthos-forge-mcp": { "command": "node", "args": ["ts/agent-infra/healthos-forge-mcp/dist/server.js"] } } }`
+- `inspect settler <id>` confirmed working — parses all 9 settler `.md` files, returns territory, maturity, invariant count, forbidden-moves count
+- `ts/agent-infra/healthos-forge-mcp/README.md` created — documents server purpose, build command, registration, and all 10 tool names
+- Smoke: `make ts-build` PASS; `inspect settler settler-xcode-tooling` PASS; `list settlers` → 9 profiles; forge-mcp server init → `{"result":{"protocolVersion":"2024-11-05","capabilities":{"tools":{}}}}` PASS
+- Maturity: implemented seam (forge-mcp registered and active via `.mcp.json`)
+- Settlement: SETTLEMENT-20260505-forge-mcp-activation (COMPLETE)
+- Residual gaps: no test suite for steward/forge-mcp; mcp-local boundary violation deferred; Xcode Intelligence direct MCP not yet validated
 
 ### ST-020 — Use Steward to generate APP-011 prompt
 

@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "healthos-forge": {
+      "command": "node",
+      "args": [
+        "/Users/healthOS/HealthOScaffold/ts/agent-infra/healthos-forge-mcp/dist/server.js"
+      ]
+    }
+  }
+}

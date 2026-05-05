@@ -70,7 +70,7 @@ Current status details:
 - `HealthOSSessionRuntime` is a scaffold module, not a product concept. STR-004 renames it to `HealthOSSessionRuntime`.
 - `Skill macOS/` TS scripts are reference implementations, not the active pipeline. STR-002 archives them.
 - `ts/packages/` conflates PRODUCT, BUILD, and AGENT packages. STR-003 separates them.
-- Veridia (formerly Sortio) and CloudClinic now have minimal Swift executable scaffold targets. APP-011 and APP-012 wire existing boundary contracts into smoke-testable session paths. APP-013 renamed Sortio to Veridia (2026-05-04). Use Veridia in all future prompts/docs; do not use Sortio except in historical migration notes.
+- Veridia and CloudClinic now have minimal Swift executable scaffold targets. APP-011 and APP-012 wire existing boundary contracts into smoke-testable session paths. APP-013 established Veridia as the canonical patient app name on 2026-05-04. Use Veridia in all future prompts/docs and avoid legacy patient-app naming.
 - Veridia is the patient health identity app. Do not use "patient sovereignty interface" as the primary definition.
 - `HealthOSMSR` depends on `HealthOSCore` and `HealthOSProviders`; transcript normalization is owned by `HealthOSSessionRuntime`.
 

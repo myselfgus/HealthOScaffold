@@ -80,7 +80,7 @@ Tasks:
 Done when:
 - the first vertical slice is fully specified and build-ready
 
-## Phase 06 — User Agent and Sortio
+## Phase 06 — User Agent and Veridia
 Prerequisites: phases 01-03
 
 Tasks:

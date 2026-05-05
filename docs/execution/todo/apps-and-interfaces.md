@@ -2,11 +2,25 @@
 
 ## COMPLETED
 
+### APP-013A Remove residual legacy patient-app naming drift
+Outcome:
+- removed remaining working-tree uses of the legacy patient-app name from active docs, generated prompts, and construction metadata
+- aligned Steward prompt assembly text so generated artifacts define Veridia as the patient health identity app
+- validated zero remaining legacy patient-app name matches in the working tree
+Files touched:
+- `ts/agent-infra/healthos-steward/src/lib/prompt-assembler.ts`
+- `.healthos-steward/prompts/generated/st-012-settler-profile-registry.md`
+- `docs/execution/02-status-and-tracking.md`
+- `docs/execution/todo/apps-and-interfaces.md`
+- supporting docs and metadata with stale naming
+Validation:
+- legacy patient-app naming grep across the working tree returned 0 matches
+
 ### APP-008 Propagate cross-app shared envelope consumption into non-Scribe adapters
 Outcome:
-- propagated `AppSurfaceEnvelope` validation into Sortio/User-Agent and CloudClinic/Service Runtime adapter seams without granting app-owned legal authority
+- propagated `AppSurfaceEnvelope` validation into Veridia/User-Agent and CloudClinic/Service Runtime adapter seams without granting app-owned legal authority
 - added boundary evidence for `legalAuthorizing = false`, raw direct identifier denial, app-kind mismatch, role/action mismatch, and safe-ref enforcement
-- confirmed this closes the cross-app adapter propagation TODO at scaffold-contract maturity only; it does not implement final Sortio or CloudClinic UI/session flows
+- confirmed this closes the cross-app adapter propagation TODO at scaffold-contract maturity only; it does not implement final Veridia or CloudClinic UI/session flows
 Files touched:
 - `swift/Sources/HealthOSCore/CrossAppCoordinationContracts.swift`
 - `swift/Tests/HealthOSTests/CrossAppCoordinationContractsTests.swift`
@@ -15,21 +29,21 @@ Files touched:
 - `docs/execution/02-status-and-tracking.md`
 - `docs/execution/todo/apps-and-interfaces.md`
 
-### STR-005 Add placeholder Swift executable targets for Sortio and CloudClinic
+### STR-005 Add placeholder Swift executable targets for Veridia and CloudClinic
 Outcome:
-- added `HealthOSSortioApp` and `HealthOSCloudClinicApp` as minimal Swift executable scaffold targets so the HealthOS product graph no longer represents only Scribe as an app/interface surface
+- added `HealthOSVeridiaApp` and `HealthOSCloudClinicApp` as minimal Swift executable scaffold targets so the HealthOS product graph no longer represents only Scribe as an app/interface surface
 - added honest `--smoke-test` paths for both placeholders: scaffold-only, no final UI, no clinical authority, and no production-readiness claim
-- added `make smoke-sortio` and `make smoke-cloudclinic` while preserving existing CLI/Scribe smoke targets
+- added `make smoke-veridia` and `make smoke-cloudclinic` while preserving existing CLI/Scribe smoke targets
 - unblocked APP-011 and APP-012 as next app wiring tasks without implementing either session path
 Files touched:
 - `swift/Package.swift`
-- `swift/Sources/HealthOSSortioApp/SortioEntrypoint.swift`
+- `swift/Sources/HealthOSVeridiaApp/VeridiaEntrypoint.swift`
 - `swift/Sources/HealthOSCloudClinicApp/CloudClinicEntrypoint.swift`
 - `Makefile`
 - `README.md`
 - `AGENTS.md`
 - `CLAUDE.md`
-- `docs/architecture/12-sortio.md`
+- `docs/architecture/12-veridia.md`
 - `docs/architecture/13-cloudclinic.md`
 - `docs/execution/21-structural-ontology-and-product-readiness-plan.md`
 - `docs/execution/02-status-and-tracking.md`
@@ -37,16 +51,16 @@ Files touched:
 
 ### APP-010 Define native macOS 26+ UI scaffold and design-system scope
 Outcome:
-- added a canonical architecture document for native macOS 26+ app-shell and Liquid Glass scope across Scribe, Sortio, CloudClinic, and a future HealthOS control panel
+- added a canonical architecture document for native macOS 26+ app-shell and Liquid Glass scope across Scribe, Veridia, CloudClinic, and a future HealthOS control panel
 - updated the SwiftPM manifest to `swift-tools-version: 6.2` and `.macOS(.v26)` so the package target matches the macOS 26 development baseline
 - added a repository-local `native-macos-ui` execution skill that composes app-boundary discipline with SwiftPM, SwiftUI patterns, and Liquid Glass guidance
-- clarified that Scribe remains the only implemented native validation surface, while Sortio, CloudClinic, and the control panel are scope-defined until executable targets are intentionally introduced
+- clarified that Scribe remains the only implemented native validation surface, while Veridia, CloudClinic, and the control panel are scope-defined until executable targets are intentionally introduced
 - preserved app-boundary doctrine: no UI-owned consent, habilitation, gate, finality, storage law, provider behavior, or GOS policy
 Files touched:
 - `swift/Package.swift`
 - `docs/architecture/48-native-macos-ui-design-system-and-app-shells.md`
 - `docs/architecture/11-scribe.md`
-- `docs/architecture/12-sortio.md`
+- `docs/architecture/12-veridia.md`
 - `docs/architecture/13-cloudclinic.md`
 - `docs/architecture/19-interface-doctrine.md`
 - `docs/execution/skills/native-macos-ui/SKILL.md`
@@ -120,9 +134,9 @@ Files touched:
 
 ### SORTIO-001 Detail sovereignty flows
 Outcome:
-- Sortio flow expanded with screens, user-facing sovereignty states, and explicit app boundaries
+- Veridia flow expanded with screens, user-facing sovereignty states, and explicit app boundaries
 Files touched:
-- `docs/architecture/12-sortio.md`
+- `docs/architecture/12-veridia.md`
 
 ### CLOUD-001 Detail service operations flows
 Outcome:
@@ -139,10 +153,10 @@ Files touched:
 
 ### APP-003 Deepen screen-level interaction contracts
 Outcome:
-- per-screen commands, contract calls, and result/error states documented for Scribe, Sortio, and CloudClinic
+- per-screen commands, contract calls, and result/error states documented for Scribe, Veridia, and CloudClinic
 Files touched:
 - `docs/architecture/23-scribe-screen-contracts.md`
-- `docs/architecture/24-sortio-screen-contracts.md`
+- `docs/architecture/24-veridia-screen-contracts.md`
 - `docs/architecture/25-cloudclinic-screen-contracts.md`
 
 ### APP-004 Link screen contracts back into main app architecture docs
@@ -150,7 +164,7 @@ Outcome:
 - app overview docs now point explicitly to their detailed screen-contract documents
 Files touched:
 - `docs/architecture/11-scribe.md`
-- `docs/architecture/12-sortio.md`
+- `docs/architecture/12-veridia.md`
 - `docs/architecture/13-cloudclinic.md`
 
 ### APP-005 Define command/result envelopes for UI actions
@@ -249,13 +263,13 @@ Files touched:
 Outcome:
 - User Agent scope/request/response and capability boundary contracts added in Swift Core + TS contracts, including fail-closed guards for prohibited clinical/regulatory capabilities and non-informational outputs
 - patient-facing consent/audit/export/visibility surfaces are now explicit app-safe contracts with lawfulContext and sensitive-layer policy validation
-- Sortio boundary validation contract now rejects raw CPF exposure, raw storage path leakage, and prohibited clinical capability surfacing
+- Veridia boundary validation contract now rejects raw CPF exposure, raw storage path leakage, and prohibited clinical capability surfacing
 Files touched:
 - `swift/Sources/HealthOSCore/UserSovereigntyContracts.swift`
 - `swift/Tests/HealthOSTests/UserSovereigntyGovernanceTests.swift`
 - `ts/packages/contracts/src/index.ts`
 - `ts/packages/runtime-user-agent/src/index.ts`
-- `schemas/contracts/user-agent-patient-sovereignty-sortio.schema.json`
+- `schemas/contracts/user-agent-patient-sovereignty-veridia.schema.json`
 - `docs/execution/02-status-and-tracking.md`
 - `docs/execution/06-scaffold-coverage-matrix.md`
 - `docs/execution/10-invariant-matrix.md`
@@ -281,7 +295,7 @@ Files touched:
 Outcome:
 - added shared cross-app app-facing envelope contract with typed app kind/actor role/safe subject refs/allowed-denied actions/issues/provenance-audit refs/redaction posture and explicit `legalAuthorizing = false`
 - added typed safe-reference taxonomy (`SafeUserRef`, `SafePatientRef`, `SafeProfessionalRef`, `SafeServiceRef`, `SafeSessionRef`, `SafeDraftRef`, `SafeGateRef`, `SafeArtifactRef`, `SafeExportRef`, `SafeAuditRef`, `SafeProvenanceRef`) with navigation-vs-access capability posture and anti-sensitive-leak guards
-- added role/app-aware action and notification/obligation validators so Scribe/Sortio/CloudClinic surfaces fail-closed on app mismatch, role mismatch, non-core command refs, sensitive payload leaks, and unrecorded patient-obligation completion
+- added role/app-aware action and notification/obligation validators so Scribe/Veridia/CloudClinic surfaces fail-closed on app mismatch, role mismatch, non-core command refs, sensitive payload leaks, and unrecorded patient-obligation completion
 - added dedicated Swift XCTest boundary suite (`CrossAppCoordinationContractsTests`) covering shared envelope, safe refs, role-aware actions, redaction defaults, notification payload minimization, and cross-app surface isolation negatives
 - aligned TypeScript contracts and JSON schema with the new shared cross-app surface vocabulary
 Files touched:
@@ -299,13 +313,13 @@ Files touched:
 
 ### APP-009 Documentation drift check for app-boundary claims
 Outcome:
-- added explicit "Scaffold posture / non-claims" sections to Scribe, Sortio, and CloudClinic architecture docs
-- interface doctrine doc now includes scaffold-honest summary clarifying Scribe as minimal SwiftUI validation surface and Sortio/CloudClinic as contract-first only
+- added explicit "Scaffold posture / non-claims" sections to Scribe, Veridia, and CloudClinic architecture docs
+- interface doctrine doc now includes scaffold-honest summary clarifying Scribe as minimal SwiftUI validation surface and Veridia/CloudClinic as contract-first only
 - wording hardened to avoid implying final UI, production readiness, or real provider integration
 - execution tracking updated with APP-009 completion entry
 Files touched:
 - `docs/architecture/11-scribe.md`
-- `docs/architecture/12-sortio.md`
+- `docs/architecture/12-veridia.md`
 - `docs/architecture/13-cloudclinic.md`
 - `docs/architecture/19-interface-doctrine.md`
 - `docs/execution/02-status-and-tracking.md`
@@ -314,14 +328,14 @@ Files touched:
 ### DS-001 HealthOSDesignSystem: commit and Veridia alignment
 Outcome:
 - committed the untracked HealthOSDesignSystem/ directory as a construction artifact (presentation layer only; no Core law, consent, habilitation, gate, finality, or GOS)
-- renamed all Sortio references to Veridia following APP-013: ui_kits/sortio/ → ui_kits/veridia/, glyph-sortio.svg → glyph-veridia.svg
-- updated stale architecture doc pointers in README.md (12-sortio.md → 12-veridia.md, 24-sortio-screen-contracts.md → 24-veridia-screen-contracts.md) and SKILL.md
+- renamed all Veridia references to Veridia following APP-013: ui_kits/veridia/ → ui_kits/veridia/, glyph-veridia.svg → glyph-veridia.svg
+- updated stale architecture doc pointers in README.md (12-veridia.md → 12-veridia.md, 24-veridia-screen-contracts.md → 24-veridia-screen-contracts.md) and SKILL.md
 - maturity: Scribe kit = implemented seam; Veridia kit = scaffolded contract (placeholder); CloudClinic kit = scaffolded contract (placeholder)
 Files touched:
 - `HealthOSDesignSystem/README.md`
 - `HealthOSDesignSystem/SKILL.md`
-- `HealthOSDesignSystem/assets/glyph-sortio.svg` → `HealthOSDesignSystem/assets/glyph-veridia.svg`
-- `HealthOSDesignSystem/ui_kits/sortio/` → `HealthOSDesignSystem/ui_kits/veridia/` (README.md and index.html updated)
+- `HealthOSDesignSystem/assets/glyph-veridia.svg` → `HealthOSDesignSystem/assets/glyph-veridia.svg`
+- `HealthOSDesignSystem/ui_kits/veridia/` → `HealthOSDesignSystem/ui_kits/veridia/` (README.md and index.html updated)
 - `HealthOSDesignSystem/preview/brand-glyphs.html`
 - `docs/execution/02-status-and-tracking.md`
 - `docs/execution/todo/apps-and-interfaces.md`

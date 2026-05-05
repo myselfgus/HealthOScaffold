@@ -25,7 +25,7 @@ System/product side:
 - User-Agent Runtime = TypeScript user-agent runtime.
 - Service Runtime = TypeScript service/operations workflow runtime.
 - Scribe = documentation/capture interface.
-- Sortio = patient sovereignty interface.
+- Veridia = patient health identity app.
 - CloudClinic = professional/service operations interface.
 Construction side:
 - Steward = construction coordinator.

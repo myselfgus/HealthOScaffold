@@ -16,7 +16,7 @@ It is outside the HealthOS clinical/runtime hierarchy. Steward, Settlers, Settle
 
 ## Why this exists now
 
-P0/P1/P2 structural cleanup made the repository ontology clearer: Mental Space Runtime has a named runtime boundary, legacy material has been archived, agent infrastructure has been separated from product packages, session runtime vocabulary has been corrected, and Sortio/CloudClinic now have honest scaffold executable targets.
+P0/P1/P2 structural cleanup made the repository ontology clearer: Mental Space Runtime has a named runtime boundary, legacy material has been archived, agent infrastructure has been separated from product packages, session runtime vocabulary has been corrected, and Veridia/CloudClinic now have honest scaffold executable targets.
 
 Manual prompt generation is now becoming the bottleneck. The repository can continue to execute APP/RT/STR tasks manually, but repeated hand-authored prompts make scope, invariants, validation, and residual-gap recording harder to keep consistent.
 

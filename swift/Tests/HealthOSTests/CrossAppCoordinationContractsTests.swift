@@ -37,7 +37,7 @@ final class CrossAppCoordinationContractsTests: XCTestCase {
             appKind: .scribe,
             actorRole: .professional,
             subjectRefs: envelope.subjectRefs,
-            allowedActions: [AppAllowedAction(action: .inspectConsent, coreCommandRef: "core://sortio.inspect", requiresCoreMediation: true, legalAuthorizing: false)],
+            allowedActions: [AppAllowedAction(action: .inspectConsent, coreCommandRef: "core://veridia.inspect", requiresCoreMediation: true, legalAuthorizing: false)],
             deniedActions: [],
             redaction: envelope.redaction
         )

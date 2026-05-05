@@ -1,7 +1,7 @@
 # Skill: cross-app shared surfaces
 
 ## When to use
-Shared envelope/safe refs/notifications across Scribe, Sortio, CloudClinic.
+Shared envelope/safe refs/notifications across Scribe, Veridia, CloudClinic.
 
 ## Required reading
 `docs/architecture/43-cross-app-coordination-shared-surfaces.md`, `19-interface-doctrine.md`.

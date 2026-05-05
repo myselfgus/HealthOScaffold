@@ -6,7 +6,7 @@ This file is the minimum context pack an AI must internalize before touching cod
 
 HealthOS is the whole sovereign computational environment.
 AACI is one runtime inside HealthOS.
-Scribe, Sortio, and CloudClinic are interfaces over HealthOS.
+Scribe, Veridia, and CloudClinic are interfaces over HealthOS.
 
 ## What must never be confused
 

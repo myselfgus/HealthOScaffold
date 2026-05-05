@@ -247,35 +247,35 @@ final class UserSovereigntyGovernanceTests: XCTestCase {
         }
     }
 
-    func testSortioBoundaryCannotExposeLawDecisionPowerRawStorageOrCPF() {
+    func testVeridiaBoundaryCannotExposeLawDecisionPowerRawStorageOrCPF() {
         XCTAssertThrowsError(
-            try SortioBoundaryValidator.validateAppSafePayload(
+            try VeridiaBoundaryValidator.validateAppSafePayload(
                 rawCPF: "123.456.789-00",
                 rawStoragePath: nil,
                 capability: .retrieveOwnContext
             )
         ) { error in
-            XCTAssertEqual(error as? SortioBoundaryFailure, .forbiddenDirectIdentifierExposure)
+            XCTAssertEqual(error as? VeridiaBoundaryFailure, .forbiddenDirectIdentifierExposure)
         }
 
         XCTAssertThrowsError(
-            try SortioBoundaryValidator.validateAppSafePayload(
+            try VeridiaBoundaryValidator.validateAppSafePayload(
                 rawCPF: nil,
                 rawStoragePath: "/runtime-data/private",
                 capability: .retrieveOwnContext
             )
         ) { error in
-            XCTAssertEqual(error as? SortioBoundaryFailure, .forbiddenStoragePathExposure)
+            XCTAssertEqual(error as? VeridiaBoundaryFailure, .forbiddenStoragePathExposure)
         }
 
         XCTAssertThrowsError(
-            try SortioBoundaryValidator.validateAppSafePayload(
+            try VeridiaBoundaryValidator.validateAppSafePayload(
                 rawCPF: nil,
                 rawStoragePath: nil,
                 capability: .prescribe
             )
         ) { error in
-            XCTAssertEqual(error as? SortioBoundaryFailure, .forbiddenClinicalCapabilitySurface)
+            XCTAssertEqual(error as? VeridiaBoundaryFailure, .forbiddenClinicalCapabilitySurface)
         }
     }
 

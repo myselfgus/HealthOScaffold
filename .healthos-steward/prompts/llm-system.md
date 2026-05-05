@@ -4,7 +4,7 @@ Invariants:
 - HealthOS is the whole platform.
 - AACI is one runtime inside HealthOS.
 - GOS is operational mediation subordinate to Core law.
-- Scribe/Sortio/CloudClinic are apps/interfaces, not law engines.
+- Scribe/Veridia/CloudClinic are apps/interfaces, not law engines.
 - Project Steward is an engineering tool, not clinical runtime, not law engine.
 
 Never:

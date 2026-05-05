@@ -36,7 +36,7 @@ This document is the authoritative priority-ordered work plan as of 2026-04-29. 
 | Tier | What | Why |
 |------|------|-----|
 | **P0/P1 completed** | STR-001, RT-MSR-001, RT-MSR-002, RT-MSR-003, STR-002, STR-003, STR-004 | MSR provider-backed stages and structural cleanup are already landed; do not reselect them from stale TODO text |
-| **P2 active** | APP-011, APP-012 | Wire existing Sortio and CloudClinic boundary contracts into smoke-testable session paths |
+| **P2 active** | APP-011, APP-012 | Wire existing Veridia and CloudClinic boundary contracts into smoke-testable session paths |
 | **P3** | RT-PROVIDER-001, RT-ASYNC-001, RT-RETRIEVAL-001 | Runtime hardening (real providers, SQL-backed executor, semantic retrieval) |
 | **P4** | CI-001 | GitHub Actions CI integration |
 
@@ -70,7 +70,8 @@ Current status details:
 - `HealthOSSessionRuntime` is a scaffold module, not a product concept. STR-004 renames it to `HealthOSSessionRuntime`.
 - `Skill macOS/` TS scripts are reference implementations, not the active pipeline. STR-002 archives them.
 - `ts/packages/` conflates PRODUCT, BUILD, and AGENT packages. STR-003 separates them.
-- Sortio and CloudClinic now have minimal Swift executable scaffold targets from STR-005. APP-011 and APP-012 wire existing boundary contracts into smoke-testable session paths.
+- Veridia (formerly Sortio) and CloudClinic now have minimal Swift executable scaffold targets. APP-011 and APP-012 wire existing boundary contracts into smoke-testable session paths. APP-013 renamed Sortio to Veridia (2026-05-04). Use Veridia in all future prompts/docs; do not use Sortio except in historical migration notes.
+- Veridia is the patient health identity app. Do not use "patient sovereignty interface" as the primary definition.
 - `HealthOSMSR` depends on `HealthOSCore` and `HealthOSProviders`; transcript normalization is owned by `HealthOSSessionRuntime`.
 
 ## Native UI note

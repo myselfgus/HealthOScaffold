@@ -53,7 +53,7 @@ Primary paths this Settler may read and propose writes to:
 Forbidden paths (must not propose writes here):
 
 - `swift/Sources/HealthOSScribeApp/`
-- `swift/Sources/HealthOSSortioApp/`
+- `swift/Sources/HealthOSVeridiaApp/`
 - `swift/Sources/HealthOSCloudClinicApp/`
 - `swift/Sources/HealthOSAACI/`
 - `ts/agent-infra/`

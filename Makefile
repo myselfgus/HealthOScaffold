@@ -16,13 +16,13 @@ smoke-cli:
 smoke-scribe:
 	cd swift && swift run HealthOSScribeApp --smoke-test
 
-smoke-sortio:
-	cd swift && swift run HealthOSSortioApp --smoke-test
+smoke-veridia:
+	cd swift && swift run HealthOSVeridiaApp --smoke-test
 
 smoke-cloudclinic:
 	cd swift && swift run HealthOSCloudClinicApp --smoke-test
 
-swift-smoke: smoke-cli smoke-scribe smoke-sortio smoke-cloudclinic
+swift-smoke: smoke-cli smoke-scribe smoke-veridia smoke-cloudclinic
 
 ts-build:
 	cd ts && npm install && npm run build

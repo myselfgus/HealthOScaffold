@@ -13,7 +13,7 @@ Use "scaffold" only to describe maturity or bootstrap/foundation phase, never to
 - **HealthOS is the whole platform**.
 - **AACI is one runtime inside HealthOS**.
 - **GOS is subordinate to Core law** (operational mediation, never constitutional authority).
-- **Scribe/Sortio/CloudClinic are app/interfaces** consuming mediated surfaces, not law engines.
+- **Scribe/Veridia/CloudClinic are app/interfaces** consuming mediated surfaces, not law engines.
 - This repository contains HealthOS components at scaffold/foundation maturity, **not production-ready**, **not a full EHR**, and **not a real regulatory/provider integration**.
 
 ## Required reading order before coding
@@ -101,7 +101,7 @@ Smoke path (when validating runnable flow):
 ```bash
 make smoke-cli
 make smoke-scribe
-make smoke-sortio
+make smoke-veridia
 make smoke-cloudclinic
 ```
 
@@ -111,7 +111,7 @@ cd swift && swift run HealthOSCLI
 cd swift && swift run HealthOSCLI --reject-gate
 cd swift && swift run HealthOSScribeApp --smoke-test
 cd swift && swift run HealthOSScribeApp --smoke-test-audio
-cd swift && swift run HealthOSSortioApp --smoke-test
+cd swift && swift run HealthOSVeridiaApp --smoke-test
 cd swift && swift run HealthOSCloudClinicApp --smoke-test
 ```
 

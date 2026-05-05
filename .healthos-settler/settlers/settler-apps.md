@@ -1,6 +1,6 @@
 # Settler Profile: settler-apps
 
-This profile narrows a Settler's attention to the Applications and Interfaces territory of the HealthOS repository. Apps (Scribe, Sortio, CloudClinic) are interface surfaces that consume Core-mediated, GOS-mediated output. They are not law engines, not clinical authorities, and not storage owners. This Settler ensures that app-boundary contracts remain aligned with mediated surfaces and that no app claims authority it does not hold.
+This profile narrows a Settler's attention to the Applications and Interfaces territory of the HealthOS repository. Apps (Scribe, Veridia, CloudClinic) are interface surfaces that consume Core-mediated, GOS-mediated output. They are not law engines, not clinical authorities, and not storage owners. This Settler ensures that app-boundary contracts remain aligned with mediated surfaces and that no app claims authority it does not hold.
 
 ---
 
@@ -20,7 +20,7 @@ References Territory record: `.healthos-settler/territories/apps.json`
 
 ## description
 
-Settler for application surfaces and app-boundary contracts. Responsible for maintaining Scribe, Sortio, and CloudClinic as non-authoritative interface consumers, ensuring safe-reference navigation, cross-app shared envelope discipline, and app non-authority posture. Ensures that no app leaks direct identifiers or claims final clinical authority.
+Settler for application surfaces and app-boundary contracts. Responsible for maintaining Scribe, Veridia, and CloudClinic as non-authoritative interface consumers, ensuring safe-reference navigation, cross-app shared envelope discipline, and app non-authority posture. Ensures that no app leaks direct identifiers or claims final clinical authority.
 
 ---
 
@@ -29,7 +29,7 @@ Settler for application surfaces and app-boundary contracts. Responsible for mai
 The Settler must read these documents before acting in this territory:
 
 1. `docs/architecture/11-scribe.md` — Scribe application design, capture, transcription, draft review surface
-2. `docs/architecture/12-sortio.md` — Sortio application design, task/triage surface
+2. `docs/architecture/12-veridia.md` — Veridia application design, patient health identity surface
 3. `docs/architecture/13-cloudclinic.md` — CloudClinic application design, encounter surface
 4. `docs/architecture/19-interface-doctrine.md` — interface doctrine: app non-authority, safe refs, mediated surfaces
 5. `docs/architecture/43-cross-app-coordination-shared-surfaces.md` — cross-app coordination and shared envelope contracts
@@ -43,7 +43,7 @@ The Settler must read these documents before acting in this territory:
 Primary paths this Settler may read and propose writes to:
 
 - `swift/Sources/HealthOSScribeApp/` — Scribe app Swift source
-- `swift/Sources/HealthOSSortioApp/` — Sortio app Swift source
+- `swift/Sources/HealthOSVeridiaApp/` — Veridia app Swift source
 - `swift/Sources/HealthOSCloudClinicApp/` — CloudClinic app Swift source
 - `schemas/` — app-facing schema contracts and shared envelopes
 - `docs/execution/todo/apps-and-interfaces.md` — apps domain TODO tracker
@@ -61,7 +61,7 @@ Forbidden paths (must not propose writes here):
 
 Non-negotiable rules. A work unit that violates any of these must stop:
 
-1. Apps are interface surfaces only. No app (Scribe, Sortio, CloudClinic) owns Core law, storage law, consent, habilitation, gate, finality, or provenance.
+1. Apps are interface surfaces only. No app (Scribe, Veridia, CloudClinic) owns Core law, storage law, consent, habilitation, gate, finality, or provenance.
 2. App navigation references (safe refs) must not grant data access. A safe ref is a pointer, not a data carrier.
 3. Direct identifiers (CPF, patient keys) must never appear in app-facing surfaces, navigation payloads, or API responses.
 4. App UI state must not be treated as clinical authority. A practitioner reviewing a draft in the app is not equivalent to a Core-approved gate resolution.
@@ -98,9 +98,9 @@ For Scribe UI or session flow changes:
 cd swift && swift run HealthOSScribeApp --smoke-test
 ```
 
-For Sortio changes:
+For Veridia changes:
 ```bash
-cd swift && swift run HealthOSSortioApp --smoke-test
+cd swift && swift run HealthOSVeridiaApp --smoke-test
 ```
 
 For CloudClinic changes:

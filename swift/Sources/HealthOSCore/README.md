@@ -34,7 +34,7 @@ Core law, governance types, and contract seams for the entire HealthOS platform.
 | `ScribeFirstSliceBridge.swift` | `ScribeSessionBridgeState` — mediated state surface for Scribe |
 | `ScribeProfessionalWorkspaceContracts.swift` | Scribe app-safe screen contracts |
 | `ServiceOperationsContracts.swift` | CloudClinic service-operations contracts |
-| `UserSovereigntyContracts.swift` | Sortio patient-sovereignty contracts |
+| `UserSovereigntyContracts.swift` | Veridia patient health identity app contracts |
 | `CrossAppCoordinationContracts.swift` | Shared surfaces for cross-app coordination |
 | `FirstSliceServices.swift` | `ScribeFirstSliceFacade` protocol and service entry points |
 | `ServiceBoundaryOutcome.swift` | Service boundary result vocabulary |

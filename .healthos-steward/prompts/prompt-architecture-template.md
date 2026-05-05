@@ -99,7 +99,7 @@ System/product side:
 - User-Agent Runtime = TypeScript user-agent runtime.
 - Service Runtime = TypeScript service/operations workflow runtime.
 - Scribe = documentation/capture interface.
-- Sortio = patient sovereignty interface.
+- Veridia = patient health identity app.
 - CloudClinic = professional/service operations interface.
 Construction side:
 - Steward = construction coordinator.
@@ -319,7 +319,7 @@ Common full validation sequence:
   make swift-test
   make smoke-cli
   make smoke-scribe
-  make smoke-sortio
+  make smoke-veridia
   make smoke-cloudclinic
   make validate-all
 
@@ -327,7 +327,7 @@ Swift runtime/product work may require:
   cd swift && swift build
   cd swift && swift test
   cd swift && swift run HealthOSScribeApp --smoke-test
-  cd swift && swift run HealthOSSortioApp --smoke-test
+  cd swift && swift run HealthOSVeridiaApp --smoke-test
   cd swift && swift run HealthOSCloudClinicApp --smoke-test
 
 TypeScript work may require:

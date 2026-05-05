@@ -12,7 +12,7 @@ HealthOS native macOS surfaces are human/operator interfaces over mediated Healt
 
 The current repository state is:
 - Scribe has a minimal SwiftPM-backed macOS SwiftUI validation surface in `swift/Sources/HealthOSScribeApp/`.
-- Sortio has app-safe patient-sovereignty contracts and screen contracts, but no native app shell.
+- Veridia has app-safe patient identity contracts and screen contracts, but no native app shell.
 - CloudClinic has service-operations contracts and screen contracts, but no native app shell.
 - A HealthOS control panel for macOS is a valid future operator surface, but no app shell or executable target exists yet.
 
@@ -106,20 +106,21 @@ Still prohibited:
 - issuing referral/prescription outputs;
 - claiming real transcription, semantic retrieval, provider integration, or final product UI.
 
-### Sortio
+### Veridia
 
-Sortio is the patient/user-facing sovereignty interface.
+Veridia is the patient health identity app for HealthOS. It presents Core-mediated identity, key custody controls, consent visibility, access trail, owned-data visibility, export controls, and patient agent interaction.
 
 Current shell status: contract-first; no native app shell.
 
 Allowed native shell scaffold:
-- introduce a dedicated SwiftPM executable target only after the Sortio adapter/runtime boundary is ready to supply mediated app-safe state;
-- use a sidebar/detail shell for dashboard, data categories, consent center, access trail, exports, and user-agent panel;
-- render only app-safe `PatientConsentView`, `PatientAccessAuditView`, `PatientExportRequestSurface`, data visibility summaries, and cross-app safe refs.
+- introduce a dedicated SwiftPM executable target only after the Veridia adapter/runtime boundary is ready to supply mediated app-safe state;
+- use a sidebar/detail shell for identity, keys and access, data categories, consent center, access trail, exports, and patient agent;
+- render only app-safe `PatientConsentView`, `PatientAccessAuditView`, `PatientExportRequestSurface`, `VeridiaUserAgentInteractionEnvelope`, data visibility summaries, and cross-app safe refs.
 
 Still prohibited:
 - raw CPF, reidentification mapping, raw storage paths, direct clinical payload access, or clinical/regulatory actions;
-- treating the user-agent panel as diagnosis, prescribing, referral, finalization, signature, or interoperability authority.
+- treating the patient agent as diagnosis, prescribing, referral, finalization, signature, or interoperability authority;
+- claiming Veridia stores keys independently of Core/Secure Enclave/Keychain custody.
 
 ### CloudClinic
 

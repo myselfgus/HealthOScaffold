@@ -801,7 +801,7 @@ export interface DataVisibilityRetentionItem {
   patientRequestedRestriction: boolean;
 }
 
-export interface SortioDashboardSummary {
+export interface VeridiaDashboardSummary {
   userId: string;
   consentSummaryCount: number;
   auditSummaryCount: number;
@@ -809,36 +809,36 @@ export interface SortioDashboardSummary {
   userAgentState: string;
 }
 
-export interface SortioConsentSummary {
+export interface VeridiaConsentSummary {
   active: number;
   revoked: number;
   expiringSoon: number;
 }
 
-export interface SortioAccessAuditSummary {
+export interface VeridiaAccessAuditSummary {
   totalEvents: number;
   emergencyEvents: number;
   regulatoryEvents: number;
 }
 
-export interface SortioExportSummary {
+export interface VeridiaExportSummary {
   pending: number;
   completed: number;
   denied: number;
 }
 
-export interface SortioUserAgentInteractionEnvelope {
+export interface VeridiaUserAgentInteractionEnvelope {
   request: UserAgentRequest;
   response: UserAgentResponse;
 }
 
-export interface SortioDataVisibilitySummary {
+export interface VeridiaDataVisibilitySummary {
   visibleItems: number;
   retainedButHiddenItems: number;
   legalHoldItems: number;
 }
 
-export interface SortioNotificationObligationsSummary {
+export interface VeridiaNotificationObligationsSummary {
   pendingPatientNotifications: number;
   pendingPostEmergencyReview: number;
   pendingExportNotifications: number;
@@ -846,7 +846,7 @@ export interface SortioNotificationObligationsSummary {
 
 
 
-export type AppKind = "Scribe" | "Sortio" | "CloudClinic";
+export type AppKind = "Scribe" | "Veridia" | "CloudClinic";
 
 export type AppActorRole =
   | "professional"

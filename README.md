@@ -21,7 +21,7 @@
 
 **This repository is not production-ready, not a complete EHR, and not a final UI delivery.** It establishes foundational architecture with executable first-slice orchestration, cross-language contracts (Swift / TypeScript / JSON Schema / SQL), and macOS 26+ native app surfaces targeting Liquid Glass as the design baseline.
 
-HealthOS is the full platform. **AACI is one runtime inside HealthOS. GOS is a governed operational layer subordinate to Core law. Scribe, Sortio, and CloudClinic are app/interfaces that consume mediated surfaces; they never define constitutional law.**
+HealthOS is the full platform. **AACI is one runtime inside HealthOS. GOS is a governed operational layer subordinate to Core law. Scribe, Veridia, and CloudClinic are app/interfaces that consume mediated surfaces; they never define constitutional law.**
 
 ---
 
@@ -45,7 +45,7 @@ graph TD
 
     subgraph IFACE["  Interfaces  "]
         SC[Scribe\nSwiftUI - macOS 26+]
-        SO[Sortio\nPatient Sovereignty]
+        SO[Veridia\nPatient Health Identity]
         CC[CloudClinic\nService Operations]
     end
 
@@ -188,7 +188,7 @@ graph LR
 
     CLI[HealthOSCLI\nexecutable]:::cli
     SCRIBE[HealthOSScribeApp\nexecutable · SwiftUI · Liquid Glass]:::app
-    SORTIO[HealthOSSortioApp\nexecutable · scaffold placeholder]:::app
+    VERIDIA[HealthOSVeridiaApp\nexecutable · scaffold placeholder]:::app
     CLOUDCLINIC[HealthOSCloudClinicApp\nexecutable · scaffold placeholder]:::app
 
     CORE --> PROV
@@ -204,7 +204,7 @@ graph LR
     SRT --> CLI
     CORE --> SCRIBE
     SRT --> SCRIBE
-    CORE --> SORTIO
+    CORE --> VERIDIA
     CORE --> CLOUDCLINIC
 ```
 
@@ -217,7 +217,7 @@ graph LR
 | `HealthOSSessionRuntime` | Library | Session orchestration (`SessionRunner`), normalization executor, Scribe bridge adapter |
 | `HealthOSCLI` | Executable | Command-line operator interface for session and GOS lifecycle |
 | `HealthOSScribeApp` | Executable | Minimal Scribe professional workspace validation surface (SwiftUI, macOS 26+) |
-| `HealthOSSortioApp` | Executable | Scaffold placeholder — product-graph representation, no final UI |
+| `HealthOSVeridiaApp` | Executable | Scaffold placeholder — product-graph representation, no final UI |
 | `HealthOSCloudClinicApp` | Executable | Scaffold placeholder — product-graph representation, no final UI |
 
 ---
@@ -384,7 +384,7 @@ make validate-all
 ```bash
 make smoke-cli
 make smoke-scribe
-make smoke-sortio
+make smoke-veridia
 make smoke-cloudclinic
 ```
 
@@ -395,7 +395,7 @@ cd swift && swift run HealthOSCLI
 cd swift && swift run HealthOSCLI --reject-gate
 cd swift && swift run HealthOSScribeApp --smoke-test
 cd swift && swift run HealthOSScribeApp --smoke-test-audio
-cd swift && swift run HealthOSSortioApp --smoke-test
+cd swift && swift run HealthOSVeridiaApp --smoke-test
 cd swift && swift run HealthOSCloudClinicApp --smoke-test
 ```
 
@@ -415,7 +415,7 @@ cd swift && swift run HealthOSCLI \
   --activation-rationale "<reason>"
 ```
 
-`HealthOSSortioApp` and `HealthOSCloudClinicApp` are scaffold placeholder executables. They provide honest smoke-testable product-graph representation; they do not implement final UI, session behavior, clinical authority, or production readiness.
+`HealthOSVeridiaApp` and `HealthOSCloudClinicApp` are scaffold placeholder executables. They provide honest smoke-testable product-graph representation; they do not implement final UI, session behavior, clinical authority, or production readiness.
 
 ---
 
@@ -459,7 +459,7 @@ flowchart LR
 | Understand MSR | `docs/architecture/49-mental-space-runtime.md` | `swift/Sources/HealthOSMSR/`, `swift/Sources/HealthOSCore/MSRRuntime.swift` |
 | Understand native UI + Liquid Glass | `docs/architecture/48-native-macos-ui-design-system-and-app-shells.md` | `swift/Sources/HealthOSScribeApp/` |
 | Understand Apple sovereignty | `docs/architecture/46-apple-sovereignty-architecture.md` | `swift/Sources/HealthOSProviders/AppleFoundationModelsAdapter.swift` |
-| Understand apps and boundaries | `docs/architecture/11-scribe.md` | `12-sortio.md`, `13-cloudclinic.md`, `43-cross-app-coordination-shared-surfaces.md` |
+| Understand apps and boundaries | `docs/architecture/11-scribe.md` | `12-veridia.md`, `13-cloudclinic.md`, `43-cross-app-coordination-shared-surfaces.md` |
 | Understand maturity and gaps | `docs/execution/11-current-maturity-map.md` | `13-scaffold-release-candidate-criteria.md`, `14-final-gap-register.md` |
 | Start coding safely | `docs/execution/README.md` | `01-agent-operating-protocol.md`, `02-status-and-tracking.md`, relevant `todo/*.md` |
 | Understand Steward for Xcode | `docs/architecture/45-healthos-xcode-agent.md` | `docs/execution/17-healthos-xcode-agent-migration-plan.md` |
@@ -551,7 +551,7 @@ graph LR
 | MSR | `docs/architecture/49-mental-space-runtime.md` | `swift/Sources/HealthOSMSR/` |
 | GOS | `29-governed-operational-spec.md` → `34-gos-review-and-activation-policy.md` | `ts/packages/healthos-gos-tooling/`, `swift/Sources/HealthOSCore/` |
 | Native UI + Liquid Glass | `docs/architecture/48-native-macos-ui-design-system-and-app-shells.md` | `swift/Sources/HealthOSScribeApp/` |
-| Apps/interfaces | `11-scribe.md`, `12-sortio.md`, `13-cloudclinic.md`, `43-cross-app-coordination-shared-surfaces.md` | `swift/Sources/HealthOSScribeApp/`, `HealthOSSortioApp/`, `HealthOSCloudClinicApp/` |
+| Apps/interfaces | `11-scribe.md`, `12-veridia.md`, `13-cloudclinic.md`, `43-cross-app-coordination-shared-surfaces.md` | `swift/Sources/HealthOSScribeApp/`, `HealthOSVeridiaApp/`, `HealthOSCloudClinicApp/` |
 | Providers / ML | `docs/architecture/16-providers-and-ml.md`, `27-provider-threshold-policy.md` | `swift/Sources/HealthOSProviders/` |
 | Steward | `45-healthos-xcode-agent.md`, `47-steward-settler-engineering-model.md` | `ts/agent-infra/healthos-steward/`, `.healthos-steward/` |
 
@@ -736,7 +736,7 @@ Actors / Agents
   └─ bounded actors and role-governed agents
 Apps / Interfaces  (macOS 26+ · Liquid Glass design baseline)
   ├─ Scribe (professional workspace)
-  ├─ Sortio (patient sovereignty)
+  ├─ Veridia (patient health identity)
   └─ CloudClinic (service operations)
 Artifacts / Effects
   └─ drafts, gate records, final artifacts, provenance/audit traces

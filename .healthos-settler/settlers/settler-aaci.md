@@ -50,7 +50,7 @@ Forbidden paths (must not propose writes here):
 
 - `swift/Sources/HealthOSCore/` — Core law (read-only; changes require Core Settler)
 - `swift/Sources/HealthOSScribeApp/`
-- `swift/Sources/HealthOSSortioApp/`
+- `swift/Sources/HealthOSVeridiaApp/`
 - `swift/Sources/HealthOSCloudClinicApp/`
 - `ts/agent-infra/`
 

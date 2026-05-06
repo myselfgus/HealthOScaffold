@@ -202,11 +202,20 @@ public actor AACIOrchestrator {
             on: mediatedAssessment,
             mediationFlags: gosFlags
         )
+        let planNote = "Draft only. Plano terapeutico permanece dependente de decisao clinica humana; AACI nao gera plano de cuidado nesta maturidade scaffold."
+        let mediatedPlan = enforceDraftOnlyBoundary(
+            on: mediatedDerivedDraftText(
+                planNote,
+                actorId: "aaci.draft-composer",
+                gosView: gosView
+            ),
+            mediationFlags: gosFlags
+        )
         let sections = SOAPNoteSections(
             subjective: transcription.workflowText,
             objective: objective,
             assessment: noteSummary,
-            plan: "TODO"
+            plan: mediatedPlan
         )
         let draft = ArtifactDraft(
             sessionId: session.id,

@@ -37,19 +37,25 @@ Use this README as an entry surface, not as a replacement for the canonical arch
 | Where does construction tooling sit? | Steward, Settlers, Settlements, Territories, and `healthos-forge-mcp` are repository engineering surfaces outside the clinical/runtime hierarchy. | `docs/execution/22-steward-construction-operating-model.md` |
 
 ```mermaid
-%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#f8fafc', 'primaryBorderColor': '#cbd5e1', 'primaryTextColor': '#0f172a', 'clusterBkg': '#ffffff', 'clusterBorder': '#e2e8f0', 'edgeLabelBackground': '#f8fafc', 'fontFamily': 'ui-sans-serif, system-ui, -apple-system'}}}%%
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#F6F8FB', 'primaryBorderColor': '#D6DEE8', 'primaryTextColor': '#1D2733', 'clusterBkg': '#FFFFFF', 'clusterBorder': '#D6DEE8', 'lineColor': '#5B6B7C', 'edgeLabelBackground': '#F6F8FB', 'fontFamily': 'ui-rounded, -apple-system, BlinkMacSystemFont, sans-serif'}}}%%
 flowchart LR
-    classDef clinical fill:#ecfdf5,stroke:#16a34a,stroke-width:2px,color:#14532d
-    classDef construction fill:#fdf2f8,stroke:#ec4899,stroke-width:2px,color:#831843
-    classDef boundary fill:#f8fafc,stroke:#94a3b8,stroke-width:2px,color:#334155
+    classDef core fill:#F0F6F3,stroke:#3E8E6F,stroke-width:2px,color:#174234
+    classDef runtime fill:#EEF7F8,stroke:#0E7C86,stroke-width:2px,color:#164E63
+    classDef interface fill:#F4F2F8,stroke:#3B4A6B,stroke-width:2px,color:#202A3A
+    classDef design fill:#F6F8FB,stroke:#5B6B7C,stroke-width:2px,color:#2F3C4A
+    classDef construction fill:#FAF7F4,stroke:#A1693A,stroke-width:2px,color:#553018
+    classDef boundary fill:#F2F4F7,stroke:#8793A1,stroke-width:2px,color:#334155
 
     subgraph CLINICAL["HealthOS clinical/runtime hierarchy"]
-        CORE[Core law\nconsent · habilitation · gate · finality]:::clinical
-        GOS[GOS\nsubordinate operational mediation]:::clinical
-        RT[Runtimes\nSession Runtime · AACI · MSR · TS runtimes]:::clinical
-        APP[Apps/interfaces\nScribe · Veridia · CloudClinic]:::clinical
-        ART[Artifacts/effects\ndrafts · derived artifacts · gated final documents]:::clinical
-        CORE --> GOS --> RT --> APP --> ART
+        CORE[Core law\nconsent · habilitation · gate · finality]:::core
+        GOS[GOS\nsubordinate operational mediation]:::runtime
+        RT[Runtimes\nSession Runtime · AACI · MSR · TS runtimes]:::runtime
+        APP[Apps/interfaces\nScribe · Veridia · CloudClinic]:::interface
+        DS[Native design system\nmacOS 26+ presentation contract\nSF Pro · semantic tint · Liquid Glass]:::design
+        ART[Artifacts/effects\ndrafts · derived artifacts · gated final documents]:::core
+        CORE --> GOS --> RT --> APP
+        APP --> DS
+        APP --> ART
     end
 
     subgraph BUILD["Repository construction layer"]
@@ -65,6 +71,7 @@ flowchart LR
     end
 
     BUILD -. outside clinical/runtime hierarchy .-> CLINICAL
+    DS -. presentation only, never law .-> APP
 ```
 
 ### Evidence and Maturity Lens
@@ -86,21 +93,26 @@ HealthOS is a governance-first platform. Every clinical act flows through a stri
 Steward, Settlers, Settlements, Territories, and `healthos-forge-mcp` are repository engineering concepts **outside** this clinical/runtime hierarchy. They inspect, edit, validate, and record repository work. They do not become HealthOS law, runtime automation, or clinical effectuation.
 
 ```mermaid
-%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#f0f9ff', 'primaryBorderColor': '#bae6fd', 'primaryTextColor': '#0c4a6e', 'clusterBkg': '#fafafa', 'clusterBorder': '#e2e8f0', 'titleColor': '#0f172a', 'edgeLabelBackground': '#f8fafc', 'fontFamily': 'ui-sans-serif, system-ui, -apple-system'}}}%%
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#F6F8FB', 'primaryBorderColor': '#D6DEE8', 'primaryTextColor': '#1D2733', 'clusterBkg': '#FFFFFF', 'clusterBorder': '#D6DEE8', 'titleColor': '#1D2733', 'lineColor': '#5B6B7C', 'edgeLabelBackground': '#F6F8FB', 'fontFamily': 'ui-rounded, -apple-system, BlinkMacSystemFont, sans-serif'}}}%%
 graph TD
-    classDef iface    fill:#dbeafe,stroke:#60a5fa,stroke-width:2px,color:#1e3a8a
-    classDef gos      fill:#fef9c3,stroke:#f59e0b,stroke-width:2px,color:#78350f
-    classDef session  fill:#f0fdf4,stroke:#16a34a,stroke-width:2px,color:#14532d
-    classDef swift    fill:#e0f2fe,stroke:#0ea5e9,stroke-width:2px,color:#0c4a6e
-    classDef tsrt     fill:#fff7ed,stroke:#ea580c,stroke-width:2px,color:#7c2d12
-    classDef provider fill:#f5f3ff,stroke:#a78bfa,stroke-width:2px,color:#3b0764
-    classDef core     fill:#dcfce7,stroke:#22c55e,stroke-width:2px,color:#14532d
-    classDef substrate fill:#f1f5f9,stroke:#94a3b8,stroke-width:2px,color:#334155
+    classDef iface    fill:#F4F2F8,stroke:#3B4A6B,stroke-width:2px,color:#202A3A
+    classDef design   fill:#F6F8FB,stroke:#5B6B7C,stroke-width:2px,color:#2F3C4A
+    classDef gos      fill:#EEF7F8,stroke:#0E7C86,stroke-width:2px,color:#164E63
+    classDef session  fill:#EEF7F8,stroke:#0E7C86,stroke-width:2px,color:#164E63
+    classDef swift    fill:#F0F6F3,stroke:#3E8E6F,stroke-width:2px,color:#174234
+    classDef tsrt     fill:#FAF7F4,stroke:#A1693A,stroke-width:2px,color:#553018
+    classDef provider fill:#F5F2F7,stroke:#7B5E8E,stroke-width:2px,color:#3A2946
+    classDef core     fill:#EAF7F2,stroke:#2E8C6A,stroke-width:2px,color:#174234
+    classDef substrate fill:#F2F4F7,stroke:#8793A1,stroke-width:2px,color:#334155
 
     subgraph IFACE["  Interfaces  "]
         SC[Scribe\nSwiftUI - macOS 26+]
         SO[Veridia\nPatient Health Identity]
         CC[CloudClinic\nService Operations]
+    end
+
+    subgraph DS_L["  Native Design System — Presentation Contract  "]
+        DS[HealthOSDesignSystem\nSF Pro · semantic state colors\nstandard controls first · Liquid Glass when needed]
     end
 
     subgraph GOS_L["  GOS — Governed Operational Spec  "]
@@ -135,6 +147,9 @@ graph TD
         NE[Mesh - VPN - Network]
     end
 
+    DS -. presentation guidance only .-> SC
+    DS -. presentation guidance only .-> SO
+    DS -. presentation guidance only .-> CC
     SC -->|mediated surface| GOS
     SO -->|mediated surface| GOS
     CC -->|mediated surface| GOS
@@ -166,6 +181,7 @@ graph TD
     GA --> NE
 
     class SC,SO,CC iface
+    class DS design
     class GOS gos
     class SR session
     class AACI,MSR swift
@@ -291,37 +307,51 @@ Standard SwiftUI/AppKit controls and navigation surfaces (sidebars, toolbars, sh
 ### UI Component Stack
 
 ```mermaid
-%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#f5f3ff', 'primaryBorderColor': '#a78bfa', 'primaryTextColor': '#3b0764', 'clusterBkg': '#fdfbff', 'clusterBorder': '#ddd6fe', 'titleColor': '#0f172a', 'edgeLabelBackground': '#f9f7ff', 'fontFamily': 'ui-rounded, -apple-system, BlinkMacSystemFont, sans-serif'}}}%%
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#F6F8FB', 'primaryBorderColor': '#D6DEE8', 'primaryTextColor': '#1D2733', 'clusterBkg': '#FFFFFF', 'clusterBorder': '#D6DEE8', 'titleColor': '#1D2733', 'lineColor': '#5B6B7C', 'edgeLabelBackground': '#F6F8FB', 'fontFamily': 'ui-rounded, -apple-system, BlinkMacSystemFont, sans-serif'}}}%%
 graph TD
-    classDef law    fill:#dcfce7,stroke:#22c55e,stroke-width:2px,color:#14532d
-    classDef bridge fill:#dbeafe,stroke:#60a5fa,stroke-width:2px,color:#1e3a8a
-    classDef vm     fill:#fef9c3,stroke:#f59e0b,stroke-width:2px,color:#78350f
-    classDef view   fill:#ede9fe,stroke:#8b5cf6,stroke-width:2px,color:#3b0764
-    classDef glass  fill:#fce7f3,stroke:#f472b6,stroke-width:2px,color:#831843
-    classDef sys    fill:#f1f5f9,stroke:#94a3b8,stroke-width:1px,color:#475569
+    classDef runtime fill:#EEF7F8,stroke:#0E7C86,stroke-width:2px,color:#164E63
+    classDef bridge  fill:#F0F6F3,stroke:#3E8E6F,stroke-width:2px,color:#174234
+    classDef vm      fill:#FAF7F4,stroke:#A1693A,stroke-width:2px,color:#553018
+    classDef view    fill:#F4F2F8,stroke:#3B4A6B,stroke-width:2px,color:#202A3A
+    classDef design  fill:#F6F8FB,stroke:#5B6B7C,stroke-width:2px,color:#2F3C4A
+    classDef state   fill:#FFF7E8,stroke:#C28A2E,stroke-width:2px,color:#5F4217
+    classDef sys     fill:#F2F4F7,stroke:#8793A1,stroke-width:1px,color:#334155
 
     subgraph RT["Session Runtime"]
-        SRT[SessionRunner\norchestration]:::law
-        BR[ScribeFirstSliceBridge\nMediated state]:::bridge
+        SRT[SessionRunner\norchestration]:::runtime
+        BR[ScribeFirstSliceBridge\nmediated app-safe state]:::bridge
     end
 
     subgraph VM["ViewModel"]
         MVM[ScribeFirstSliceViewModel\nObservable - MainActor]:::vm
     end
 
+    subgraph DS["HealthOSDesignSystem"]
+        TOK[Semantic tokens\nsovereign · mediated · ready · degraded · denied]:::design
+        STD[Native controls first\nWindowGroup · toolbar · sidebar · sheet]:::sys
+        CUS[Custom glass only when needed\nGlassEffectContainer per logical group]:::design
+    end
+
     subgraph SCRIBEAPP["HealthOSScribeApp"]
         APP[WindowGroup\nScribe First Slice]:::view
         ROOT[ScribeFirstSliceView\nScrollView root]:::view
-        C1[SurfaceSummaryCard\nGroupBox to GlassEffectContainer]:::glass
-        C2[SessionSetupCard\nGroupBox to glass panel]:::glass
-        C3[WorkspaceCard\nGroupBox to glass workspace]:::glass
-        C4[SliceOutputsCard\nOutputBlock to glassEffect]:::glass
-        C5[IssuesCard\nDegraded state banner]:::glass
+        C1[Surface summary\nstatus capsule + provenance summary]:::state
+        C2[Session setup\nstandard controls + semantic state]:::state
+        C3[Workspace\ncapture and review surface]:::state
+        C4[Slice outputs\nreadable material or glass surface]:::state
+        C5[Issues\nbounded degraded-state banner]:::state
         SYSGL[System glass auto-applied\nToolbar - NavigationSplitView - Sheet]:::sys
     end
 
     SRT --> BR
     BR --> MVM
+    TOK --> MVM
+    STD --> APP
+    CUS --> C1
+    CUS --> C2
+    CUS --> C3
+    CUS --> C4
+    CUS --> C5
     MVM --> APP
     APP --> ROOT
     ROOT --> C1
@@ -334,7 +364,7 @@ graph TD
 ### ScribeFirstSliceView — Session Lifecycle & Glass Surfaces
 
 ```mermaid
-%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#f0fdf4', 'primaryBorderColor': '#86efac', 'primaryTextColor': '#14532d', 'edgeLabelBackground': '#f8fafc', 'fontFamily': 'ui-sans-serif, system-ui, -apple-system'}}}%%
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#F6F8FB', 'primaryBorderColor': '#D6DEE8', 'primaryTextColor': '#1D2733', 'lineColor': '#5B6B7C', 'edgeLabelBackground': '#F6F8FB', 'fontFamily': 'ui-rounded, -apple-system, BlinkMacSystemFont, sans-serif'}}}%%
 stateDiagram-v2
     [*] --> Idle : app launch · loadIfNeeded()
 
@@ -356,16 +386,16 @@ stateDiagram-v2
     Failed --> [*]
 
     note right of Active
-        Liquid Glass surfaces active:
-        GlassEffectContainer wrapping
-        SessionSetupCard, WorkspaceCard,
-        and SliceOutputsCard
+        Design-system guidance:
+        standard controls first;
+        custom glass only for grouped
+        HealthOS-specific surfaces
     end note
 
     note right of GateReview
-        Gate panel: glass-prominent
-        approve / reject buttons
-        with semantic tint
+        Gate state uses semantic tint:
+        approved, rejected, withheld,
+        degraded, pending
     end note
 ```
 
@@ -535,14 +565,14 @@ The deck narrative is: HealthOS is a governed platform; Core law stays sovereign
 ### Visual Reading Map
 
 ```mermaid
-%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#eef6ff', 'primaryBorderColor': '#b8d7f5', 'primaryTextColor': '#11324d', 'clusterBkg': '#fbfdff', 'clusterBorder': '#d7e7f5', 'titleColor': '#0f172a', 'edgeLabelBackground': '#f8fbff', 'fontFamily': 'ui-rounded, -apple-system, BlinkMacSystemFont, sans-serif'}}}%%
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#F6F8FB', 'primaryBorderColor': '#D6DEE8', 'primaryTextColor': '#1D2733', 'clusterBkg': '#FFFFFF', 'clusterBorder': '#D6DEE8', 'titleColor': '#1D2733', 'lineColor': '#5B6B7C', 'edgeLabelBackground': '#F6F8FB', 'fontFamily': 'ui-rounded, -apple-system, BlinkMacSystemFont, sans-serif'}}}%%
 flowchart TD
-    classDef entry   fill:#e8f3ff,stroke:#7db7e8,stroke-width:2px,color:#12324a
-    classDef arch    fill:#ecfdf5,stroke:#6fcf97,stroke-width:2px,color:#14532d
-    classDef exec    fill:#fff7ed,stroke:#f59e0b,stroke-width:2px,color:#7c2d12
-    classDef code    fill:#f5f3ff,stroke:#a78bfa,stroke-width:2px,color:#4c1d95
-    classDef steward fill:#fdf2f8,stroke:#ec4899,stroke-width:2px,color:#831843
-    classDef ui      fill:#fdf4ff,stroke:#c084fc,stroke-width:2px,color:#581c87
+    classDef entry   fill:#F6F8FB,stroke:#5B6B7C,stroke-width:2px,color:#2F3C4A
+    classDef arch    fill:#F0F6F3,stroke:#3E8E6F,stroke-width:2px,color:#174234
+    classDef exec    fill:#FAF7F4,stroke:#A1693A,stroke-width:2px,color:#553018
+    classDef code    fill:#F4F2F8,stroke:#3B4A6B,stroke-width:2px,color:#202A3A
+    classDef steward fill:#F5F2F7,stroke:#7B5E8E,stroke-width:2px,color:#3A2946
+    classDef ui      fill:#EEF7F8,stroke:#0E7C86,stroke-width:2px,color:#164E63
 
     R[README.md\nEntry Surface]:::entry
 
@@ -551,7 +581,7 @@ flowchart TD
     A3[Code Surfaces\nswift · ts · schemas · sql]:::code
     A4[Repository Engineering\nSteward · Settlers · Territories]:::steward
     A5[Claude Code Automations\nupdate · digest · sync]:::steward
-    A6[Native UI + Liquid Glass\n48-native-macos-ui · ScribeApp]:::ui
+    A6[Native UI + Liquid Glass\n48-native-macos-ui · HealthOSDesignSystem · ScribeApp]:::ui
 
     R --> A1 & A2 & A3 & A4 & A5 & A6
 
@@ -566,7 +596,7 @@ flowchart TD
     A4 --> A41[Steward baseline]
     A4 --> A42[Settler doctrine]
     A6 --> A61[Component contracts]
-    A6 --> A62[Glass adoption path]
+    A6 --> A62[Semantic tokens + glass adoption path]
 ```
 
 ---
@@ -576,19 +606,20 @@ flowchart TD
 The repository is four synchronized surfaces: doctrine, execution discipline, executable code, and cross-language contracts.
 
 ```mermaid
-%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#f5faff', 'primaryBorderColor': '#c6ddf5', 'primaryTextColor': '#17324d', 'clusterBkg': '#ffffff', 'clusterBorder': '#dbeafe', 'titleColor': '#0f172a', 'edgeLabelBackground': '#f8fbff', 'fontFamily': 'ui-rounded, -apple-system, BlinkMacSystemFont, sans-serif'}}}%%
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#F6F8FB', 'primaryBorderColor': '#D6DEE8', 'primaryTextColor': '#1D2733', 'clusterBkg': '#FFFFFF', 'clusterBorder': '#D6DEE8', 'titleColor': '#1D2733', 'lineColor': '#5B6B7C', 'edgeLabelBackground': '#F6F8FB', 'fontFamily': 'ui-rounded, -apple-system, BlinkMacSystemFont, sans-serif'}}}%%
 graph LR
-    classDef docs  fill:#e0f2fe,stroke:#38bdf8,stroke-width:2px,color:#0c4a6e
-    classDef exec  fill:#fef3c7,stroke:#f59e0b,stroke-width:2px,color:#78350f
-    classDef code  fill:#ede9fe,stroke:#8b5cf6,stroke-width:2px,color:#4c1d95
-    classDef data  fill:#dcfce7,stroke:#22c55e,stroke-width:2px,color:#14532d
-    classDef agent fill:#fdf2f8,stroke:#ec4899,stroke-width:2px,color:#831843
+    classDef docs  fill:#F0F6F3,stroke:#3E8E6F,stroke-width:2px,color:#174234
+    classDef exec  fill:#FAF7F4,stroke:#A1693A,stroke-width:2px,color:#553018
+    classDef code  fill:#F4F2F8,stroke:#3B4A6B,stroke-width:2px,color:#202A3A
+    classDef data  fill:#EEF7F8,stroke:#0E7C86,stroke-width:2px,color:#164E63
+    classDef agent fill:#F5F2F7,stroke:#7B5E8E,stroke-width:2px,color:#3A2946
 
     D[docs/architecture\nCanonical doctrine]:::docs
     E[docs/execution\nProtocol · status · TODO · handoff]:::exec
     S[schemas + sql\nContract and metadata shape]:::data
     W[swift/\nCore · AACI · MSR · apps · tests]:::code
     T[ts/\ncontracts · runtimes · tooling · steward]:::code
+    DS[HealthOSDesignSystem\npresentation tokens · UI kits · assets]:::code
     P[python/\nOffline ML governance scaffolds]:::code
     EG[.healthos-steward\n.healthos-settler]:::agent
     AU[.claude/automations\nupdate-claude-md · daily-todo · sync-work-plan]:::agent
@@ -601,6 +632,8 @@ graph LR
     E -->|tracks engineering records for| EG
     S -->|align with| W
     S -->|align with| T
+    D -->|bounds presentation claims for| DS
+    DS -->|proposes app-safe interface skin for| W
     W -->|first executable slice| T
     P -->|offline-only support posture| W
     EG -. outside clinical/runtime hierarchy .-> D

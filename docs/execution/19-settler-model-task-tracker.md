@@ -257,6 +257,23 @@ Outcome (2026-05-05):
 - Maturity: implemented seam
 - Non-claims: no clinical authority; no merge authority; no production readiness; ANTHROPIC_API_KEY never persisted
 
+### ST-023 — session client workflows for construction lifecycle (2026-05-05)
+
+Status: DONE.
+
+Goal:
+- add a typed `session-client.ts` module to `@healthos/managed-agent`
+- wrap Anthropic Managed Agents sessions into four human-triggered construction workflow functions: `discover`, `brief`, `validate`, `handoff`
+- keep execution external; do not create a CLI, HTTP server, cron runner, or clinical/runtime surface
+
+Outcome (2026-05-05):
+- Created `ts/agent-infra/healthos-managed-agent/src/session-client.ts` — implemented seam module; reads `.healthos-steward/managed-agent/agent.json` at call time; requires `ANTHROPIC_API_KEY` or `ANTHROPIC_AUTH_TOKEN`; creates Managed Agents sessions; streams responses; returns typed results with `_disclaimer`
+- Created `ts/agent-infra/healthos-managed-agent/src/workflows.ts` — thin barrel re-export for workflow functions and result types
+- Updated `src/index.ts` to re-export the workflow public surface
+- Validation: `make ts-build` PASS; managed-agent `tsc --noEmit` PASS; dist workflow files exist; `create-agent --dry-run` PASS; `make validate-docs` PASS
+- Maturity: implemented seam
+- Non-claims: no clinical authority; no merge authority; no production readiness; no autonomous execution; no live Managed Agents API workflow run in validation
+
 ### ST-021 — forge-mcp HTTP/Streamable HTTP transport (2026-05-05)
 
 Status: DONE.

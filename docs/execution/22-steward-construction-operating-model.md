@@ -131,7 +131,7 @@ discover
 - ST-020 — Use Steward to generate APP-012 (CloudClinic) prompt (note: APP-011 is DONE — VeridiaSessionFacade, PR #98, 2026-05-04; ST-020 goal revised to target APP-012)
 - ST-021 — forge-mcp HTTP/Streamable HTTP transport (DONE 2026-05-05): `src/server-http.ts` added to `@healthos/forge-mcp`; same 10 tools exposed via StreamableHTTPServerTransport on http://127.0.0.1:3791/mcp; zero new npm deps; stdio transport unmodified; required for Managed Agents API compatibility; ST-022 is next
 - ST-022 — Steward Coordinator Managed Agent definition (DONE 2026-05-05): `ts/agent-infra/healthos-managed-agent/` created (`@healthos/managed-agent` 0.1.0); STEWARD_COORDINATOR_DEF with claude-opus-4-7, system prompt encoding doc-22 lifecycle, mcp_servers pointing to forge-mcp HTTP; idempotent create-agent script with --dry-run/--force; @anthropic-ai/sdk added; ST-023 is next
-- ST-023 — session client workflows for construction lifecycle — TODO
+- ST-023 — session client workflows for construction lifecycle (DONE 2026-05-05): `session-client.ts` added to `@healthos/managed-agent`; four typed async workflow functions: discover, brief, validate, handoff; each creates a Managed Agents session against `agent.json` ID, streams response, returns typed result with `_disclaimer` field; `workflows.ts` barrel re-export; `index.ts` updated; no new npm deps; no CLI entry point; implemented seam maturity.
 
 ## Non-claims
 

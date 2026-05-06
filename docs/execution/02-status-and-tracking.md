@@ -6,6 +6,23 @@ Current phase: Controlled implementation — first vertical slice started
 
 ## Completed recently
 
+## ST-023 — session client workflows for construction lifecycle (2026-05-05)
+
+- Objective: add a typed TypeScript session client module to `@healthos/managed-agent` for human-triggered Steward construction lifecycle workflows via Anthropic Managed Agents sessions.
+- Branch: `feat/st-023-session-client-workflows`
+- Files created:
+  - `ts/agent-infra/healthos-managed-agent/src/session-client.ts` — implemented seam module with four async workflow functions: `discover`, `brief`, `validate`, `handoff`; reads registered agent ID from `.healthos-steward/managed-agent/agent.json` at call time; creates a Managed Agents session; streams the response; returns typed result objects with `_disclaimer: "non-canonical construction-system artifact"`
+  - `ts/agent-infra/healthos-managed-agent/src/workflows.ts` — thin barrel re-export for the workflow functions and result types
+- Files updated:
+  - `ts/agent-infra/healthos-managed-agent/src/index.ts` — re-exports workflow public surface
+  - `docs/execution/19-settler-model-task-tracker.md` — ST-023 marked DONE
+  - `docs/execution/22-steward-construction-operating-model.md` — construction task sequence updated for ST-023
+- Validation: `make ts-build` PASS; `cd ts && npx tsc --noEmit -p agent-infra/healthos-managed-agent/tsconfig.json` PASS; `dist/session-client.js` and `dist/workflows.js` exist after build; `cd ts && node agent-infra/healthos-managed-agent/dist/create-agent.js --dry-run` PASS; `make validate-docs` PASS
+- Invariants: construction-system only; no clinical authority; no merge authority; no production-readiness claim; execute stage remains external; no git automation; no Swift, Xcode, product, runtime, contracts, forge-mcp, or steward CLI files touched; no new npm dependencies; credentials are never logged
+- Maturity: implemented seam
+- Residual gaps: no live Managed Agents API workflow run in validation because that requires registered `agent.json`, beta-enabled Anthropic auth, and a publicly accessible `FORGE_MCP_URL`; no CLI entry point for individual workflows; remote Managed Agent access still depends on public reachability of `healthos-forge-mcp`
+- Next: ST-020 — use Steward to generate the APP-012 CloudClinic prompt path; APP-012 remains READY in doc-21
+
 ## ST-022 — Steward Coordinator Managed Agent definition (2026-05-05)
 
 - Objective: create `ts/agent-infra/healthos-managed-agent/` (`@healthos/managed-agent` 0.1.0) — new TypeScript package defining the HealthOS Steward Coordinator agent for the Anthropic Managed Agents API (`managed-agents-2026-04-01` beta); includes agent config with system prompt encoding the doc-22 construction lifecycle, `create-agent.ts` idempotent upsert script, and `.healthos-steward/managed-agent/agent.json` state persistence.

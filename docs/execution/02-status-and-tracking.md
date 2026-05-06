@@ -6,6 +6,19 @@ Current phase: Controlled implementation — first vertical slice started
 
 ## Completed recently
 
+## DOC-README-VISUAL-PRESENTATION-001 — README visual information and presentation pass (2026-05-05)
+
+- Objective: audit the current README entry surface after DOC-README-001/ST-018 alignment, add only the missing visual/evidence orientation, and create an editable executive visual overview deck without changing runtime behavior.
+- Files updated:
+  - `README.md` — added a compact "How to Read This Repository" entry surface, clinical/runtime vs construction-layer diagram, evidence/maturity reading lens, and external-deck note.
+  - `docs/execution/02-status-and-tracking.md` — this completion record.
+  - `docs/execution/todo/apps-and-interfaces.md` — README/docs visual entrypoint tracking update.
+  - `docs/execution/12-next-agent-handoff.md` — handoff note for the external deck and future versioned-asset decision.
+- Presentation deliverable: PPTX generated outside the commit at `outputs/019dfa9f-e108-7a93-b35e-837683539cc0/presentations/healthos-visual-overview/output/healthos-visual-overview.pptx` because no clear `docs/assets/presentations/` versioning pattern exists in the checkout.
+- Validation: `git diff --check` PASS; `make validate-docs` PASS; PPTX exists and is non-empty; artifact-tool build produced 9 slides; final previews/contact sheet were rendered and visually inspected; layout QA reported 0 errors and 0 warnings before cleanup; diagnostic greps across the required touched-doc set surfaced historical `healthos-mcp` / `HealthOSFirstSliceSupport` mentions already present in this tracking log, while README and the updated TODO did not reintroduce those names; README still preserves `production-ready` non-claim language.
+- Invariants preserved: no Swift/TypeScript/schema/SQL/Makefile/runtime behavior changed; HealthOS remains the system and HealthOScaffold remains the historical repository/foundation phase; Core law remains sovereign; GOS remains subordinate; apps remain mediated surfaces; Steward/Settler/Territory/Settlement/Forge MCP remain construction tooling outside the clinical/runtime hierarchy.
+- Residual gaps: the overview deck is not versioned until a repository asset policy/path exists; README remains an entry surface, not the canonical maturity source; final app shells, semantic retrieval, provider deployment, regulatory/signature/interoperability integrations, distributed CI, and production hardening remain separate future work.
+
 ## APP-013A — Remove residual legacy patient-app naming drift (2026-05-05)
 
 - Objective: eliminate remaining working-tree uses of the legacy patient-app name so active source, generated artifacts, docs, and construction metadata use `Veridia` consistently.

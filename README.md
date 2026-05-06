@@ -25,6 +25,60 @@ HealthOS is the full platform. **AACI is one runtime inside HealthOS. GOS is a g
 
 ---
 
+## How to Read This Repository
+
+Use this README as an entry surface, not as a replacement for the canonical architecture and execution docs. The repository mixes tested operational paths, implemented seams, scaffolded contracts, placeholders, and future gaps; read every claim through that maturity lens.
+
+| Reader question | Current answer | Canonical follow-up |
+| :--- | :--- | :--- |
+| What is HealthOS? | The whole governed platform for health operations, not one app or an EHR skin. | `docs/architecture/01-overview.md` |
+| What proves executable behavior today? | The Swift first-slice path through habilitation, consent, capture, retrieval, SOAP draft, gate, final SOAP, and provenance. | `docs/architecture/28-first-slice-executable-path.md` |
+| What is still scaffolded or placeholder? | Provider deployment, semantic retrieval, final app shells, regulatory/signature/interoperability effectuation, and production ops. | `docs/execution/11-current-maturity-map.md` |
+| Where does construction tooling sit? | Steward, Settlers, Settlements, Territories, and `healthos-forge-mcp` are repository engineering surfaces outside the clinical/runtime hierarchy. | `docs/execution/22-steward-construction-operating-model.md` |
+
+```mermaid
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#f8fafc', 'primaryBorderColor': '#cbd5e1', 'primaryTextColor': '#0f172a', 'clusterBkg': '#ffffff', 'clusterBorder': '#e2e8f0', 'edgeLabelBackground': '#f8fafc', 'fontFamily': 'ui-sans-serif, system-ui, -apple-system'}}}%%
+flowchart LR
+    classDef clinical fill:#ecfdf5,stroke:#16a34a,stroke-width:2px,color:#14532d
+    classDef construction fill:#fdf2f8,stroke:#ec4899,stroke-width:2px,color:#831843
+    classDef boundary fill:#f8fafc,stroke:#94a3b8,stroke-width:2px,color:#334155
+
+    subgraph CLINICAL["HealthOS clinical/runtime hierarchy"]
+        CORE[Core law\nconsent · habilitation · gate · finality]:::clinical
+        GOS[GOS\nsubordinate operational mediation]:::clinical
+        RT[Runtimes\nSession Runtime · AACI · MSR · TS runtimes]:::clinical
+        APP[Apps/interfaces\nScribe · Veridia · CloudClinic]:::clinical
+        ART[Artifacts/effects\ndrafts · derived artifacts · gated final documents]:::clinical
+        CORE --> GOS --> RT --> APP --> ART
+    end
+
+    subgraph BUILD["Repository construction layer"]
+        STEW[Steward\ncoordination]:::construction
+        SETT[Settlers\nspecialized engineering profiles]:::construction
+        TERR[Territories\nrepository domains]:::construction
+        WORK[Settlements\nbounded work units]:::construction
+        MCP[healthos-forge-mcp\nrepo-maintenance tools]:::construction
+        STEW --> SETT
+        SETT --> TERR
+        STEW --> WORK
+        MCP -. deterministic repository operations .-> STEW
+    end
+
+    BUILD -. outside clinical/runtime hierarchy .-> CLINICAL
+```
+
+### Evidence and Maturity Lens
+
+| Maturity term | How to read it here | Example surfaces |
+| :--- | :--- | :--- |
+| `tested operational path` | Executable path plus tests/smoke evidence inside the scaffold boundary. | Core law, GOS lifecycle/tooling, validation harness, first-slice gate behavior |
+| `implemented seam` | Real interface or adapter exists, but broader production or multi-runtime coverage is still incomplete. | AACI first-slice mediation, local async runtime, Scribe minimal validation surface, construction system |
+| `scaffolded contract` | Types, schemas, docs, or validators define the boundary, but full runtime/UI/provider behavior is not complete. | MSR stage contracts, provider/ML posture, Veridia and CloudClinic app-safe contracts |
+| `doctrine-only` / placeholder | Canonical scope or target exists without executable product behavior. | Future HealthOS control panel, production mesh/fabric, final native app shells |
+| not claimed | Do not infer this from the scaffold. | production readiness, complete EHR, real regulatory/signature/interoperability integration, real semantic retrieval |
+
+---
+
 ## 🏗️ Canonical Architecture
 
 HealthOS is a governance-first platform. Every clinical act flows through a strictly layered, consent- and provenance-governed fabric. Apps and interfaces consume only mediated surfaces — they never become law engines.
@@ -346,6 +400,8 @@ This repository is in **controlled implementation / scaffold hardening**:
 | **Liquid Glass UI** | 🎯 macOS 26+ Baseline | HealthOSDesignSystem baseline (DS-001); glass adoption in progress |
 | **Construction System** | ✅ Implemented Seam | 10 CLI commands (healthos-steward) + 10 MCP tools (healthos-forge-mcp) |
 
+Read this table as an onboarding summary. The authoritative maturity ladder is `doctrine-only` → `scaffolded contract` → `implemented seam` → `tested operational path` → `production-hardened`, maintained in `docs/execution/11-current-maturity-map.md`.
+
 **This repository is not:**
 - a production-ready product
 - a complete EHR
@@ -469,6 +525,12 @@ flowchart LR
 | Use healthos-forge-mcp | `ts/agent-infra/healthos-forge-mcp/` | `docs/execution/22-steward-construction-operating-model.md` |
 | See open documentation tasks | `docs/execution/20-documental-todos-work-plan.md` | `docs/execution/prompts/` |
 | See latest daily digest | `.healthos-steward/memory/automations/daily-todo-tracker/latest.md` | `docs/execution/02-status-and-tracking.md` |
+
+### Executive Visual Overview
+
+`DOC-README-VISUAL-PRESENTATION-001` produced an editable visual overview deck as an external work-unit deliverable because this checkout does not yet contain a clear versioned `docs/assets/presentations/` pattern. When a repository asset policy exists, the intended durable path is `docs/assets/presentations/healthos-visual-overview.pptx`.
+
+The deck narrative is: HealthOS is a governed platform; Core law stays sovereign; GOS mediates operational structure; runtimes and apps consume mediated contracts; construction tooling stays outside the clinical/runtime hierarchy; maturity and residual gaps remain explicit.
 
 ### Visual Reading Map
 

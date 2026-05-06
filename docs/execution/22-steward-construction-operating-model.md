@@ -127,8 +127,11 @@ discover
 - ST-016 — Settlement Validation and PR Review Draft Engine (DONE 2026-05-04): `validate-settlement <id>` and `pr-draft <id>` implemented in `@healthos/steward`; ValidationReport and ReviewDraft engines operational; exits 1 on any FAIL criterion (CI-compatible); no shell execution, no LLM, no merge authority; ST-017 is next
 - ST-017 — Derived Memory Builder (DONE 2026-05-04): `build-memory` command writes 6 non-canonical derived snapshot files to `.healthos-steward/memory/derived/` (INDEX.md, construction-status.md, territory-index.md, settler-index.md, settlement-index.md, handoff-snapshot.md); files are overwritten on each run; no LLM, no shell, no new npm deps; ST-018 is next
 - ST-018 — healthos-forge-mcp surface over deterministic operations (DONE 2026-05-05): `ts/agent-infra/healthos-forge-mcp/` created; 10 deterministic tools exposed via stdio MCP; `@healthos/steward` lib re-exports added; ST-019 is next
-- ST-019 — Xcode/Codex/Claude integration instructions (DONE 2026-05-05): CLAUDE.md and tracking docs aligned with actual implemented state of ST-018; all 10 CLI commands documented in bash block; forge-mcp tool list corrected from stale planned names to actual steward_* names; ST-020 goal revised to APP-012; ST-020 is next
+- ST-019 — Xcode/Codex/Claude integration instructions (DONE 2026-05-05): CLAUDE.md and tracking docs aligned with actual implemented state of ST-018; all 10 CLI commands documented in bash block; forge-mcp tool list corrected from stale planned names to actual steward_* names; ST-020 goal revised to APP-012; ST-021 is next
 - ST-020 — Use Steward to generate APP-012 (CloudClinic) prompt (note: APP-011 is DONE — VeridiaSessionFacade, PR #98, 2026-05-04; ST-020 goal revised to target APP-012)
+- ST-021 — forge-mcp HTTP/Streamable HTTP transport (DONE 2026-05-05): `src/server-http.ts` added to `@healthos/forge-mcp`; same 10 tools exposed via StreamableHTTPServerTransport on http://127.0.0.1:3791/mcp; zero new npm deps; stdio transport unmodified; required for Managed Agents API compatibility; ST-022 is next
+- ST-022 — Steward Coordinator Managed Agent definition (Anthropic Managed Agents API) — TODO
+- ST-023 — session client workflows for construction lifecycle — TODO
 
 ## Non-claims
 

@@ -206,7 +206,7 @@ public actor AACIOrchestrator {
             subjective: transcription.workflowText,
             objective: objective,
             assessment: noteSummary,
-            plan: "TODO"
+            plan: "Draft only. Plano terapeutico permanece dependente de decisao clinica humana; AACI nao gera plano de cuidado nesta maturidade scaffold."
         )
         let draft = ArtifactDraft(
             sessionId: session.id,

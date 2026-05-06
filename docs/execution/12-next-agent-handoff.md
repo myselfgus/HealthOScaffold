@@ -6,6 +6,12 @@ Repository is in controlled implementation/scaffold hardening. Governance contra
 
 HealthOScaffold is the historical repository name and construction repository for HealthOS. Future agents must treat implemented architecture, contracts, runtimes, apps, tests, and docs here as HealthOS work unless explicitly marked experimental or deprecated; scaffold vocabulary describes maturity/foundation phase only.
 
+## README visual entrypoint note
+
+DOC-README-VISUAL-PRESENTATION-001 added a compact README orientation lens for new agents, including clinical/runtime hierarchy versus construction tooling and explicit evidence/maturity reading language.
+
+The work unit also generated an editable HealthOS visual overview PPTX outside the commit because the repository does not yet have a clear `docs/assets/presentations/` versioning pattern. Future documentation work can decide whether to create a durable versioned asset path such as `docs/assets/presentations/healthos-visual-overview.pptx`; do not link to a non-versioned deck from canonical docs.
+
 ## Construction-system track
 
 ST-010 started the construction-system track by adding `docs/execution/22-steward-construction-operating-model.md` and the initial `.healthos-settler/` / `.healthos-steward/` construction skeletons.

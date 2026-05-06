@@ -79,6 +79,26 @@ Files touched:
 - `README.md`
 - `docs/execution/02-status-and-tracking.md`
 
+### DOC-README-VISUAL-PRESENTATION-001 README visual information and presentation pass
+Outcome:
+- audited the current README after DOC-README-001/ST-018 and avoided a broad rewrite of already-correct architecture, command, and reading-path sections
+- added a compact entry lens for new agents: what HealthOS is, what is executable now, what remains scaffolded/placeholder, and where construction tooling sits
+- added a clinical/runtime hierarchy versus repository construction-layer diagram that keeps Steward, Settlers, Settlements, Territories, and `healthos-forge-mcp` outside HealthOS clinical/runtime authority
+- added an evidence/maturity lens using the official ladder and an honest note for the generated executive visual overview deck
+- generated the editable PPTX as an external work-unit deliverable, not a versioned asset, because no clear `docs/assets/presentations/` pattern exists in this checkout
+Files touched:
+- `README.md`
+- `docs/execution/02-status-and-tracking.md`
+- `docs/execution/todo/apps-and-interfaces.md`
+- `docs/execution/12-next-agent-handoff.md`
+Validation:
+- `git diff --check` PASS
+- `make validate-docs` PASS
+- presentation artifact-tool build produced a non-empty 9-slide PPTX with rendered previews/contact sheet and 0 layout QA warnings before cleanup
+Residual gaps:
+- future repository decision needed before versioning PPTX assets under a durable docs/assets path
+- downstream app-shell, product-wiring, CI, semantic retrieval, and production-hardening tasks remain open; this pass does not mark them DONE
+
 ### SCRIBE-008 Surface minimal honest GOS runtime mediation in Scribe
 Outcome:
 - expanded `ScribeSessionBridgeState.gosRuntimeState` from coarse active/inactive status into an app-safe audit surface with active workflow title, bundle/spec identity, bound actors/families, reasoning boundaries, and SOAP/referral/prescription mediation markers

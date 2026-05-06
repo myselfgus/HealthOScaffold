@@ -177,6 +177,24 @@ cd ts && npx --yes --workspace @healthos/steward healthos-steward build-memory
 
 Treat those as the implemented `healthos-steward` CLI commands as of ST-017/FORGE-MCP-V2. Do not describe `scan-status`, `validate-docs`, `validate-all`, `check-invariants`, `check-doc-drift`, or other target repository-maintenance operations as delivered CLI behavior until implemented and locally smoked.
 
+For repository-maintenance MCP access, `@healthos/forge-mcp` exposes the same 10 deterministic `steward_*` tools over stdio and, as of ST-021, over Streamable HTTP for Managed Agents compatibility:
+```bash
+cd ts && npx --yes --workspace @healthos/forge-mcp healthos-forge-mcp
+cd ts && npx --yes --workspace @healthos/forge-mcp healthos-forge-mcp-http
+cd ts && FORGE_MCP_PORT=3791 npx --yes --workspace @healthos/forge-mcp healthos-forge-mcp-http
+```
+
+The HTTP server binds `127.0.0.1:${FORGE_MCP_PORT:-3791}/mcp`. Managed Agents API use requires a publicly reachable tunnel URL set through `FORGE_MCP_URL`; do not document localhost as sufficient for a remote Managed Agent connection.
+
+For the Steward Coordinator Managed Agent seam (`@healthos/managed-agent`, ST-022/ST-023):
+```bash
+cd ts && npm run create-agent:dry-run --workspace @healthos/managed-agent
+cd ts && npm run create-agent --workspace @healthos/managed-agent
+cd ts && npm run create-agent:force --workspace @healthos/managed-agent
+```
+
+Live create/update requires `ANTHROPIC_API_KEY` or `ANTHROPIC_AUTH_TOKEN` and writes `.healthos-steward/managed-agent/agent.json`. The typed session workflows are `discover`, `brief`, `validate`, and `handoff`; they are human-triggered construction lifecycle helpers, not a CLI, cron runner, autonomous executor, clinical/runtime surface, or merge authority.
+
 Codex, Claude Code, and other external coding assistants are external executors operating on this repository. They are not internal Steward providers.
 
 Codex may support Steward-scoped Xcode-facing repository maintenance as an external executor. Keep this role limited to reviewing and proposing PRs for Claude Code automations, scheduled-task definitions, Xcode/Steward instructions, and automation drift. Do not create a new Steward authority category, grant merge authority, or treat Codex as an internal Steward provider.

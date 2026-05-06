@@ -7,7 +7,12 @@
  *   node dist/create-agent.js --force    — always update to current definition
  *   node dist/create-agent.js --dry-run  — validate config, no API calls
  *
- * Requires: ANTHROPIC_API_KEY env var (runtime only)
+ * Auth (checked in order):
+ *   1. ANTHROPIC_API_KEY  — platform API key from console.anthropic.com (preferred)
+ *   2. ANTHROPIC_AUTH_TOKEN — bearer token (Claude Code session token / claude.ai OAuth)
+ *      Claude Code sessions expose a per-session bearer token; pass it via this env var.
+ *      Note: Managed Agents beta access must be enabled for the associated account.
+ *
  * Writes:   .healthos-steward/managed-agent/agent.json (agent ID + version)
  *
  * Construction-system artifact. No clinical authority. No merge authority.
@@ -58,13 +63,26 @@ if (isDryRun) {
   process.exit(0);
 }
 
-if (!process.env.ANTHROPIC_API_KEY) {
-  console.error("Error: ANTHROPIC_API_KEY env var is required.");
-  console.error("Set it and re-run, or use --dry-run to validate config only.");
+const apiKey = process.env.ANTHROPIC_API_KEY;
+const authToken = process.env.ANTHROPIC_AUTH_TOKEN;
+
+if (!apiKey && !authToken) {
+  console.error("Error: no auth credential found.");
+  console.error("  Option 1 — platform API key:  export ANTHROPIC_API_KEY=sk-ant-...");
+  console.error("  Option 2 — session bearer:    export ANTHROPIC_AUTH_TOKEN=<token>");
+  console.error("  Option 3 — dry run only:      node dist/create-agent.js --dry-run");
+  console.error("");
+  console.error("Claude Code session token: Claude Code sessions generate a per-session");
+  console.error("bearer token. Capture it and pass as ANTHROPIC_AUTH_TOKEN.");
   process.exit(1);
 }
 
-const client = new Anthropic();
+const client = apiKey
+  ? new Anthropic({ apiKey })
+  : new Anthropic({ authToken: authToken! });
+
+console.log(`  auth mode:      ${apiKey ? "ANTHROPIC_API_KEY" : "ANTHROPIC_AUTH_TOKEN (bearer)"}`);
+console.log("");
 
 const existing = readAgentState();
 

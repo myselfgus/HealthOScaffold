@@ -235,6 +235,24 @@ Outcome (2026-05-05):
 - Invariants: no source code changed; construction-system boundary preserved; no clinical authority
 - Residual gaps: APP-012 and CI-001 remain separate future tasks
 
+### ST-021 — forge-mcp HTTP/Streamable HTTP transport (2026-05-05)
+
+Status: DONE.
+
+Goal:
+- add HTTP/SSE transport to healthos-forge-mcp so Managed Agents API can connect to it (requires HTTP MCP server, not stdio)
+- expose same 10 deterministic tools via StreamableHTTPServerTransport on http://127.0.0.1:${FORGE_MCP_PORT:-3791}/mcp
+- keep stdio transport (server.ts) unmodified
+- require zero new npm dependencies
+
+Outcome (2026-05-05):
+- Created `ts/agent-infra/healthos-forge-mcp/src/server-http.ts` — new HTTP entry point; stateless per-request McpServer + StreamableHTTPServerTransport; binds 127.0.0.1 only; port from FORGE_MCP_PORT (default 3791); reuses registerTools() from tools.ts without modification
+- Updated `ts/agent-infra/healthos-forge-mcp/package.json` — added `healthos-forge-mcp-http` bin and `start:http` script
+- Updated `docs/execution/02-status-and-tracking.md`, `docs/execution/19-settler-model-task-tracker.md` (this file), `docs/execution/22-steward-construction-operating-model.md`
+- Validation: `make ts-build` PASS; smoke initialize PASS; smoke tools/list → 10 tools PASS
+- Maturity: implemented seam
+- Non-claims: no clinical authority; no merge authority; no production readiness; no runtime MCP; no new npm deps; stdio transport unmodified; healthos-forge-mcp is not a HealthOS runtime MCP server
+
 ### ST-020 — Use Steward to generate APP-012 (CloudClinic) prompt
 
 Status: TODO.

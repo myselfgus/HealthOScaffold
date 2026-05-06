@@ -6,6 +6,20 @@ Current phase: Controlled implementation — first vertical slice started
 
 ## Completed recently
 
+## ST-021 — forge-mcp HTTP/Streamable HTTP transport (2026-05-05)
+
+- Objective: add `src/server-http.ts` to `@healthos/forge-mcp`, exposing the same 10 deterministic tools via `StreamableHTTPServerTransport` (MCP Streamable HTTP spec) on `http://127.0.0.1:${FORGE_MCP_PORT:-3791}/mcp`; required for Managed Agents API compatibility (API expects HTTP MCP servers, not stdio).
+- Branch: `feat/st-021-forge-mcp-http-transport`
+- Files created:
+  - `ts/agent-infra/healthos-forge-mcp/src/server-http.ts` — HTTP entry point; stateless per-request `McpServer` + `StreamableHTTPServerTransport`; binds only to 127.0.0.1; port from `FORGE_MCP_PORT` env (default 3791); no new npm dependencies (`@hono/node-server` already transitive via MCP SDK 1.29.0)
+- Files updated:
+  - `ts/agent-infra/healthos-forge-mcp/package.json` — added `healthos-forge-mcp-http` bin entry (`dist/server-http.js`) and `start:http` script
+- Validation: `make ts-build` PASS; smoke `initialize` → `{"serverInfo":{"name":"healthos-forge-mcp","version":"0.1.0"}}` PASS; smoke `tools/list` → 10 tools PASS
+- Invariants: no clinical tools; no LLM calls; no shell execution; no merge authority; no new npm dependencies; stdio transport (server.ts) unmodified; healthos-forge-mcp remains outside clinical/runtime hierarchy; `_non_canonical` in every tool response; bind 127.0.0.1 only
+- Maturity: implemented seam (HTTP transport added alongside existing stdio)
+- Residual gaps: ST-022 (Steward Coordinator Managed Agent definition) and ST-023 (session client workflows) remain TODO
+- Next: ST-022 — define Steward Coordinator Managed Agent using Anthropic Managed Agents API
+
 ## DOC-README-VISUAL-PRESENTATION-001 — README visual information and presentation pass (2026-05-05)
 
 - Objective: audit the current README entry surface after DOC-README-001/ST-018 alignment, add only the missing visual/evidence orientation, and create an editable executive visual overview deck without changing runtime behavior.

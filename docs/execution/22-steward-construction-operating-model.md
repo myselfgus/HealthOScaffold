@@ -130,7 +130,7 @@ discover
 - ST-019 — Xcode/Codex/Claude integration instructions (DONE 2026-05-05): CLAUDE.md and tracking docs aligned with actual implemented state of ST-018; all 10 CLI commands documented in bash block; forge-mcp tool list corrected from stale planned names to actual steward_* names; ST-020 goal revised to APP-012; ST-021 is next
 - ST-020 — Use Steward to generate APP-012 (CloudClinic) prompt (note: APP-011 is DONE — VeridiaSessionFacade, PR #98, 2026-05-04; ST-020 goal revised to target APP-012)
 - ST-021 — forge-mcp HTTP/Streamable HTTP transport (DONE 2026-05-05): `src/server-http.ts` added to `@healthos/forge-mcp`; same 10 tools exposed via StreamableHTTPServerTransport on http://127.0.0.1:3791/mcp; zero new npm deps; stdio transport unmodified; required for Managed Agents API compatibility; ST-022 is next
-- ST-022 — Steward Coordinator Managed Agent definition (Anthropic Managed Agents API) — TODO
+- ST-022 — Steward Coordinator Managed Agent definition (DONE 2026-05-05): `ts/agent-infra/healthos-managed-agent/` created (`@healthos/managed-agent` 0.1.0); STEWARD_COORDINATOR_DEF with claude-opus-4-7, system prompt encoding doc-22 lifecycle, mcp_servers pointing to forge-mcp HTTP; idempotent create-agent script with --dry-run/--force; @anthropic-ai/sdk added; ST-023 is next
 - ST-023 — session client workflows for construction lifecycle — TODO
 
 ## Non-claims

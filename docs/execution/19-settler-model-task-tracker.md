@@ -235,6 +235,28 @@ Outcome (2026-05-05):
 - Invariants: no source code changed; construction-system boundary preserved; no clinical authority
 - Residual gaps: APP-012 and CI-001 remain separate future tasks
 
+### ST-022 — Steward Coordinator Managed Agent definition (2026-05-05)
+
+Status: DONE.
+
+Goal:
+- create @healthos/managed-agent package defining the Steward Coordinator agent for Anthropic Managed Agents API
+- system prompt encoding doc-22 construction lifecycle (7 stages, 10 forge-mcp tools, strict boundaries)
+- idempotent create-agent script (upsert: create / show-saved / --force update / --dry-run)
+- mcp_servers pointing to forge-mcp HTTP server (ST-021); FORGE_MCP_URL configurable for public endpoint
+
+Outcome (2026-05-05):
+- Created `ts/agent-infra/healthos-managed-agent/` (`@healthos/managed-agent` 0.1.0)
+- `src/agent-def.ts` — STEWARD_COORDINATOR_DEF: model claude-opus-4-7, system prompt with 7-stage lifecycle + 10 tool descriptions + boundary invariants, mcp_servers + mcp_toolset
+- `src/create-agent.ts` — upsert script with --dry-run (no API), --force (update), state persistence to .healthos-steward/managed-agent/agent.json
+- `src/index.ts` — re-exports
+- `package.json` — @anthropic-ai/sdk ^0.40.0; scripts: create-agent, create-agent:dry-run, create-agent:force
+- `.healthos-steward/managed-agent/.gitkeep`
+- Validation: make ts-build PASS; --dry-run PASS; make validate-docs PASS
+- Constraint: FORGE_MCP_URL must be publicly accessible for Managed Agents API cloud calls
+- Maturity: implemented seam
+- Non-claims: no clinical authority; no merge authority; no production readiness; ANTHROPIC_API_KEY never persisted
+
 ### ST-021 — forge-mcp HTTP/Streamable HTTP transport (2026-05-05)
 
 Status: DONE.

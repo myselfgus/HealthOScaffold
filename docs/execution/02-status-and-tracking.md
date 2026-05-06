@@ -6,6 +6,24 @@ Current phase: Controlled implementation — first vertical slice started
 
 ## Completed recently
 
+## ST-022 — Steward Coordinator Managed Agent definition (2026-05-05)
+
+- Objective: create `ts/agent-infra/healthos-managed-agent/` (`@healthos/managed-agent` 0.1.0) — new TypeScript package defining the HealthOS Steward Coordinator agent for the Anthropic Managed Agents API (`managed-agents-2026-04-01` beta); includes agent config with system prompt encoding the doc-22 construction lifecycle, `create-agent.ts` idempotent upsert script, and `.healthos-steward/managed-agent/agent.json` state persistence.
+- Branch: `feat/st-022-steward-coordinator-agent`
+- Files created:
+  - `ts/agent-infra/healthos-managed-agent/src/agent-def.ts` — `STEWARD_COORDINATOR_DEF` constant: model `claude-opus-4-7`, system prompt (7-stage lifecycle, 10 forge-mcp tools, strict boundary invariants), `mcp_servers` pointing to `FORGE_MCP_URL` (default `http://127.0.0.1:3791/mcp`), `mcp_toolset` tool
+  - `ts/agent-infra/healthos-managed-agent/src/create-agent.ts` — upsert script: create if no `agent.json`; show saved ID if exists; `--force` updates; `--dry-run` validates config without API call; requires `ANTHROPIC_API_KEY` at runtime only
+  - `ts/agent-infra/healthos-managed-agent/src/index.ts` — re-exports `STEWARD_COORDINATOR_DEF`, `FORGE_MCP_URL`
+  - `ts/agent-infra/healthos-managed-agent/package.json` — `@anthropic-ai/sdk ^0.40.0` dep; `create-agent`, `create-agent:dry-run`, `create-agent:force` scripts
+  - `ts/agent-infra/healthos-managed-agent/tsconfig.json`
+  - `.healthos-steward/managed-agent/.gitkeep` — directory anchor; `agent.json` written at runtime
+- Validation: `make ts-build` PASS; `node dist/create-agent.js --dry-run` PASS (config valid, no API call); `make validate-docs` PASS
+- Constraint documented: `FORGE_MCP_URL` must be a publicly-accessible HTTP endpoint for Managed Agents API (which connects remotely); `127.0.0.1` is for local development only; tunnel or deployed endpoint required for cloud use
+- Invariants: no clinical tools; no clinical authority; no merge authority; no production claim; `ANTHROPIC_API_KEY` never logged or persisted; agent definition is construction-system tooling only; forge-mcp package unmodified
+- Maturity: implemented seam
+- Residual gaps: ST-023 (session client workflows for construction lifecycle) remains TODO; actual agent registration requires `ANTHROPIC_API_KEY` + publicly-accessible `FORGE_MCP_URL`
+- Next: ST-023 — session client workflows for construction lifecycle coordination
+
 ## ST-021 — forge-mcp HTTP/Streamable HTTP transport (2026-05-05)
 
 - Objective: add `src/server-http.ts` to `@healthos/forge-mcp`, exposing the same 10 deterministic tools via `StreamableHTTPServerTransport` (MCP Streamable HTTP spec) on `http://127.0.0.1:${FORGE_MCP_PORT:-3791}/mcp`; required for Managed Agents API compatibility (API expects HTTP MCP servers, not stdio).

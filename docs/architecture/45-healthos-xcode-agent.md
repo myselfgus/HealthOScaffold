@@ -61,7 +61,7 @@ Xcode Intelligence (Apple-controlled engineering runtime surface)
   ├─ consumes HealthOS instructions and skills
   │    (CLAUDE.md, AGENTS.md, skill files, policy guard language)
   ├─ calls HealthOS Forge MCP server for typed repository operations
-  │    (healthos-forge-mcp: validate-all, scan-status, next-task, check-invariants, ...)
+  │    (healthos-forge-mcp: steward_next_task, steward_scan_status, steward_get_handoff, ...)
   ├─ reads derived repository memory
   │    (.healthos-steward/memory/derived/)
   └─ delegates deterministic CI-safe operations to healthos-steward CLI
@@ -122,24 +122,19 @@ WS-1 (instructions and skills consolidation) is the follow-up work item for this
 
 ### MCP server
 
-Candidate name: `healthos-forge-mcp`
+Implemented package: `healthos-forge-mcp`
 
 A local MCP server exposes typed HealthOS repository operations to Xcode Intelligence or any compatible MCP client. Typed operations allow Steward to invoke HealthOS-specific repository actions as structured tool calls, not free-form shell commands.
 
-Target operations (not delivered unless implemented):
-- `validate-all` — run the full repository validation harness
-- `validate-docs` — run documentation drift and presence checks
-- `scan-status` — scan current repository status against execution docs
-- `get-handoff` — retrieve next-agent handoff snapshot
-- `next-task` — identify the highest-priority next task from execution docs
-- `read-gap-register` — read the final gap register
-- `generate-pr-review-draft` — assemble a PR review checklist against invariant policy
-- `check-invariants` — check invariant enforcement posture
-- `check-doc-drift` — check for documentation drift
+Current implemented seam (ST-018/FORGE-MCP-V2, 2026-05-05):
+- package: `ts/agent-infra/healthos-forge-mcp/`
+- server shape: stdio MCP server over `@healthos/steward` deterministic library functions
+- tools: `steward_next_task`, `steward_scan_status`, `steward_get_handoff`, `steward_list_territories`, `steward_inspect_territory`, `steward_list_settlers`, `steward_list_settlements`, `steward_validate_settlement`, `steward_generate_prompt`, `steward_build_memory`
+- boundary: tools only; no LLM calls, no shell execution, no clinical/runtime authority, no merge authority
 
-All operations are target architecture. None are delivered until implemented and verified.
+Planned repository-maintenance operations such as `validate-all`, `validate-docs`, `check-invariants`, `check-doc-drift`, or PR review posting are not delivered MCP tools until implemented and locally smoked.
 
-WS-2 (MCP server implementation) is the follow-up work item for this extension point.
+WS-2 has an implemented seam. Further work should harden typed errors, expand validated operation coverage only when needed, and keep every operation outside the HealthOS clinical/runtime hierarchy.
 
 ### Repository memory
 
@@ -283,7 +278,7 @@ Policy guard language covers:
 
 If HealthOS later uses MCP servers internally for clinical, operational, or runtime automation, those are separate Core-governed runtime MCP servers. They must obey HealthOS Core invariants: lawfulContext, consent, habilitation, finality, storage layer policy, provenance, audit, and gate. They are not `healthos-forge-mcp`. Do not collapse these two MCP families.
 
-When implemented, `healthos-forge-mcp` must conform to:
+`healthos-forge-mcp` must conform to:
 
 - local server only; no external network exposure required
 - typed operations with explicit input and output contracts
@@ -339,7 +334,7 @@ This target architecture does not imply:
 |---|---|---|
 | Xcode Intelligence integration | doctrine-only | No end-to-end verification in this work unit; must not be claimed above doctrine-only |
 | Instructions / skills | scaffolded contract (files exist); content consolidation pending | WS-1 follow-up |
-| MCP server (healthos-forge-mcp) | doctrine-only | WS-2 follow-up; not implemented |
+| MCP server (healthos-forge-mcp) | implemented seam | ST-018/FORGE-MCP-V2 delivered 10 deterministic `steward_*` tools; no Xcode Intelligence end-to-end integration claim |
 | Derived repository memory | scaffolded contract (.healthos-steward/memory/ exists) | Official docs remain canonical source |
 | Deterministic CLI | implemented seam / tested operational path for existing commands | CI and non-Xcode path; WS-3 consolidation pending |
 | Optional custom surface | doctrine-only | Only if Xcode-native surface proves insufficient for a documented case |

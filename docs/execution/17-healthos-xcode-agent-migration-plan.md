@@ -64,40 +64,34 @@ Boundary constraint: `healthos-forge-mcp` is the repository-maintenance MCP serv
 
 Settler boundary: `healthos-forge-mcp` exposes operations for Steward and Settlers. Those operations are repository-maintenance operations. They are not clinical tools and do not execute HealthOS runtime acts.
 
-Actions:
-- build a local MCP server under a new or existing TS package
-- expose typed operations:
-  - `validate-all`
-  - `validate-docs`
-  - `scan-status`
-  - `get-handoff`
-  - `next-task`
-  - `read-gap-register`
-  - `generate-pr-review-draft`
-  - `check-invariants`
-  - `check-doc-drift`
-- define typed error taxonomy per operation
-- support dry-run mode for operations with side effects
-- enforce: no secrets in logs, no clinical payloads in inputs/outputs, no direct HealthOS Core law mutation
+Current implemented seam (ST-018/FORGE-MCP-V2, 2026-05-05):
+- `ts/agent-infra/healthos-forge-mcp/` exists as `@healthos/forge-mcp`
+- the server is stdio MCP over deterministic `@healthos/steward` library functions
+- implemented tools: `steward_next_task`, `steward_scan_status`, `steward_get_handoff`, `steward_list_territories`, `steward_inspect_territory`, `steward_list_settlers`, `steward_list_settlements`, `steward_validate_settlement`, `steward_generate_prompt`, `steward_build_memory`
+- enforced boundary: no clinical tools, no HealthOS runtime acts, no LLM calls, no shell execution, no merge authority
+
+Remaining follow-up actions:
+- expand typed operations only when a concrete repository-maintenance need exists
+- do not document planned names such as `validate-all`, `validate-docs`, `check-invariants`, or `check-doc-drift` as delivered MCP tools until implemented and locally smoked
+- keep no-secrets/no-clinical-payload/no-Core-law-mutation constraints in every new operation
 - produce provenance-friendly output for repository-bound operations
 
 Definition of done:
-- Xcode Intelligence or compatible MCP client can invoke HealthOS-specific repository operations as structured tool calls
-- typed errors and dry-run support are available
+- a compatible MCP client can invoke the implemented `steward_*` repository operations as structured tool calls
 - operations do not move HealthOS clinical/constitutional law into tooling
 - no production-readiness claim in any operation output
 
-Constraint: WS-2 is Phase B work. Doc 45 describes the target boundary. This plan does not implement WS-2.
+Constraint: WS-2 has an implemented seam, but this does not prove Xcode Intelligence end-to-end integration.
 
 ### WS-3: Deterministic CLI consolidation
 
-Objective: keep `ts/agent-infra/healthos-steward` narrow, deterministic, and CI-safe, while expanding the current hard-reset baseline into explicit repository-maintenance operations over time.
+Objective: keep `ts/agent-infra/healthos-steward` narrow, deterministic, and CI-safe, while expanding implemented repository-maintenance operations only when they are backed by source and local smoke evidence.
 
 Actions:
-- preserve the current baseline commands (`status`, `runtime`, `session`) until replacement operations are implemented
+- preserve the current deterministic commands (`status`, `runtime`, `session`, `list`, `inspect`, `next`, `generate-prompt`, `validate-settlement`, `pr-draft`, `build-memory`) until replacement operations are deliberately scoped
 - remove or archive provider orchestration as primary architecture
 - remove prompt-template-based pseudo-agent orchestration as primary interface
-- add or restore deterministic repository operations deliberately rather than implying they already exist (`validate-docs`, `validate-all`, `scan-status`, `get-handoff`, `next-task`)
+- add or restore further deterministic repository operations deliberately rather than implying planned names such as `validate-docs`, `validate-all`, `check-invariants`, or `check-doc-drift` already exist
 - optionally support Settlement records later, after the doctrine and record shape are defined
 - keep Settlement support deterministic; the CLI does not implement multiagent intelligence by itself
 - make CLI share operation implementations with MCP server where structurally possible once those operations exist
@@ -132,7 +126,7 @@ Outputs:
 - WS-1: `CLAUDE.md`, `AGENTS.md`, and skill files updated with consolidated HealthOS instructions
 - Codex companion local automation registered for Steward-scoped Xcode-facing repository maintenance
 - Settler profiles exist as doctrine/instruction artifacts before any multiagent implementation
-- WS-2: `healthos-forge-mcp` local MCP server implemented with typed operations
+- WS-2: `healthos-forge-mcp` local MCP server implemented with deterministic `steward_*` operations
 - WS-3: deterministic CLI consolidated, provider orchestration removed as primary path
 - validation docs updated to reflect new operations
 - `make validate-docs` passes against updated doc set
@@ -148,8 +142,9 @@ Outputs:
 - all active docs updated to reflect the current target (no references to the old 7-workstream custom runtime plan as a pending target)
 
 Until Phase C is complete, documentation must distinguish clearly between:
-- current delivered CLI baseline: `status`, `runtime`, `session`
-- target deterministic repository operations: planned under WS-2 and WS-3, not yet delivered unless implemented and validated
+- delivered CLI commands: `status`, `runtime`, `session`, `list`, `inspect`, `next`, `generate-prompt`, `validate-settlement`, `pr-draft`, and `build-memory`
+- delivered MCP tools: the 10 deterministic `steward_*` tools in `ts/agent-infra/healthos-forge-mcp/`
+- target repository-maintenance operations not yet delivered: `validate-all`, `validate-docs`, `check-invariants`, `check-doc-drift`, PR review posting, and any operation not backed by current source plus a local smoke run
 
 Phase C is complete when the engineering-agent layer is consistent: Xcode Intelligence as the runtime surface, instructions/MCP/memory/CLI as the HealthOS contribution, and no active custom agent runtime work pending.
 
@@ -185,7 +180,7 @@ Target state is materially achieved when all are true:
 
 - Xcode Intelligence integration posture is documented in docs 45 and 46 without false capability claims
 - instructions and skills are consolidated (WS-1 complete): agent receives HealthOS-specific posture on entry
-- MCP server exists and exposes typed repository operations (WS-2 complete)
+- MCP server exists and exposes deterministic repository operations (WS-2 implemented seam)
 - deterministic CLI works without LLM dependency and passes CI (WS-3 complete)
 - official docs remain canonical; repository memory remains derived
 - Steward has no authority over Core, GOS, or clinical runtime
@@ -198,7 +193,7 @@ Target state is materially achieved when all are true:
 During all phases:
 
 - do not claim Xcode Intelligence integration before end-to-end verification is complete
-- do not claim MCP server operation availability before the server is implemented and tested
+- do not claim new MCP server operation availability before the operation is implemented and tested
 - do not claim Claude/Codex/Xcode integration for specific capabilities unless verified from official documentation
 - do not claim production readiness of any HealthOS component at any phase
 - do not claim regulatory compliance at any phase

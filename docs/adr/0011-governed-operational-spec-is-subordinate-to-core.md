@@ -1,72 +1,133 @@
-# ADR 0011: Governed Operational Spec is a subordinate spec layer inside HealthOS
+---
+id: ADR-0011
+title: Governed Operational Spec é subordinada ao Core (Governed Operational Spec is subordinate to Core)
+status: Accepted
+date: 2025-04-23
+deciders: [HealthOS Architecture Council, Core engineering lead, AACI lead]
+consulted: [GOS tooling lead (TS), MSR lead, Apps lead, Compliance/Legal advisor]
+informed: [All HealthOS contributors, partners de protocolo/política]
+tags: [GOS, governed-operational-spec, runtime-binding, compiler, AACI, MSR, ontologia, hierarquia-constitucional, prompts]
+modules_impacted:
+  - HealthOSCore
+  - HealthOSAACI
+  - HealthOSMSR
+  - HealthOSSessionRuntime
+  - HealthOSProviders
+related_adrs:
+  supersedes: []
+  superseded_by: []
+  related: [ADR-0001, ADR-0003, ADR-0004, ADR-0005, ADR-0010]
+code_references:
+  - path: swift/Sources/HealthOSCore/GovernedOperationalSpec.swift
+    type: protocol
+    note: Tipos canônicos da spec GOS no Core.
+  - path: swift/Sources/HealthOSCore/GOSFileBackedRegistry.swift
+    type: impl
+    note: Registry file-backed para bundles GOS.
+  - path: swift/Sources/HealthOSAACI/GOSBindings.swift
+    type: impl
+    note: Bindings AACI ↔ GOS primitives.
+  - path: swift/Sources/HealthOSAACI/GOSRuntimeActivation.swift
+    type: impl
+    note: Ativação de GOS no runtime AACI.
+  - path: swift/Sources/HealthOSAACI/GOSRuntimeContext.swift
+    type: impl
+    note: Contexto de runtime para execução GOS.
+  - path: swift/Sources/HealthOSAACI/GOSRuntimeResolution.swift
+    type: impl
+    note: Resolução de execução GOS.
+  - path: schemas/governed-operational-spec.schema.json
+    type: resource
+    note: Schema canônico machine-readable.
+  - path: schemas/governed-operational-spec-authoring.schema.json
+    type: resource
+    note: Schema authoring (human/AI-friendly).
+  - path: schemas/governed-operational-spec-bundle-manifest.schema.json
+    type: resource
+    note: Manifesto de bundle.
+  - path: schemas/governed-operational-spec-lifecycle-audit.schema.json
+    type: resource
+    note: Auditoria de ciclo de vida.
+  - path: schemas/governed-operational-spec-review-record.schema.json
+    type: resource
+    note: Registro de revisão.
+  - path: ts/packages/healthos-gos-tooling
+    type: pipeline
+    note: Compilador TS de GOS.
+  - path: docs/architecture/29-governed-operational-spec.md
+    type: resource
+    note: Documentação de arquitetura GOS.
+  - path: swift/Tests/HealthOSTests/GOSRuntimeAdoptionTests.swift
+    type: test
+    note: Testes de adoção runtime.
+risk_level: High
+compliance:
+  privacy: GOS não contém PHI; é spec compilada. Bundles versionados; ativação requer revisão e aprovação registradas.
+  security: Bundles assinados ou validados via schema antes de ativação; lifecycle audit imutável.
+  data_classification: Metadados operacionais; sem PHI direto.
+observability:
+  logs: `gos.bundle.activated{bundle_id,version,actor}`, `gos.execution.completed{spec_id,duration}`, `gos.activation.denied{reason}`.
+  metrics: `healthos.gos.bundles.active{kind}`, `healthos.gos.execution.latency_ms`, `healthos.gos.activation.failures.total`, `healthos.gos.compiler.errors.total`.
+  traces: Span `gos.execute` com atributos `bundle_id`, `spec_id`, `runtime`, `outcome`.
+testing:
+  strategy: Compiler tests (TS); contract tests Core↔AACI; integration tests SessionRuntime executando bundle de exemplar; "golden specs" para regressão.
+  coverage_targets: Schema validation 100%; compiler warnings ≥ 95% cobertos; integration test passa para `aaci.first-slice` exemplar.
+rollout:
+  plan: Adotada e materializada (GOS stabilization wave). Novos primitivos requerem evolução de schema + ADR superseding ou complementar.
+  monitoring: Painel de bundles ativos por runtime; alarmes em falhas de ativação.
+---
 
-## Status
-Accepted
+# ADR 0011 — Governed Operational Spec é subordinada ao Core
 
-## Context
+## Contexto
 
-HealthOS already models the sovereign layer of the system through core law:
-- identity
-- consent
-- habilitation
-- finality
-- provenance
-- gate mechanics
-- storage/access contracts
+- **Problema e motivação.** HealthOS já modela a camada soberana através da lei do Core (identidade, consent, habilitation, finality, provenance, gate, contratos de storage/access). AACI e outros runtimes precisam de uma forma disciplinada de transformar **linguagem operacional autorada por humano** (políticas, protocolos, guidelines, regras administrativas, instruções de serviço) em **estrutura executável** machine-usable. Sem essa camada intermediária, a tradução vira lógica de prompt ad hoc, não-versionada, não-auditável.
+- **Pressupostos e restrições.** (a) Hierarquia constitucional do ADR-0001; (b) compliance arquiteturalizada do ADR-0010; (c) gate humano do ADR-0003 não pode ser eliminado por GOS; (d) authoring deve ser amigável a humano e IA; transport canônico é JSON.
+- **Objetivos e critérios de sucesso.**
+  - **Objetivo.** GOS é a camada declarativa intermediária entre linguagem operacional autorada e execução de runtime.
+  - **Critérios.** (a) Bundles GOS são compiláveis, validáveis e versionáveis; (b) runtimes executam GOS sem reimplementar lei do Core; (c) primer GOS para `aaci.first-slice` é executável end-to-end (alcançado).
 
-AACI and other runtimes need a disciplined way to transform human-authored operational language into machine-usable execution structure.
-That language may come from:
-- policies
-- protocols
-- guidelines
-- operational rules
-- service procedures
-- documentation rules
-- administrative instructions
+## Decisão
 
-The repository already contains enough constitutional structure to support this translation, but it did not yet name or formalize the intermediate representation layer that should sit between human-authored operational language and runtime execution.
+HealthOS introduz uma camada arquitetural chamada **Governed Operational Spec (GOS)**.
 
-## Decision
+GOS **é**:
+- camada declarativa de spec intermediária;
+- autorada para colaboração humano/IA (formato declarativo amigável, ex.: YAML);
+- compilada para forma canônica machine-readable (JSON sob schema em [schemas/governed-operational-spec.schema.json](../../schemas/governed-operational-spec.schema.json));
+- consumida por runtimes HealthOS como AACI;
+- **sempre subordinada à lei do HealthOS Core**.
 
-HealthOS introduces a new architectural layer called **Governed Operational Spec (GOS)**.
+GOS **não é**:
+- a camada constitucional do sistema;
+- engine de política alternativa ao core;
+- framework de workflow propriedade de app;
+- substituto de gate, consent, habilitation ou finality;
+- engine clinicamente autônoma de decisão.
 
-GOS is:
-- a declarative intermediate specification layer
-- authored for human/AI collaboration
-- compiled into canonical machine-readable form
-- consumed by HealthOS runtimes such as AACI
-- always subordinate to HealthOS Core law
+### Posicionamento na arquitetura
 
-GOS is not:
-- the constitutional layer of the system
-- an alternative policy engine to the core
-- an app-owned workflow framework
-- a replacement for gate, consent, habilitation, or finality
-- a clinically autonomous decision engine
-
-## Placement in architecture
-
-Canonical hierarchy becomes:
-
-Material substrate
-↓
+```
+Substrato material
+    ↓
 HealthOS Core
-↓
+    ↓
 Governed Operational Spec (GOS)
-↓
-HealthOS Runtimes
-↓
-Agents / Actors
-↓
+    ↓
+HealthOS Runtimes (AACI/MSR/SessionRuntime)
+    ↓
+Agentes / Atores
+    ↓
 Apps / Interfaces
-↓
-Artifacts / Effects
+    ↓
+Artefatos / Efeitos
+```
 
-This means GOS can describe what should be extracted, derived, checked, drafted, timed, escalated, and evidenced, but it cannot override the core laws that determine whether access or effectuation is lawful.
+GOS pode descrever o que deve ser **extraído, derivado, checado, draftado, cronometrado, escalado, evidenciado**, mas **não pode** sobrepor leis core que determinam se acesso ou efetuação é lícito.
 
-## GOS primitive families
+### Famílias de primitivos GOS
 
-GOS is built from explicit primitive spec families:
+GOS é construída de famílias explícitas de spec primitives:
 - signal specs
 - slot specs
 - derivation specs
@@ -80,81 +141,119 @@ GOS is built from explicit primitive spec families:
 - escalation specs
 - scope requirement specs
 
-These primitives are constitutional for GOS itself, but not for HealthOS as a whole.
-The constitutional layer remains the core.
+Esses primitivos são constitucionais para GOS, mas **não** para HealthOS como um todo.
 
-## Runtime rule
+### Regra de runtime
 
-Runtimes may consume GOS to:
-- normalize natural-language operational guidance into executable structures
-- guide extraction and structuring work
-- bind subagents to bounded responsibilities
-- prepare drafts and administrative actions
-- surface deadlines, checks, and escalations
-- attach evidence/provenance hooks
+Runtimes podem consumir GOS para:
+- normalizar guidance operacional natural-language em estruturas executáveis;
+- guiar trabalho de extração e estruturação;
+- ligar subagentes a responsabilidades bounded;
+- preparar drafts e ações administrativas;
+- expor deadlines, checks, escalações;
+- anexar evidence/provenance hooks.
 
-Runtimes may not use GOS to bypass:
-- consent checks
-- habilitation checks
-- scope/finality checks
-- gate requirements
-- lawful storage boundaries
+Runtimes **não** podem usar GOS para burlar:
+- consent checks;
+- habilitation checks;
+- scope/finality checks;
+- gate requirements;
+- lawful storage boundaries.
 
-## App rule
+### Regra de app
 
-Apps do not interpret GOS as a source of law.
-Apps may consume states, outputs, previews, and summaries produced by runtimes that executed under GOS, but they do not become independent interpreters of regulatory or governance logic.
+Apps **não** interpretam GOS como fonte de lei. Apps consomem estados/outputs/previews/summaries produzidos por runtimes que executaram sob GOS, mas **não** se tornam intérpretes independentes de lógica regulatória ou de governança (consistente com ADR-0010).
 
-## Authoring form
+### Forma de authoring
 
-Preferred authoring form is human/AI-friendly declarative text (for example YAML), compiled into canonical JSON for machine transport, validation, versioning, and execution binding.
+Forma de authoring preferida: declarativa human/AI-friendly (ex.: YAML), compilada para JSON canônico para transporte machine, validação, versioning e binding de execução.
 
-## Consequences
+- **Escopo.** Define camada GOS, primitivos, regras de runtime/app, forma de authoring. Não define protocolos clínicos específicos (esses são bundles GOS), nem motor multi-node.
+- **Justificativa.** Coloca a tradução natural-language→executável em uma camada governada e versionada, ortogonal à lei do Core.
 
-Positive:
-- gives HealthOS a native place for policy/protocol/workflow compilation
-- keeps natural-language operational guidance out of ad hoc prompt logic
-- improves reuse across AACI subagents and future runtimes
-- makes evidence, deadlines, and guards explicit instead of implicit
-- allows compiler/runtime evolution without moving law into apps
+## Alternativas Consideradas
 
-Negative / constraints:
-- requires a compiler/validator layer
-- requires careful vocabulary discipline so GOS does not grow into a second constitution
-- requires explicit bindings from runtime agents to GOS primitives
+### Alternativa A — Continuar com prompts/policies ad hoc no código de runtime
+- **Prós.** Sem nova camada para construir.
+- **Contras.** Não-versionado; impossível auditar; reuse zero; mistura razão clínica com lei.
+- **Rejeitada.**
 
-## Non-goals
+### Alternativa B — Engine de policy independente fora do Core
+- **Prós.** Modular.
+- **Contras.** Cria segunda constituição; viola ADR-0010 (compliance arquiteturalizada no Core); engenharia paralela.
+- **Rejeitada.**
 
-This ADR does not introduce:
-- scenario-specific protocol implementations
-- multi-node execution changes
-- offline execution modes
-- autonomous clinical effectuation
-- vendor-specific runtime commitments
+### Alternativa C — GOS subordinada ao Core (escolhida)
+- **Prós.** Bundles versionáveis, compiláveis, auditáveis; reuse entre runtimes; lei core permanece autoritativa.
+- **Contras.** Requer compiler/validator; vocabulário disciplinado; bindings explícitos.
 
-## Follow-up
+## Consequências
 
-The scaffold should add:
-- architecture docs for GOS
-- canonical schema for GOS
-- execution/backlog references for compiler + runtime binding work
+- **Positivas.**
+  - HealthOS tem lugar nativo para compilação de policy/protocol/workflow.
+  - Guidance operacional natural-language sai de prompt logic ad hoc.
+  - Reuse entre subagentes AACI e runtimes futuros.
+  - Evidence/deadlines/guards explícitos, não implícitos.
+  - Compiler/runtime evoluem sem mover lei para apps.
+- **Negativas / constraints.**
+  - Camada de compiler/validator para manter.
+  - Disciplina de vocabulário para evitar GOS virar segunda constituição.
+  - Bindings explícitos de runtime agents para GOS primitives.
 
-## Follow-up status
+### Não-objetivos
 
-All items above are closed as of the GOS stabilization wave.
-See `docs/execution/08-gos-stabilization-handoff.md` for the full closure record.
+Esta ADR **não** introduz:
+- implementações de protocolos cenário-específicos;
+- mudanças de execução multi-node;
+- modos de execução offline;
+- efetuação clínica autônoma;
+- compromissos com runtime vendor-específicos.
 
-Closed items:
-- architecture docs added: `docs/architecture/29` through `docs/architecture/34`
-- canonical schema added: `schemas/governed-operational-spec.schema.json` and variants
-- authoring schema and bundle-manifest schema added
-- execution backlog added: `docs/execution/todo/gos-and-compilers.md`
-- TypeScript compiler scaffolded: `ts/packages/healthos-gos-tooling/`
-- Swift contracts scaffolded: `swift/Sources/HealthOSCore/GovernedOperationalSpec.swift` and related
-- file-backed registry and loader implemented: `GOSFileBackedRegistry`
-- AACI activation seam implemented: `AACIOrchestrator.activateGOS`
-- first-slice runtime path integrated with GOS activation and mediation
-- bootstrap exemplar bundle shipped for `aaci.first-slice`
+## Detalhes de Implementação
 
-The ADR status remains Accepted.
-The GOS ontology established here should not be changed without a new or superseding ADR.
+- **Fronteiras entre módulos.**
+  - Tipos canônicos: `HealthOSCore` ([GovernedOperationalSpec.swift](../../swift/Sources/HealthOSCore/GovernedOperationalSpec.swift), [GOSFileBackedRegistry.swift](../../swift/Sources/HealthOSCore/GOSFileBackedRegistry.swift)).
+  - Bindings/ativação: `HealthOSAACI` ([GOSBindings.swift](../../swift/Sources/HealthOSAACI/GOSBindings.swift), [GOSRuntimeActivation.swift](../../swift/Sources/HealthOSAACI/GOSRuntimeActivation.swift), [GOSRuntimeContext.swift](../../swift/Sources/HealthOSAACI/GOSRuntimeContext.swift), [GOSRuntimeResolution.swift](../../swift/Sources/HealthOSAACI/GOSRuntimeResolution.swift)).
+  - Compiler authoring → canonical: `ts/packages/healthos-gos-tooling` (TypeScript).
+  - Schemas: [schemas/governed-operational-spec*.schema.json](../../schemas/).
+- **Conformidade com Package.swift.** GOS no Core respeita a hierarquia: Core base → AACI consome (com `dependencies: ["HealthOSCore", "HealthOSProviders"]` em [swift/Package.swift:21](../../swift/Package.swift:21)). Apps não importam GOS internals.
+- **Concurrency.** Activation runs in `actor AACIOrchestrator` ([swift/Sources/HealthOSAACI/AACI.swift:5](../../swift/Sources/HealthOSAACI/AACI.swift:5)); cancelamento estruturado.
+- **Segurança/Privacidade.** Bundles validados por schema antes de ativação; lifecycle audit registra ativação/desativação; sem PHI no spec.
+- **Observabilidade.** Métricas/logs/traces conforme front matter; cada execução de spec emite `gos.execute` span.
+- **Testes.** `GOSRuntimeAdoptionTests` ([swift/Tests/HealthOSTests/GOSRuntimeAdoptionTests.swift](../../swift/Tests/HealthOSTests/GOSRuntimeAdoptionTests.swift)); golden specs para `aaci.first-slice`; testes de compiler em TS.
+
+## Plano de Adoção e Migração
+
+- **Passos.** Já adotada e materializada na "GOS stabilization wave" (ver `docs/execution/08-gos-stabilization-handoff.md`).
+- **Impacto em APIs e contratos.** Tipos públicos no Core são contrato; novos primitivos exigem evolução de schema (`schemas/`) e ADR específica.
+- **Critérios de saída.** Plenamente adotada — confirmado: arch docs 29-34, schemas, TS compiler scaffold, Swift contracts, file-backed registry, AACI activation seam, first-slice runtime path integrado, exemplar bundle `aaci.first-slice`.
+
+### Status de follow-up (mantido)
+
+Itens encerrados:
+- arch docs adicionados: [docs/architecture/29-governed-operational-spec.md](../architecture/29-governed-operational-spec.md) até [docs/architecture/34-gos-review-and-activation-policy.md](../architecture/34-gos-review-and-activation-policy.md);
+- schema canônico: [schemas/governed-operational-spec.schema.json](../../schemas/governed-operational-spec.schema.json) e variantes;
+- schemas authoring e bundle-manifest adicionados;
+- backlog de execução: `docs/execution/todo/gos-and-compilers.md`;
+- compilador TS scaffolded: [ts/packages/healthos-gos-tooling/](../../ts/packages/healthos-gos-tooling/);
+- contratos Swift scaffolded: [swift/Sources/HealthOSCore/GovernedOperationalSpec.swift](../../swift/Sources/HealthOSCore/GovernedOperationalSpec.swift) e relacionados;
+- registry file-backed e loader: [GOSFileBackedRegistry](../../swift/Sources/HealthOSCore/GOSFileBackedRegistry.swift);
+- seam de ativação AACI: [GOSRuntimeActivation.swift](../../swift/Sources/HealthOSAACI/GOSRuntimeActivation.swift) e `AACIOrchestrator.activateGOS`;
+- caminho de first-slice runtime integrado com ativação GOS;
+- bundle exemplar shipped para `aaci.first-slice`.
+
+Status da ADR permanece **Accepted**. Ontologia GOS estabelecida aqui não deve ser alterada sem ADR superseding.
+
+## Checklist de Completude
+
+- [x] Status e data corretos; front matter preenchido.
+- [x] Drivers, objetivos e critérios de sucesso mensuráveis.
+- [x] Alternativas com prós/contras reais e não triviais.
+- [x] Consequências (positivas/negativas), riscos e mitigação.
+- [x] Conformidade com arquitetura modular do HealthOS (Package.swift).
+- [x] Fronteiras e contratos claros entre módulos.
+- [x] Considerações de concorrência, segurança/privacidade e observabilidade.
+- [x] Plano de testes e cobertura mínima definida.
+- [x] Plano de rollout/migração e monitoramento.
+- [x] Rastros para código, testes e pipelines.
+- [x] Relações entre ADRs (supersede/superseded by) atualizadas.

@@ -20,9 +20,9 @@ HealthOSSessionRuntime ─┘
 
 Executáveis:
   HealthOSCLI           → Core, SessionRuntime
-  HealthOSScribeApp     → Core, SessionRuntime
-  HealthOSVeridiaApp    → Core
-  HealthOSCloudClinicApp→ Core
+  HealthOSScribeStage     → Core, SessionRuntime
+  HealthOSVeridiaStage    → Core
+  HealthOSCloudClinicStage→ Core
 
 Tests:
   HealthOSTests         → Core, AACI, Providers, MSR, SessionRuntime
@@ -64,7 +64,7 @@ Legenda: `●` = impactada diretamente · `○` = relacionada · ` ` = não impa
 | 0004 | [swift/Sources/HealthOSCore/ReidentificationGovernance.swift](../../swift/Sources/HealthOSCore/ReidentificationGovernance.swift), [swift/Sources/HealthOSCore/StorageContracts.swift](../../swift/Sources/HealthOSCore/StorageContracts.swift), [swift/Sources/HealthOSCore/Provenance.swift](../../swift/Sources/HealthOSCore/Provenance.swift), [swift/Sources/HealthOSCore/SharedEnvelopeVocabulary.swift](../../swift/Sources/HealthOSCore/SharedEnvelopeVocabulary.swift) |
 | 0005 | [swift/Package.swift](../../swift/Package.swift), [ts/package.json](../../ts/package.json), [python/pyproject.toml](../../python/pyproject.toml), [Makefile](../../Makefile) |
 | 0006 | [swift/Sources/HealthOSProviders/ProviderProtocols.swift](../../swift/Sources/HealthOSProviders/ProviderProtocols.swift), [swift/Sources/HealthOSCore/StorageContracts.swift](../../swift/Sources/HealthOSCore/StorageContracts.swift), [ts/packages/](../../ts/packages/), [schemas/](../../schemas/) |
-| 0007 | [swift/Sources/HealthOSCLI/CLIEntrypoint.swift](../../swift/Sources/HealthOSCLI/CLIEntrypoint.swift), [swift/Sources/HealthOSScribeApp/](../../swift/Sources/HealthOSScribeApp/), [swift/Sources/HealthOSVeridiaApp/](../../swift/Sources/HealthOSVeridiaApp/), [swift/Sources/HealthOSCloudClinicApp/](../../swift/Sources/HealthOSCloudClinicApp/), [docs/architecture/19-interface-doctrine.md](../architecture/19-interface-doctrine.md) |
+| 0007 | [swift/Sources/HealthOSCLI/CLIEntrypoint.swift](../../swift/Sources/HealthOSCLI/CLIEntrypoint.swift), [swift/Sources/HealthOSScribeStage/](../../swift/Sources/HealthOSScribeStage/), [swift/Sources/HealthOSVeridiaStage/](../../swift/Sources/HealthOSVeridiaStage/), [swift/Sources/HealthOSCloudClinicStage/](../../swift/Sources/HealthOSCloudClinicStage/), [docs/architecture/19-interface-doctrine.md](../architecture/19-interface-doctrine.md) |
 | 0008 | [swift/Sources/HealthOSCore/CoreLaw.swift](../../swift/Sources/HealthOSCore/CoreLaw.swift), [swift/Sources/HealthOSCore/SharedEnvelopeVocabulary.swift](../../swift/Sources/HealthOSCore/SharedEnvelopeVocabulary.swift), [swift/Sources/HealthOSProviders/ProviderProtocols.swift](../../swift/Sources/HealthOSProviders/ProviderProtocols.swift) |
 | 0009 | [swift/Package.swift](../../swift/Package.swift), [swift/Sources/HealthOSCore/StorageContracts.swift](../../swift/Sources/HealthOSCore/StorageContracts.swift), [docs/architecture/15-mesh-provider.md](../architecture/15-mesh-provider.md), [scripts/bootstrap-local.sh](../../scripts/bootstrap-local.sh) |
 | 0010 | [swift/Sources/HealthOSCore/CoreLaw.swift](../../swift/Sources/HealthOSCore/CoreLaw.swift), [RegulatoryGovernance.swift](../../swift/Sources/HealthOSCore/RegulatoryGovernance.swift), [Provenance.swift](../../swift/Sources/HealthOSCore/Provenance.swift), [UserSovereigntyContracts.swift](../../swift/Sources/HealthOSCore/UserSovereigntyContracts.swift) |
@@ -126,9 +126,9 @@ Outros testes auxiliares úteis: [AsyncRuntimeGovernanceTests.swift](../../swift
 | `HealthOSMSR` | lib | Core, Providers (resources: Prompts) | 0003, 0004, 0010, 0011 (proposto: 0016) | `MSRRuntimeTests` |
 | `HealthOSSessionRuntime` | lib | Core, AACI, Providers, MSR | 0001, 0003, 0010, 0011 | tests integrados |
 | `HealthOSCLI` | exec | Core, SessionRuntime | 0007, 0013 | `make smoke-cli` |
-| `HealthOSScribeApp` | exec | Core, SessionRuntime | 0007, 0010, 0013 | `make smoke-scribe` |
-| `HealthOSVeridiaApp` | exec | Core | 0007, 0010, 0013 | `make smoke-veridia` |
-| `HealthOSCloudClinicApp` | exec | Core | 0007, 0010, 0013 | `make smoke-cloudclinic` |
+| `HealthOSScribeStage` | exec | Core, SessionRuntime | 0007, 0010, 0013 | `make smoke-scribe` |
+| `HealthOSVeridiaStage` | exec | Core | 0007, 0010, 0013 | `make smoke-veridia` |
+| `HealthOSCloudClinicStage` | exec | Core | 0007, 0010, 0013 | `make smoke-cloudclinic` |
 | `HealthOSTests` | test | todos os módulos | (todos) | `make swift-test` |
 
 ---

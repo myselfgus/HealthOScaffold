@@ -305,7 +305,7 @@ final class AsyncRuntimeGovernanceTests: XCTestCase {
         let runtime = InMemoryAsyncJobRuntime()
         do {
             _ = try await runtime.enqueue(makeJob(sensitive: true, source: .app))
-            XCTFail("Expected app boundary deny")
+            XCTFail("Expected Boundary deny")
         } catch {
             XCTAssertEqual(error as? AsyncJobRuntimeError, .appBoundaryDenied)
         }

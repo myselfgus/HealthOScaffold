@@ -14,13 +14,13 @@ smoke-cli:
 	cd swift && swift run HealthOSCLI
 
 smoke-scribe:
-	cd swift && swift run HealthOSScribeApp --smoke-test
+	cd swift && swift run HealthOSScribeStage --smoke-test
 
 smoke-veridia:
-	cd swift && swift run HealthOSVeridiaApp --smoke-test
+	cd swift && swift run HealthOSVeridiaStage --smoke-test
 
 smoke-cloudclinic:
-	cd swift && swift run HealthOSCloudClinicApp --smoke-test
+	cd swift && swift run HealthOSCloudClinicStage --smoke-test
 
 swift-smoke: smoke-cli smoke-scribe smoke-veridia smoke-cloudclinic
 

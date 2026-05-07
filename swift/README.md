@@ -34,12 +34,12 @@ graph TD
     SVR[HealthOSServiceRuntime\nservice operations session]:::runtime
     SRT[HealthOSSessionRuntime\norchestration · normalization · bridge]:::runtime
 
-    AB[HealthOSAppBoundary\nfacades · safe refs · envelopes]:::boundary
+    AB[HealthOSBoundary\nfacades · safe refs · envelopes]:::boundary
 
     CLI[HealthOSCLI\noperator executable]:::cli
-    SCRIBE[HealthOSScribeApp\nSwiftUI · Liquid Glass · macOS 26+]:::app
-    VERIDIA[HealthOSVeridiaApp\npatient identity surface]:::app
-    CC[HealthOSCloudClinicApp\nservice operations surface]:::app
+    SCRIBE[HealthOSScribeStage\nSwiftUI · Liquid Glass · macOS 26+]:::app
+    VERIDIA[HealthOSVeridiaStage\npatient identity surface]:::app
+    CC[HealthOSCloudClinicStage\nservice operations surface]:::app
 
     CORE --> PROV & GOS & MSR & ASYNC & UAR & SVR & SRT
     PROV --> AACI & MSR
@@ -86,7 +86,7 @@ Core law, governance invariants, entity model, storage contracts, consent/habili
 
 | Module | README | Maturity |
 | :--- | :--- | :--- |
-| `HealthOSAppBoundary` | [README](Sources/HealthOSAppBoundary/README.md) | Scaffold stub — facade pending Tier 2 stabilization |
+| `HealthOSBoundary` | [README](Sources/HealthOSBoundary/README.md) | Scaffold stub — facade pending Tier 2 stabilization |
 
 The only surface Stages are permitted to import. Stages must never import Core, SessionRuntime, or any Tier 2 module directly. Known deviations (Veridia to Core, Scribe to SessionRuntime) are marked TODO in `Package.swift` pending Boundary facade completion.
 
@@ -110,9 +110,9 @@ cd swift && swift run HealthOSCLI \
 
 | Stage target | Scheme | Smoke command | Maturity |
 | :--- | :--- | :--- | :--- |
-| `HealthOSScribeApp` | `HealthOSScribeApp` | `swift run HealthOSScribeApp --smoke-test` | Minimal validation surface (SwiftUI, macOS 26+) |
-| `HealthOSVeridiaApp` | `HealthOSVeridiaApp` | `swift run HealthOSVeridiaApp --smoke-test` | Session boundary smoke — no final UI |
-| `HealthOSCloudClinicApp` | `HealthOSCloudClinicApp` | `swift run HealthOSCloudClinicApp --smoke-test` | Scaffold placeholder — no final UI |
+| `HealthOSScribeStage` | `HealthOSScribeStage` | `swift run HealthOSScribeStage --smoke-test` | Minimal validation surface (SwiftUI, macOS 26+) |
+| `HealthOSVeridiaStage` | `HealthOSVeridiaStage` | `swift run HealthOSVeridiaStage --smoke-test` | Session boundary smoke — no final UI |
+| `HealthOSCloudClinicStage` | `HealthOSCloudClinicStage` | `swift run HealthOSCloudClinicStage --smoke-test` | Scaffold placeholder — no final UI |
 
 Shared Xcode schemes live in `.swiftpm/xcode/xcshareddata/xcschemes/` and are committed — open `swift/Package.swift` in Xcode to use them. Each scheme pre-configures smoke-test launch arguments (disabled by default) and a Release profile action for Instruments.
 
@@ -127,7 +127,7 @@ Stage icon asset catalogs (`Resources/Assets.xcassets/AppIcon.appiconset/`) are 
 | `HealthOSTests` | Existing integration tests across Core, AACI, Providers, MSR, SessionRuntime | Operational |
 | `HealthOSCoreTests` | Core law unit tests | Scaffold stub |
 | `HealthOSRuntimeTests` | Tier 2 runtime integration tests | Scaffold stub |
-| `HealthOSAppBoundaryTests` | Tier 3 boundary contract tests | Scaffold stub |
+| `HealthOSBoundaryTests` | Tier 3 boundary contract tests | Scaffold stub |
 
 ```bash
 cd swift && swift build

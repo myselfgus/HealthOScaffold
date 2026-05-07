@@ -11,9 +11,9 @@ It does not implement a final product UI. It does not move HealthOS law into Swi
 HealthOS native macOS surfaces are human/operator interfaces over mediated HealthOS contracts.
 
 The current repository state is:
-- Scribe has a minimal SwiftPM-backed macOS SwiftUI validation surface in `swift/Sources/HealthOSScribeApp/`.
-- Veridia has app-safe patient identity contracts, screen contracts, and a smoke-testable executable session boundary in `swift/Sources/HealthOSVeridiaApp/`.
-- CloudClinic has service-operations contracts, screen contracts, and a scaffold executable target in `swift/Sources/HealthOSCloudClinicApp/`; its smoke-testable service session wiring is blocked until the upstream mediated surfaces and CloudClinic Custom are ready.
+- Scribe has a minimal SwiftPM-backed macOS SwiftUI validation surface in `swift/Sources/HealthOSScribeStage/`.
+- Veridia has app-safe patient identity contracts, screen contracts, and a smoke-testable executable session boundary in `swift/Sources/HealthOSVeridiaStage/`.
+- CloudClinic has service-operations contracts, screen contracts, and a scaffold executable target in `swift/Sources/HealthOSCloudClinicStage/`; its smoke-testable service session wiring is blocked until the upstream mediated surfaces and CloudClinic Custom are ready.
 - A HealthOS control panel for macOS is a valid future operator surface, but no app shell or executable target exists yet.
 - Future Stages may be added; Scribe/Veridia/CloudClinic remain initial Stage examples, not a closed set.
 
@@ -33,7 +33,7 @@ Current products:
 - `HealthOSProviders` library
 - `HealthOSSessionRuntime` library
 - `HealthOSCLI` executable
-- `HealthOSScribeApp` executable
+- `HealthOSScribeStage` executable
 
 Xcode may open the repository through `HealthOS.xcworkspace`, but SwiftPM remains the source of package/product truth for current macOS validation. New app shells should be introduced as explicit SwiftPM executable targets unless a later, documented Xcode-project requirement exists.
 
@@ -180,7 +180,7 @@ Keep business/governance behavior in Core/runtime targets. App targets consume i
 
 ## Existing Scribe surface audit
 
-The current `HealthOSScribeApp` surface is a minimal validation app, not the final macOS 26 design.
+The current `HealthOSScribeStage` surface is a minimal validation app, not the final macOS 26 design.
 
 Current observations:
 - the SwiftPM executable target exists and consumes `ScribeFirstSliceFacade`;

@@ -60,9 +60,9 @@ Forbidden paths (must not propose writes here):
 - `swift/Sources/HealthOSSessionRuntime/`
 - `swift/Sources/HealthOSMSR/`
 - `swift/Sources/HealthOSProviders/`
-- `swift/Sources/HealthOSScribeApp/`
-- `swift/Sources/HealthOSVeridiaApp/`
-- `swift/Sources/HealthOSCloudClinicApp/`
+- `swift/Sources/HealthOSScribeStage/`
+- `swift/Sources/HealthOSVeridiaStage/`
+- `swift/Sources/HealthOSCloudClinicStage/`
 
 ---
 

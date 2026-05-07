@@ -178,7 +178,7 @@ final class ScribeProfessionalWorkspaceContractsTests: XCTestCase {
         XCTAssertThrowsError(try ScribeBoundaryValidator.validateFinalDocument(gate: gate, finalDocument: final))
     }
 
-    func testAppBoundaryDoesNotAllowSensitiveLeaks() {
+    func testBoundaryDoesNotAllowSensitiveLeaks() {
         let context = makeWorkspace(habilitationId: UUID(), finalidade: "care", hasPatient: true, allowed: [.retrieveContext])
         let state = ScribeAppRuntimeState(
             workspaceContext: context,
@@ -197,7 +197,7 @@ final class ScribeProfessionalWorkspaceContractsTests: XCTestCase {
             providerRuntimeSummary: "provider_secret=token"
         )
 
-        XCTAssertThrowsError(try ScribeBoundaryValidator.validateAppBoundary(state: state))
+        XCTAssertThrowsError(try ScribeBoundaryValidator.validateBoundary(state: state))
     }
 
     private func makeWorkspace(

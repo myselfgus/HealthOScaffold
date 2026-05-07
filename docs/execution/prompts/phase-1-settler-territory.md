@@ -204,9 +204,9 @@ Use the canonical docs listed below as the authoritative source for each territo
 
 **TERRITORY-APPS**
 - Canonical docs to read first: `docs/architecture/03-app-interfaces.md`
-- Key invariants: apps consume mediated surfaces only; safe refs enforced at app boundary; no raw identifiers in app-facing surfaces
+- Key invariants: apps consume mediated surfaces only; safe refs enforced at Boundary; no raw identifiers in app-facing surfaces
 - Key forbidden moves: Never let apps interpret raw specs; never allow app-kind/role mismatch at shared envelope consumption
-- Skills: `docs/execution/skills/app-boundary-skill.md`, `docs/execution/skills/cross-app-surfaces-skill.md`
+- Skills: `docs/execution/skills/boundary-skill.md`, `docs/execution/skills/cross-stage-surfaces-skill.md`
 
 **TERRITORY-OPS**
 - Canonical docs to read first: `docs/architecture/14-operations-runbook.md`, `docs/architecture/26-operator-observability-contract.md`

@@ -21,13 +21,19 @@ struct TargetSpec {
 let targets: [TargetSpec] = [
     .init(name: "HealthOSCore",            kind: .library,     dependencies: [],                                                                    resources: []),
     .init(name: "HealthOSProviders",       kind: .library,     dependencies: ["HealthOSCore"],                                                      resources: []),
-    .init(name: "HealthOSAACI",            kind: .library,     dependencies: ["HealthOSCore", "HealthOSProviders"],                                  resources: []),
+    .init(name: "HealthOSGOS",             kind: .library,     dependencies: ["HealthOSCore"],                                                      resources: []),
+    .init(name: "HealthOSAACI",            kind: .library,     dependencies: ["HealthOSCore", "HealthOSGOS", "HealthOSProviders"],                 resources: []),
     .init(name: "HealthOSMSR",             kind: .library,     dependencies: ["HealthOSCore", "HealthOSProviders"],                                  resources: ["Prompts"]),
+    .init(name: "HealthOSAsyncRuntime",    kind: .library,     dependencies: ["HealthOSCore"],                                                      resources: []),
+    .init(name: "HealthOSUserAgentRuntime", kind: .library,    dependencies: ["HealthOSCore"],                                                      resources: []),
+    .init(name: "HealthOSServiceRuntime",  kind: .library,     dependencies: ["HealthOSCore"],                                                      resources: []),
     .init(name: "HealthOSSessionRuntime",  kind: .library,     dependencies: ["HealthOSCore", "HealthOSAACI", "HealthOSProviders", "HealthOSMSR"],  resources: []),
+    .init(name: "HealthOSBoundary",        kind: .library,     dependencies: ["HealthOSCore", "HealthOSGOS", "HealthOSAACI", "HealthOSMSR", "HealthOSAsyncRuntime", "HealthOSUserAgentRuntime", "HealthOSServiceRuntime", "HealthOSSessionRuntime"], resources: []),
     .init(name: "HealthOSCLI",             kind: .executable,  dependencies: ["HealthOSCore", "HealthOSSessionRuntime"],                            resources: []),
-    .init(name: "HealthOSScribeApp",       kind: .executable,  dependencies: ["HealthOSCore", "HealthOSSessionRuntime"],                            resources: []),
-    .init(name: "HealthOSVeridiaApp",      kind: .executable,  dependencies: ["HealthOSCore"],                                                      resources: []),
-    .init(name: "HealthOSCloudClinicApp",  kind: .executable,  dependencies: ["HealthOSCore"],                                                      resources: []),
+    .init(name: "HealthOSScribeStage",     kind: .executable,  dependencies: ["HealthOSBoundary", "HealthOSCore", "HealthOSSessionRuntime"],        resources: ["Resources"]),
+    .init(name: "HealthOSVeridiaStage",    kind: .executable,  dependencies: ["HealthOSBoundary", "HealthOSCore"],                                  resources: ["Resources"]),
+    .init(name: "HealthOSCloudClinicStage", kind: .executable, dependencies: ["HealthOSBoundary"],                                                   resources: ["Resources"]),
+    .init(name: "HealthOSBoundaryTests",   kind: .test,        dependencies: ["HealthOSBoundary"],                                                   resources: []),
     .init(name: "HealthOSTests",           kind: .test,        dependencies: ["HealthOSCore", "HealthOSAACI", "HealthOSProviders", "HealthOSMSR", "HealthOSSessionRuntime"], resources: []),
 ]
 
@@ -60,7 +66,7 @@ let targets: [TargetSpec] = [
     let runtimeConsumers = targets.filter { $0.dependencies.contains("HealthOSSessionRuntime") }
     print("\n\n=== Consumers of HealthOSSessionRuntime ===")
     if runtimeConsumers.isEmpty {
-        print("  (none in the package graph — it is consumed at the app / test boundary)")
+        print("  (none in the package graph — it is consumed at the Stage / test boundary)")
     } else {
         runtimeConsumers.forEach { print("  • \($0.name)") }
     }

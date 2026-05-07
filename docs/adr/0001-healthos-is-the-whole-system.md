@@ -14,9 +14,9 @@ modules_impacted:
   - HealthOSMSR
   - HealthOSSessionRuntime
   - HealthOSCLI
-  - HealthOSScribeApp
-  - HealthOSVeridiaApp
-  - HealthOSCloudClinicApp
+  - HealthOSScribeStage
+  - HealthOSVeridiaStage
+  - HealthOSCloudClinicStage
 related_adrs:
   supersedes: []
   superseded_by: []
@@ -76,8 +76,8 @@ Hierarquia constitucional canônica (refletida em [swift/Package.swift](../../sw
 | HealthOS Core | `HealthOSCore` | Constituição: lei, contratos (consent, habilitation, gate, finality, provenance, storage). |
 | Governed Operational Spec (GOS) | `HealthOSCore/GovernedOperationalSpec.swift`, `schemas/governed-operational-spec*.schema.json` | Camada de spec subordinada (ADR-0011). |
 | Runtimes | `HealthOSAACI`, `HealthOSMSR`, `HealthOSSessionRuntime`, `HealthOSProviders` | Execução sob lei do Core e guidance de GOS. |
-| Boundary | `HealthOSAppBoundary`, mediated facades/envelopes | Fronteira HealthOS-owned para consumo seguro por Stages. |
-| Stage / Interfaces | `HealthOSScribeApp`, `HealthOSVeridiaApp`, `HealthOSCloudClinicApp`, `HealthOSCLI` | UX/CLI consumindo saídas mediadas (ADR-0007, ADR-0013). |
+| Boundary | `HealthOSBoundary`, mediated facades/envelopes | Fronteira HealthOS-owned para consumo seguro por Stages. |
+| Stage / Interfaces | `HealthOSScribeStage`, `HealthOSVeridiaStage`, `HealthOSCloudClinicStage`, `HealthOSCLI` | UX/CLI consumindo saídas mediadas (ADR-0007, ADR-0013). |
 | Artefatos / Efeitos | Arquivos persistidos, registros de gate, provenance | Saídas governadas com proveniência (ADR-0003). |
 
 - **Escopo.** Decisão constitucional sobre identidade e topologia lógica do sistema. Não decide stack (ADR-0005), topologia operacional (ADR-0009) nem nome de repositório (ADR-0012).
@@ -115,7 +115,7 @@ Hierarquia constitucional canônica (refletida em [swift/Package.swift](../../sw
 
 ## Detalhes de Implementação
 
-- **Fronteiras entre módulos.** Direção única: Core ← Providers ← (AACI, MSR) ← SessionRuntime ← Apps/CLI. `HealthOSVeridiaApp` e `HealthOSCloudClinicApp` dependem apenas de `HealthOSCore`.
+- **Fronteiras entre módulos.** Direção única: Core ← Providers ← (AACI, MSR) ← SessionRuntime ← Apps/CLI. `HealthOSVeridiaStage` e `HealthOSCloudClinicStage` dependem apenas de `HealthOSCore`.
 - **Conformidade com Package.swift.** Topologia em [swift/Package.swift](../../swift/Package.swift) reflete a hierarquia. Qualquer adição que invertesse a direção (ex.: Core dependendo de Providers) seria violação direta desta ADR.
 - **Concurrency.** A camada de execução (AACI/MSR/SessionRuntime) usa `actor` Swift para isolamento (ex.: `public actor AACIOrchestrator` em [swift/Sources/HealthOSAACI/AACI.swift:5](../../swift/Sources/HealthOSAACI/AACI.swift:5); `public actor SessionRunner` em [swift/Sources/HealthOSSessionRuntime/SessionRunner.swift:6](../../swift/Sources/HealthOSSessionRuntime/SessionRunner.swift:6)). Core expõe contratos `Sendable` (ex.: `CoreLawfulContext`).
 - **Segurança/Privacidade.** A identidade "HealthOS" é a âncora do controlador para fins de LGPD; downstream apps são processadores delegados sob essa identidade.

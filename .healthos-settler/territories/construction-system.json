@@ -29,9 +29,9 @@
     "swift/Sources/HealthOSSessionRuntime",
     "swift/Sources/HealthOSMSR",
     "swift/Sources/HealthOSProviders",
-    "swift/Sources/HealthOSScribeApp",
-    "swift/Sources/HealthOSVeridiaApp",
-    "swift/Sources/HealthOSCloudClinicApp"
+    "swift/Sources/HealthOSScribeStage",
+    "swift/Sources/HealthOSVeridiaStage",
+    "swift/Sources/HealthOSCloudClinicStage"
   ],
   "invariants": [
     "Steward, Settlers, Settlements, Territories, and HealthOS Forge MCP are outside the HealthOS clinical/runtime hierarchy.",

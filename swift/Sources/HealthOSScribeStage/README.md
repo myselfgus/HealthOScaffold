@@ -1,10 +1,10 @@
-# HealthOSScribeApp
+# HealthOSScribeStage
 
 Minimal SwiftUI validation surface for the HealthOS Scribe professional workspace first slice.
 
-`HealthOSScribeApp` is a macOS 26+ `@main` SwiftUI application backed by `swift/Package.swift`. It is the only current interactive app shell. Its purpose is to provide an honest, smoke-testable validation surface for the first-slice orchestration path — not to deliver a final product UI.
+`HealthOSScribeStage` is a macOS 26+ `@main` SwiftUI executable backed by `swift/Package.swift`. It is the only current interactive Stage shell. Its purpose is to provide an honest, smoke-testable validation surface for the first-slice orchestration path — not to deliver a final product UI.
 
-**This app is not:** a complete clinical workspace, a real EHR, a final UI delivery, or a production-ready surface. It consumes only mediated state through `ScribeFirstSliceBridge`. It never becomes a law engine.
+**This Stage is not:** a complete clinical workspace, a real EHR, a final UI delivery, or a production-ready surface. It consumes only mediated state through `ScribeFirstSliceBridge`. It never becomes a law engine.
 
 ## Architecture
 
@@ -32,7 +32,7 @@ graph TD
     end
 
     subgraph VIEWS["  SwiftUI Views (this module)  "]
-        APP[HealthOSScribeApp\n@main · WindowGroup]:::glass
+        APP[HealthOSScribeStage\n@main · WindowGroup]:::glass
         ROOT[ScribeFirstSliceView\nScrollView root]:::view
         C1[SurfaceSummaryCard]:::glass
         C2[SessionSetupCard]:::glass
@@ -52,7 +52,7 @@ graph TD
 
 | File | Purpose |
 | :--- | :--- |
-| `App/HealthOSScribeApp.swift` | `@main` entry point — `WindowGroup` + smoke test launcher |
+| `App/HealthOSScribeStage.swift` | `@main` entry point — `WindowGroup` + smoke test launcher |
 | `Models/ScribeFirstSliceViewModel.swift` | `@Observable @MainActor` view model — all session state and actions |
 | `Views/ScribeFirstSliceView.swift` | Root view + five card subviews + `OutputBlock` component |
 
@@ -105,13 +105,13 @@ Rules:
 
 ```bash
 # Interactive SwiftUI session (macOS 26+)
-cd swift && swift run HealthOSScribeApp
+cd swift && swift run HealthOSScribeStage
 
 # Non-interactive smoke test (headless, CI-safe)
-cd swift && swift run HealthOSScribeApp --smoke-test
+cd swift && swift run HealthOSScribeStage --smoke-test
 
 # Audio capture smoke test (requires system audio file)
-cd swift && swift run HealthOSScribeApp --smoke-test-audio
+cd swift && swift run HealthOSScribeStage --smoke-test-audio
 ```
 
 The `--smoke-test` and `--smoke-test-audio` flags run the full first-slice orchestration path headlessly (habilitation → consent → session → capture → transcription → GOS activation → retrieval → SOAP draft → gate resolve) and exit with status 0 on success.

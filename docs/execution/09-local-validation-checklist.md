@@ -71,7 +71,7 @@ Confirm:
 ### 7. Smoke test Scribe app shell
 ```bash
 cd swift
-swift run HealthOSScribeApp --smoke-test
+swift run HealthOSScribeStage --smoke-test
 ```
 Confirm:
 - app shell still boots

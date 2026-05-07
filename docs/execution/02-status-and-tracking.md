@@ -6,6 +6,34 @@ Current phase: Controlled implementation — first vertical slice started
 
 ## Completed recently
 
+## SWIFT-ONTOLOGY-SECOND-PASS — Boundary and Stage technical rename (2026-05-07)
+
+- Objective: complete the second ontology alignment pass by renaming Swift modules, targets, tests, imports, package references, Xcode schemes, Steward/Settler guidance, and technical docs to the canonical HealthOS vocabulary.
+- Classification: Tier 3 Boundary, Tier 4 Stage, and External Construction System metadata/docs. No CoreLaw, GOS, runtime behavior, clinical flow, provider behavior, schema contract, SQL, or production claim changed.
+- Code/package renames:
+  - `HealthOSAppBoundary` -> `HealthOSBoundary`; `AppBoundary` placeholder -> `Boundary`; `HealthOSAppBoundaryTests` -> `HealthOSBoundaryTests`.
+  - `HealthOSScribeApp` -> `HealthOSScribeStage`; `HealthOSVeridiaApp` -> `HealthOSVeridiaStage`; `HealthOSCloudClinicApp` -> `HealthOSCloudClinicStage`.
+  - SwiftPM products, targets, test target, imports, Makefile smoke commands, Xcode shared schemes, and `PackageTargetsExplorer.swift` updated to the new names.
+- Boundary dependency posture:
+  - All Stage targets depend on `HealthOSBoundary` as their primary consumption surface.
+  - Current direct Tier 1/2 deviations remain explicit TODOs in `swift/Package.swift`: Scribe still imports Core/SessionRuntime until the Scribe session facade moves into Boundary; Veridia still imports Core until Veridia session types move into Boundary.
+  - CloudClinic remains Boundary-only at the package level.
+- Docs and construction metadata updated:
+  - `README.md`, `apps/`, `swift/`, module READMEs, architecture/execution docs, skills/prompts, `.healthos-steward/`, and `.healthos-settler/` now refer to the new technical names.
+  - The historical file path `docs/architecture/50-app-layer-boundary-and-reference-apps.md` is retained as a compatibility path, with an explicit note that the canonical concepts are Boundary, Stage, and Custom.
+- Audit result:
+  - Active code/package/docs no longer use `HealthOSAppBoundary`, `HealthOSAppBoundaryTests`, `HealthOSScribeApp`, `HealthOSVeridiaApp`, `HealthOSCloudClinicApp`, `AppBoundary`, `App Integration Boundary`, `app boundary`, `App Charter`, `Reference App`, `reference app`, `app implementation`, or `app wiring` as live canonical names.
+  - Remaining matches for old terms are limited to this audit/rename record, explicit compatibility/history notes, and derived historical Steward memory digests under `.healthos-steward/memory/automations/`.
+  - Residual matches under `.claude/worktrees/` are pre-existing local worktree content outside this branch and were intentionally not modified.
+- Validation status:
+  - `git diff --check` PASS.
+  - `cd swift && swift build` PASS after sandbox escalation for Swift/Clang cache access.
+  - `cd swift && swift test` PASS — 269 XCTest tests passed plus Swift Testing suites loaded.
+  - `make validate-docs` PASS.
+  - `make validate-schemas` PASS.
+  - `make validate-contracts` PASS.
+  - Additional smoke validation: `make smoke-scribe`, `make smoke-veridia`, and `make smoke-cloudclinic` PASS after sandbox escalation and serialized SwiftPM execution.
+
 ## DOC-CONSTITUTIONAL-STAGE-CUSTOM — HealthOS ontology language alignment (2026-05-07)
 
 - Objective: align documentation/governance with the current HealthOS ontology: Core, GOS, Runtimes, Boundary, Stage, Custom, and separate Construction System.
@@ -14,20 +42,20 @@ Current phase: Controlled implementation — first vertical slice started
   - `docs/architecture/50-app-layer-boundary-and-reference-apps.md`
 - Files updated:
   - `AGENTS.md` and `CLAUDE.md` — classification now uses Core, GOS/Runtimes, Boundary, Stage, and external Construction System; Stage wiring requires stable mediated surfaces and Custom readiness.
-  - `README.md`, `docs/architecture/17-glossary.md`, `19-interface-doctrine.md`, and Stage/Boundary docs — Boundary replaces conceptual App Integration Boundary; Stage replaces conceptual reference app/app implementation language; Custom replaces App Charter as the governed Stage definition.
+  - `README.md`, `docs/architecture/17-glossary.md`, `19-interface-doctrine.md`, and Stage/Boundary docs — Boundary replaces the former App Integration Boundary concept; Stage replaces the former reference-app/app-implementation language; Custom replaces the former App Charter language as the governed Stage definition.
   - `docs/adr/README.md`, `EXECUTIVE-SUMMARY.md`, `GAPS-AND-CONFLICTS.md`, `0001-healthos-is-the-whole-system.md`, and `0011-governed-operational-spec-is-subordinate-to-core.md` — ADR-0013 registered and terminology clarified.
   - `docs/execution/21-structural-ontology-and-product-readiness-plan.md`, `12-next-agent-handoff.md`, `todo/apps-and-interfaces.md`, `todo/runtimes-and-aaci.md`, `19-settler-model-task-tracker.md`, `22-steward-construction-operating-model.md`, maturity/gap/release docs, and relevant skills — open tasks mapped by HealthOS hierarchy plus external Construction System; Stage wiring reclassified.
-  - `.healthos-steward/prompts/prompt-architecture-template.md`, `ts/agent-infra/healthos-steward/src/lib/prompt-assembler.ts`, `apps/`, `swift/README.md`, `swift/Sources/HealthOSAppBoundary/README.md`, Swift package comments, and `docs/product/01-healthos-technical-product-specification.md` — agent guidance, Steward prompt text, technical compatibility notes, and product spec updated without renaming technical targets/packages.
+  - `.healthos-steward/prompts/prompt-architecture-template.md`, `ts/agent-infra/healthos-steward/src/lib/prompt-assembler.ts`, `apps/`, `swift/README.md`, `swift/Sources/HealthOSBoundary/README.md`, Swift package comments, and `docs/product/01-healthos-technical-product-specification.md` — agent guidance, Steward prompt text, technical compatibility notes, and product spec updated without renaming technical targets/packages at that time.
 - Task reclassification:
   - Tier 1 READY: `CI-001`, `RT-ASYNC-001`, `RT-RETRIEVAL-001`.
   - Boundary needs-review: CloudClinic exact facade-envelope decision.
   - Custom needs-review: CloudClinic Custom is incomplete.
   - Stage BLOCKED: `APP-012` until Core/GOS/runtime/Boundary/Custom readiness criteria are met or explicitly accepted with degraded/out-of-scope semantics.
   - Construction System needs-review/blocked as written: `ST-020`, because its current target is APP-012 prompt generation before APP-012 is unblocked; independent construction-system work remains parallelizable.
-- Drift registered: Boundary naming drift, closed-set reference-app wording, Custom/App Charter drift, APP-012 ordering drift, and risk of treating Scribe/Veridia Boundary scaffold as permission for further Stage wiring before upstream surfaces stabilize.
+- Drift registered: Boundary naming drift, closed-set reference-app wording, App Charter/Custom drift, APP-012 ordering drift, and risk of treating Scribe/Veridia Boundary scaffold as permission for further Stage wiring before upstream surfaces stabilize.
 - Invariants: documentation/governance only; Core sovereignty preserved; GOS remains subordinate; Stages remain optional/multiplicable consumers; Construction System remains outside the clinical/runtime hierarchy; no production/EHR/provider/signature/interoperability/semantic retrieval claim added.
 - Validation: `git diff --check` PASS; `make validate-docs` PASS; touched Mermaid blocks render with `@mermaid-js/mermaid-cli` PASS; `make ts-build` PASS for the Steward prompt string update; `make swift-build` PASS after Swift documentation/comment updates.
-- Residual gaps: CloudClinic Custom remains incomplete; CloudClinic Boundary needs a focused follow-up; semantic retrieval and SQL async runtime remain platform work; CI remains local-only until `CI-001`; technical names such as `HealthOSAppBoundary` remain for compatibility.
+- Residual gaps at that time: CloudClinic Custom remained incomplete; CloudClinic Boundary needed a focused follow-up; semantic retrieval and SQL async runtime remained platform work; CI remained local-only until `CI-001`; older technical names were left for a later code rename pass.
 - Next recommended work: Tier 1/Core or Tier 2 runtime foundation work, preferably `CI-001` or `RT-ASYNC-001` / `RT-RETRIEVAL-001`, not Stage wiring.
 
 ## DOC-APP-011-FORGE-DRIFT — documentation drift correction (2026-05-07)
@@ -181,7 +209,7 @@ Current phase: Controlled implementation — first vertical slice started
   - `swift/Sources/HealthOSCore/VeridiaSessionAdapter.swift` — actor implementation; validates via `UserAgentGovernanceValidator` and `VeridiaBoundaryValidator`; records `veridia.session.start` and `veridia.session.end` `ProvenanceRecord` in-memory
   - `swift/Tests/HealthOSTests/VeridiaSessionFacadeTests.swift` — 8 boundary smoke tests (start/end happy path, deny on missing lawful context, double-end, distinct provenance refs)
 - Files updated:
-  - `swift/Sources/HealthOSVeridiaApp/VeridiaEntrypoint.swift` — wires `VeridiaSessionAdapter` in async smoke path; exits 0 only when start+end boundary both pass
+  - `swift/Sources/HealthOSVeridiaStage/VeridiaEntrypoint.swift` — wires `VeridiaSessionAdapter` in async smoke path; exits 0 only when start+end boundary both pass
 - Validation: 268 Swift tests pass, `make smoke-veridia` OK (`veridia.session.start + veridia.session.end boundary verified`)
 
 ## APP-013 — Rename Veridia to Veridia and redefine patient app scope (2026-05-04)
@@ -191,8 +219,8 @@ Current phase: Controlled implementation — first vertical slice started
   - `docs/architecture/12-veridia.md` → `docs/architecture/12-veridia.md`
   - `docs/architecture/24-veridia-screen-contracts.md` → `docs/architecture/24-veridia-screen-contracts.md`
   - `apps/veridia/` → `apps/veridia/`
-  - `swift/Sources/HealthOSVeridiaApp/` → `swift/Sources/HealthOSVeridiaApp/`
-  - `swift/Sources/HealthOSVeridiaApp/VeridiaEntrypoint.swift` → `swift/Sources/HealthOSVeridiaApp/VeridiaEntrypoint.swift`
+  - `swift/Sources/HealthOSVeridiaStage/` → `swift/Sources/HealthOSVeridiaStage/`
+  - `swift/Sources/HealthOSVeridiaStage/VeridiaEntrypoint.swift` → `swift/Sources/HealthOSVeridiaStage/VeridiaEntrypoint.swift`
   - `docs/execution/skills/user-agent-veridia-skill.md` → `docs/execution/skills/user-agent-veridia-skill.md`
   - `schemas/contracts/user-agent-patient-sovereignty-veridia.schema.json` → `schemas/contracts/user-agent-patient-identity-veridia.schema.json`
 - Key files updated: `swift/Package.swift`, `swift/Sources/HealthOSCore/UserSovereigntyContracts.swift`, `swift/Sources/HealthOSCore/CrossAppCoordinationContracts.swift`, `swift/Tests/HealthOSTests/UserSovereigntyGovernanceTests.swift`, `swift/Tests/HealthOSTests/CrossAppCoordinationContractsTests.swift`, `ts/packages/contracts/src/index.ts`, `Makefile`, `README.md`, `AGENTS.md`, `CLAUDE.md`, `docs/product/01-healthos-technical-product-specification.md`, `docs/execution/12-next-agent-handoff.md`, `docs/execution/21-structural-ontology-and-product-readiness-plan.md`, `docs/execution/todo/apps-and-interfaces.md`, `.healthos-settler/territories/apps.json`, `.healthos-settler/territories/type-script-runtimes.json`, and all settler profile files.
@@ -525,13 +553,13 @@ Current phase: Controlled implementation — first vertical slice started
 
 - Objective: make the Swift HealthOS product graph honest by adding minimal placeholder executable targets for Veridia and CloudClinic alongside Scribe.
 - Files created:
-  - `swift/Sources/HealthOSVeridiaApp/VeridiaEntrypoint.swift`
-  - `swift/Sources/HealthOSCloudClinicApp/CloudClinicEntrypoint.swift`
-- Package wiring added: `HealthOSVeridiaApp` and `HealthOSCloudClinicApp` executable products/targets in `swift/Package.swift`, each depending only on `HealthOSCore`.
+  - `swift/Sources/HealthOSVeridiaStage/VeridiaEntrypoint.swift`
+  - `swift/Sources/HealthOSCloudClinicStage/CloudClinicEntrypoint.swift`
+- Package wiring added: `HealthOSVeridiaStage` and `HealthOSCloudClinicStage` executable products/targets in `swift/Package.swift`, each depending only on `HealthOSCore`.
 - Smoke targets added: `make smoke-veridia` and `make smoke-cloudclinic`; `swift-smoke` now includes CLI and initial reference-app smoke paths.
-- Validation run: `git status --short`, entrypoint file assertions, `cd swift && swift package dump-package | grep -A10 HealthOSVeridiaApp`, `cd swift && swift package dump-package | grep -A10 HealthOSCloudClinicApp`, `cd swift && swift build`, `cd swift && swift run HealthOSVeridiaApp --smoke-test`, `cd swift && swift run HealthOSCloudClinicApp --smoke-test`, `cd swift && swift test`, `make swift-build`, `make swift-test`, `make smoke-cli`, `make smoke-scribe`, `make smoke-veridia`, `make smoke-cloudclinic`, `make validate-docs`, `make validate-schemas`, `make validate-contracts`, `make ts-build`, `make validate-all`.
+- Validation run: `git status --short`, entrypoint file assertions, `cd swift && swift package dump-package | grep -A10 HealthOSVeridiaStage`, `cd swift && swift package dump-package | grep -A10 HealthOSCloudClinicStage`, `cd swift && swift build`, `cd swift && swift run HealthOSVeridiaStage --smoke-test`, `cd swift && swift run HealthOSCloudClinicStage --smoke-test`, `cd swift && swift test`, `make swift-build`, `make swift-test`, `make smoke-cli`, `make smoke-scribe`, `make smoke-veridia`, `make smoke-cloudclinic`, `make validate-docs`, `make validate-schemas`, `make validate-contracts`, `make ts-build`, `make validate-all`.
 - Result: STR-005 complete after validation; APP-011 and APP-012 are unblocked and ready, but not implemented.
-- Invariants: Inv 1 (Core sovereignty), app boundary invariants (Veridia/CloudClinic remain mediated app surfaces), Inv 43 (scaffold/foundation maturity is not production readiness).
+- Invariants: Inv 1 (Core sovereignty), Boundary invariants (Veridia/CloudClinic remain mediated app surfaces), Inv 43 (scaffold/foundation maturity is not production readiness).
 - Residual gaps: Veridia session wiring remains APP-011; CloudClinic session wiring remains APP-012; no final UI shell is implemented; no clinical authority or production behavior was added.
 
 
@@ -645,7 +673,7 @@ Files touched:
 - `swift/Sources/HealthOSCore/AsyncRuntimeJobs.swift`, `ts/packages/contracts/src/index.ts`, `schemas/contracts/async-job.schema.json` — async job taxonomy extended with Mental Space stage jobs
 - `swift/Sources/HealthOSAACI/AACI.swift` — local-first transcript normalization provider boundary added; remote fallback denied and stub output degraded for v1
 - `swift/Sources/HealthOSSessionRuntime/SessionRunner.swift` — normalization now runs after non-empty transcript persistence and stores a normalized transcript as a derived artifact only when a real local model is available
-- `swift/Sources/HealthOSCore/FirstSliceContracts.swift`, `ScribeFirstSliceBridge.swift`, `ScribeSessionAdapter.swift`, and `HealthOSScribeApp/Views/ScribeFirstSliceView.swift` — first-slice/Scribe surfaces now carry minimal Mental Space runtime state
+- `swift/Sources/HealthOSCore/FirstSliceContracts.swift`, `ScribeFirstSliceBridge.swift`, `ScribeSessionAdapter.swift`, and `HealthOSScribeStage/Views/ScribeFirstSliceView.swift` — first-slice/Scribe surfaces now carry minimal Mental Space runtime state
 - `swift/Tests/HealthOSTests/MentalSpaceRuntimeTests.swift` — tests for stage ordering, async substrate job kind, provider degradation, derived artifact persistence, and app-safe Scribe surface
 - `schemas/contracts/mental-space-artifact.schema.json`, `docs/execution/skills/mental-space-runtime-skill.md`, tracking docs
 
@@ -705,7 +733,7 @@ Validation:
 - `cd swift && swift package dump-package` PASS; manifest resolves as tools version 6.2.0 and platform macOS 26.0
 - `cd swift && swift build` PASS
 - `cd swift && swift test` PASS — 241 tests, 0 failures
-- `cd swift && swift run HealthOSScribeApp --smoke-test` PASS
+- `cd swift && swift run HealthOSScribeStage --smoke-test` PASS
 - `make validate-docs` PASS
 - `make validate-all` PASS
 
@@ -871,7 +899,7 @@ Validation:
 Done criteria:
 - Swift XCTest target compiles again
 - prior `CrossAppCoordinationContractsTests.swift` and `RetrievalMemoryGovernanceTests.swift` top-level brace/scope blockers are gone
-- the residual user-agent fixture failure is corrected without weakening runtime/app boundary rules
+- the residual user-agent fixture failure is corrected without weakening runtime/Boundary rules
 
 Residual gaps:
 - no production capability is implied; this work only restores local Swift test execution and boundary-regression coverage
@@ -993,12 +1021,12 @@ Residual gaps:
 - kept the Scribe/CLI surface informational and provenance-facing only: no raw compiled spec/runtime-binding JSON is exposed, and `legalAuthorizing=false`, `gateStillRequired=true`, and draft-only semantics remain explicit
 - updated the minimal SwiftUI Scribe validation surface and Scribe smoke output to show active bundle/spec, bound actors, and exact `gos.use.*` mediation operations
 - updated runtime-state/app-consumption docs so apps can audit GOS-mediated AACI work without interpreting GOS as sovereign policy
-- validation: `swift build` PASS; `swift run HealthOSCLI` PASS; `swift run HealthOSCLI --reject-gate` PASS; `swift run HealthOSScribeApp --smoke-test` PASS; `swift run HealthOSScribeApp --smoke-test-audio` PASS; follow-up `swift test` PASS after TEST-001 cleanup
+- validation: `swift build` PASS; `swift run HealthOSCLI` PASS; `swift run HealthOSCLI --reject-gate` PASS; `swift run HealthOSScribeStage --smoke-test` PASS; `swift run HealthOSScribeStage --smoke-test-audio` PASS; follow-up `swift test` PASS after TEST-001 cleanup
 Files touched:
 - `swift/Sources/HealthOSCore/ScribeFirstSliceBridge.swift`
 - `swift/Sources/HealthOSSessionRuntime/ScribeSessionAdapter.swift`
-- `swift/Sources/HealthOSScribeApp/Models/ScribeFirstSliceViewModel.swift`
-- `swift/Sources/HealthOSScribeApp/Views/ScribeFirstSliceView.swift`
+- `swift/Sources/HealthOSScribeStage/Models/ScribeFirstSliceViewModel.swift`
+- `swift/Sources/HealthOSScribeStage/Views/ScribeFirstSliceView.swift`
 - `swift/Sources/HealthOSCLI/CLIEntrypoint.swift`
 - `swift/Tests/HealthOSTests/GOSRuntimeAdoptionTests.swift`
 - `docs/architecture/22-runtime-state-surfaces.md`
@@ -1013,7 +1041,7 @@ Files touched:
 - linked the referral and prescription draft derivatives to the active GOS resolved runtime view through an explicit `DerivedDraftOperationalGuidance` contract carried on the existing same-session/SOAP/context spine link
 - derived draft payloads, persisted metadata, session-event attributes, and note summaries now surface bounded operational guidance: actor id, semantic role, primitive families, reasoning boundary, `gos.use.derive.*` operation, draft-only flag, gate-required flag, and non-authorizing posture
 - kept derivation intentionally low-authority: no new clinical semantics, no GOS mini-language, no referral/prescription effectuation path, and both derivatives remain `DraftStatus.draft`
-- validation status: `swift build` PASS; follow-up `swift test` PASS after TEST-001 cleanup; `cd ts && npm run build` PASS; `make validate-schemas` PASS; `swift run HealthOSCLI` PASS; `swift run HealthOSCLI --reject-gate` PASS; `swift run HealthOSScribeApp --smoke-test` PASS; `swift run HealthOSScribeApp --smoke-test-audio` PASS
+- validation status: `swift build` PASS; follow-up `swift test` PASS after TEST-001 cleanup; `cd ts && npm run build` PASS; `make validate-schemas` PASS; `swift run HealthOSCLI` PASS; `swift run HealthOSCLI --reject-gate` PASS; `swift run HealthOSScribeStage --smoke-test` PASS; `swift run HealthOSScribeStage --smoke-test-audio` PASS
 Files touched:
 - `swift/Sources/HealthOSCore/FirstSliceContracts.swift`
 - `swift/Sources/HealthOSAACI/AACI.swift`
@@ -1283,12 +1311,12 @@ Files touched:
 - first-slice provenance now records GOS draft-path usage under the concrete composing actor ids (`aaci.draft-composer`, `aaci.referral-draft`, `aaci.prescription-draft`) instead of a generic `aaci.gos` actor marker
 - TypeScript GOS tooling now has executable bundle-CLI coverage for canonical lifecycle artifacts (`manifest.json`, `spec.json`, `compiler-report.json`, `source-provenance.json`)
 - local validation in this round explicitly confirmed the active-bundle path with `bash ./scripts/bootstrap-local.sh`, `npm run --workspace @healthos/gos-tooling test`, `swift test`, and `swift run HealthOSCLI --reject-gate`, including persisted GOS metadata and `gos.use.compose.*` provenance in `runtime-data/Users/Shared/HealthOS`
-- local GOS closure validation is currently smoke-level end-to-end (`bootstrap-local`, TypeScript build, GOS validate/bundle, Swift build, HealthOSCLI smoke, HealthOSScribeApp `--smoke-test`), not production-readiness validation
+- local GOS closure validation is currently smoke-level end-to-end (`bootstrap-local`, TypeScript build, GOS validate/bundle, Swift build, HealthOSCLI smoke, HealthOSScribeStage `--smoke-test`), not production-readiness validation
 - TypeScript GOS tooling was stabilized so schema resolution and strict typing now build cleanly, and canonical compiled metadata now conforms to compiled-schema constraints
 - GOS file-backed registry/loader hardening now validates registry-pointer consistency, manifest/spec/compiler-report/source-provenance presence, compiler report pass/fail status, and runtime-binding-plan compatibility before activation
 - AACI runtime now applies active GOS bundle mediation inside orchestrator draft composition/referral/prescription paths; runner-level draft mutation is no longer the primary mediation point
 - first-slice now records explicit `gos.activate.failed` provenance when activation cannot be completed, instead of silently dropping runtime diagnosis
-- HealthOSScribeApp now includes a headless smoke fallback for non-SwiftUI environments while keeping SwiftUI/macOS behavior intact
+- HealthOSScribeStage now includes a headless smoke fallback for non-SwiftUI environments while keeping SwiftUI/macOS behavior intact
 - first-slice runner now attempts optional GOS activation and uses the resulting active bundle to mediate persisted SOAP/referral/prescription drafts, storage metadata, event attributes, and provenance when an active bundle exists
 - AACI activation now normalizes loader failures into typed runtime-consumable categories (`GOSLoadTypedError` + `GOSLoaderFailure`) while preserving underlying registry errors for diagnostics/tests
 - GOS validator now performs minimal evidence-hook completeness checks for task and draft-output phases
@@ -1382,10 +1410,10 @@ Files touched:
 - shared HealthOS envelope vocabulary added for first-slice command/result semantics (`HealthOSCommandDisposition`, `HealthOSIssueCode`, `HealthOSFailureKind`, `HealthOSIssue`)
 - Scribe bridge + CLI adapter migrated from ad hoc issue strings to shared typed issue/disposition semantics
 - first-slice runner/adapter wiring extracted into shared Swift support target so CLI and app surfaces consume the same executable slice path
-- minimal macOS SwiftUI Scribe surface added as `HealthOSScribeApp` with a small observable view model over `ScribeFirstSliceFacade`
-- local validation now covers both `swift run HealthOSCLI` and `swift run HealthOSScribeApp --smoke-test`
+- minimal macOS SwiftUI Scribe surface added as `HealthOSScribeStage` with a small observable view model over `ScribeFirstSliceFacade`
+- local validation now covers both `swift run HealthOSCLI` and `swift run HealthOSScribeStage --smoke-test`
 - first slice now accepts seeded text or local audio file capture, persists local audio artifacts, and surfaces explicit transcription state (`ready` / `degraded` / `unavailable`)
-- local validation now also covers `swift run HealthOSCLI --audio-file /System/Library/Sounds/Glass.aiff` and `swift run HealthOSScribeApp --smoke-test-audio`
+- local validation now also covers `swift run HealthOSCLI --audio-file /System/Library/Sounds/Glass.aiff` and `swift run HealthOSScribeStage --smoke-test-audio`
 - bounded retrieval now carries richer snippet/index/match metadata, deterministic score breakdown, and a structured `RetrievalContextPackage` between raw matches and AACI draft composition
 - first-slice local context assembly now produces explicit `ready` / `partial` / `empty` / `degraded` states with summary/highlights/source hints for both CLI and Scribe
 - local validation now confirms the strengthened retrieval/context path across CLI and Scribe seeded-text and local-audio smoke flows
@@ -1402,8 +1430,8 @@ Files touched:
 - Swift XCTest coverage now includes dedicated Service Operations governance negatives/positives (`ServiceOperationsGovernanceTests`) covering lawfulContext/finalidade requirements, role/membership denials, habilitation expiry/inactive denials, patient-service non-bypass of consent, queue non-authorization semantics, draft/final gate protections, admin gate-resolution denials, and administrative-task governance guards
 
 - cross-app coordination shared-surface contracts are now formalized in Swift Core with a common `AppSurfaceEnvelope`, typed app-safe safe-reference taxonomy, role/app-aware allowed-denied action contracts, redaction/deidentification posture contract, and app-safe notification/obligation surfaces
-- cross-app boundary validator now fail-closes non-mediated actions, app/role mismatches, navigation-ref access grants, direct-identifier/reidentification defaults, sensitive notification payload leaks, and unrecorded patient-notification completion claims
-- Swift XCTest coverage now includes dedicated cross-app boundary negatives/positives (`CrossAppCoordinationContractsTests`) for shared envelope safety, safe refs, role-aware action isolation across Scribe/Veridia/CloudClinic, redaction posture defaults, notification payload minimization, and obligation-record integrity
+- cross-Boundary validator now fail-closes non-mediated actions, app/role mismatches, navigation-ref access grants, direct-identifier/reidentification defaults, sensitive notification payload leaks, and unrecorded patient-notification completion claims
+- Swift XCTest coverage now includes dedicated cross-Boundary negatives/positives (`CrossAppCoordinationContractsTests`) for shared envelope safety, safe refs, role-aware action isolation across Scribe/Veridia/CloudClinic, redaction posture defaults, notification payload minimization, and obligation-record integrity
 - TypeScript contract workspace and JSON Schema now mirror the cross-app shared-surface vocabulary (`AppSurfaceEnvelope`, safe refs, app actions, notifications/obligations)
 
 - repository validation harness is now executable through `make validate-all` / `scripts/validate-local.sh`, chaining docs/schema/contract drift checks plus Swift/TS/Python checks and smoke commands with fail-closed non-zero exits and local summary artifact output (`runtime-data/validation/latest-validation-summary.txt`)
@@ -1486,7 +1514,7 @@ Validation executed in this work unit:
 - `cd swift && swift build && swift test` => PASS
 - `cd ts && npm install && npm run build && npm test --if-present` => PASS (workspace has no root test script; command exits clean)
 - `cd python && python -m compileall .` => PASS
-- `cd swift && swift run HealthOSCLI && swift run HealthOSScribeApp --smoke-test` => PASS
+- `cd swift && swift run HealthOSCLI && swift run HealthOSScribeStage --smoke-test` => PASS
 
 - Project Steward evolved from deterministic checklist/prompt CLI to model-agnostic engineering orchestrator scaffold with optional providers (OpenAI/Anthropic/xAI/local-command), secure provider config schema/example, dry-run invocation path, invocation hashing logs, diff-aware PR review payload assembly, and explicit non-default PR comment posting (`--post-comment`)
 - OPS-003: Incident-response command set for first operator tools (GAP-002) [COMPLETED]

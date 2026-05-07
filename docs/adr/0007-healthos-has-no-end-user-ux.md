@@ -13,9 +13,9 @@ modules_impacted:
   - HealthOSMSR
   - HealthOSSessionRuntime
   - HealthOSCLI
-  - HealthOSScribeApp
-  - HealthOSVeridiaApp
-  - HealthOSCloudClinicApp
+  - HealthOSScribeStage
+  - HealthOSVeridiaStage
+  - HealthOSCloudClinicStage
 related_adrs:
   supersedes: []
   superseded_by: []
@@ -24,13 +24,13 @@ code_references:
   - path: swift/Sources/HealthOSCLI/CLIEntrypoint.swift
     type: impl
     note: CLI é superfície canônica de operador.
-  - path: swift/Sources/HealthOSScribeApp
+  - path: swift/Sources/HealthOSScribeStage
     type: impl
     note: Scribe — app focado em ditado/escriba; UX de profissional, não da plataforma.
-  - path: swift/Sources/HealthOSVeridiaApp
+  - path: swift/Sources/HealthOSVeridiaStage
     type: impl
     note: Veridia — app verificador/visualizador; UX de profissional/auditor.
-  - path: swift/Sources/HealthOSCloudClinicApp
+  - path: swift/Sources/HealthOSCloudClinicStage
     type: impl
     note: CloudClinic — app de cenário cloud/clinic; UX de cuidado.
   - path: docs/architecture/19-interface-doctrine.md
@@ -74,9 +74,9 @@ Suas superfícies canônicas de operador são:
 - workflows de coding/ops assistidos por agente (Steward etc.)
 
 UX de usuário-final pertence a apps/interfaces construídos sobre HealthOS, como:
-- **Scribe** ([swift/Sources/HealthOSScribeApp](../../swift/Sources/HealthOSScribeApp))
-- **Veridia** ([swift/Sources/HealthOSVeridiaApp](../../swift/Sources/HealthOSVeridiaApp))
-- **CloudClinic** ([swift/Sources/HealthOSCloudClinicApp](../../swift/Sources/HealthOSCloudClinicApp))
+- **Scribe** ([swift/Sources/HealthOSScribeStage](../../swift/Sources/HealthOSScribeStage))
+- **Veridia** ([swift/Sources/HealthOSVeridiaStage](../../swift/Sources/HealthOSVeridiaStage))
+- **CloudClinic** ([swift/Sources/HealthOSCloudClinicStage](../../swift/Sources/HealthOSCloudClinicStage))
 - apps/interfaces futuros
 
 - **Escopo.** Decisão sobre onde UX clínica/UX-paciente vive. Não proíbe ferramentas administrativas/dashboards técnicos.
@@ -117,8 +117,8 @@ Esta ADR **não** proíbe ferramentas administrativas internas ou dashboards té
 
 ## Detalhes de Implementação
 
-- **Fronteiras entre módulos.** `HealthOSCore`, `HealthOSProviders`, `HealthOSAACI`, `HealthOSMSR`, `HealthOSSessionRuntime` não importam frameworks de UX (SwiftUI, AppKit). Apps fazem isso (ver [swift/Sources/HealthOSScribeApp/Views/](../../swift/Sources/HealthOSScribeApp/Views/)). CLI usa apenas APIs de terminal.
-- **Conformidade com Package.swift.** `HealthOSCLI`/`HealthOSScribeApp`/`HealthOSVeridiaApp`/`HealthOSCloudClinicApp` são executáveis; libs core/runtime não.
+- **Fronteiras entre módulos.** `HealthOSCore`, `HealthOSProviders`, `HealthOSAACI`, `HealthOSMSR`, `HealthOSSessionRuntime` não importam frameworks de UX (SwiftUI, AppKit). Apps fazem isso (ver [swift/Sources/HealthOSScribeStage/Views/](../../swift/Sources/HealthOSScribeStage/Views/)). CLI usa apenas APIs de terminal.
+- **Conformidade com Package.swift.** `HealthOSCLI`/`HealthOSScribeStage`/`HealthOSVeridiaStage`/`HealthOSCloudClinicStage` são executáveis; libs core/runtime não.
 - **Concurrency.** N/A para esta decisão.
 - **Segurança/Privacidade.** Surfaces de operador não exibem PHI direta; apps seguem ADR-0004.
 - **Observabilidade.** Cada superfície identifica-se em telemetria.

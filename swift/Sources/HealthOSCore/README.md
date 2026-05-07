@@ -61,7 +61,7 @@ graph TD
     MSR[HealthOSMSR]:::dep
     SRT[HealthOSSessionRuntime]:::dep
     CLI[HealthOSCLI]:::dep
-    SCRIBE[HealthOSScribeApp]:::dep
+    SCRIBE[HealthOSScribeStage]:::dep
 
     JSONSCHEMA[schemas/\nJSON Schema contracts]:::extern
     TS[ts/packages/contracts\nTypeScript contracts]:::extern

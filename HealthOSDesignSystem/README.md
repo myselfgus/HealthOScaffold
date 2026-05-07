@@ -17,7 +17,7 @@ This design system was distilled from the public scaffold repository:
 - **Canonical UI doctrine:** `docs/architecture/48-native-macos-ui-design-system-and-app-shells.md`
 - **Interface boundaries:** `docs/architecture/19-interface-doctrine.md`, `11-scribe.md`, `12-veridia.md`, `13-cloudclinic.md`
 - **Screen contracts:** `docs/architecture/23-scribe-screen-contracts.md`, `24-veridia-screen-contracts.md`, `25-cloudclinic-screen-contracts.md`
-- **Existing Swift surface:** `swift/Sources/HealthOSScribeApp/` (the only interactive shell — a minimal SwiftUI validation app using `GroupBox` + `.thinMaterial`)
+- **Existing Swift surface:** `swift/Sources/HealthOSScribeStage/` (the only interactive shell — a minimal SwiftUI validation app using `GroupBox` + `.thinMaterial`)
 
 The scaffold repo contains **no logo, brand assets, or color tokens** — only doctrine, screen contracts, and a SwiftPM SwiftUI surface. This system fills that gap with a **proposed identity** rooted in the platform's stated values: sovereignty, governance, contract law, and Apple-native execution. Treat the wordmark, accent, and motif choices as **scaffold proposals** ready for the user's review.
 

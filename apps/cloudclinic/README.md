@@ -1,11 +1,11 @@
 # CloudClinic
 
-Service operations Stage for HealthOS. CloudClinic surfaces professional service-context operations via `HealthOSAppBoundary`. It never defines Core law or holds clinical authority.
+Service operations Stage for HealthOS. CloudClinic surfaces professional service-context operations via `HealthOSBoundary`. It never defines Core law or holds clinical authority.
 
-**Architecture:** `docs/architecture/13-cloudclinic.md`  
-**Executable surface:** [`swift/Sources/HealthOSCloudClinicApp/`](../../swift/Sources/HealthOSCloudClinicApp/)  
-**Design surface:** [`HealthOSDesignSystem/ui_kits/cloudclinic/`](../../HealthOSDesignSystem/ui_kits/cloudclinic/)  
-**Runtime:** `HealthOSServiceRuntime` (Tier 2) via `HealthOSAppBoundary`
+**Architecture:** `docs/architecture/13-cloudclinic.md`
+**Executable surface:** [`swift/Sources/HealthOSCloudClinicStage/`](../../swift/Sources/HealthOSCloudClinicStage/)
+**Design surface:** [`HealthOSDesignSystem/ui_kits/cloudclinic/`](../../HealthOSDesignSystem/ui_kits/cloudclinic/)
+**Runtime:** `HealthOSServiceRuntime` (Tier 2) via `HealthOSBoundary`
 
 ## Screens
 
@@ -20,6 +20,6 @@ Service operations Stage for HealthOS. CloudClinic surfaces professional service
 
 ## Maturity
 
-Scaffold placeholder only. `HealthOSCloudClinicApp` executable is present for product-graph representation and smoke-test baseline (`--smoke-test` exits 0). No final UI shell, no session behavior, no clinical authority.
+Scaffold placeholder only. `HealthOSCloudClinicStage` executable is present for product-graph representation and smoke-test baseline (`--smoke-test` exits 0). No final UI shell, no session behavior, no clinical authority.
 
-`HealthOSCloudClinicApp` correctly imports `HealthOSAppBoundary` only — no direct Tier 1/2 dependencies. Final service-operations wiring is BLOCKED pending `HealthOSServiceRuntime` and `HealthOSAppBoundary` facade implementation.
+`HealthOSCloudClinicStage` correctly imports `HealthOSBoundary` only — no direct Tier 1/2 dependencies. Final service-operations wiring is BLOCKED pending `HealthOSServiceRuntime` and `HealthOSBoundary` facade implementation.

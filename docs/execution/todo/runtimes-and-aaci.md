@@ -49,7 +49,7 @@ Files touched:
 - `swift/Sources/HealthOSAACI/AACI.swift`
 - `swift/Sources/HealthOSSessionRuntime/SessionRunner.swift`
 - `swift/Sources/HealthOSSessionRuntime/ScribeSessionAdapter.swift`
-- `swift/Sources/HealthOSScribeApp/Views/ScribeFirstSliceView.swift`
+- `swift/Sources/HealthOSScribeStage/Views/ScribeFirstSliceView.swift`
 - `swift/Tests/HealthOSTests/MentalSpaceRuntimeTests.swift`
 - `ts/packages/contracts/src/index.ts`
 - `schemas/contracts/async-job.schema.json`

@@ -2,15 +2,42 @@
 
 ## COMPLETED
 
+### SWIFT-ONTOLOGY-SECOND-PASS Boundary and Stage technical rename
+Outcome:
+- renamed the canonical Swift Boundary module from `HealthOSAppBoundary` to `HealthOSBoundary`
+- renamed initial Stage executable products/targets from `HealthOSScribeApp`, `HealthOSVeridiaApp`, and `HealthOSCloudClinicApp` to `HealthOSScribeStage`, `HealthOSVeridiaStage`, and `HealthOSCloudClinicStage`
+- updated SwiftPM, imports, tests, Xcode shared schemes, Makefile smoke commands, module READMEs, app/docs surfaces, Steward prompt text, and Settler/Territory metadata
+- kept Stage wiring honest: Scribe and Veridia direct Tier 1/2 imports remain marked TODOs pending complete Boundary facades; CloudClinic remains Boundary-only
+Files touched:
+- `swift/Package.swift`
+- `swift/Sources/HealthOSBoundary/`
+- `swift/Tests/HealthOSBoundaryTests/`
+- `swift/Sources/HealthOSScribeStage/`
+- `swift/Sources/HealthOSVeridiaStage/`
+- `swift/Sources/HealthOSCloudClinicStage/`
+- `swift/.swiftpm/xcode/xcshareddata/xcschemes/`
+- `Makefile`
+- `.healthos-steward/`
+- `.healthos-settler/`
+- docs and README surfaces that referenced the old technical names
+Validation:
+- `cd swift && swift build` PASS after sandbox escalation for Swift/Clang cache access
+- `cd swift && swift test` PASS — 269 XCTest tests passed plus Swift Testing suites loaded
+- `git diff --check` PASS
+- `make validate-docs` PASS
+- `make validate-schemas` PASS
+- `make validate-contracts` PASS
+- `make smoke-scribe`, `make smoke-veridia`, and `make smoke-cloudclinic` PASS after serialized SwiftPM execution outside the sandbox
+
 ### APP-011 Veridia: smoke-testable executable path
 Outcome:
 - wired `UserSovereigntyContracts.swift` into a minimal `VeridiaSessionFacade` / `VeridiaSessionAdapter` so Veridia has an executable governed session boundary
-- updated `HealthOSVeridiaApp --smoke-test` to verify `veridia.session.start` and `veridia.session.end`
+- updated `HealthOSVeridiaStage --smoke-test` to verify `veridia.session.start` and `veridia.session.end`
 - added boundary smoke tests for lawful-context denial, unknown/double end, and provenance/audit references
 Files touched:
 - `swift/Sources/HealthOSCore/VeridiaSessionContracts.swift`
 - `swift/Sources/HealthOSCore/VeridiaSessionAdapter.swift`
-- `swift/Sources/HealthOSVeridiaApp/VeridiaEntrypoint.swift`
+- `swift/Sources/HealthOSVeridiaStage/VeridiaEntrypoint.swift`
 - `swift/Tests/HealthOSTests/VeridiaSessionFacadeTests.swift`
 Validation:
 - 268 Swift tests passed
@@ -48,14 +75,14 @@ Files touched:
 
 ### STR-005 Add placeholder Swift executable targets for Veridia and CloudClinic
 Outcome:
-- added `HealthOSVeridiaApp` and `HealthOSCloudClinicApp` as minimal Swift executable scaffold targets so the HealthOS product graph no longer represents only Scribe as an app/interface surface
+- added `HealthOSVeridiaStage` and `HealthOSCloudClinicStage` as minimal Swift executable scaffold targets so the HealthOS product graph no longer represents only Scribe as an app/interface surface
 - added honest `--smoke-test` paths for both placeholders: scaffold-only, no final UI, no clinical authority, and no production-readiness claim
 - added `make smoke-veridia` and `make smoke-cloudclinic` while preserving existing CLI/Scribe smoke targets
 - unblocked APP-011 and APP-012 as next Stage wiring tasks without implementing either session path at that time; ADR-0013 later blocked APP-012 pending Core/GOS/runtime/Boundary/Custom readiness
 Files touched:
 - `swift/Package.swift`
-- `swift/Sources/HealthOSVeridiaApp/VeridiaEntrypoint.swift`
-- `swift/Sources/HealthOSCloudClinicApp/CloudClinicEntrypoint.swift`
+- `swift/Sources/HealthOSVeridiaStage/VeridiaEntrypoint.swift`
+- `swift/Sources/HealthOSCloudClinicStage/CloudClinicEntrypoint.swift`
 - `Makefile`
 - `README.md`
 - `AGENTS.md`
@@ -121,12 +148,12 @@ Outcome:
 - expanded `ScribeSessionBridgeState.gosRuntimeState` from coarse active/inactive status into an app-safe audit surface with active workflow title, bundle/spec identity, bound actors/families, reasoning boundaries, and SOAP/referral/prescription mediation markers
 - updated CLI and minimal SwiftUI Scribe output so the executable slice shows where AACI consumed GOS (`gos.use.compose.soap`, `gos.use.derive.referral`, `gos.use.derive.prescription`) while keeping app law ownership out of Scribe
 - preserved raw-spec boundary: no compiled GOS spec JSON or runtime-binding JSON is exposed to the app surface, and GOS remains `legalAuthorizing=false`, gate-required, and draft-only for referral/prescription
-- validation: `swift build`, `swift run HealthOSCLI`, `swift run HealthOSCLI --reject-gate`, `swift run HealthOSScribeApp --smoke-test`, and `swift run HealthOSScribeApp --smoke-test-audio` passed; follow-up `swift test` passed after TEST-001 cleanup
+- validation: `swift build`, `swift run HealthOSCLI`, `swift run HealthOSCLI --reject-gate`, `swift run HealthOSScribeStage --smoke-test`, and `swift run HealthOSScribeStage --smoke-test-audio` passed; follow-up `swift test` passed after TEST-001 cleanup
 Files touched:
 - `swift/Sources/HealthOSCore/ScribeFirstSliceBridge.swift`
 - `swift/Sources/HealthOSSessionRuntime/ScribeSessionAdapter.swift`
-- `swift/Sources/HealthOSScribeApp/Models/ScribeFirstSliceViewModel.swift`
-- `swift/Sources/HealthOSScribeApp/Views/ScribeFirstSliceView.swift`
+- `swift/Sources/HealthOSScribeStage/Models/ScribeFirstSliceViewModel.swift`
+- `swift/Sources/HealthOSScribeStage/Views/ScribeFirstSliceView.swift`
 - `swift/Sources/HealthOSCLI/CLIEntrypoint.swift`
 - `swift/Tests/HealthOSTests/GOSRuntimeAdoptionTests.swift`
 - `docs/architecture/22-runtime-state-surfaces.md`
@@ -222,7 +249,7 @@ Outcome:
 Files touched:
 - `swift/Package.swift`
 - `swift/Sources/HealthOSSessionRuntime/`
-- `swift/Sources/HealthOSScribeApp/`
+- `swift/Sources/HealthOSScribeStage/`
 - `swift/Sources/HealthOSCLI/CLIEntrypoint.swift`
 - `docs/architecture/11-scribe.md`
 - `docs/architecture/23-scribe-screen-contracts.md`
@@ -234,7 +261,7 @@ Outcome:
 - the UI exposes explicit transcription and degraded-state surfaces instead of assuming capture always yields transcript text
 - the app still consumes bridge state from `ScribeFirstSliceFacade` rather than taking ownership of capture/transcription law
 Files touched:
-- `swift/Sources/HealthOSScribeApp/`
+- `swift/Sources/HealthOSScribeStage/`
 - `swift/Sources/HealthOSCore/FirstSliceContracts.swift`
 - `swift/Sources/HealthOSCore/ScribeFirstSliceBridge.swift`
 - `swift/Sources/HealthOSSessionRuntime/ScribeSessionAdapter.swift`
@@ -251,8 +278,8 @@ Files touched:
 - `swift/Sources/HealthOSCore/ScribeFirstSliceBridge.swift`
 - `swift/Sources/HealthOSCore/SharedEnvelopeVocabulary.swift`
 - `swift/Sources/HealthOSSessionRuntime/ScribeSessionAdapter.swift`
-- `swift/Sources/HealthOSScribeApp/Models/ScribeFirstSliceViewModel.swift`
-- `swift/Sources/HealthOSScribeApp/Views/ScribeFirstSliceView.swift`
+- `swift/Sources/HealthOSScribeStage/Models/ScribeFirstSliceViewModel.swift`
+- `swift/Sources/HealthOSScribeStage/Views/ScribeFirstSliceView.swift`
 - `swift/Sources/HealthOSCLI/CLIEntrypoint.swift`
 - `docs/architecture/11-scribe.md`
 - `docs/architecture/23-scribe-screen-contracts.md`
@@ -273,8 +300,8 @@ Files touched:
 - `swift/Sources/HealthOSSessionRuntime/SessionRunner.swift`
 - `swift/Sources/HealthOSSessionRuntime/ScribeSessionAdapter.swift`
 - `swift/Sources/HealthOSCLI/CLIEntrypoint.swift`
-- `swift/Sources/HealthOSScribeApp/Models/ScribeFirstSliceViewModel.swift`
-- `swift/Sources/HealthOSScribeApp/Views/ScribeFirstSliceView.swift`
+- `swift/Sources/HealthOSScribeStage/Models/ScribeFirstSliceViewModel.swift`
+- `swift/Sources/HealthOSScribeStage/Views/ScribeFirstSliceView.swift`
 - `docs/architecture/06-core-services.md`
 - `docs/architecture/11-scribe.md`
 - `docs/architecture/23-scribe-screen-contracts.md`
@@ -289,8 +316,8 @@ Files touched:
 - `swift/Sources/HealthOSCore/ScribeFirstSliceBridge.swift`
 - `swift/Sources/HealthOSSessionRuntime/ScribeSessionAdapter.swift`
 - `swift/Sources/HealthOSCLI/CLIEntrypoint.swift`
-- `swift/Sources/HealthOSScribeApp/Models/ScribeFirstSliceViewModel.swift`
-- `swift/Sources/HealthOSScribeApp/Views/ScribeFirstSliceView.swift`
+- `swift/Sources/HealthOSScribeStage/Models/ScribeFirstSliceViewModel.swift`
+- `swift/Sources/HealthOSScribeStage/Views/ScribeFirstSliceView.swift`
 - `docs/architecture/11-scribe.md`
 - `docs/architecture/23-scribe-screen-contracts.md`
 - `docs/execution/02-status-and-tracking.md`
@@ -412,7 +439,7 @@ Unblock criterion:
 - `swift run HealthOSCLI`
 - `swift run HealthOSCLI --reject-gate`
 - `swift run HealthOSCLI --audio-file /System/Library/Sounds/Glass.aiff`
-- `swift run HealthOSScribeApp --smoke-test`
-- `swift run HealthOSScribeApp --smoke-test-audio`
-- `swift run HealthOSVeridiaApp --smoke-test`
-- `swift run HealthOSCloudClinicApp --smoke-test`
+- `swift run HealthOSScribeStage --smoke-test`
+- `swift run HealthOSScribeStage --smoke-test-audio`
+- `swift run HealthOSVeridiaStage --smoke-test`
+- `swift run HealthOSCloudClinicStage --smoke-test`

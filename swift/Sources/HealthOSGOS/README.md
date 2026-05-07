@@ -18,7 +18,7 @@ graph TD
     CORE[HealthOSCore\nCore law, invariants, GOS type vocabulary]:::core
     GOS[HealthOSGOS\nThis module — GOS runtime]:::gos
     AACI[HealthOSAACI\nConsumes GOS binding plans]:::runtime
-    BOUND[HealthOSAppBoundary\nBoundary compatibility module]:::boundary
+    BOUND[HealthOSBoundary\nBoundary compatibility module]:::boundary
     APPS[Stages\nScribe · Veridia · CloudClinic]:::stage
 
     CORE --> GOS
@@ -54,5 +54,5 @@ Architecture references:
 - GOS never holds constitutional authority. `HealthOSCore` is sovereign.
 - GOS spec activation must produce a provenance record.
 - A failed or missing spec must degrade gracefully; it must never silently substitute an unauthorized default.
-- Apps must never consume GOS bindings directly — only through `HealthOSAACI` mediation via `HealthOSAppBoundary`.
+- Apps must never consume GOS bindings directly — only through `HealthOSAACI` mediation via `HealthOSBoundary`.
 - Do not move consent, habilitation, gate, or finality logic into GOS. Those belong to Core law.

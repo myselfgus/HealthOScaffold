@@ -1,11 +1,13 @@
 import Foundation
+import HealthOSBoundary
 import HealthOSCore
 
-// Veridia is the patient health identity app for HealthOS.
+// Veridia is the patient health identity Stage for HealthOS.
 // Architecture: docs/architecture/12-veridia.md
 // Governance contracts: HealthOSCore/UserSovereigntyContracts.swift
 // Session boundary: HealthOSCore/VeridiaSessionContracts.swift
-// Veridia consumes Core-mediated identity, key custody, consent, access trail, and export surfaces.
+// TODO: consume these surfaces solely through HealthOSBoundary once Veridia session facade types migrate.
+// Veridia consumes mediated identity, key custody, consent, access trail, and export surfaces.
 // Veridia is not Core law, not the User-Agent Runtime, and has no clinical authority.
 @main
 struct VeridiaEntrypoint {
@@ -15,7 +17,7 @@ struct VeridiaEntrypoint {
             await runSmokeTest()
             return
         }
-        print("HealthOSVeridia: patient health identity app scaffold placeholder - no final UI shell, no clinical authority (see docs/architecture/12-veridia.md)")
+        print("Veridia Stage: patient health identity scaffold placeholder - no final UI shell, no clinical authority (see docs/architecture/12-veridia.md)")
     }
 
     private static func runSmokeTest() async {
@@ -40,7 +42,7 @@ struct VeridiaEntrypoint {
 
         let startResult = await adapter.startSession(request)
         guard startResult.disposition == .sessionStarted else {
-            print("HealthOSVeridia smoke FAIL: session start returned \(startResult.disposition.rawValue) — \(startResult.issueMessage ?? "no detail")")
+            print("Veridia Stage smoke FAIL: session start returned \(startResult.disposition.rawValue) — \(startResult.issueMessage ?? "no detail")")
             exit(1)
         }
 
@@ -49,10 +51,10 @@ struct VeridiaEntrypoint {
             lawfulContext: lawfulContext
         )
         guard endResult.disposition == .sessionEnded else {
-            print("HealthOSVeridia smoke FAIL: session end returned \(endResult.disposition.rawValue) — \(endResult.issueMessage ?? "no detail")")
+            print("Veridia Stage smoke FAIL: session end returned \(endResult.disposition.rawValue) — \(endResult.issueMessage ?? "no detail")")
             exit(1)
         }
 
-        print("HealthOSVeridia scaffold: smoke OK (veridia.session.start + veridia.session.end boundary verified)")
+        print("Veridia Stage scaffold: smoke OK (veridia.session.start + veridia.session.end Boundary verified)")
     }
 }

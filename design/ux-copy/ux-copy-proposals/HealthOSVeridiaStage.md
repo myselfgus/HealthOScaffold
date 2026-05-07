@@ -1,11 +1,11 @@
-# Proposta de UX Copy — HealthOSVeridiaApp
+# Proposta de UX Copy — HealthOSVeridiaStage
 > Revisões para o app de identidade de saúde do paciente. Foco: linguagem acessível, privacidade clara, ausência de autoridade clínica.
 
 ---
 
 ## Contexto
 
-HealthOSVeridiaApp é o app de identidade de saúde do paciente (soberania do usuário, consentimento, acesso a dados próprios). Atualmente é um scaffold sem UI final — o único texto visível está na saída de `--smoke-test` e no modo sem argumento. O público principal é o paciente, não o clínico. A linguagem deve ser clara, empática e explícita quanto ao controle de dados.
+HealthOSVeridiaStage é o app de identidade de saúde do paciente (soberania do usuário, consentimento, acesso a dados próprios). Atualmente é um scaffold sem UI final — o único texto visível está na saída de `--smoke-test` e no modo sem argumento. O público principal é o paciente, não o clínico. A linguagem deve ser clara, empática e explícita quanto ao controle de dados.
 
 ---
 

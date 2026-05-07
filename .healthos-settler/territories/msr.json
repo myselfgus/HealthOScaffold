@@ -19,7 +19,7 @@
   ],
   "forbiddenPaths": [
     "swift/Sources/HealthOSSessionRuntime/Normalization",
-    "swift/Sources/HealthOSScribeApp",
+    "swift/Sources/HealthOSScribeStage",
     "ts/packages/runtime-async"
   ],
   "invariants": [

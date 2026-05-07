@@ -1,7 +1,7 @@
 {
   "id": "apps",
-  "name": "Apps",
-  "summary": "Scribe, Veridia, and CloudClinic app/interface surfaces that consume mediated Core, GOS, Session Runtime, AACI, and MSR state.",
+  "name": "Stages",
+  "summary": "Scribe, Veridia, and CloudClinic Stage/interface surfaces that consume mediated Core, GOS, Session Runtime, AACI, and MSR state.",
   "maturity": "implemented seam",
   "canonicalDocs": [
     "docs/architecture/11-scribe.md",
@@ -12,16 +12,16 @@
     "docs/architecture/48-native-macos-ui-design-system-and-app-shells.md"
   ],
   "primaryPaths": [
-    "swift/Sources/HealthOSScribeApp",
-    "swift/Sources/HealthOSVeridiaApp",
-    "swift/Sources/HealthOSCloudClinicApp"
+    "swift/Sources/HealthOSScribeStage",
+    "swift/Sources/HealthOSVeridiaStage",
+    "swift/Sources/HealthOSCloudClinicStage"
   ],
   "secondaryPaths": [
     "swift/Sources/HealthOSSessionRuntime",
     "schemas/contracts/cross-app-coordination-shared-surfaces.schema.json",
     "schemas/contracts/user-agent-patient-identity-veridia.schema.json",
     "schemas/contracts/service-operations-cloudclinic.schema.json",
-    "docs/execution/skills/app-boundary-skill.md",
+    "docs/execution/skills/boundary-skill.md",
     "docs/execution/skills/user-agent-veridia-skill.md",
     "docs/execution/todo/apps-and-interfaces.md"
   ],
@@ -32,22 +32,22 @@
     "ts/agent-infra"
   ],
   "invariants": [
-    "Apps are interfaces, not law engines.",
-    "Apps consume mediated surfaces and do not own Core law, GOS policy, or clinical authority.",
-    "App surfaces must avoid direct raw clinical data exposure and direct identifiers.",
+    "Stages are governed application consumers, not law engines.",
+    "Stages consume mediated surfaces and do not own Core law, GOS policy, or clinical authority.",
+    "Stage surfaces must avoid direct raw clinical data exposure and direct identifiers.",
     "Native macOS UI remains scaffold/foundation maturity until explicitly implemented and validated."
   ],
   "allowedWork": [
-    "Maintain app-safe mediated surfaces for Scribe, Veridia, and CloudClinic.",
-    "Add or repair smoke-testable app executable paths.",
-    "Align app docs with interface doctrine and macOS 26+ Liquid Glass baseline.",
-    "Validate app changes through Swift tests and app smoke commands."
+    "Maintain Stage-safe mediated surfaces for Scribe, Veridia, and CloudClinic.",
+    "Add or repair smoke-testable Stage executable paths.",
+    "Align Stage docs with interface doctrine and macOS 26+ Liquid Glass baseline.",
+    "Validate Stage changes through Swift tests and Stage smoke commands."
   ],
   "forbiddenWork": [
-    "Move Core law into apps.",
+    "Move Core law into Stages.",
     "Claim final UI delivery without implementation.",
     "Expose raw direct identifiers or unmediated clinical payloads.",
-    "Give apps clinical, regulatory, signature, prescription, referral, or finalization authority."
+    "Give Stages clinical, regulatory, signature, prescription, referral, or finalization authority."
   ],
   "validationCommands": [
     "make swift-build",
@@ -58,9 +58,9 @@
     "make validate-all"
   ],
   "knownGaps": [
-    "APP-011 remains READY for Veridia session path work.",
-    "APP-012 remains READY for CloudClinic session path work.",
-    "Final app UI shells are not implemented."
+    "APP-011 is DONE for Veridia session path work.",
+    "APP-012 is BLOCKED until Core/GOS/runtime/Boundary/Custom readiness is satisfied.",
+    "Final Stage UI shells are not implemented."
   ],
   "defaultSettlerIds": [
     "app-boundary-settler"
@@ -73,8 +73,9 @@
     "msr"
   ],
   "notes": [
-    "This territory covers app/interface boundaries, not product task completion.",
-    "APP-013 established Veridia as the canonical patient app name (2026-05-04). All future work uses Veridia naming.",
-    "ST-011 does not change APP-011 or APP-012 status."
+    "The territory id remains `apps` for compatibility, but the canonical HealthOS concept is Stage.",
+    "This territory covers Stage/interface boundaries, not product task completion.",
+    "APP-013 established Veridia as the canonical patient identity Stage name (2026-05-04). All future work uses Veridia naming.",
+    "ST-011 did not change APP-011 or APP-012 status; ADR-0013 later blocked APP-012 as Stage implementation."
   ]
 }

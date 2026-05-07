@@ -14,9 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "HealthOSVeridiaApp"
-               BuildableName = "HealthOSVeridiaApp"
-               BlueprintName = "HealthOSVeridiaApp"
+               BlueprintIdentifier = "HealthOSScribeStage"
+               BuildableName = "HealthOSScribeStage"
+               BlueprintName = "HealthOSScribeStage"
                ReferencedContainer = "container:">
             </BuildableReference>
          </BuildActionEntry>
@@ -45,15 +45,19 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "HealthOSVeridiaApp"
-            BuildableName = "HealthOSVeridiaApp"
-            BlueprintName = "HealthOSVeridiaApp"
+            BlueprintIdentifier = "HealthOSScribeStage"
+            BuildableName = "HealthOSScribeStage"
+            BlueprintName = "HealthOSScribeStage"
             ReferencedContainer = "container:">
          </BuildableReference>
       </BuildableProductRunnable>
       <CommandLineArguments>
          <CommandLineArgument
             argument = "--smoke-test"
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "--smoke-test-audio"
             isEnabled = "NO">
          </CommandLineArgument>
       </CommandLineArguments>
@@ -68,9 +72,9 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "HealthOSVeridiaApp"
-            BuildableName = "HealthOSVeridiaApp"
-            BlueprintName = "HealthOSVeridiaApp"
+            BlueprintIdentifier = "HealthOSScribeStage"
+            BuildableName = "HealthOSScribeStage"
+            BlueprintName = "HealthOSScribeStage"
             ReferencedContainer = "container:">
          </BuildableReference>
       </BuildableProductRunnable>

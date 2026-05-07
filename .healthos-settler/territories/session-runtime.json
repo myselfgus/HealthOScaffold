@@ -15,9 +15,9 @@
   ],
   "secondaryPaths": [
     "swift/Sources/HealthOSCLI",
-    "swift/Sources/HealthOSScribeApp",
-    "swift/Sources/HealthOSVeridiaApp",
-    "swift/Sources/HealthOSCloudClinicApp",
+    "swift/Sources/HealthOSScribeStage",
+    "swift/Sources/HealthOSVeridiaStage",
+    "swift/Sources/HealthOSCloudClinicStage",
     "swift/Tests",
     "docs/execution/todo/runtimes-and-aaci.md"
   ],

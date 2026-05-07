@@ -78,7 +78,7 @@ Always:
 
 Primary executable slice orchestration lives in:
 - `swift/Sources/HealthOSSessionRuntime/SessionRunner.swift`
-- consumed by `HealthOSCLI` and the minimal `HealthOSScribeApp`
+- consumed by `HealthOSCLI` and the minimal `HealthOSScribeStage`
 
 Reference ordering:
 habilitation validate → consent validate → session start → capture → transcript provenance → retrieval provenance → SOAP draft provenance → gate request → gate resolve → final artifact (only if approved) + provenance.
@@ -123,10 +123,10 @@ Recently confirmed direct smoke commands:
 ```bash
 cd swift && swift run HealthOSCLI
 cd swift && swift run HealthOSCLI --reject-gate
-cd swift && swift run HealthOSScribeApp --smoke-test
-cd swift && swift run HealthOSScribeApp --smoke-test-audio
-cd swift && swift run HealthOSVeridiaApp --smoke-test
-cd swift && swift run HealthOSCloudClinicApp --smoke-test
+cd swift && swift run HealthOSScribeStage --smoke-test
+cd swift && swift run HealthOSScribeStage --smoke-test-audio
+cd swift && swift run HealthOSVeridiaStage --smoke-test
+cd swift && swift run HealthOSCloudClinicStage --smoke-test
 ```
 
 For GOS bundle lifecycle smoke, use the minimal operator-facing CLI path and keep reviewer/operator identity explicit:

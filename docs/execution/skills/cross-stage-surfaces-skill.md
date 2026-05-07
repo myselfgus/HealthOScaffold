@@ -1,4 +1,4 @@
-# Skill: cross-app shared surfaces
+# Skill: cross-Stage shared surfaces
 
 ## When to use
 Shared envelope/safe refs/notifications across Stages such as Scribe, Veridia, CloudClinic, and future governed application consumers.
@@ -16,10 +16,10 @@ Envelope is never legal authorization; safe refs never carry raw direct identifi
 `cd swift && swift test --filter CrossAppCoordinationContractsTests`.
 
 ## Absolute restrictions
-No cross-app navigation ref granting implicit data access.
+No cross-Stage navigation ref granting implicit data access.
 
 ## Definition of done
-Role/app mismatch and payload leak denials are tested.
+Role/Stage mismatch and payload leak denials are tested.
 
 ## What not to do
-No raw compiled spec payload in app envelope.
+No raw compiled spec payload in Stage-facing envelope.

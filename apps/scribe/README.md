@@ -1,9 +1,9 @@
 # Scribe
 
-Professional clinical workspace Stage for HealthOS. Scribe consumes `HealthOSAppBoundary` only and never holds clinical authority, consent law, or Core governance.
+Professional clinical workspace Stage for HealthOS. Scribe consumes `HealthOSBoundary` only and never holds clinical authority, consent law, or Core governance.
 
-**Architecture:** `docs/architecture/11-scribe.md`  
-**Executable surface:** [`swift/Sources/HealthOSScribeApp/`](../../swift/Sources/HealthOSScribeApp/)  
+**Architecture:** `docs/architecture/11-scribe.md`
+**Executable surface:** [`swift/Sources/HealthOSScribeStage/`](../../swift/Sources/HealthOSScribeStage/)
 **Design surface:** [`HealthOSDesignSystem/ui_kits/scribe/`](../../HealthOSDesignSystem/ui_kits/scribe/)
 
 ## Session Lifecycle
@@ -38,6 +38,6 @@ stateDiagram-v2
 
 ## Maturity
 
-Minimal SwiftUI validation surface (`HealthOSScribeApp`) is operational for smoke testing.  
+Minimal SwiftUI validation surface (`HealthOSScribeStage`) is operational for smoke testing.
 Full Liquid Glass UI shell, final gate panel, and derived-draft workflows are pending Tier 2 stabilization.
-Scribe never owns governance law — all authority flows via `HealthOSAppBoundary`.
+Scribe never owns governance law — all authority flows via `HealthOSBoundary`.

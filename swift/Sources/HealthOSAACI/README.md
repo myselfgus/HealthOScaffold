@@ -19,7 +19,7 @@ graph TD
     GOS[HealthOSGOS\nGOS runtime — binding plan activation]:::gos
     PROV[HealthOSProviders\nProvider router, speech, language model]:::provider
     AACI[HealthOSAACI\nThis module]:::runtime
-    BOUND[HealthOSAppBoundary\nBoundary compatibility module]:::boundary
+    BOUND[HealthOSBoundary\nBoundary compatibility module]:::boundary
 
     CORE --> AACI
     GOS --> AACI

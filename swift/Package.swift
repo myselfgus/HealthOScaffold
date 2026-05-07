@@ -75,12 +75,15 @@ let package = Package(
         // ── Tier 5 — Reference Apps ──────────────────────────────────────────
         // TODO: depend solely on HealthOSAppBoundary once its session facade is complete.
         .executableTarget(name: "HealthOSScribeApp",
-                          dependencies: ["HealthOSAppBoundary", "HealthOSSessionRuntime"]),
+                          dependencies: ["HealthOSAppBoundary", "HealthOSSessionRuntime"],
+                          resources: [.process("Resources")]),
         // TODO: remove HealthOSCore once VeridiaSession types migrate into HealthOSAppBoundary.
         .executableTarget(name: "HealthOSVeridiaApp",
-                          dependencies: ["HealthOSAppBoundary", "HealthOSCore"]),
+                          dependencies: ["HealthOSAppBoundary", "HealthOSCore"],
+                          resources: [.process("Resources")]),
         .executableTarget(name: "HealthOSCloudClinicApp",
-                          dependencies: ["HealthOSAppBoundary"]),
+                          dependencies: ["HealthOSAppBoundary"],
+                          resources: [.process("Resources")]),
 
         // ── Tests ────────────────────────────────────────────────────────────
         .testTarget(name: "HealthOSCoreTests",

@@ -4,7 +4,12 @@
 # Swift
 .build/
 Packages/
-.swiftpm/
+# SwiftPM derived state — ignore per-user and resolution caches only
+# Shared schemes (.swiftpm/xcode/xcshareddata/xcschemes/) are committed intentionally
+.swiftpm/manifest/
+.swiftpm/checkouts/
+.swiftpm/repositories/
+.swiftpm/xcode/xcuserdata/
 
 # Node
 node_modules/

@@ -1,71 +1,81 @@
 # Daily status digest — 2026-05-07
-**Fase atual**: Controlled implementation — first vertical slice started | **Gerado por**: daily-todo-tracker
+
+**Fase atual**: Controlled implementation — first vertical slice started
+**Gerado por**: daily-todo-tracker automation
 
 ## Tarefas READY por domínio
 
 | Domínio | ID | Prioridade | Dependências |
 |---|---|---|---|
-| Apps e interfaces | APP-012 | Medium (P2) | STR-005 DONE |
-| Apps e interfaces | APP-011 | Medium (P2) | STR-005, APP-013 DONE — ver Observações |
-| Ops/Network/CI | CI-001 | P4 | P0–P2 complete |
-| Ops/Steward | WS-2 | Medium | Phase A (ARCH-001) complete |
-| Ops/Steward | WS-3 | Medium | Phase A (ARCH-001) complete |
-| Construction system | ST-020 | — | ST-022, ST-023 DONE |
+| Ops/Network/CI | CI-001 | P4 / Tier 1 | P0-P2 complete; GitHub Actions workflow absent in current tree |
+| Runtimes e AACI | RT-ASYNC-001 | P3 / Tier 1 | Local PostgreSQL/runbook path or explicit environment-gated skip |
+| Runtimes e AACI | RT-RETRIEVAL-001 | P3 / Tier 1 | Real embeddings provider/path or explicit policy-approved degraded posture |
+| Ops/Steward | WS-2 | Medium / needs-review | Phase A complete; reconcile with implemented `healthos-forge-mcp` stdio+HTTP seam |
+| Ops/Steward | WS-3 | Medium / needs-review | Phase A complete; reconcile with implemented deterministic Steward commands |
 
 ## Tarefas BLOCKED
 
-| ID | Domínio | Motivo |
-|---|---|---|
-| RT-ASYNC-001 | Runtimes | Blocked em doc-21 (distributed worker / transactional idempotency — production phase) |
-| RT-RETRIEVAL-001 | Runtimes | Blocked em doc-21 (embedding/vector index — no real provider) |
+| ID | Motivo do blocker |
+|---|---|
+| APP-012 | BLOCKED after ADR-0013 until Tier 1 platform/runtime foundations, CloudClinic App Integration Boundary, and CloudClinic App Charter are ready |
+| ST-020 | NEEDS-REVIEW / BLOCKED AS WRITTEN because it targets APP-012 implementation prompt generation before APP-012 is unblocked |
 
 ## Contador geral
 
-READY: 6 | BLOCKED: 2 | Gaps abertos: 8 (GAP-003 a GAP-010)
+- READY: 5
+- BLOCKED: 2
+- COMPLETED recentes (ultimas 2 semanas): 53 entries in `docs/execution/02-status-and-tracking.md` with 2026-04/2026-05 completion headings
+- Gaps abertos no gap register: 8 (GAP-003 a GAP-010)
 
 ## Xcode Agent streams
 
 | Stream | Status |
 |---|---|
-| A — Runtime core | IN PROGRESS |
-| B — Session model | IN PROGRESS |
-| C — Tool runtime | TODO |
-| D — Model backend | TODO |
-| E — CLI conversation surface | TODO |
-| F — Xcode conversation surface | TODO |
-
-Next queue items: XA-003 (session lifecycle ergonomics), XA-004 (tool runtime contracts), XA-005 (conversational CLI mode)
+| Stream A | IN PROGRESS — Runtime core |
+| Stream B | IN PROGRESS — Session model |
+| Stream C | TODO — Tool runtime |
+| Stream D | TODO — Model backend layer |
+| Stream E | TODO — CLI conversation surface |
+| Stream F | TODO — Xcode conversation surface |
 
 ## Settler model
 
 | Tarefa | Status |
 |---|---|
-| ST-010 Construction Operating Model baseline | DONE |
-| ST-011 Territory Registry | DONE |
-| ST-011B HealthOS Technical Product Spec | DONE |
-| ST-012 Settler Profile Registry | DONE |
-| ST-013 Settlement Record Schema/templates | DONE |
-| ST-014 Deterministic Steward CLI inspect/next/list | DONE |
-| ST-015 Prompt Generation Engine | DONE |
-| ST-016 Settlement Validation + PR Review Draft | DONE |
-| ST-017 Derived Memory Builder | DONE |
-| ST-018 healthos-forge-mcp (stdio, 10 tools) | DONE |
-| ST-019 Xcode/Codex/Claude integration instructions | DONE |
-| ST-021 forge-mcp HTTP/Streamable HTTP transport | DONE |
-| ST-022 Steward Coordinator Managed Agent definition | DONE |
-| ST-023 Session client workflows (Managed Agents) | DONE |
-| ST-020 Generate APP-012 prompt via Steward | TODO |
+| ST-002 | not present as active ST task in current tracker |
+| ST-003 | not present as active ST task in current tracker |
+| ST-004 | not present as active ST task in current tracker |
+| ST-005 | not present as active ST task in current tracker |
+| ST-006 | not present as active ST task in current tracker |
+| ST-010 | DONE |
+| ST-011 | DONE |
+| ST-011B | DONE |
+| ST-012 | DONE |
+| ST-013 | DONE |
+| ST-014 | DONE |
+| ST-015 | DONE |
+| ST-016 | DONE |
+| ST-017 | DONE |
+| ST-018 | DONE |
+| ST-019 | DONE |
+| ST-020 | NEEDS-REVIEW / BLOCKED AS WRITTEN |
+| ST-021 | DONE |
+| ST-022 | DONE |
+| ST-023 | DONE |
 
 ## Top 3 próximas ações de maior impacto
 
-1. **APP-012**: CloudClinic smoke-testable executable path — wire ServiceOperationsContracts into minimal CloudClinic session path; `make smoke-cloudclinic` must exit 0 — prioridade P2
-2. **APP-011**: Veridia smoke-testable executable path — confirmar se DONE (PR #98 / VeridiaSessionFacade); reconciliar todo apps-and-interfaces.md se sim — prioridade P2
-3. **CI-001**: Wire `make validate-all` into GitHub Actions — `.github/workflows/validate.yml` + branch protection; bloqueia futura CI confidence — prioridade P4
+1. **CI-001**: Wire `make validate-all` into GitHub Actions; `.github/workflows/` is absent in the current tree — prioridade: High
+2. **RT-ASYNC-001**: Implement or environment-gate SQL-backed async runtime executor without moving Core law — prioridade: High
+3. **RT-RETRIEVAL-001**: Add real embeddings provider/path or explicit policy-approved degraded semantic retrieval posture — prioridade: High
 
 ## Observações
 
-- **Inconsistência de status APP-011**: `docs/execution/19-settler-model-task-tracker.md` (ST-020 note) registra APP-011 como DONE via PR #98 (VeridiaSessionFacade, 2026-05-04). `docs/execution/todo/apps-and-interfaces.md` ainda lista APP-011 como READY. Antes de selecionar APP-011, verificar status real com `git log --oneline --grep="APP-011"` e reconciliar o todo file se DONE.
-- **`@healthos/steward` baseline**: 10 comandos implementados (ST-014 a ST-017); forge-mcp expõe 10 ferramentas determinísticas via stdio + HTTP (ST-018, ST-021); Managed Agents session client completo (ST-022, ST-023). Nenhum chamdas LLM no CLI core.
-- **GAP-001, GAP-002**: Resolvidos para scaffold/foundation RC. GAP-003 a GAP-010 são aceitos para fases futuras de maturidade HealthOS.
-- **Arquivo data-storage.md**: Nenhum READY. SQL/object backend hardening é post-scaffold gap (GAP-003).
-- **GOS backlog**: Totalmente concluído para a fase scaffold. Sem itens READY ativos.
+- Current branch is `main`; before writing this digest, local `main` and `origin/main` were even by `git rev-list --left-right --count origin/main...main` (`0 0`). After the digest commit, local `main` is ahead by 1 until network access allows push. Fetch/pull was not run in this restricted automation environment.
+- Pre-existing local changes are present outside this digest path: `.claude/scheduled_tasks.json`, `AGENTS.md`, `CLAUDE.md`, workspace settings, `.claude/worktrees/`, `.codex/`, and `outputs/`. They were left untouched.
+- Git log since the last automation includes README tier/diagram work, Swift package tier structure, Xcode schemes/assets/Create ML scaffold, ADR/app-layer boundary documentation, Forge/Steward doc drift correction, UX copy docs, and AACI SOAP plan honesty fixes.
+- `CI-001` is not DONE: no `.github/workflows/validate.yml` or `.github/workflows/swift-test.yml` exists in the current tree.
+- `RT-ASYNC-001` is not DONE: SQL schema includes async job tables, but `HealthOSAsyncRuntime` still documents a scaffold stub and no PostgreSQL async executor was found.
+- `RT-RETRIEVAL-001` is not DONE: embedding provider contracts/stubs exist, but semantic retrieval still records unavailable/fail-closed behavior without a real embedding provider/index.
+- `APP-012` must not be selected as app implementation work until the ADR-0013 unblock criteria are satisfied or explicitly narrowed to degraded/out-of-scope semantics.
+- `WS-2` and `WS-3` appear stale/needs-review in `ops-network-ml.md`: current implemented surfaces are `healthos-forge-mcp` and the expanded deterministic `healthos-steward` command set, not the older `healthos-mcp` wording.

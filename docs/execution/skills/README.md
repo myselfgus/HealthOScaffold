@@ -52,6 +52,7 @@ Each skill lives in its own subdirectory: `docs/execution/skills/<name>/SKILL.md
 | `scaffolding/SKILL.md` | New Swift targets, modules, or directory scaffolding |
 | `signing/SKILL.md` | Code signing, entitlements, provisioning |
 | `shipping/SKILL.md` | Release, archiving, distribution |
+| `xcode-toolchain/SKILL.md` | Instruments profiling, Simulator smoke runs, Accessibility Inspector, Create ML, Icon Composer |
 
 ## Legacy skills kept for compatibility
 

@@ -239,57 +239,75 @@ flowchart LR
 
 ## 📦 Swift Package Graph
 
-All nine targets build from `swift/Package.swift` (Swift tools 6.2, platform `.macOS(.v26)`). External dependencies: none — sovereignty by design.
+All fifteen targets build from `swift/Package.swift` (Swift tools 6.2, platform `.macOS(.v26)`). External dependencies: none — sovereignty by design.
 
 ```mermaid
 %%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#f8f4ff', 'primaryBorderColor': '#c4b5fd', 'primaryTextColor': '#3b0764', 'clusterBkg': '#fdfbff', 'clusterBorder': '#e9d5ff', 'titleColor': '#0f172a', 'edgeLabelBackground': '#fdf8ff', 'fontFamily': 'ui-sans-serif, system-ui, -apple-system'}}}%%
 graph LR
     classDef core     fill:#dcfce7,stroke:#22c55e,stroke-width:2px,color:#14532d
     classDef runtime  fill:#dbeafe,stroke:#60a5fa,stroke-width:2px,color:#1e3a8a
+    classDef gos      fill:#ecfeff,stroke:#06b6d4,stroke-width:2px,color:#164e63
     classDef provider fill:#fef9c3,stroke:#f59e0b,stroke-width:2px,color:#78350f
     classDef msr      fill:#ede9fe,stroke:#a78bfa,stroke-width:2px,color:#3b0764
-    classDef app      fill:#fce7f3,stroke:#f472b6,stroke-width:2px,color:#831843
+    classDef boundary fill:#fce7f3,stroke:#f472b6,stroke-width:2px,color:#831843
+    classDef app      fill:#fdf4ff,stroke:#c084fc,stroke-width:2px,color:#581c87
     classDef cli      fill:#f1f5f9,stroke:#94a3b8,stroke-width:2px,color:#334155
 
-    CORE[HealthOSCore\nlaw · governance · contracts]:::core
-    PROV[HealthOSProviders\nprotocols · FoundationModels · stubs]:::provider
-    AACI[HealthOSAACI\nsession · GOS bindings · subagents]:::runtime
-    MSR[HealthOSMSR\nASL · VDLP · GEM pipeline]:::msr
-    SRT[HealthOSSessionRuntime\norchestration · normalization · bridge]:::runtime
+    subgraph T1["Tier 1 — Core"]
+        CORE[HealthOSCore\nlaw · governance · contracts]:::core
+    end
 
-    CLI[HealthOSCLI\nexecutable]:::cli
-    SCRIBE[HealthOSScribeApp\nexecutable · SwiftUI · Liquid Glass]:::app
-    VERIDIA[HealthOSVeridiaApp\nexecutable · session boundary smoke]:::app
-    CLOUDCLINIC[HealthOSCloudClinicApp\nexecutable · scaffold placeholder]:::app
+    subgraph T2["Tier 2 — Runtime / Mediation"]
+        PROV[HealthOSProviders\nFoundationModels · stubs]:::provider
+        GOS[HealthOSGOS\nGOS runtime · operational mediation]:::gos
+        AACI[HealthOSAACI\nsession · GOS bindings]:::runtime
+        MSR[HealthOSMSR\nASL · VDLP · GEM]:::msr
+        ASYNC[HealthOSAsyncRuntime\njob queue · lifecycle]:::runtime
+        UAR[HealthOSUserAgentRuntime\npatient session · sovereignty]:::runtime
+        SVR[HealthOSServiceRuntime\nservice operations session]:::runtime
+        SRT[HealthOSSessionRuntime\norchestration · normalization]:::runtime
+    end
 
-    CORE --> PROV
+    subgraph T3["Tier 3 — App Boundary"]
+        AB[HealthOSAppBoundary\nfacades · safe refs · envelopes]:::boundary
+    end
+
+    subgraph T5["Tier 5 — Reference Apps"]
+        SCRIBE[HealthOSScribeApp\nSwiftUI · Liquid Glass]:::app
+        VERIDIA[HealthOSVeridiaApp\npatient identity]:::app
+        CC[HealthOSCloudClinicApp\nservice operations]:::app
+    end
+
+    CLI[HealthOSCLI\noperator executable]:::cli
+
+    CORE --> PROV & GOS & MSR & ASYNC & UAR & SVR & SRT
+    PROV --> AACI & MSR
+    GOS --> AACI
     CORE --> AACI
-    CORE --> MSR
-    PROV --> AACI
-    PROV --> MSR
-    CORE --> SRT
-    AACI --> SRT
-    PROV --> SRT
-    MSR --> SRT
-    CORE --> CLI
-    SRT --> CLI
-    CORE --> SCRIBE
-    SRT --> SCRIBE
-    CORE --> VERIDIA
-    CORE --> CLOUDCLINIC
+    AACI & MSR & ASYNC & UAR & SVR & SRT --> AB
+    GOS & CORE --> AB
+    CORE & SRT --> CLI
+    AB & SRT --> SCRIBE
+    AB & CORE --> VERIDIA
+    AB --> CC
 ```
 
-| Target | Kind | Description |
-| :--- | :--- | :--- |
-| `HealthOSCore` | Library | Core law, governance types, storage contracts, GOS types, MSR runtime types, entity model |
-| `HealthOSProviders` | Library | Provider protocol contracts, `AppleFoundationProvider` (FoundationModels), stub providers, model governance |
-| `HealthOSAACI` | Library | AACI runtime, GOS bindings, GOS runtime activation/context/resolution |
-| `HealthOSMSR` | Library | Mental Space Runtime pipeline — ASL, VDLP, GEM executors, provenance metadata |
-| `HealthOSSessionRuntime` | Library | Session orchestration (`SessionRunner`), normalization executor, Scribe bridge adapter |
-| `HealthOSCLI` | Executable | Command-line operator interface for session and GOS lifecycle |
-| `HealthOSScribeApp` | Executable | Minimal Scribe professional workspace validation surface (SwiftUI, macOS 26+) |
-| `HealthOSVeridiaApp` | Executable | Smoke-testable Veridia session boundary, no final UI |
-| `HealthOSCloudClinicApp` | Executable | Scaffold placeholder — product-graph representation, no final UI |
+| Target | Tier | Kind | Description |
+| :--- | :--- | :--- | :--- |
+| `HealthOSCore` | 1 | Library | Core law, governance types, storage contracts, GOS types, MSR runtime types, entity model |
+| `HealthOSProviders` | 2 | Library | Provider protocol contracts, `AppleFoundationProvider` (FoundationModels), stub providers, model governance |
+| `HealthOSGOS` | 2 | Library | GOS runtime — operational mediation subordinate to Core law; canonical home for GOS lifecycle (migration from AACI in progress) |
+| `HealthOSAACI` | 2 | Library | AACI runtime, GOS binding consumption, session capture, draft composition |
+| `HealthOSMSR` | 2 | Library | Mental Space Runtime pipeline — ASL, VDLP, GEM executors, provenance metadata |
+| `HealthOSAsyncRuntime` | 2 | Library | Durable job queue and async task lifecycle — scaffold stub; TS reference implementation in `ts/packages/runtime-async/` |
+| `HealthOSUserAgentRuntime` | 2 | Library | Patient/user-side session lifecycle and sovereignty enforcement — scaffold stub |
+| `HealthOSServiceRuntime` | 2 | Library | Professional/service-operations session lifecycle — scaffold stub |
+| `HealthOSSessionRuntime` | 2 | Library | Session orchestration (`SessionRunner`), transcript normalization executor, Scribe bridge adapter |
+| `HealthOSAppBoundary` | 3 | Library | App Integration Boundary — only surface Tier 5 apps may import; scaffold stub pending Tier 2 facade stabilization |
+| `HealthOSCLI` | — | Executable | Operator command-line interface for session and GOS lifecycle |
+| `HealthOSScribeApp` | 5 | Executable | Scribe professional workspace validation surface (SwiftUI, macOS 26+) |
+| `HealthOSVeridiaApp` | 5 | Executable | Veridia patient identity session boundary — smoke-testable, no final UI |
+| `HealthOSCloudClinicApp` | 5 | Executable | CloudClinic service operations — scaffold placeholder, no final UI |
 
 ---
 
@@ -663,14 +681,22 @@ graph LR
 | Module / Folder | README | Focus |
 | :--- | :--- | :--- |
 | `swift/Sources/HealthOSCore/` | [README](swift/Sources/HealthOSCore/README.md) | Core law contracts, governance types, storage, GOS, MSR runtime types, entity model |
-| `swift/Sources/HealthOSScribeApp/` | [README](swift/Sources/HealthOSScribeApp/README.md) | Scribe validation surface, SwiftUI architecture, Liquid Glass adoption path |
+| `swift/Sources/HealthOSGOS/` | [README](swift/Sources/HealthOSGOS/README.md) | GOS runtime stub — canonical home for GOS lifecycle; migration from HealthOSAACI in progress |
+| `swift/Sources/HealthOSAACI/` | [README](swift/Sources/HealthOSAACI/README.md) | AACI runtime — session capture, GOS binding consumption, draft composition |
 | `swift/Sources/HealthOSMSR/` | [README](swift/Sources/HealthOSMSR/README.md) | Mental Space Runtime pipeline — ASL · VDLP · GEM executors, provenance metadata |
 | `swift/Sources/HealthOSProviders/` | [README](swift/Sources/HealthOSProviders/README.md) | Provider protocol contracts, Apple FoundationModels adapter, stub providers |
-| `docs/architecture/` | [index](docs/architecture/) | 48+ canonical architecture doctrine documents |
+| `swift/Sources/HealthOSAsyncRuntime/` | [README](swift/Sources/HealthOSAsyncRuntime/README.md) | Async Runtime stub — job queue and lifecycle; TS reference implementation |
+| `swift/Sources/HealthOSUserAgentRuntime/` | [README](swift/Sources/HealthOSUserAgentRuntime/README.md) | User-Agent Runtime stub — patient session lifecycle and sovereignty enforcement |
+| `swift/Sources/HealthOSServiceRuntime/` | [README](swift/Sources/HealthOSServiceRuntime/README.md) | Service Runtime stub — professional/service-operations session lifecycle |
+| `swift/Sources/HealthOSSessionRuntime/` | — | Session orchestration, normalization executor, Scribe bridge adapter |
+| `swift/Sources/HealthOSAppBoundary/` | [README](swift/Sources/HealthOSAppBoundary/README.md) | App Integration Boundary — Tier 3 facade; only surface Tier 5 apps may import |
+| `swift/Sources/HealthOSScribeApp/` | [README](swift/Sources/HealthOSScribeApp/README.md) | Scribe validation surface, SwiftUI architecture, Liquid Glass adoption path |
+| `docs/architecture/` | [index](docs/architecture/) | 50+ canonical architecture doctrine documents |
 | `docs/execution/` | [README](docs/execution/README.md) | Execution protocol, status tracking, TODO tracker, maturity/handoff |
 | `ts/` | [README](ts/README.md) | TypeScript workspace: contracts, GOS tooling, async runtime, Steward CLI |
+| `ml/` | [README](ml/README.md) | Create ML training scaffolds — transcript normalization; gated by ModelGovernance |
 | `.healthos-steward/` | [README](.healthos-steward/README.md) | Steward derived state, session memory, automation logs |
-| `ts/agent-infra/healthos-forge-mcp/` | — | Forge MCP stdio server — 10 deterministic repository-maintenance tools wrapping @healthos/steward lib |
+| `ts/agent-infra/healthos-forge-mcp/` | — | Forge MCP stdio server — 10 deterministic repository-maintenance tools |
 
 ---
 
@@ -679,8 +705,9 @@ graph LR
 - `docs/architecture/` — canonical architecture and doctrine docs (GOS, app-boundary, regulatory, cross-app, native UI)
 - `docs/execution/` — governed execution protocol, status tracking, coverage, invariants, TODOs, maturity/handoff
 - `schemas/` — JSON Schema entity contracts and GOS schemas
-- `swift/` — Core, AACI, Providers, MSR, SessionRuntime, CLI, Scribe app, XCTest suites
+- `swift/` — Core (T1) · Providers, GOS, AACI, MSR, AsyncRuntime, UserAgentRuntime, ServiceRuntime, SessionRuntime (T2) · AppBoundary (T3) · CLI · Scribe/Veridia/CloudClinic apps (T5) · test suites
 - `ts/` — workspace packages (`contracts`, `runtime-async`, `runtime-user-agent`, `healthos-gos-tooling`, `healthos-steward`, `healthos-forge-mcp`)
+- `ml/` — Create ML training scaffolds for on-device models (transcript normalizer stub; gated by ModelGovernance)
 - `python/` — offline ML governance scaffolds only
 - `sql/migrations/001_init.sql` — canonical metadata schema scaffold
 - `ops/` and `scripts/` — local operational scaffolding, bootstrap, network and backup notes

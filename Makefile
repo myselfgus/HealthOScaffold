@@ -44,6 +44,9 @@ validate-schemas:
 validate-contracts:
 	bash ./scripts/check-contract-drift.sh
 
+validate-construction-system:
+	cd ts && npm run build --workspace @healthos/steward && node agent-infra/healthos-steward/dist/cli.js validate-construction-system
+
 validate-all:
 	bash ./scripts/validate-local.sh
 

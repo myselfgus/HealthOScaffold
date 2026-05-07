@@ -6,6 +6,27 @@ Current phase: Controlled implementation — first vertical slice started
 
 ## Completed recently
 
+## CS-HARDENING — Construction System truth, validation, and generated artifact policy (2026-05-07)
+
+- Objective: harden the external Construction System by aligning live docs/records with implemented Steward/Forge seams, making ST-020 explicitly CloudClinic Boundary/Custom readiness work, and adding deterministic validation for Construction System invariants.
+- Classification: External — Construction System. No HealthOS clinical/runtime hierarchy, Core law, Stage implementation, provider behavior, schema contract, SQL, or production-readiness claim changed.
+- Implementation updates:
+  - `healthos-steward` now exposes `validate-construction-system` and its usage text lists all implemented commands.
+  - Settlement lookup now resolves both filename IDs such as `st-012-settler-profile-registry` and canonical IDs such as `SETTLEMENT-20260504-settler-profile-registry`.
+  - ST tracker parsing now preserves `rawStatus` and classifies composite states such as `NEEDS-REVIEW / BLOCKED AS WRITTEN`.
+  - `healthos-forge-mcp` settlement list responses now include callable `id`, `canonicalId`, and path fields.
+- Documentation/metadata updates:
+  - Construction docs, handoff, Territory/Settler records, and Settlement templates now describe `healthos-steward`, prompt generation, validation/report drafting, derived memory, and `healthos-forge-mcp` as implemented repository-maintenance seams where validated.
+  - ST-020 remains needs-review / blocked as written and must be reframed as CloudClinic Custom / Boundary-readiness work before any APP-012 Stage implementation prompt is generated.
+  - Generated prompts and derived memory are explicitly non-canonical, regenerable local artifacts.
+- Validation status:
+  - `make validate-construction-system` PASS.
+  - `cd ts && npm test --workspace @healthos/steward` PASS.
+  - `make ts-build` PASS.
+  - `make ts-test` PASS.
+  - `make validate-docs` PASS.
+  - `git diff --check` PASS.
+
 ## SWIFT-ONTOLOGY-SECOND-PASS — Boundary and Stage technical rename (2026-05-07)
 
 - Objective: complete the second ontology alignment pass by renaming Swift modules, targets, tests, imports, package references, Xcode schemes, Steward/Settler guidance, and technical docs to the canonical HealthOS vocabulary.

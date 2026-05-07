@@ -124,25 +124,26 @@ make smoke-scribe
 
 ## Steward follow-up
 
-Current `healthos-steward` baseline is intentionally narrow: `status`, `runtime`, and `session` only. Treat it as a repository-local continuity and session-persistence seam, not as a complete deterministic operations surface.
+Current `healthos-steward` baseline is a deterministic repository-maintenance seam. Implemented commands include `status`, `runtime`, `session`, `list`, `inspect`, `next`, `generate-prompt`, `validate-settlement`, `pr-draft`, `build-memory`, and `validate-construction-system`. Treat it as construction tooling only, not as a clinical/runtime surface, autonomous executor, or merge authority.
 
 Use these docs as the target source of truth for future steward work:
 - `docs/architecture/45-healthos-xcode-agent.md`
 - `docs/execution/17-healthos-xcode-agent-migration-plan.md`
 
-The intended evolution is Steward for Xcode: Xcode Intelligence as the Apple-controlled engineering runtime surface, with HealthOS contributing instructions, `healthos-forge-mcp`, derived repository memory, and an expanded deterministic CLI.
+The intended evolution is Steward for Xcode: Xcode Intelligence as the Apple-controlled engineering runtime surface, with HealthOS contributing instructions, `healthos-forge-mcp`, derived repository memory, and deterministic CLI/MCP operations.
 
-Settler model note: the Steward / Settler / Settlement / Territory model was added as doctrine-only in `docs/architecture/47-steward-settler-engineering-model.md`, with future implementation tracked in `docs/execution/19-settler-model-task-tracker.md`. Future work should use those docs and must not treat Settlers as clinical or runtime agents.
+Settler model note: the Steward / Settler / Settlement / Territory model is defined in `docs/architecture/47-steward-settler-engineering-model.md`, with implementation status tracked in `docs/execution/19-settler-model-task-tracker.md`. Deterministic Steward/Forge seams exist; Settler execution remains doctrine-only. Future work should use those docs and must not treat Settlers as clinical or runtime agents.
 
-Construction operating model note: `docs/execution/22-steward-construction-operating-model.md` now defines the lifecycle, directories, ST-010 through ST-020 sequence, and non-claims for operationalizing Steward construction work. The Territory Registry exists; the next construction-system task is ST-012 — Create Settler Profile Registry.
+Construction operating model note: `docs/execution/22-steward-construction-operating-model.md` now defines the lifecycle, directories, ST-010 through ST-023 sequence, and non-claims for operationalizing Steward construction work. The current unresolved construction item is ST-020, which is needs-review / blocked as written and must be reframed as CloudClinic Custom / Boundary-readiness work rather than APP-012 Stage implementation.
 
 Codex may support Steward-scoped Xcode-facing repository maintenance as an external executor. The local Codex automation is `$CODEX_HOME/automations/steward-xcode-facing-maintenance/`; use it for PR-based review of repository-maintenance automation guidance, Xcode/Steward instructions, and automation drift. Do not treat this as a new Steward authority category, merge authority, or clinical/runtime capability.
 
 Repository-local roots now exist for the model:
-- `.healthos-settler/` is a documentation-only root for Territory Registry records and future Settler profiles.
+- `.healthos-settler/` holds Territory Registry and Settler profile records.
+- `.healthos-steward/` holds derived memory, prompts, Settlement records, policies, and Managed Agent state.
 - `.healthos-territory/` is a prior documentation-only root for historical Territory scaffold references.
 
-These roots are subordinate to official docs and do not implement executable Settlers, Settlement instances, a Territory loader, or `healthos-forge-mcp`.
+These roots are subordinate to official docs and do not implement executable Settlers, clinical/runtime behavior, merge authority, or production readiness.
 
 ## ST-011A runtime taxonomy + Forge MCP naming note (2026-05-01)
 

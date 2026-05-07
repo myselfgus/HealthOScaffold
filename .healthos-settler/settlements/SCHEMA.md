@@ -88,7 +88,7 @@ Fields are grouped into four categories: Identity, Scope, Governance, and Lifecy
 - **Type**: list of strings
 - **Required**: yes
 - **Format**: Territory IDs from the ST-011 Territory Registry under `.healthos-settler/territories/`. Each ID must match a file `<id>.json` in that directory.
-- **Valid IDs** (from ST-011): `core`, `gos`, `session-runtime`, `msr`, `aaci`, `providers`, `apps`, `typescript-runtimes`, `storage-and-data`, `regulatory-and-interoperability`, `operations-and-observability`, `construction-system`, `validation-and-ci`, `documentation`
+- **Valid IDs** (from ST-011): `core`, `gos`, `session-runtime`, `msr`, `aaci`, `providers`, `apps`, `type-script-runtimes`, `storage-and-data`, `regulatory-and-interoperability`, `operations-and-observability`, `construction-system`, `validation-and-ci`, `documentation`
 - **Description**: The repository domain(s) this Settlement operates in. Determines which invariants, forbidden moves, and validation expectations apply. A Settlement must never operate outside its listed Territories.
 
 #### `settler-profile`

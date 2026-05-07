@@ -4,10 +4,8 @@
 
 <p align="center">
   <img src="https://img.shields.io/badge/Swift-6.2-FA7343?style=flat&logo=swift&logoColor=white" alt="Swift 6.2">
-  <img src="https://img.shields.io/badge/macOS-26%2B-000000?style=flat&logo=apple&logoColor=white" alt="macOS 26+">
   <img src="https://img.shields.io/badge/Platform-Apple%20Silicon-333333?style=flat&logo=apple&logoColor=white" alt="Apple Silicon">
   <img src="https://img.shields.io/badge/Build-SwiftPM%206.2-orange?style=flat" alt="SwiftPM 6.2">
-  <img src="https://img.shields.io/badge/Phase-Scaffold%20Hardening-3B82F6?style=flat" alt="Scaffold Hardening">
   <img src="https://img.shields.io/badge/UI-Liquid%20Glass%20%28macOS%2026%2B%29-8B5CF6?style=flat" alt="Liquid Glass">
   <img src="https://img.shields.io/badge/AI-Apple%20FoundationModels-000000?style=flat&logo=apple&logoColor=white" alt="Apple FoundationModels">
 </p>

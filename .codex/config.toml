@@ -1,0 +1,7 @@
+personality = "friendly"
+
+[mcp_servers]
+
+[mcp_servers.healthos-forge]
+command = "node"
+args = ["/Users/healthOS/HealthOScaffold/ts/agent-infra/healthos-forge-mcp/dist/server.js"]

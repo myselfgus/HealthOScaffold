@@ -64,11 +64,11 @@ HealthOS Runtimes
 Actors / Agents
   ├─ professional/user agents
   └─ AACI subagents
-App Integration Boundary
+Boundary
   └─ mediated GOS/runtime state, never raw spec-as-law
-Reference Apps / Interfaces
+Stage
   ├─ initial examples: Scribe, Veridia, CloudClinic
-  └─ future apps in arbitrary number
+  └─ future Stages in arbitrary number
 Artifacts / Effects
   ├─ transcripts
   ├─ drafts

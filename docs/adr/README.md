@@ -24,7 +24,7 @@ Todas as ADRs seguem o **template canônico** (ver `Template ADR Canônico` em [
 | [0010](0010-health-exclusive-ontology-and-architecturalized-compliance.md) | Ontologia health-exclusiva e compliance arquiteturalizada | Accepted | High | Todos |
 | [0011](0011-governed-operational-spec-is-subordinate-to-core.md) | Governed Operational Spec subordinada ao Core | Accepted | High | Core, AACI, MSR, SessionRuntime, Providers |
 | [0012](0012-healthoscaffold-is-healthos-construction-repository.md) | HealthOScaffold é o repositório de construção do HealthOS | Accepted | Low | Todos |
-| [0013](0013-healthos-platform-app-layer-construction-system-boundary.md) | HealthOS Platform, App Layer e Construction System permanecem separados | Accepted | High | Todos |
+| [0013](0013-healthos-platform-app-layer-construction-system-boundary.md) | HealthOS hierarchy, Stage/Custom, Boundary e Construction System permanecem separados | Accepted | High | Todos |
 
 ### Documentos auxiliares
 
@@ -73,13 +73,12 @@ Governed Operational Spec  (ADR 0011)
       ↓
 HealthOS Runtimes          (AACI, MSR, SessionRuntime; ADR 0001, 0010)
       ↓
-Agentes / Atores
+Boundary                   (mediated app-safe surfaces; ADR 0013)
       ↓
-App Integration Boundary   (mediated app-safe surfaces; ADR 0013)
-      ↓
-Reference App Layer        (Scribe, Veridia, CloudClinic, future apps; ADR 0007, 0013)
-      ↓
-Artefatos / Efeitos        (ADR 0003, 0004)
+Stage                      (Scribe, Veridia, CloudClinic, future governed consumers; ADR 0007, 0013)
+
+Custom                     (CoreLaw-governed Stage definition; ADR 0013; not a tier)
+Construction System        (outside clinical/runtime hierarchy; ADR 0012, 0013)
 ```
 
 **Decisões de deployment e stack:** ADR 0002, 0005, 0006, 0009, 0012.

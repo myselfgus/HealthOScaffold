@@ -2,9 +2,9 @@
 
 ## Overview
 
-Use this skill when defining or changing HealthOS native macOS 26+ app shells, SwiftUI views, desktop interaction patterns, Liquid Glass treatment, or shared UI/design-system scope for reference apps such as Scribe, Veridia, CloudClinic, future apps, or the HealthOS control panel.
+Use this skill when defining or changing HealthOS native macOS 26+ Stage shells, SwiftUI views, desktop interaction patterns, Liquid Glass treatment, or shared UI/design-system scope for Stages such as Scribe, Veridia, CloudClinic, future governed consumers, or the HealthOS control panel.
 
-This skill is subordinate to HealthOS app-boundary doctrine. UI work consumes mediated Core/runtime contracts; it never owns consent, habilitation, gate, finality, storage law, or GOS policy.
+This skill is subordinate to HealthOS Boundary doctrine. UI work consumes mediated Core/runtime contracts; it never owns consent, habilitation, gate, finality, storage law, or GOS policy.
 
 ## Required reading
 
@@ -30,7 +30,7 @@ Read in order:
 - Create shared UI components only when they accept already-mediated app-safe input.
 - Treat Scribe as the only currently implemented native app validation surface.
 - Treat Veridia as boundary-scaffolded but not final UI.
-- Treat CloudClinic as placeholder-executable only; APP-012-style wiring remains blocked until platform/runtime surfaces, App Integration Boundary, and CloudClinic App Charter readiness are satisfied.
+- Treat CloudClinic as placeholder-executable only; APP-012-style wiring remains blocked until Core/GOS/runtime surfaces, Boundary, and CloudClinic Custom readiness are satisfied.
 - Treat the HealthOS control panel as scope-defined until an explicit operator contract and executable target are intentionally introduced.
 
 ## Absolute restrictions
@@ -57,7 +57,7 @@ For SwiftUI/app target changes:
 
 Every native UI work unit states:
 - the mediated contracts consumed;
-- the role/scope of the app or operator surface;
+- the role/scope of the Stage or operator surface;
 - which HealthOS law stays outside UI ownership;
 - the validation commands run;
 - any residual scaffold gap.

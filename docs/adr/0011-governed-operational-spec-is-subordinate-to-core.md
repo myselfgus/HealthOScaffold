@@ -116,9 +116,9 @@ Governed Operational Spec (GOS)
     ↓
 HealthOS Runtimes (AACI/MSR/SessionRuntime)
     ↓
-Agentes / Atores
+Boundary
     ↓
-Apps / Interfaces
+Stage
     ↓
 Artefatos / Efeitos
 ```

@@ -20,7 +20,7 @@ User-Agent Runtime cannot perform clinical/regulatory acts; Veridia app surfaces
 - No clinical/regulatory acts.
 - No final UI implementation claim.
 - Do not describe Veridia as Core law, GOS, or the User-Agent Runtime.
-- Do not use APP-011 boundary scaffold as permission to add unrelated app wiring before upstream surfaces are implemented and stable.
+- Do not use APP-011 Boundary scaffold as permission to add unrelated Stage wiring before upstream surfaces are implemented and stable.
 
 ## Definition of done
 Boundary checks and docs reflect contract-only vs runtime maturity truth. Veridia is defined as the patient health identity app throughout.

@@ -2,15 +2,15 @@
 
 ## Purpose
 
-Define a single app-safe vocabulary for initial reference apps such as Scribe, Veridia, CloudClinic, and future apps so cross-app coordination remains Core-mediated and no app acquires legal authority.
+Define a single app-safe vocabulary for initial Stages such as Scribe, Veridia, CloudClinic, and future Stages so cross-Stage coordination remains Core-mediated and no Stage acquires legal authority.
 
-This vocabulary is part of the App Integration Boundary. It is not a closed app ontology and does not make the initial reference apps define HealthOS.
+This vocabulary is part of Boundary. It is not a closed Stage ontology and does not make the initial Stages define HealthOS.
 
 ## Shared envelope
 
 `AppSurfaceEnvelope` carries:
 - request id
-- app kind (initial values include `Scribe`, `Veridia`, `CloudClinic`; future app kinds may be added under the same Core-mediated rules)
+- app kind (technical envelope field; initial values include `Scribe`, `Veridia`, `CloudClinic`; future Stage kinds may be added under the same Core-mediated rules)
 - actor role
 - safe subject refs
 - allowed actions
@@ -78,5 +78,5 @@ Notification rules:
 
 ## Boundary posture
 
-No app-to-app direct sharing is introduced.
-All cross-app surfaces remain Core-mediated and app-safe.
+No direct Stage-to-Stage sharing is introduced.
+All cross-Stage surfaces remain Core-mediated and app-safe.

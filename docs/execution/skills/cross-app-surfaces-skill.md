@@ -1,7 +1,7 @@
 # Skill: cross-app shared surfaces
 
 ## When to use
-Shared envelope/safe refs/notifications across reference apps such as Scribe, Veridia, CloudClinic, and future apps.
+Shared envelope/safe refs/notifications across Stages such as Scribe, Veridia, CloudClinic, and future governed application consumers.
 
 ## Required reading
 `docs/architecture/50-app-layer-boundary-and-reference-apps.md`, `43-cross-app-coordination-shared-surfaces.md`, `19-interface-doctrine.md`.

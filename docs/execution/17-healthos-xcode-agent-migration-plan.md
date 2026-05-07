@@ -43,7 +43,7 @@ Actions:
   - HealthOS repository identity rule (scaffold = maturity, not separate product)
 - codify fail-closed default: when posture is ambiguous, deny rather than assume
 - align existing skill files under `docs/execution/skills/` with the simplified target architecture
-- define Codex as an external executor for Steward-scoped Xcode-facing repository maintenance, limited to PR-based review of Claude Code automations, scheduled-task definitions, Xcode/Steward instructions, and automation drift
+- define Codex as an external executor for Steward-scoped Xcode-facing repository maintenance, limited to PR-based review of repository-maintenance automation guidance, Xcode/Steward instructions, and automation drift
 
 Definition of done:
 - Xcode Intelligence or any engineering assistant operating in this repository receives clear HealthOS-specific instructions

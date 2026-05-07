@@ -13,7 +13,7 @@ Apps consume core/runtime contracts. They do not invent separate law models.
 
 Compliance is architecturalized in HealthOS seams; apps render and request through contracts rather than reimplementing governance logic.
 
-The app state model is app-agnostic. Initial reference apps use it as examples; future apps may consume the same mediated boundary after their App Charter is complete.
+The state model is Stage-agnostic. Initial Stages use it as examples; future Stages may consume the same mediated Boundary after their Custom is complete.
 
 ## Cross-app shared state groups
 - AuthenticationContext

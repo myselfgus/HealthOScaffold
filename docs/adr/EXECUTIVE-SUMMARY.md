@@ -30,9 +30,9 @@ Escopo: ADRs 0001-0012 elevadas ao template canônico, validadas contra [swift/P
 | 7 | 0005 | **Stack híbrida** — Swift (runtime/apps), TypeScript (tooling/agentes), Python (offline ML). | Medium | Cada linguagem no ponto forte; gates CI independentes. |
 | 8 | 0006 | **Seam local** Swift↔TS via loopback HTTP + Postgres + filesystem. | Medium | Inspecionável, debugável; payloads grandes por referência. |
 | 9 | 0008 | **lawfulContext** permanece mapa canônico flexível em v1 (com chaves canônicas tipadas no Core). | Low | Reduz churn em fase scaffold; envelope rígido fica para versão futura. |
-| 10 | 0007 | HealthOS **não tem UX de usuário-final própria**; UX vive em reference apps/future apps. | Low | Separação clara plataforma↔app; lei não vaza para UI. |
+| 10 | 0007 | HealthOS **não tem UX de usuário-final própria**; UX vive em Stages governados. | Low | Separação clara plataforma↔Stage; lei não vaza para UI. |
 | 11 | 0012 | HealthOScaffold = **repositório de construção** do HealthOS; "scaffold" é maturidade. | Low | Sem bifurcação semântica; código no repo é HealthOS code. |
-| 12 | 0013 | HealthOS Platform, App Layer e Construction System permanecem separados; app wiring exige surface estável + App Charter. | High | HealthOS app-agnostic; APP-012 reclassificada; construção fica fora da hierarquia clínica/runtime. |
+| 12 | 0013 | HealthOS hierarchy, Boundary, Stage/Custom e Construction System permanecem separados; Stage wiring exige surface estável + Custom. | High | HealthOS Stage-agnostic; APP-012 reclassificada; construção fica fora da hierarquia clínica/runtime. |
 | 13 | (Conjunto) | ADRs 0001-0013 formam um **sistema coerente** sem conflitos diretos. | — | Núcleo constitucional auditável e estável. |
 
 ---

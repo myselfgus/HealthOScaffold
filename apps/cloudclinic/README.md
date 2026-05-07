@@ -1,6 +1,6 @@
 # CloudClinic
 
-Service operations app for HealthOS. CloudClinic is a Tier 5 reference app — it surfaces professional service-context operations via `HealthOSAppBoundary`. It never defines Core law or holds clinical authority.
+Service operations Stage for HealthOS. CloudClinic surfaces professional service-context operations via `HealthOSAppBoundary`. It never defines Core law or holds clinical authority.
 
 **Architecture:** `docs/architecture/13-cloudclinic.md`  
 **Executable surface:** [`swift/Sources/HealthOSCloudClinicApp/`](../../swift/Sources/HealthOSCloudClinicApp/)  

@@ -13,13 +13,13 @@ graph TD
     classDef runtime  fill:#dbeafe,stroke:#60a5fa,stroke-width:2px,color:#1e3a8a
     classDef gos      fill:#ecfeff,stroke:#06b6d4,stroke-width:2px,color:#164e63
     classDef boundary fill:#fce7f3,stroke:#f472b6,stroke-width:2px,color:#831843
-    classDef app      fill:#fdf4ff,stroke:#c084fc,stroke-width:2px,color:#581c87
+    classDef stage    fill:#fdf4ff,stroke:#c084fc,stroke-width:2px,color:#581c87
 
     CORE[HealthOSCore\nCore law, invariants, GOS type vocabulary]:::core
     GOS[HealthOSGOS\nThis module — GOS runtime]:::gos
     AACI[HealthOSAACI\nConsumes GOS binding plans]:::runtime
-    BOUND[HealthOSAppBoundary\nApp integration boundary]:::boundary
-    APPS[Tier 5 Apps\nScribe · Veridia · CloudClinic]:::app
+    BOUND[HealthOSAppBoundary\nBoundary compatibility module]:::boundary
+    APPS[Stages\nScribe · Veridia · CloudClinic]:::stage
 
     CORE --> GOS
     GOS --> AACI

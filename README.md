@@ -19,7 +19,7 @@
 
 **This repository is not production-ready, not a complete EHR, and not a final UI delivery.** It establishes foundational architecture with executable first-slice orchestration, cross-language contracts (Swift / TypeScript / JSON Schema / SQL), and macOS 26+ native app surfaces targeting Liquid Glass as the design baseline.
 
-HealthOS is the full app-agnostic platform. **AACI is one runtime inside HealthOS. GOS is a governed operational layer subordinate to Core law. Initial reference apps such as Scribe, Veridia, CloudClinic, and future apps consume mediated surfaces; they never define constitutional law or the HealthOS ontology.**
+HealthOS is the full platform. **Core is constitutional law. GOS is subordinate operational mediation. Runtimes execute under Core/GOS. Boundary is the HealthOS-owned consumption frontier. Stages such as Scribe, Veridia, CloudClinic, and future governed application consumers consume mediated surfaces; they never define constitutional law or the HealthOS ontology. Construction System stays outside the clinical/runtime hierarchy.**
 
 ---
 
@@ -44,15 +44,18 @@ flowchart LR
     classDef construction fill:#FAF7F4,stroke:#A1693A,stroke-width:2px,color:#553018
     classDef boundary fill:#F2F4F7,stroke:#8793A1,stroke-width:2px,color:#334155
 
-    subgraph CLINICAL["HealthOS clinical/runtime hierarchy"]
-        CORE[Core law\nconsent · habilitation · gate · finality]:::core
+    subgraph CLINICAL["HealthOS constitutional hierarchy"]
+        CORE[Core\nconsent · habilitation · storage law\ngate · finality · provenance · audit]:::core
         GOS[GOS\nsubordinate operational mediation]:::runtime
-        RT[Runtimes\nSession Runtime · AACI · MSR · TS runtimes]:::runtime
-        AIB[App Integration Boundary\nfacades · envelopes · app-safe views]:::interface
-        APP[Reference apps\nScribe · Veridia · CloudClinic · future apps]:::interface
+        RT[Runtimes\nSession Runtime · AACI · MSR\nAsync · User-Agent · Service]:::runtime
+        AIB[Boundary\nfacades · envelopes · safe refs\nmediated/degraded state]:::interface
+        APP[Stage\nScribe · Veridia · CloudClinic\nfuture governed consumers]:::interface
+        CUST[Custom\nCoreLaw-governed Stage definition\ncapabilities · limits · validation]:::interface
         DS[Native design system\nmacOS 26+ presentation contract\nSF Pro · semantic tint · Liquid Glass]:::design
         ART[Artifacts/effects\ndrafts · derived artifacts · gated final documents]:::core
         CORE --> GOS --> RT --> AIB --> APP
+        CUST -. defines and limits .-> APP
+        CORE -. governs .-> CUST
         APP --> DS
         APP --> ART
     end
@@ -87,9 +90,9 @@ flowchart LR
 
 ## 🏗️ Canonical Architecture
 
-HealthOS is a governance-first platform. Every clinical act flows through a strictly layered, consent- and provenance-governed fabric. Apps and interfaces consume only mediated surfaces — they never become law engines.
+HealthOS is a governance-first platform. Every clinical act flows through a strictly layered, consent- and provenance-governed fabric. Stages consume only mediated surfaces through Boundary — they never become law engines.
 
-App wiring advances only after the mediated surface the app consumes is implemented and stable, not merely contracted. See `docs/architecture/50-app-layer-boundary-and-reference-apps.md` for the App Integration Boundary, App Charter template, and tiered task ordering.
+Stage work advances only after the mediated surface the Stage consumes is implemented and stable, not merely contracted, and after the relevant Custom is complete. See `docs/architecture/50-app-layer-boundary-and-reference-apps.md` for the Boundary, Stage, Custom, and task-ordering doctrine.
 
 Steward, Settlers, Settlements, Territories, and `healthos-forge-mcp` are repository engineering concepts **outside** this clinical/runtime hierarchy. They inspect, edit, validate, and record repository work. They do not become HealthOS law, runtime automation, or clinical effectuation.
 
@@ -106,7 +109,7 @@ graph TD
     classDef core     fill:#EAF7F2,stroke:#2E8C6A,stroke-width:2px,color:#174234
     classDef substrate fill:#F2F4F7,stroke:#8793A1,stroke-width:2px,color:#334155
 
-    subgraph IFACE["  Interfaces  "]
+    subgraph STAGE_L["  Stage  "]
         SC[Scribe\nSwiftUI - macOS 26+]
         SO[Veridia\nPatient Health Identity]
         CC[CloudClinic\nService Operations]
@@ -118,6 +121,10 @@ graph TD
 
     subgraph GOS_L["  GOS — Governed Operational Spec  "]
         GOS[Compiler - Validator - Bundler\nTypeScript tooling + Swift runtime consumption\nBundle lifecycle - AACI binding]
+    end
+
+    subgraph BOUND_L["  Boundary — HealthOS-Owned Consumption Frontier  "]
+        BND[Facades - Envelopes - Safe refs\nMediated state - Degraded state\nCommands - Results - Consumable surfaces]
     end
 
     subgraph SRT_L["  Session Runtime — Swift  "]
@@ -151,9 +158,9 @@ graph TD
     DS -. presentation guidance only .-> SC
     DS -. presentation guidance only .-> SO
     DS -. presentation guidance only .-> CC
-    SC -->|mediated surface| GOS
-    SO -->|mediated surface| GOS
-    CC -->|mediated surface| GOS
+    BND -->|mediated surface| SC
+    BND -->|mediated surface| SO
+    BND -->|mediated surface| CC
     GOS -->|runtime binding| SR
     SR --> AACI
     SR --> MSR
@@ -180,8 +187,19 @@ graph TD
     PR --> NE
     GA --> ST
     GA --> NE
+    ID --> BND
+    CO --> BND
+    PR --> BND
+    GA --> BND
+    SR --> BND
+    AACI --> BND
+    MSR --> BND
+    ASYNC --> BND
+    UA --> BND
+    SVC --> BND
 
     class SC,SO,CC iface
+    class BND substrate
     class DS design
     class GOS gos
     class SR session
@@ -268,11 +286,11 @@ graph LR
         SRT[HealthOSSessionRuntime\norchestration · normalization]:::runtime
     end
 
-    subgraph T3["Tier 3 — App Boundary"]
+    subgraph T3["Tier 3 — Boundary"]
         AB[HealthOSAppBoundary\nfacades · safe refs · envelopes]:::boundary
     end
 
-    subgraph T5["Tier 5 — Reference Apps"]
+    subgraph T4["Tier 4 — Stage"]
         SCRIBE[HealthOSScribeApp\nSwiftUI · Liquid Glass]:::app
         VERIDIA[HealthOSVeridiaApp\npatient identity]:::app
         CC[HealthOSCloudClinicApp\nservice operations]:::app
@@ -303,11 +321,11 @@ graph LR
 | `HealthOSUserAgentRuntime` | 2 | Library | Patient/user-side session lifecycle and sovereignty enforcement — scaffold stub |
 | `HealthOSServiceRuntime` | 2 | Library | Professional/service-operations session lifecycle — scaffold stub |
 | `HealthOSSessionRuntime` | 2 | Library | Session orchestration (`SessionRunner`), transcript normalization executor, Scribe bridge adapter |
-| `HealthOSAppBoundary` | 3 | Library | App Integration Boundary — only surface Tier 5 apps may import; scaffold stub pending Tier 2 facade stabilization |
+| `HealthOSAppBoundary` | 3 | Library | Boundary compatibility module — the technical import surface Stage executables should converge on; scaffold stub pending Tier 2 facade stabilization |
 | `HealthOSCLI` | — | Executable | Operator command-line interface for session and GOS lifecycle |
-| `HealthOSScribeApp` | 5 | Executable | Scribe professional workspace validation surface (SwiftUI, macOS 26+) |
-| `HealthOSVeridiaApp` | 5 | Executable | Veridia patient identity session boundary — smoke-testable, no final UI |
-| `HealthOSCloudClinicApp` | 5 | Executable | CloudClinic service operations — scaffold placeholder, no final UI |
+| `HealthOSScribeApp` | 4 | Executable | Scribe professional workspace Stage validation surface (SwiftUI, macOS 26+) |
+| `HealthOSVeridiaApp` | 4 | Executable | Veridia patient identity Stage boundary — smoke-testable, no final UI |
+| `HealthOSCloudClinicApp` | 4 | Executable | CloudClinic service operations Stage — scaffold placeholder, no final UI |
 
 ---
 
@@ -445,7 +463,7 @@ This repository is in **controlled implementation / scaffold hardening**:
 | **AACI First Slice** | 🚧 Scaffold Hardening | Boundary enforcement + GOS-mediated derived drafts |
 | **MSR Pipeline** | 🚧 Scaffold | ASL · VDLP · GEM stages, provenance metadata |
 | **Provider / ML** | ⚠️ Stub / Contract | `AppleFoundationProvider` adapter; deterministic safety posture |
-| **Reference Apps / UI** | 🧩 Contract-First | Minimal Scribe validation surface; Veridia boundary scaffold; CloudClinic blocked before new wiring |
+| **Stage / UI** | 🧩 Contract-First | Minimal Scribe validation surface; Veridia Boundary scaffold; CloudClinic blocked before new wiring |
 | **Liquid Glass UI** | 🎯 macOS 26+ Baseline | HealthOSDesignSystem baseline (DS-001); glass adoption in progress |
 | **Construction System** | ✅ Implemented Seam | 10 CLI commands (healthos-steward) + 10 MCP tools (healthos-forge-mcp) |
 
@@ -454,7 +472,7 @@ Read this table as an onboarding summary. The authoritative maturity ladder is `
 **This repository is not:**
 - a production-ready product
 - a complete EHR
-- a final UI delivery of any reference app
+- a final UI delivery of any Stage
 - a real regulatory-signature or interoperability integration
 - a real semantic retrieval stack with embeddings/vector index
 - a real external provider deployment (LM/STT/embedding remain scaffold/stub posture)
@@ -573,7 +591,7 @@ flowchart LR
 | Use Steward CLI | `CLAUDE.md` Steward usage section | `ts/agent-infra/healthos-steward/` |
 | Use healthos-forge-mcp | `ts/agent-infra/healthos-forge-mcp/` | `docs/execution/22-steward-construction-operating-model.md` |
 | See open documentation tasks | `docs/execution/20-documental-todos-work-plan.md` | `docs/execution/prompts/` |
-| See latest daily digest | `.healthos-steward/memory/automations/daily-todo-tracker/latest.md` | `docs/execution/02-status-and-tracking.md` |
+| See current status and handoff | `docs/execution/02-status-and-tracking.md` | `docs/execution/12-next-agent-handoff.md` |
 
 ### Executive Visual Overview
 
@@ -606,7 +624,7 @@ flowchart TD
 
     A1 --> A11[Core law]
     A1 --> A12[GOS]
-    A1 --> A13[Apps and interfaces]
+    A1 --> A13[Boundary and Stages]
     A2 --> A21[What is ready now]
     A2 --> A22[What is blocked]
     A2 --> A23[What to do next]
@@ -641,7 +659,7 @@ graph LR
     DS[HealthOSDesignSystem\npresentation tokens · UI kits · assets]:::code
     P[python/\nOffline ML governance scaffolds]:::code
     EG[.healthos-steward\n.healthos-settler]:::agent
-    AU[.claude/automations\nupdate-claude-md · daily-todo · sync-work-plan]:::agent
+    CA[Codex automations\nGuidance · status · dependency · skill map]:::agent
 
     D -->|defines boundaries for| W
     D -->|defines boundaries for| T
@@ -656,8 +674,8 @@ graph LR
     W -->|first executable slice| T
     P -->|offline-only support posture| W
     EG -. outside clinical/runtime hierarchy .-> D
-    AU -->|reads + syncs| E
-    AU -->|pushes to| D
+    CA -->|reports drift for| E
+    CA -->|proposes PRs for| D
 ```
 
 ### Code-to-Doc Orientation
@@ -668,9 +686,9 @@ graph LR
 | AACI + first slice | `docs/architecture/09-aaci.md`, `28-first-slice-executable-path.md` | `swift/Sources/HealthOSAACI/`, `swift/Sources/HealthOSSessionRuntime/` |
 | MSR | `docs/architecture/49-mental-space-runtime.md` | `swift/Sources/HealthOSMSR/` |
 | GOS | `29-governed-operational-spec.md` → `34-gos-review-and-activation-policy.md` | `ts/packages/healthos-gos-tooling/`, `swift/Sources/HealthOSCore/` |
-| App Integration Boundary | `docs/architecture/50-app-layer-boundary-and-reference-apps.md`, `19-interface-doctrine.md` | mediated facades/envelopes in `swift/Sources/HealthOSCore/` and runtime adapters |
+| Boundary | `docs/architecture/50-app-layer-boundary-and-reference-apps.md`, `19-interface-doctrine.md` | mediated facades/envelopes in `swift/Sources/HealthOSCore/` and runtime adapters |
 | Native UI + Liquid Glass | `docs/architecture/48-native-macos-ui-design-system-and-app-shells.md` | `swift/Sources/HealthOSScribeApp/` |
-| Reference apps/interfaces | `11-scribe.md`, `12-veridia.md`, `13-cloudclinic.md`, `43-cross-app-coordination-shared-surfaces.md` | `swift/Sources/HealthOSScribeApp/`, `HealthOSVeridiaApp/`, `HealthOSCloudClinicApp/` |
+| Stages | `11-scribe.md`, `12-veridia.md`, `13-cloudclinic.md`, `43-cross-app-coordination-shared-surfaces.md` | `swift/Sources/HealthOSScribeApp/`, `HealthOSVeridiaApp/`, `HealthOSCloudClinicApp/` |
 | Providers / ML | `docs/architecture/16-providers-and-ml.md`, `27-provider-threshold-policy.md` | `swift/Sources/HealthOSProviders/` |
 | Steward | `45-healthos-xcode-agent.md`, `47-steward-settler-engineering-model.md` | `ts/agent-infra/healthos-steward/`, `.healthos-steward/` |
 
@@ -689,7 +707,7 @@ graph LR
 | `swift/Sources/HealthOSUserAgentRuntime/` | [README](swift/Sources/HealthOSUserAgentRuntime/README.md) | User-Agent Runtime stub — patient session lifecycle and sovereignty enforcement |
 | `swift/Sources/HealthOSServiceRuntime/` | [README](swift/Sources/HealthOSServiceRuntime/README.md) | Service Runtime stub — professional/service-operations session lifecycle |
 | `swift/Sources/HealthOSSessionRuntime/` | — | Session orchestration, normalization executor, Scribe bridge adapter |
-| `swift/Sources/HealthOSAppBoundary/` | [README](swift/Sources/HealthOSAppBoundary/README.md) | App Integration Boundary — Tier 3 facade; only surface Tier 5 apps may import |
+| `swift/Sources/HealthOSAppBoundary/` | [README](swift/Sources/HealthOSAppBoundary/README.md) | Boundary compatibility module — Tier 3 facade; Stage executables should consume mediated surfaces through it as it matures |
 | `swift/Sources/HealthOSScribeApp/` | [README](swift/Sources/HealthOSScribeApp/README.md) | Scribe validation surface, SwiftUI architecture, Liquid Glass adoption path |
 | `docs/architecture/` | [index](docs/architecture/) | 50+ canonical architecture doctrine documents |
 | `docs/execution/` | [README](docs/execution/README.md) | Execution protocol, status tracking, TODO tracker, maturity/handoff |
@@ -705,7 +723,7 @@ graph LR
 - `docs/architecture/` — canonical architecture and doctrine docs (GOS, app-boundary, regulatory, cross-app, native UI)
 - `docs/execution/` — governed execution protocol, status tracking, coverage, invariants, TODOs, maturity/handoff
 - `schemas/` — JSON Schema entity contracts and GOS schemas
-- `swift/` — Core (T1) · Providers, GOS, AACI, MSR, AsyncRuntime, UserAgentRuntime, ServiceRuntime, SessionRuntime (T2) · AppBoundary (T3) · CLI · Scribe/Veridia/CloudClinic apps (T5) · test suites
+- `swift/` — Core (T1) · Providers, GOS, AACI, MSR, AsyncRuntime, UserAgentRuntime, ServiceRuntime, SessionRuntime (T2) · AppBoundary (T3 technical compatibility module) · CLI · Scribe/Veridia/CloudClinic Stage executables (T4) · test suites
 - `ts/` — workspace packages (`contracts`, `runtime-async`, `runtime-user-agent`, `healthos-gos-tooling`, `healthos-steward`, `healthos-forge-mcp`)
 - `ml/` — Create ML training scaffolds for on-device models (transcript normalizer stub; gated by ModelGovernance)
 - `python/` — offline ML governance scaffolds only
@@ -715,8 +733,7 @@ graph LR
 - `.healthos-steward/` — derived Steward state, policies, prompts, session memory
 - `.healthos-steward/memory/automations/` — automation run logs and daily TODO digests
 - `.healthos-settler/` — Settler profiles (`.healthos-settler/settlers/`) and Territory Registry (`.healthos-settler/territories/`)
-- `.claude/automations/` — Claude Code automation definitions
-- `.claude/scheduled_tasks.json` — durable cron job registry
+- `.claude/settings.json` — Claude Code settings/MCP configuration; no repository-local scheduled-task registry
 
 ---
 
@@ -813,19 +830,18 @@ Canonical truth resides in `docs/` and project manifests. Steward memory, Settle
 
 ---
 
-## 🤖 Claude Code Automations
+## 🤖 Repository Maintenance Automations
 
-Three durable automations keep repository state synchronized. All follow **main-first**: pull `origin/main` → read → write → commit → push. Any agent always sees the latest state after a pull.
+Scheduled repository maintenance is owned by grouped Codex automations outside the repository, not by a Claude Code cron registry. Read-only jobs report evidence; document-changing jobs must use a worktree/branch and PR handoff, never direct push to `main`.
 
-| Automation | Schedule | Function | Output pushed to `main` |
+| Automation group | Cadence | Mode | Function |
 | :--- | :--- | :--- | :--- |
-| `update-claude-md` | Mon 09:03 | Reviews recent git history, Makefile, Steward CLI; updates `CLAUDE.md` with genuinely new commands or patterns | `CLAUDE.md` + memory log |
-| `daily-todo-tracker` | Daily 08:07 | Scans all `todo/*.md`, trackers, gap register; writes structured daily digest | `.healthos-steward/memory/automations/daily-todo-tracker/YYYY-MM-DD.md` + `latest.md` |
-| `sync-work-plan` | Mon/Wed/Fri 08:47 | Builds truth table for every open documental task; marks completed, unblocks dependencies | `docs/execution/20-documental-todos-work-plan.md` + memory log |
+| `HealthOScaffold Agent Guidance Maintenance` | Weekly, Tuesday 10:00 | worktree, PR-only | Reviews AGENTS/CLAUDE/README, Steward/Xcode docs, and automation guidance drift |
+| `HealthOScaffold Status Digest` | Monday/Wednesday/Friday 08:30 | worktree, read-only | Reports READY/BLOCKED/DONE evidence, tracker inconsistencies, gaps, and next actions |
+| `HealthOScaffold Dependency and SDK Drift` | Weekly, Thursday 11:00 | worktree, read-only | Reports manifest, lockfile, SDK, and toolchain drift |
+| `HealthOScaffold Retrospective Skill Map` | Every two weeks, Friday 10:00 | worktree, read-only | Suggests concrete skills to deepen from PR/review/commit evidence |
 
-Definitions: `.claude/automations/` · Registry: `.claude/scheduled_tasks.json`
-
-To run any automation immediately: ask Claude Code directly (e.g. *"run the daily-todo-tracker now"*).
+No `.claude/automations/` directory or `.claude/scheduled_tasks.json` file is kept for retired jobs. Historical derived logs may remain under `.healthos-steward/memory/automations/`, but they are not scheduler definitions.
 
 ```mermaid
 %%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#f0fdf4', 'primaryBorderColor': '#86efac', 'primaryTextColor': '#14532d', 'clusterBkg': '#fafafa', 'clusterBorder': '#e2e8f0', 'titleColor': '#0f172a', 'edgeLabelBackground': '#f8fafc', 'fontFamily': 'ui-sans-serif, system-ui, -apple-system'}}}%%
@@ -836,22 +852,21 @@ flowchart LR
     classDef write   fill:#ede9fe,stroke:#8b5cf6,stroke-width:2px,color:#4c1d95
     classDef mem     fill:#fce7f3,stroke:#ec4899,stroke-width:2px,color:#831843
 
-    CRON[Cron trigger\nor manual request]:::trigger
-    STASH[stash + checkout main\ngit pull origin main]:::git
+    CRON[Codex cron trigger\nor explicit operator request]:::trigger
+    STASH[spawn worktree\nread current main]:::git
     READ[read sources\ndocs · todo · trackers · gaps · git log]:::read
-    WRITE[write output\ndoc update or digest]:::write
-    COMMIT[git add + commit\ngit push origin main]:::git
-    RESTORE[restore branch\ngit stash pop]:::git
+    WRITE[report evidence\nor propose minimal patch]:::write
+    COMMIT[branch + PR only\nwhen docs change]:::git
+    RESTORE[no direct main push]:::git
     MEM[.healthos-steward/memory/\nautomations/]:::mem
 
     CRON --> STASH --> READ --> WRITE --> COMMIT --> RESTORE
-    WRITE --> MEM
-    MEM --> COMMIT
+    READ -. historical derived logs .-> MEM
 ```
 
 ### Documental Work Plan
 
-`docs/execution/20-documental-todos-work-plan.md` is the living plan for all open documentation tasks. Kept synchronized by the `sync-work-plan` automation.
+`docs/execution/20-documental-todos-work-plan.md` is the living plan for open documentation tasks. It is no longer edited by a scheduled Claude cron job; update it only through an explicit, scoped work unit with validation and PR handoff.
 
 Phase execution prompts in `docs/execution/prompts/`:
 
@@ -891,29 +906,35 @@ Read in order before coding:
 ## Canonical Hierarchy
 
 ```text
+HealthOS
+  Core
+    consent, habilitation, storage law,
+    provenance, gate, finality, audit
+  GOS
+    subordinate operational mediation, never constitutional authority
+  Runtimes
+    Session Runtime, AACI, MSR, Async Runtime,
+    User-Agent Runtime, Service Runtime
+  Boundary
+    facades, envelopes, safe refs, mediated state,
+    degraded state, commands/results, consumable surfaces
+  Stage
+    Scribe, Veridia, CloudClinic, future governed consumers
+
+Custom
+  CoreLaw-governed Stage definition applied through Boundary.
+  Custom is required for Stage work but is not a separate HealthOS tier.
+
 Material substrate
-  └─ host, storage, private network/mesh, backups
-     (APFS + FileVault + Secure Enclave key custody)
-HealthOS Core
-  └─ law/governance (identity, consent, habilitation, storage, provenance, gate, audit)
-Governed Operational Spec (GOS)
-  └─ operational translation layer subordinate to Core
-HealthOS Runtimes
-  ├─ AACI runtime (session · first slice · subagents)
-  ├─ Async runtime (jobs · retry · backpressure)
-  ├─ MSR runtime (ASL · VDLP · GEM pipeline)
-  └─ User-Agent runtime (patient-facing interactions)
-Actors / Agents
-  └─ bounded actors and role-governed agents
-App Integration Boundary
-  └─ facades, envelopes, app-safe views, safe refs, command/result envelopes
-Reference App Layer  (macOS 26+ · Liquid Glass design baseline)
-  ├─ initial examples: Scribe (professional workspace)
-  ├─ initial examples: Veridia (patient health identity)
-  ├─ initial examples: CloudClinic (service operations)
-  └─ future apps in arbitrary number
-Artifacts / Effects
-  └─ drafts, gate records, final artifacts, provenance/audit traces
+  host, storage, private network/mesh, backups,
+  APFS + FileVault + Secure Enclave key custody
+
+Artifacts / effects
+  drafts, gate records, final artifacts, provenance/audit traces
+
+Construction System
+  Steward, Settlers, Territories, Settlements, HealthOS Forge MCP.
+  Outside the HealthOS clinical/runtime hierarchy.
 ```
 
 ## Maturity Snapshot by Layer

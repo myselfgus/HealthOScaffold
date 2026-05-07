@@ -1,22 +1,22 @@
 # Veridia
 
-Veridia is the canonical patient app name and uses patient health identity app wording.
+Veridia is the canonical patient app name and uses patient health identity Stage wording.
 
-Veridia is an initial reference app, not the definition of HealthOS. It consumes Core/runtime-mediated patient health identity surfaces through the App Integration Boundary.
+Veridia is an initial Stage, not the definition of HealthOS. It consumes Core/runtime-mediated patient health identity surfaces through Boundary.
 
 ## Purpose
 
-Veridia is the patient health identity app for HealthOS.
+Veridia is the patient health identity Stage for HealthOS.
 
 Veridia is where the patient interacts with HealthOS for health identity, mediated key custody controls, consent visibility, access trail visibility, owned-data visibility, export controls, and patient agent interaction. All surfaces are Core-mediated; Veridia does not own or interpret Core law.
 
 ## What Veridia is
 
-- The patient app for health identity inside HealthOS.
+- The patient health identity Stage inside HealthOS.
 - The place where the patient interacts with mediated key custody controls exposed through Core and the Apple substrate (Secure Enclave / Keychain).
 - The place where consent visibility, access trail visibility, owned-data visibility, export controls, and patient agent interaction are presented.
 - The app-facing shell for patient agent interaction over the User-Agent Runtime.
-- A Core-mediated app/interface, not a law-bearing layer.
+- A Core-mediated Stage/interface, not a law-bearing layer.
 
 ## What Veridia is not
 
@@ -103,6 +103,6 @@ All flows are governed through Core-mediated surfaces. Veridia does not initiate
 - No production readiness is claimed.
 - Swift target: `HealthOSVeridiaApp` — executable scaffold placeholder.
 - Smoke command: `make smoke-veridia` / `cd swift && swift run HealthOSVeridiaApp --smoke-test`
-- The current smoke-testable session boundary is valid proof of boundary scaffold, not a reason to add unrelated app wiring before its upstream mediated surfaces are implemented and stable.
+- The current smoke-testable session boundary is valid proof of Boundary scaffold, not a reason to add unrelated Stage wiring before its upstream mediated surfaces are implemented and stable.
 
-Future Veridia wiring must follow `docs/architecture/50-app-layer-boundary-and-reference-apps.md`: the consumed mediated surface must be implemented and stable, and the Veridia App Charter must cover the new surface.
+Future Veridia wiring must follow `docs/architecture/50-app-layer-boundary-and-reference-apps.md`: the consumed mediated surface must be implemented and stable, and the Veridia Custom must cover the new surface.

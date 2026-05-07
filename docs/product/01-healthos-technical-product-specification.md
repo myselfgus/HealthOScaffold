@@ -24,7 +24,7 @@ Core law is the sovereign layer.
 
 Operational layers and runtimes consume mediated lawful context.
 
-Apps consume mediated surfaces.
+Stages consume mediated surfaces through Boundary.
 
 Construction tooling remains outside the clinical/runtime hierarchy.
 
@@ -47,7 +47,9 @@ TypeScript runtimes
   ├─ Async Runtime
   ├─ User-Agent Runtime
   └─ Service Runtime
-Apps / Interfaces
+Boundary
+  └─ facades, envelopes, safe refs, mediated state, degraded state, commands/results
+Stage
   ├─ Scribe
   ├─ Veridia
   └─ CloudClinic
@@ -59,7 +61,7 @@ Construction layer
 
 Core owns identity, consent, habilitation, gate, finality, provenance, and storage-law enforcement.
 
-Core does not delegate sovereign legal checks to GOS, Session Runtime, AACI, MSR, providers, TS runtimes, or apps.
+Core does not delegate sovereign legal checks to GOS, Session Runtime, AACI, MSR, providers, TS runtimes, Boundary, or Stages.
 
 `lawfulContext` is the mediated access passport for runtime operations and storage behavior.
 
@@ -116,7 +118,7 @@ Session Runtime owns session orchestration, normalization stage invocation, runt
 
 Session Runtime normalizes transcript output before MSR consumption.
 
-Session Runtime is not Core, GOS, AACI, MSR, Async Runtime, Service Runtime, or app law.
+Session Runtime is not Core, GOS, AACI, MSR, Async Runtime, Service Runtime, Boundary, or Stage law.
 
 ## STT, transcription, and normalization
 
@@ -160,7 +162,7 @@ MSR produces derived and gated artifacts.
 
 Legacy scripts are archived reference implementations. Active runtime implementation is Swift `HealthOSMSR` with prompt resources in Swift module resources.
 
-MSR has no diagnosis authority and does not expose raw provider JSON as app-facing authority.
+MSR has no diagnosis authority and does not expose raw provider JSON as Stage-facing authority.
 
 ## ASL, VDLP, and GEM technical summary
 
@@ -251,24 +253,26 @@ It is not the CloudClinic UI.
 
 Current maturity is doctrine-only to scaffolded contract depending on operation.
 
-## Apps and interfaces
+## Boundary and Stage
 
 Scribe:
-- professional-facing mediated session interface
+- professional-facing mediated session Stage
 - executable scaffold smoke path exists
 - scaffold placeholders remain (no final UI claims)
 
 Veridia:
-- patient health identity app
+- patient health identity Stage
 - executable scaffold placeholder exists
 - runtime/adapter maturation remains ongoing
 
 CloudClinic:
-- service-operations interface
+- service-operations Stage
 - executable scaffold placeholder exists
 - service-runtime integration remains scaffolded
 
-Apps do not own consent, habilitation, gate, or finality law.
+Stages consume Boundary surfaces and do not own consent, habilitation, gate, or finality law.
+
+Custom is the CoreLaw-governed definition of a Stage. It is required before substantial Stage wiring and is not a separate HealthOS tier.
 
 ## Artifacts and provenance
 

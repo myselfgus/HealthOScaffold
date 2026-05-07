@@ -1,36 +1,42 @@
 # Glossary
 
 ## HealthOS
-The whole app-agnostic sovereign computational environment for health operations. HealthOS includes Core, runtime/mediation layers, app integration boundaries, reference apps, tooling, tests, and docs at their explicit maturity levels. It is not defined by any one app or fixed set of apps.
+The whole sovereign computational environment for health operations. HealthOS includes Core, GOS, Runtimes, Boundary, Stages, tooling, tests, and docs at their explicit maturity levels. It is not defined by any one Stage or fixed set of Stages.
 
 ## HealthOScaffold
 The historical repository name and foundation/scaffold phase for building HealthOS. It is not a separate product from HealthOS.
 
-## Platform/Core Layer
-The HealthOS layer that owns Core law, sovereign contracts, storage law, consent, habilitation, finalidade, provenance, gate, and fail-closed governance.
+## Core
+The HealthOS constitutional law layer. Core owns consent, habilitation, storage law, provenance, gate, finality, audit, sovereign contracts, and fail-closed governance.
 
-## Runtime/Mediation Layer
-The HealthOS layer that orchestrates and mediates work under Core law. It includes Session Runtime, AACI, GOS, MSR, providers, Async Runtime, User-Agent Runtime, and Service Runtime where evidenced.
+## CoreLaw
+The constitutional authority of Core expressed as enforceable law, contracts, and validation behavior. Custom, Boundary, GOS, Runtimes, and Stages are governed by CoreLaw; none of them supersede it.
 
-## App Integration Boundary
-The boundary between runtimes/Core and apps. It includes facades, command/result envelopes, safe refs, app-safe views, mediated state, degraded-state truth, and provenance-facing summaries. Apps consume this boundary; they do not define it.
+## GOS
+Governed Operational Spec. A subordinate operational specification layer compiled from human-authored operational language into runtime-consumable structure; it never supersedes CoreLaw.
 
-## Reference App Layer
-The app/interface layer containing initial reference apps such as Scribe, Veridia, CloudClinic, and future apps in arbitrary number. Reference apps are consumers of mediated HealthOS surfaces, not Core, runtime law, or the definition of HealthOS.
+## Runtimes
+Execution and mediation layers operating under Core/GOS. Runtimes include Session Runtime, AACI, MSR, Async Runtime, User-Agent Runtime, and Service Runtime where evidenced.
+
+## Boundary
+The HealthOS-owned frontier between Core/GOS/Runtimes and Stages. Boundary exposes facades, command/result envelopes, safe refs, app-safe views, mediated state, degraded-state truth, provenance-facing summaries, and consumable surfaces. Stages consume Boundary; they do not define it.
+
+## Stage
+A governed application consumer inside HealthOS. Scribe, Veridia, CloudClinic, and future first-party, third-party, native, web, external, Swift, or other applications are Stages when they run in or are hosted by the HealthOS environment as governed consumers. Stage is the last tier of the HealthOS constitutional hierarchy.
+
+## Custom
+The CoreLaw-governed definition of a Stage: capabilities, limits, consumed surfaces, actors, degraded behavior, validation expectations, and prohibitions. Custom is applied via Boundary and is not a separate tier in the HealthOS hierarchy.
 
 ## Construction System
-The engineering-tooling layer for building HealthOS: Steward, Settler, Territory, Settlement, and HealthOS Forge MCP. It is outside the HealthOS clinical/runtime hierarchy and has no clinical, constitutional, authorizing, or merge authority.
+The engineering-tooling system for building HealthOS: Steward, Settlers, Territories, Settlements, and HealthOS Forge MCP. It is outside the HealthOS clinical/runtime hierarchy and has no clinical, constitutional, authorizing, runtime, Stage, or merge authority.
 
-See `docs/architecture/50-app-layer-boundary-and-reference-apps.md` for the canonical app boundary and task-ordering doctrine.
+## Compatibility Terms
+Existing technical names such as `HealthOSAppBoundary`, `AppSurfaceEnvelope`, and `HealthOSScribeApp` remain package/API/module names until an explicit rename work unit exists. Their names do not change the canonical conceptual terms Boundary and Stage.
+
+See `docs/architecture/50-app-layer-boundary-and-reference-apps.md` for the canonical Boundary, Stage, Custom, and task-ordering doctrine.
 
 ## AACI
 Ambient-Agentic Clinical Intelligence. A runtime inside HealthOS for parallel operational/bureaucratic automation during or around health work.
-
-## GOS
-Governed Operational Spec. A subordinate operational specification layer compiled from human-authored operational language into runtime-consumable structure; it never supersedes HealthOS Core law.
-
-## Core
-The law-bearing nucleus of HealthOS: identity, consent, habilitation, provenance, gate, storage/governance contracts.
 
 ## Runtime
 An execution environment with lifecycle and communication contracts.

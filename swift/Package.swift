@@ -18,13 +18,13 @@ let package = Package(
         .library(name: "HealthOSServiceRuntime",   targets: ["HealthOSServiceRuntime"]),
         .library(name: "HealthOSSessionRuntime",   targets: ["HealthOSSessionRuntime"]),
 
-        // ── Tier 3 — App Integration Boundary ──────────────────────────────
+        // ── Tier 3 — Boundary ──────────────────────────────────────────────
         .library(name: "HealthOSAppBoundary",      targets: ["HealthOSAppBoundary"]),
 
-        // ── Operator CLI (not a Tier 5 app) ────────────────────────────────
+        // ── Operator CLI (not a Stage) ─────────────────────────────────────
         .executable(name: "HealthOSCLI",           targets: ["HealthOSCLI"]),
 
-        // ── Tier 5 — Reference Apps ─────────────────────────────────────────
+        // ── Tier 4 — Stages ────────────────────────────────────────────────
         .executable(name: "HealthOSScribeApp",      targets: ["HealthOSScribeApp"]),
         .executable(name: "HealthOSVeridiaApp",     targets: ["HealthOSVeridiaApp"]),
         .executable(name: "HealthOSCloudClinicApp", targets: ["HealthOSCloudClinicApp"]),
@@ -55,7 +55,7 @@ let package = Package(
                 dependencies: ["HealthOSCore", "HealthOSAACI", "HealthOSProviders", "HealthOSMSR"]),
 
         // ── Tier 3 ──────────────────────────────────────────────────────────
-        // Apps must only import HealthOSAppBoundary, never Tier 2 modules directly.
+        // Stages must only import HealthOSAppBoundary, never Tier 2 modules directly.
         .target(name: "HealthOSAppBoundary",
                 dependencies: [
                     "HealthOSCore",
@@ -72,7 +72,7 @@ let package = Package(
         .executableTarget(name: "HealthOSCLI",
                           dependencies: ["HealthOSCore", "HealthOSSessionRuntime"]),
 
-        // ── Tier 5 — Reference Apps ──────────────────────────────────────────
+        // ── Tier 4 — Stages ─────────────────────────────────────────────────
         // TODO: depend solely on HealthOSAppBoundary once its session facade is complete.
         .executableTarget(name: "HealthOSScribeApp",
                           dependencies: ["HealthOSAppBoundary", "HealthOSSessionRuntime"],

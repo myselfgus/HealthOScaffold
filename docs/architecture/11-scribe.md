@@ -3,7 +3,7 @@
 ## Purpose
 Professional-facing interface for session work with AACI support.
 
-Scribe is an initial reference app, not the definition of HealthOS. It consumes mediated HealthOS surfaces through the App Integration Boundary.
+Scribe is an initial Stage, not the definition of HealthOS. It consumes mediated HealthOS surfaces through Boundary.
 
 ## What Scribe is
 - the professional UX for live and near-live work
@@ -72,7 +72,7 @@ See:
 ## Scaffold posture / non-claims
 
 Scribe is a scaffold contract and minimal validation surface only:
-- it is valid proof of boundary scaffold, not evidence that unrelated or unstable platform surfaces are ready for new app wiring
+- it is valid proof of Boundary scaffold, not evidence that unrelated or unstable platform surfaces are ready for new Stage wiring
 - no final production UI has been implemented
 - native macOS design-system and app-shell scope has been defined, but no final Scribe navigation architecture has been implemented
 - local audio currently uses file selection/import rather than a full microphone-recording pipeline
@@ -128,7 +128,7 @@ Every result carries a `disposition` (`HealthOSCommandDisposition`) that keeps d
 This improves UI readiness while preserving law ownership in core services (consent, habilitation, gate, and document finalization remain outside app ownership).
 Derived referral/prescription previews also remain app-consumed state only; Scribe still does not own referral/prescription law or effectuation.
 
-Future Scribe wiring must follow `docs/architecture/50-app-layer-boundary-and-reference-apps.md`: the mediated surface consumed must be implemented and stable, and the Scribe App Charter must cover the new surface.
+Future Scribe wiring must follow `docs/architecture/50-app-layer-boundary-and-reference-apps.md`: the mediated surface consumed must be implemented and stable, and the Scribe Custom must cover the new surface.
 
 ## First slice relevance
 

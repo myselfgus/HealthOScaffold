@@ -12,12 +12,12 @@ graph TD
     classDef core     fill:#dcfce7,stroke:#22c55e,stroke-width:2px,color:#14532d
     classDef runtime  fill:#dbeafe,stroke:#60a5fa,stroke-width:2px,color:#1e3a8a
     classDef boundary fill:#fce7f3,stroke:#f472b6,stroke-width:2px,color:#831843
-    classDef app      fill:#fdf4ff,stroke:#c084fc,stroke-width:2px,color:#581c87
+    classDef stage    fill:#fdf4ff,stroke:#c084fc,stroke-width:2px,color:#581c87
 
     CORE[HealthOSCore\nUserSovereigntyContracts.swift]:::core
     UAR[HealthOSUserAgentRuntime\nThis module]:::runtime
-    BOUND[HealthOSAppBoundary\nApp integration boundary]:::boundary
-    VERIDIA[HealthOSVeridiaApp\nPatient health identity app]:::app
+    BOUND[HealthOSAppBoundary\nBoundary compatibility module]:::boundary
+    VERIDIA[HealthOSVeridiaApp\nPatient health identity Stage]:::stage
 
     CORE --> UAR
     UAR --> BOUND
@@ -42,7 +42,7 @@ graph TD
 
 **Scaffold stub.** `UserAgentRuntime.swift` declares the module namespace only. The user-sovereign session surface, consent execution path, identifier masking enforcement, and audit trail are not yet implemented.
 
-`HealthOSVeridiaApp` (the patient health identity app) is the primary Tier 5 consumer of this runtime via `HealthOSAppBoundary`. Veridia app wiring to this surface is blocked until the mediated session surface is implemented and stable.
+`HealthOSVeridiaApp` (technical executable for the patient health identity Stage) is the primary Stage consumer of this runtime via `HealthOSAppBoundary`. Veridia Stage wiring to this surface is blocked until the mediated session surface is implemented and stable.
 
 Type vocabulary cross-reference: `HealthOSCore/UserSovereigntyContracts.swift`
 

@@ -11,9 +11,14 @@ Use "scaffold" only to describe maturity or bootstrap/foundation phase, never to
 ## Constitutional identity (never collapse)
 
 - **HealthOS is the whole platform**.
+- **Core is constitutional law**: consent, habilitation, finalidade, storage law, provenance, gate, finality, and audit.
 - **AACI is one runtime inside HealthOS**.
 - **GOS is subordinate to Core law** (operational mediation, never constitutional authority).
-- **Scribe/Veridia/CloudClinic are initial reference app/interfaces** consuming mediated surfaces, not law engines or the definition of HealthOS.
+- **Runtimes execute and mediate work under Core/GOS**: Session Runtime, AACI, MSR, Async Runtime, User-Agent Runtime, and Service Runtime.
+- **Boundary is the HealthOS-owned consumption frontier**: facades, envelopes, safe refs, mediated state, degraded state, commands/results, and consumable surfaces.
+- **Stages are governed application consumers inside HealthOS**. Scribe, Veridia, CloudClinic, and future first-party or third-party applications are Stages; they never define constitutional law or the HealthOS ontology.
+- **Custom is the Core-law-governed definition of a Stage**: capabilities, limits, consumed surfaces, actors, degradation behavior, validation, and prohibitions. Custom is not a separate HealthOS hierarchy tier.
+- **Construction System is outside the clinical/runtime hierarchy**. Steward, Settlers, Territories, Settlements, and HealthOS Forge MCP construct, register, validate, and propose work; they are not Core, GOS, Runtime, Boundary, Stage, clinical authority, or merge authority.
 - This repository contains HealthOS components at scaffold/foundation maturity, **not production-ready**, **not a full EHR**, and **not a real regulatory/provider integration**.
 
 ## Required reading order before coding
@@ -39,15 +44,14 @@ Use "scaffold" only to describe maturity or bootstrap/foundation phase, never to
 19. matching `docs/execution/skills/*.md` (HealthOS domain skills)
 20. if touching Swift/SwiftUI/Xcode/Apple platform code: matching `docs/execution/skills/<name>/SKILL.md` (macOS skills — see `docs/execution/skills/README.md` for index)
 
-Before accepting any task, classify it by layer and record the classification in the work unit:
-- **Tier 1 — Platform/Core:** Core law, validation harness, storage law, CI, platform surfaces that apps may later consume.
-- **Tier 2 — Runtime/Mediation:** Session Runtime, AACI, GOS, MSR, providers, Async Runtime, User-Agent Runtime, Service Runtime.
-- **Tier 3 — App Integration Boundary:** facades, envelopes, app-safe views, safe refs, command/result envelopes, mediated state.
-- **Tier 4 — App Charter:** app role, users, mediated surfaces, boundaries, degraded states, validation expectations.
-- **Tier 5 — App Implementation:** Scribe, Veridia, CloudClinic, or future app wiring/UI.
-- **Tier 6 — Construction System:** Steward, Settler, Territory, Settlement, HealthOS Forge MCP, prompt/validation/derived-memory tooling.
+Before accepting any task, classify it by the HealthOS hierarchy or the external construction class and record the classification in the work unit:
+- **Tier 1 — Core:** Core law, validation harness, storage law, CI, and platform surfaces that Stages may later consume.
+- **Tier 2 — GOS / Runtimes:** GOS, Session Runtime, AACI, MSR, providers, Async Runtime, User-Agent Runtime, and Service Runtime.
+- **Tier 3 — Boundary:** facades, envelopes, app-safe views, safe refs, command/result envelopes, mediated state, degraded state, and consumable surfaces.
+- **Tier 4 — Stage:** Scribe, Veridia, CloudClinic, or any future governed application consumer.
+- **External — Construction System:** Steward, Settler, Territory, Settlement, HealthOS Forge MCP, prompt/validation/derived-memory tooling. This is not a HealthOS clinical/runtime tier.
 
-App wiring advances only after the mediated surface it consumes is implemented and stable, not merely contracted, and after the relevant App Charter is complete. If a Tier 5 task depends on an absent or unstable Tier 1-3 surface, mark it `BLOCKED` with the objective unblock criterion instead of building provisional app scaffold. If evidence is ambiguous, mark `needs-review`.
+Stage work advances only after the mediated surface it consumes is implemented and stable, not merely contracted, and after the relevant Custom is complete. If a Stage task depends on an absent or unstable Tier 1-3 surface, mark it `BLOCKED` with the objective unblock criterion instead of building provisional Stage scaffold. If Custom evidence is incomplete, mark it `needs-review`.
 
 Task selection order:
 1. `READY` task in current phase
@@ -146,6 +150,8 @@ Workflow notes from recent repository use:
 - Serialize SwiftPM validation commands; concurrent Swift builds/runs can contend on `.build` locks.
 - For documentation-only work, run `make validate-docs` and `git diff --check`; if a broader gate fails, record the exact failing gate instead of weakening the validation claim.
 - `make validate-docs` checks documentation/reference consistency; it does not prove that claimed CLI commands or package source paths exist. Verify executable command claims with the package source and a smoke run, or add a short TODO instead of documenting them as delivered.
+- Open `swift/Package.swift` in Xcode for committed shared schemes under `swift/.swiftpm/xcode/xcshareddata/xcschemes/`; the schemes carry smoke-test launch arguments disabled by default and Release profile actions for Instruments.
+- Create ML work under `ml/` is scaffold-only. Do not run `swift ml/transcript-normalizer/TrainTranscriptNormalizer.swift` against real patient data or document any produced `.mlmodel` as loadable until `ModelGovernance` approval and provenance are implemented.
 
 ## Cross-language contract discipline
 
@@ -175,9 +181,15 @@ Steward for Xcode is the Xcode-integration posture for Steward. Steward for Xcod
 
 Do not treat Steward memory as canonical truth; official docs are canonical. Steward memory is a derived index.
 
-Current deterministic baseline (hard-reset posture):
+Current deterministic baseline:
 
-`dist/` is not committed. Run `make ts-build` once before invoking the CLI.
+TypeScript package outputs are not committed. Before invoking Steward, Forge MCP, or Managed Agent package bins from a fresh checkout, run `make ts-build`. For targeted package rebuilds:
+
+```bash
+cd ts && npm run build --workspace @healthos/forge-mcp
+cd ts && npm run build --workspace @healthos/managed-agent
+cd ts && npm run build --workspace @healthos/steward
+```
 
 ```bash
 make ts-build
@@ -197,17 +209,25 @@ cd ts && npx --yes --workspace @healthos/steward healthos-steward pr-draft <sett
 cd ts && npx --yes --workspace @healthos/steward healthos-steward build-memory
 ```
 
-Ten `healthos-steward` CLI commands are implemented as of ST-017 (2026-05-04): `status`, `runtime`, `session` (scaffold placeholders); `list <territories|settlers|settlements>`, `inspect <territory|settler|settlement> <id>`, and `next` (deterministic read-only registry inspection, implemented in `ts/agent-infra/healthos-steward/src/commands/`); `generate-prompt <settlement-id>` (deterministic PromptSpec assembler — reads Settlement, Territory JSON, and Settler profile records; writes 16-section PromptSpec Markdown to `.healthos-steward/prompts/generated/`; no LLM calls, no new npm deps, fail-closed); `validate-settlement <settlement-id>` (deterministic ValidationReport — checks done-criteria against filesystem evidence using PASS/FAIL/UNVERIFIED heuristic, lists validation-commands as manual steps; exits 1 on any FAIL; no shell execution, no LLM); `pr-draft <settlement-id>` (deterministic ReviewDraft — generates PR body Markdown from Settlement fields; always exits 0 on success); and `build-memory` (deterministic DerivedMemory builder — reads ST tracker, Territory JSON records, Settler README, Settlement .md files, and handoff doc; writes 6 non-canonical snapshot files to `.healthos-steward/memory/derived/`; overwritten on each run; no LLM, no shell, no new npm deps, fail-tolerant per-file). The `list`/`inspect`/`next` commands read Territory JSON records, Settler profile .md files, Settlement .md records, and the ST tracker using Node built-ins only — no model calls, no writes, no new npm dependencies. Do not describe `scan-status`, `validate-docs`, `validate-all`, or other repository-maintenance operations as delivered CLI behavior until implemented.
+Ten `healthos-steward` CLI commands are implemented as of ST-017/FORGE-MCP-V2: `status`, `runtime`, `session` (scaffold placeholders); `list <territories|settlers|settlements>`, `inspect <territory|settler|settlement> <id>`, and `next` (deterministic read-only registry inspection, implemented in `ts/agent-infra/healthos-steward/src/commands/`); `generate-prompt <settlement-id>` (deterministic PromptSpec assembler — reads Settlement, Territory JSON, and Settler profile records; writes 16-section PromptSpec Markdown to `.healthos-steward/prompts/generated/`; no LLM calls, no new npm deps, fail-closed); `validate-settlement <settlement-id>` (deterministic ValidationReport — checks done-criteria against filesystem evidence using PASS/FAIL/UNVERIFIED heuristic, lists validation-commands as manual steps; exits 1 on any FAIL; no shell execution, no LLM); `pr-draft <settlement-id>` (deterministic ReviewDraft — generates PR body Markdown from Settlement fields; always exits 0 on success); and `build-memory` (deterministic DerivedMemory builder — reads ST tracker, Territory JSON records, Settler README, Settlement .md files, and handoff doc; writes 6 non-canonical snapshot files to `.healthos-steward/memory/derived/`; overwritten on each run; no LLM, no shell, no new npm deps, fail-tolerant per-file). The `list`/`inspect`/`next` commands read Territory JSON records, Settler profile .md files, Settlement .md records, and the ST tracker using Node built-ins only — no model calls, no writes, no new npm dependencies. Do not describe `scan-status`, `validate-docs`, `validate-all`, `check-invariants`, `check-doc-drift`, or other target repository-maintenance operations as delivered CLI behavior until implemented and locally smoked.
 
 Codex, Claude Code, and other external coding assistants are external executors operating on this repository. They are not internal Steward providers.
 
-Codex may support Steward-scoped Xcode-facing repository maintenance as an external executor. Keep this role limited to reviewing and proposing PRs for Claude Code automations, scheduled-task definitions, Xcode/Steward instructions, and automation drift. Do not create a new Steward authority category, grant merge authority, or treat Codex as an internal Steward provider.
+Codex may support Steward-scoped Xcode-facing repository maintenance as an external executor. Keep this role limited to reviewing and proposing PRs for repository-maintenance automation guidance, Xcode/Steward instructions, and automation drift. Do not create a new Steward authority category, grant merge authority, or treat Codex as an internal Steward provider.
 
 The local Codex automation for this posture is `$CODEX_HOME/automations/steward-xcode-facing-maintenance/`. It should propose branch/PR updates for drift; it must not merge automatically or edit clinical/runtime code outside an explicitly scoped task.
 
 ## Steward and healthos-forge-mcp boundary
 
-`healthos-forge-mcp` is the repository-maintenance MCP server for Steward. It is implemented as a stdio MCP server at `ts/agent-infra/healthos-forge-mcp/` (maturity: implemented seam, ST-018, 2026-05-05). It exposes 10 deterministic repository-maintenance tools: `steward_next_task`, `steward_scan_status`, `steward_get_handoff`, `steward_list_territories`, `steward_inspect_territory`, `steward_list_settlers`, `steward_list_settlements`, `steward_validate_settlement`, `steward_generate_prompt`, `steward_build_memory`.
+`healthos-forge-mcp` is the repository-maintenance MCP server for Steward. It is implemented at `ts/agent-infra/healthos-forge-mcp/` (maturity: implemented seam, ST-018/FORGE-MCP-V2, 2026-05-05). It exposes 10 deterministic repository-maintenance tools over stdio and, as of ST-021, over Streamable HTTP for Managed Agents compatibility: `steward_next_task`, `steward_scan_status`, `steward_get_handoff`, `steward_list_territories`, `steward_inspect_territory`, `steward_list_settlers`, `steward_list_settlements`, `steward_validate_settlement`, `steward_generate_prompt`, `steward_build_memory`.
+
+```bash
+cd ts && npx --yes --workspace @healthos/forge-mcp healthos-forge-mcp
+cd ts && npx --yes --workspace @healthos/forge-mcp healthos-forge-mcp-http
+cd ts && FORGE_MCP_PORT=3791 npx --yes --workspace @healthos/forge-mcp healthos-forge-mcp-http
+```
+
+The HTTP server binds `127.0.0.1:${FORGE_MCP_PORT:-3791}/mcp`. Managed Agents API use requires a publicly reachable tunnel URL set through `FORGE_MCP_URL`; do not document localhost as sufficient for a remote Managed Agent connection.
 
 `healthos-forge-mcp` is outside the HealthOS clinical/runtime hierarchy. It is used by Steward for Xcode, Xcode Intelligence where available, CI tools, or external coding assistants operating on this repository. It must never be described as a clinical automation server, AACI tool server, GOS runtime server, or Core law server.
 
@@ -219,19 +239,30 @@ Steward provider safety:
 - PR review posting is never default; requires explicit operator flag.
 - PR review posting only sends real provider output; placeholder/error text is never posted.
 
-## Claude Code Automations
+For the Steward Coordinator Managed Agent seam (`@healthos/managed-agent`, ST-022/ST-023):
 
-Three durable Claude Code automations maintain repository state automatically. All push to `origin/main` after each run, including the memory file even on no-change runs.
+```bash
+cd ts && npm run create-agent:dry-run --workspace @healthos/managed-agent
+cd ts && npm run create-agent --workspace @healthos/managed-agent
+cd ts && npm run create-agent:force --workspace @healthos/managed-agent
+```
 
-| Automation | Schedule | Definition | Function |
+Live create/update requires `ANTHROPIC_API_KEY` or `ANTHROPIC_AUTH_TOKEN` and writes `.healthos-steward/managed-agent/agent.json`. The typed session workflows are `discover`, `brief`, `validate`, and `handoff`; they are human-triggered construction lifecycle helpers, not a CLI, cron runner, autonomous executor, clinical/runtime surface, or merge authority.
+
+## Repository Maintenance Automations
+
+No Claude Code scheduled tasks are configured for this repository. The retired `.claude/automations/` directory and `.claude/scheduled_tasks.json` registry are intentionally absent to avoid duplicate cron ownership.
+
+Grouped Codex automations own the active maintenance posture:
+
+| Automation group | Cadence | Mode | Function |
 | :--- | :--- | :--- | :--- |
-| `daily-todo-tracker` | Daily 08:07 | `.claude/automations/daily-todo-tracker.md` | Digest of all TODO/READY/BLOCKED tasks by domain |
-| `sync-work-plan` | Mon/Wed/Fri 08:47 | `.claude/automations/sync-work-plan.md` | Keeps `20-documental-todos-work-plan.md` live and synced |
-| `update-claude-md` | Mon 09:03 | `.claude/automations/update-claude-md.md` | Reviews CLAUDE.md for stale commands or missing docs |
+| `HealthOScaffold Agent Guidance Maintenance` | Weekly, Tuesday 10:00 | worktree, PR-only | Reviews AGENTS/CLAUDE/README, Steward/Xcode docs, and automation guidance drift |
+| `HealthOScaffold Status Digest` | Monday/Wednesday/Friday 08:30 | worktree, read-only | Reports READY/BLOCKED/DONE evidence, tracker inconsistencies, gaps, and next actions |
+| `HealthOScaffold Dependency and SDK Drift` | Weekly, Thursday 11:00 | worktree, read-only | Reports manifest, lockfile, SDK, and toolchain drift |
+| `HealthOScaffold Retrospective Skill Map` | Every two weeks, Friday 10:00 | worktree, read-only | Suggests concrete skills to deepen from PR/review/commit evidence |
 
-Latest digest: `.healthos-steward/memory/automations/daily-todo-tracker/latest.md`
-
-Companion Codex automation: `$CODEX_HOME/automations/steward-xcode-facing-maintenance/` reviews Steward-scoped Xcode-facing automation and instruction drift and should publish changes by branch/PR.
+Document-changing automation must use branch/PR handoff, never direct push to `main`. Historical derived logs under `.healthos-steward/memory/automations/` are not scheduler definitions.
 
 ## Prompt architecture template
 

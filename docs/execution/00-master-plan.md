@@ -15,12 +15,13 @@ HealthOScaffold is the historical repository name and construction repository fo
 
 ## Canonical hierarchy to preserve
 
-1. Material substrate
-2. HealthOS Core
+1. HealthOS Core
+2. GOS
 3. HealthOS Runtimes
-4. Actors / Agents
-5. Apps / Interfaces
-6. Artifacts / Effects
+4. Boundary
+5. Stage
+
+Custom is a CoreLaw-governed Stage definition, not a separate tier. The Construction System is outside the clinical/runtime hierarchy.
 
 ## Phases
 

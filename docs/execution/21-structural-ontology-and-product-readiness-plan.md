@@ -4,7 +4,7 @@ This document is the canonical priority-ordered work plan produced by the ontolo
 
 Read this document **before** reading the per-domain TODO files. The priority tiers here override the ordering within any individual TODO file.
 
-Construction-system note: this document remains the product/repo task queue. Construction-system tasks ST-010 and later are tracked in `docs/execution/22-steward-construction-operating-model.md` and `docs/execution/19-settler-model-task-tracker.md`. APP-011 is DONE after the Veridia session boundary work. APP-012 is no longer the next READY app wiring task. New app wiring is blocked until the platform/runtime surfaces it consumes are implemented and stable, the App Integration Boundary is explicit, and the relevant App Charter is complete. Independent construction-system work may run in parallel, but construction output that targets blocked app wiring must be reframed or blocked.
+Construction-system note: this document remains the product/repo task queue. Construction-system tasks ST-010 and later are tracked in `docs/execution/22-steward-construction-operating-model.md` and `docs/execution/19-settler-model-task-tracker.md`. APP-011 is DONE after the Veridia session boundary work. APP-012 is no longer the next READY Stage wiring task. New Stage wiring is blocked until the Core/GOS/runtime surfaces it consumes are implemented and stable, Boundary is explicit, and the relevant Custom is complete. Independent construction-system work may run in parallel, but construction output that targets blocked Stage wiring must be reframed or blocked.
 
 ---
 
@@ -35,7 +35,7 @@ Construction-system note: this document remains the product/repo task queue. Con
 | STR-005 | **P2** | DONE | Add placeholder Swift targets for Veridia and CloudClinic | — |
 | APP-013 | **P2** | DONE | Rename Veridia to Veridia and redefine patient app scope | — |
 | APP-011 | **P2** | DONE | Veridia: smoke-testable executable path | STR-005, APP-013 |
-| APP-012 | **P2** | BLOCKED | CloudClinic: smoke-testable executable path | Tier 1-4 readiness; CloudClinic App Charter incomplete |
+| APP-012 | **P2** | BLOCKED | CloudClinic: smoke-testable executable path | Core/GOS/runtime/Boundary/Custom readiness; CloudClinic Custom incomplete |
 | RT-ASYNC-001 | **P3** | READY | SQL-backed async runtime executor | Core SQL migration exists; connection infrastructure to be completed in task |
 | RT-PROVIDER-001 | **P3** | DONE | Real Apple Foundation Models integration for normalization stage | — |
 | RT-RETRIEVAL-001 | **P3** | READY | Semantic retrieval with real embeddings provider | Embeddings adapter/policy to be completed in task |
@@ -43,24 +43,23 @@ Construction-system note: this document remains the product/repo task queue. Con
 
 ---
 
-## App-Agnostic Tier Map (2026-05-07)
+## HealthOS Hierarchy And Stage Readiness Map (2026-05-07)
 
-This mapping supersedes direct selection of app implementation tasks. It does not erase historical scaffold validation; Scribe and Veridia remain valid boundary scaffold evidence.
+This mapping supersedes direct selection of Stage implementation tasks. It does not erase historical scaffold validation; Scribe and Veridia remain valid Boundary scaffold evidence. Custom is a Stage readiness requirement, not a separate HealthOS hierarchy tier. Construction System is external to the clinical/runtime hierarchy.
 
-| Tier | Open task/status | Why it belongs here | Must be DONE before dependent higher-tier work advances |
+| Class | Open task/status | Why it belongs here | Must be DONE before dependent higher-tier work advances |
 |---|---|---|---|
-| Tier 1 — Platform/Core | `CI-001` — READY | Repository validation gate for all future work, including app wiring | No lower-tier blocker. Should run before new app wiring so validation is not only local/manual |
-| Tier 1 — Platform/Core | `RT-ASYNC-001` — READY | Durable async/job execution is a platform foundation for worklists, queues, retries, and app-consumable runtime truth | No app-specific blocker. Task must create/validate PostgreSQL connection infrastructure or explicitly record an environment-gated skip |
-| Tier 1 — Platform/Core | `RT-RETRIEVAL-001` — READY | Semantic retrieval is a platform/runtime surface that app UI may later consume; fake semantic state is forbidden | No app-specific blocker. Task must add a real embeddings adapter or explicit policy-approved local provider path and preserve fail-closed behavior |
-| Tier 2 — Runtime/Mediation | No separate READY task beyond the Tier 1 promoted runtime foundations | Runtime mediation work is currently represented by `RT-ASYNC-001` and `RT-RETRIEVAL-001` because they provide app-consumable surfaces | Complete/accept the relevant runtime surface before app wiring depends on it |
-| Tier 3 — App Integration Boundary | No independent READY task; CloudClinic boundary readiness is `needs-review` | CloudClinic needs an explicit service/session facade or envelope decision before APP-012 can be implemented honestly | Define which Core/Service Runtime surface APP-012 consumes and prove it is implemented/stable |
-| Tier 4 — App Charter | CloudClinic App Charter — incomplete / needs-review | CloudClinic has contracts and a placeholder executable, but the charter is missing degraded behavior and exact upstream-surface commitments | Complete the CloudClinic charter in `docs/architecture/50-app-layer-boundary-and-reference-apps.md` or a follow-up charter doc |
-| Tier 5 — App Implementation | `APP-012` — BLOCKED | CloudClinic wiring is app implementation around service/runtime surfaces that are not yet proven stable enough for non-provisional wiring | `CI-001`, `RT-ASYNC-001`, `RT-RETRIEVAL-001` DONE or explicitly accepted as out-of-scope/degraded; Tier 3 boundary stable; Tier 4 charter complete |
-| Tier 6 — Construction System | Independent ST work — READY when its own tracker says READY | Construction tooling is outside the clinical/runtime hierarchy and may run in parallel | Must not generate or execute blocked app implementation prompts |
-| Tier 6 — Construction System | `ST-020` — needs-review / blocked as written | Current wording targets generating an APP-012 implementation prompt; APP-012 is blocked | Reframe ST-020 to generate a CloudClinic App Charter/boundary-readiness prompt, or wait until APP-012 unblock criteria are met |
+| HealthOS Tier 1 — Core | `CI-001` — READY | Repository validation gate for all future work, including Stage wiring | No lower-tier blocker. Should run before new Stage wiring so validation is not only local/manual |
+| HealthOS Tier 2 — GOS / Runtimes | `RT-ASYNC-001` — READY | Durable async/job execution is a runtime foundation for worklists, queues, retries, and Stage-consumable runtime truth | No Stage-specific blocker. Task must create/validate PostgreSQL connection infrastructure or explicitly record an environment-gated skip |
+| HealthOS Tier 2 — GOS / Runtimes | `RT-RETRIEVAL-001` — READY | Semantic retrieval is a runtime surface that Stage UI may later consume; fake semantic state is forbidden | No Stage-specific blocker. Task must add a real embeddings adapter or explicit policy-approved local provider path and preserve fail-closed behavior |
+| HealthOS Tier 3 — Boundary | No independent READY task; CloudClinic Boundary readiness is `needs-review` | CloudClinic needs an explicit service/session facade or envelope decision before APP-012 can be implemented honestly | Define which Core/Service Runtime surface APP-012 consumes and prove it is implemented/stable |
+| Stage readiness — Custom | CloudClinic Custom — incomplete / needs-review | CloudClinic has contracts and a placeholder executable, but the Custom is missing degraded behavior and exact upstream-surface commitments | Complete the CloudClinic Custom in `docs/architecture/50-app-layer-boundary-and-reference-apps.md` or a follow-up Custom doc |
+| HealthOS Tier 4 — Stage | `APP-012` — BLOCKED | CloudClinic wiring is Stage implementation around service/runtime surfaces that are not yet proven stable enough for non-provisional wiring | `CI-001`, `RT-ASYNC-001`, `RT-RETRIEVAL-001` DONE or explicitly accepted as out-of-scope/degraded; Boundary stable; Custom complete |
+| External — Construction System | Independent ST work — READY when its own tracker says READY | Construction tooling is outside the clinical/runtime hierarchy and may run in parallel | Must not generate or execute blocked Stage implementation prompts |
+| External — Construction System | `ST-020` — needs-review / blocked as written | Current wording targets generating an APP-012 implementation prompt; APP-012 is blocked | Reframe ST-020 to generate a CloudClinic Custom/Boundary-readiness prompt, or wait until APP-012 unblock criteria are met |
 | Legacy / needs-review | `docs/execution/18-healthos-xcode-agent-task-tracker.md` streams after XA-002 | Historical Xcode-agent tracker overlaps later Steward/Forge MCP construction work | Do not select without reconciling against doc 22, doc 19, and current implemented Steward/Forge MCP baseline |
 
-No Core/data-storage TODO file currently promotes an additional READY task. Completed app scaffold work (Scribe minimal surface, APP-011 Veridia, STR-005 placeholders, APP-008 envelope propagation) remains DONE and valid as scaffold evidence; it does not unblock further app wiring by itself.
+No Core/data-storage TODO file currently promotes an additional READY task. Completed Stage scaffold work (Scribe minimal surface, APP-011 Veridia, STR-005 placeholders, APP-008 envelope propagation) remains DONE and valid as scaffold evidence; it does not unblock further Stage wiring by itself.
 
 ---
 
@@ -479,7 +478,7 @@ These tasks add missing product targets. They can be done after P1 or in paralle
 
 **Priority:** P2 | **Status:** DONE | **Branch:** `feat/str-005-veridia-cloudclinic-targets`
 
-**Why:** Veridia and CloudClinic have governance contracts, boundary tests, and architecture docs, but no Swift executable targets. The Xcode workspace referenced only Scribe as an app. This created a false picture of the product graph for the initial reference apps. Adding minimal placeholder targets made that scaffold graph honest without making the reference apps define HealthOS.
+**Why:** Veridia and CloudClinic have governance contracts, Boundary tests, and architecture docs, but no Swift executable targets. The Xcode workspace referenced only Scribe as a Stage. This created a false picture of the product graph for the initial Stages. Adding minimal placeholder targets made that scaffold graph honest without making those Stages define HealthOS.
 
 **Files to create:**
 ```
@@ -564,20 +563,20 @@ Also add to products:
 
 ---
 
-### APP-012: CloudClinic — wire existing boundary contracts to session runtime
+### APP-012: CloudClinic — wire existing Boundary contracts to session runtime
 
-**Priority:** P2 | **Status:** BLOCKED (Tier 5 app implementation) | **Branch:** `feat/app-012-cloudclinic-session-wire`
+**Priority:** P2 | **Status:** BLOCKED (HealthOS Tier 4 Stage implementation) | **Branch:** `feat/app-012-cloudclinic-session-wire`
 
 **Same pattern as APP-011, using `ServiceOperationsContracts.swift` contracts.**
 
-**Blocker:** APP-012 is app wiring. It must not advance until the upstream mediated surface is implemented and stable, not merely contracted. CloudClinic also needs a complete App Charter before implementation.
+**Blocker:** APP-012 is Stage wiring. It must not advance until the upstream mediated surface is implemented and stable, not merely contracted. CloudClinic also needs a complete Custom before implementation.
 
 **Unblock criteria:**
 - `CI-001` DONE, or explicitly accepted by the operator as temporarily outside the APP-012 gate with local validation evidence.
 - `RT-ASYNC-001` DONE, or APP-012 scope explicitly proves it does not consume durable async/queue/worklist behavior and will surface the missing capability as degraded.
 - `RT-RETRIEVAL-001` DONE, or APP-012 scope explicitly proves it does not consume semantic retrieval and will surface retrieval as unavailable/degraded.
-- Tier 3 CloudClinic App Integration Boundary defined: exact facade/envelope/app-safe view to consume, with tests or smoke evidence.
-- Tier 4 CloudClinic App Charter complete: app role, actors, mediated surfaces, degraded behavior, data exposure limits, validation expectations, and non-authority boundaries.
+- CloudClinic Boundary defined: exact facade/envelope/app-safe view to consume, with tests or smoke evidence.
+- CloudClinic Custom complete: Stage role, actors, mediated surfaces, degraded behavior, data exposure limits, validation expectations, and non-authority boundaries.
 
 ---
 
@@ -652,7 +651,7 @@ Do after P0 and P1 are complete. These tasks advance the runtime tier from "impl
 
 ## P4 — Infrastructure / CI
 
-These tasks improve engineering infrastructure. After ADR-0013, CI-001 is promoted as Tier 1 platform/repository validation foundation and should advance before new app wiring.
+These tasks improve engineering infrastructure. After ADR-0013, CI-001 is promoted as Tier 1 Core/repository validation foundation and should advance before new Stage wiring.
 
 ---
 
@@ -701,7 +700,7 @@ Regardless of which task is being executed:
 3. **Draft-only:** AACI and MSR produce derived artifacts and drafts. No task in this plan effectuates a clinical act without a human gate.
 4. **No production claims:** These tasks advance maturity but do not make the system production-ready. Update maturity docs honestly after each task.
 5. **Append-only provenance:** Provenance records are never mutated after write.
-6. **App boundaries:** Scribe, Veridia, CloudClinic, and future apps consume mediated state. No task moves law interpretation into SwiftUI or app layers.
+6. **Boundary / Stage:** Scribe, Veridia, CloudClinic, and future Stages consume mediated state through Boundary. No task moves law interpretation into SwiftUI or Stage layers.
 
 ---
 
@@ -728,4 +727,4 @@ When a task is done:
 **Completion note (2026-04-30):** STR-004 completed by renaming the Swift module `HealthOSFirstSliceSupport` to `HealthOSSessionRuntime` with `git mv`, updating SwiftPM target/dependency wiring, CLI/Scribe/test imports, and architecture/execution documentation references. Primary public runtime types were renamed (`FirstSliceRunner` → `SessionRunner`, `ScribeFirstSliceAdapter` → `ScribeSessionAdapter`, demo bootstrap surfaces to session-runtime vocabulary). No Core/GOS/AACI/Mental Space/app clinical behavior changed; no Veridia/CloudClinic target additions were made in this work unit. Residual internal `FirstSlice*` contract names in `HealthOSCore` remain intentionally unchanged for STR-004 scope control.
 
 
-**Completion note (2026-04-30):** STR-005 completed by adding `HealthOSVeridiaApp` and `HealthOSCloudClinicApp` as minimal Swift executable scaffold targets with honest `--smoke-test` paths. Both targets compile and print scaffold-only, no-final-UI, no-clinical-authority smoke output. No Veridia or CloudClinic session wiring, final UI shell, Core law, GOS, AACI, Mental Space Runtime, provider, storage, or Steward/Settler behavior was implemented or changed. At STR-005 completion, both app wiring tasks appeared unblocked by target presence; ADR-0013 later clarified that target presence is not enough for non-provisional app wiring. APP-011 was completed as boundary scaffold; APP-012 is now blocked pending platform/runtime, boundary, and charter readiness.
+**Completion note (2026-04-30):** STR-005 completed by adding `HealthOSVeridiaApp` and `HealthOSCloudClinicApp` as minimal Swift executable scaffold targets with honest `--smoke-test` paths. Both targets compile and print scaffold-only, no-final-UI, no-clinical-authority smoke output. No Veridia or CloudClinic session wiring, final UI shell, Core law, GOS, AACI, Mental Space Runtime, provider, storage, or Steward/Settler behavior was implemented or changed. At STR-005 completion, both Stage wiring tasks appeared unblocked by target presence; ADR-0013 later clarified that target presence is not enough for non-provisional Stage wiring. APP-011 was completed as Boundary scaffold; APP-012 is now blocked pending Core/GOS/runtime/Boundary/Custom readiness.

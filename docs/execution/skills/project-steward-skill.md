@@ -27,7 +27,7 @@ Use `HealthOS Xcode Agent` and `Xcode Agent` only as historical/descriptive refe
 - `docs/architecture/46-apple-sovereignty-architecture.md` (Apple sovereignty thesis)
 - `docs/execution/17-healthos-xcode-agent-migration-plan.md` (migration plan)
 - `ts/agent-infra/healthos-forge-mcp/` (repository-maintenance MCP seam)
-- `.claude/automations/` and `.claude/scheduled_tasks.json` when the work touches Claude Code automation drift
+- local Codex automation definitions when the work touches repository-maintenance automation drift; `.claude/settings.json` only when the scoped work touches Claude Code settings or MCP configuration
 
 ## Required reads
 

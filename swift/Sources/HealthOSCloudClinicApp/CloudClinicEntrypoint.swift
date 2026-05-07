@@ -1,5 +1,5 @@
 import Foundation
-import HealthOSCore
+import HealthOSAppBoundary
 
 // CloudClinic is the professional/service operations interface for HealthOS.
 // This target is a scaffold placeholder.

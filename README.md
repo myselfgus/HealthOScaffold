@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="docs/assets/healthos_overview.gif" width="100%" alt="HealthOS — Sovereign Clinical Platform">
+  <img src="docs/assets/healthos-logo.png" width="320" alt="HealthOS">
 </p>
 
 <p align="center">

@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="../assets/healthos-logo.png" width="260" alt="HealthOS">
+</p>
+
 # HealthOS Technical Product Specification
 
 ## Status

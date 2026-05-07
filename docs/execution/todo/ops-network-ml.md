@@ -2,6 +2,24 @@
 
 ## COMPLETED
 
+### CS-HARDENING Construction System truth and validation
+Outcome:
+- aligned Construction System docs and records with the implemented deterministic Steward CLI, prompt generation, validation/report drafting, derived memory, and healthos-forge-mcp stdio/HTTP repository-maintenance seams
+- kept ST-020 blocked as written and reframed the acceptable next output as CloudClinic Boundary/Custom readiness, not APP-012 Stage implementation
+- added Settlement ID roundtrip resolution for filename IDs and canonical IDs
+- added `validate-construction-system` to check Construction System invariants deterministically
+- marked generated prompts and derived memory as non-canonical regenerable artifacts
+Files touched:
+- `docs/execution/02-status-and-tracking.md`
+- `docs/execution/12-next-agent-handoff.md`
+- `docs/execution/19-settler-model-task-tracker.md`
+- `docs/execution/22-steward-construction-operating-model.md`
+- `.healthos-settler/`
+- `.healthos-steward/`
+- `ts/agent-infra/healthos-steward/`
+- `ts/agent-infra/healthos-forge-mcp/`
+- `Makefile`
+
 ### ST-001a README and repository roots for Settler/Territory scaffolds
 Outcome:
 - README now names Steward, Settlers, Settlements, and Territories as repository engineering concepts outside the HealthOS clinical/runtime hierarchy

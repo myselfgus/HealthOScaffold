@@ -5,6 +5,7 @@ import { runGeneratePrompt } from "./commands/generate-prompt.js";
 import { runValidateSettlement } from "./commands/validate-settlement.js";
 import { runPrDraft } from "./commands/pr-draft.js";
 import { runBuildMemory } from "./commands/build-memory.js";
+import { runValidateConstructionSystem } from "./commands/validate-construction-system.js";
 
 export type StewardCommand =
   | "status"
@@ -16,7 +17,8 @@ export type StewardCommand =
   | "generate-prompt"
   | "validate-settlement"
   | "pr-draft"
-  | "build-memory";
+  | "build-memory"
+  | "validate-construction-system";
 
 export function runStewardCommand(
   command: StewardCommand,
@@ -46,6 +48,8 @@ export function runStewardCommand(
       return runPrDraft(args);
     case "build-memory":
       return runBuildMemory(args);
+    case "validate-construction-system":
+      return runValidateConstructionSystem();
     default:
       return 1;
   }
@@ -60,6 +64,11 @@ export type { SettlerRecord } from "./lib/settler-reader.js";
 export { readSettler } from "./lib/settler-reader.js";
 export type { SettlementRecord } from "./lib/settlement-parser.js";
 export { parseSettlement } from "./lib/settlement-parser.js";
+export type { ResolvedSettlement } from "./lib/settlement-resolver.js";
+export {
+  listResolvedSettlements,
+  resolveSettlement,
+} from "./lib/settlement-resolver.js";
 export { repoRoot } from "./repo-root.js";
 export { assemblePromptSpec } from "./lib/prompt-assembler.js";
 export type { AssemblyInput } from "./lib/prompt-assembler.js";
@@ -77,3 +86,5 @@ export type {
   ValidationEvidence,
 } from "./lib/validation-report-builder.js";
 export { buildValidationReport } from "./lib/validation-report-builder.js";
+export type { ConstructionValidationCheck } from "./lib/construction-system-validator.js";
+export { validateConstructionSystem } from "./lib/construction-system-validator.js";

@@ -8,13 +8,13 @@ Scaffold describes maturity or foundation phase. It does not describe a separate
 
 ## Current truth
 
-The Steward / Settler construction model is now a scaffolded contract because `docs/execution/22-steward-construction-operating-model.md` and the initial construction directory skeleton exist.
+The Steward / Settler construction model is now an implemented construction seam for deterministic repository-maintenance operations, while Settler execution remains doctrine-only.
 
-No runtime implementation exists yet.
+No HealthOS clinical/runtime implementation exists in the Construction System.
 
 No multiagent runtime is implemented.
 
-No `healthos-forge-mcp` server is implemented.
+`healthos-forge-mcp` is implemented as repository-maintenance MCP only, with stdio and Streamable HTTP transports over the 10 deterministic `steward_*` tools. It is not a HealthOS runtime MCP server.
 
 No Settler profiles are implemented as executable agents.
 
@@ -22,16 +22,16 @@ The Territory Registry exists under `.healthos-settler/territories/` as construc
 
 `docs/architecture/47-steward-settler-engineering-model.md` is the canonical architecture document for the model.
 
-`docs/execution/22-steward-construction-operating-model.md` is the canonical construction operating model for future Steward-generated prompts, Settlement records, validation drafts, and derived handoff memory.
+`docs/execution/22-steward-construction-operating-model.md` is the canonical construction operating model for Steward-generated prompts, Settlement records, validation drafts, and derived handoff memory.
 
 Repository-local documentation roots exist:
 - `.healthos-settler/territories/` for Territory Registry records
-- `.healthos-settler/settlers/` for future Settler Profile Registry records
-- `.healthos-steward/settlements/` for future Settlement records
-- `.healthos-steward/prompts/` for future generated prompts and prompt templates
+- `.healthos-settler/settlers/` for Settler Profile Registry records
+- `.healthos-steward/settlements/` for active, completed, and template Settlement records
+- `.healthos-steward/prompts/` for generated prompts, validation drafts, PR drafts, and prompt templates
 - `.healthos-territory/` as a prior documentation-only Territory scaffold
 
-These roots are documentation scaffolds only.
+These roots are construction metadata and derived artifacts only. They do not create clinical authority, runtime behavior, merge authority, or production readiness.
 
 ## Planned ST construction sequence
 
@@ -299,8 +299,9 @@ Status: NEEDS-REVIEW / BLOCKED AS WRITTEN after ADR-0013.
 Goal:
 - current wording asks the construction system to generate an APP-012 implementation prompt
 - APP-012 is now blocked as Stage implementation until Core/GOS/runtime readiness, CloudClinic Boundary, and CloudClinic Custom criteria are satisfied
-- acceptable reframe: use Steward to generate a CloudClinic Custom / Boundary-readiness prompt instead of an APP-012 implementation prompt
+- required reframe before execution: create a CloudClinic Custom / Boundary-readiness Settlement and PromptSpec instead of an APP-012 implementation prompt
 - note: APP-011 is DONE (VeridiaSessionFacade, PR #98, 2026-05-04); APP-011 remains valid boundary scaffold evidence, not a reason to bypass ADR-0013 ordering
+- next acceptable output: a bounded construction work unit that defines CloudClinic consumed surfaces, degraded behavior, Custom evidence, and objective APP-012 unblock criteria without wiring the CloudClinic Stage
 
 ## Historical streams
 
@@ -332,7 +333,7 @@ Current scaffold root: `.healthos-territory/territories/`.
 
 Expose repository-maintenance tools for Steward and Settlers.
 
-Operations may include `validate-docs`, `validate-all`, `scan-status`, `next-task`, `read-gap-register`, `get-handoff`, `check-invariants`, `check-doc-drift`, and `generate-pr-review-draft`.
+Implemented operations are the 10 deterministic `steward_*` tools exposed by `healthos-forge-mcp`. Older planned names such as `scan-status`, `next-task`, `check-invariants`, and `check-doc-drift` remain historical/planned labels unless implemented and locally smoked.
 
 No clinical tools are exposed.
 
@@ -410,7 +411,7 @@ Goal:
 
 ## Non-claims
 
-No runtime implementation exists yet.
+No HealthOS runtime implementation exists in the Construction System.
 
 No clinical agents are created.
 
@@ -418,14 +419,14 @@ No merge authority is granted.
 
 No production readiness is claimed.
 
-No `healthos-forge-mcp` server is implemented.
+`healthos-forge-mcp` is implemented as a repository-maintenance MCP seam only.
 
 No HealthOS runtime MCP server is implemented.
 
-No Territory loader is implemented.
+Territory loading is implemented for deterministic Steward/Forge inspection flows. It does not make Territory records canonical law.
 
 Deterministic Steward CLI inspection seam implemented (ST-014): `list territories|settlers|settlements`, `inspect territory|settler|settlement <id>`, and `next` are delivered. All are read-only, deterministic, no model calls, no writes, no new npm deps.
 
 No Settlement write/create CLI is implemented.
 
-No prompt generation engine is implemented.
+Prompt generation is implemented as deterministic PromptSpec assembly from Settlement, Territory, and Settler records. It does not call an LLM and does not execute work.

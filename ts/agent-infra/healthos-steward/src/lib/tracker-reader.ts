@@ -6,6 +6,20 @@ export interface TrackerTask {
   id: string;
   title: string;
   status: string;
+  rawStatus: string;
+}
+
+function normalizeStatus(rawStatus: string): string {
+  const upper = rawStatus.toUpperCase();
+  if (upper.includes("NEEDS-REVIEW") && upper.includes("BLOCKED AS WRITTEN")) {
+    return "BLOCKED_AS_WRITTEN";
+  }
+  if (upper.includes("NEEDS-REVIEW")) return "NEEDS-REVIEW";
+  if (upper.includes("IN-PROGRESS")) return "IN-PROGRESS";
+  if (upper.includes("BLOCKED")) return "BLOCKED";
+  if (upper.includes("TODO")) return "TODO";
+  if (upper.includes("DONE")) return "DONE";
+  return "UNKNOWN";
 }
 
 export function readAllTrackerTasks(): TrackerTask[] {
@@ -28,26 +42,19 @@ export function readAllTrackerTasks(): TrackerTask[] {
     if (headerMatch) {
       const id = headerMatch[1];
       const title = headerMatch[2].trim();
+      let rawStatus = "";
       let status = "UNKNOWN";
       let j = i + 1;
       while (j < lines.length && !/^### /.test(lines[j])) {
         const l = lines[j].trim();
-        if (l.startsWith("Status: DONE")) {
-          status = "DONE";
-          break;
-        } else if (l.startsWith("Status: IN-PROGRESS")) {
-          status = "IN-PROGRESS";
-          break;
-        } else if (l.startsWith("Status: BLOCKED")) {
-          status = "BLOCKED";
-          break;
-        } else if (l.startsWith("Status: TODO")) {
-          status = "TODO";
+        if (l.startsWith("Status:")) {
+          rawStatus = l.replace(/^Status:\s*/, "").trim();
+          status = normalizeStatus(rawStatus);
           break;
         }
         j++;
       }
-      tasks.push({ id, title, status });
+      tasks.push({ id, title, status, rawStatus });
     }
     i++;
   }

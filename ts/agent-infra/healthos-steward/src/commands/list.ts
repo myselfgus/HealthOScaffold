@@ -1,6 +1,7 @@
-import { readFileSync, readdirSync, existsSync } from "node:fs";
+import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import { repoRoot } from "../repo-root.js";
+import { listResolvedSettlements } from "../lib/settlement-resolver.js";
 
 export function runList(args: string[]): number {
   const subtype = args[0];
@@ -103,34 +104,16 @@ function listSettlersFallback(): number {
 }
 
 function listSettlements(): number {
-  const activeDir = join(repoRoot, ".healthos-steward", "settlements", "active");
-  const completedDir = join(
-    repoRoot,
-    ".healthos-steward",
-    "settlements",
-    "completed"
-  );
-  let found = false;
-  for (const [dir, label] of [
-    [activeDir, "active"],
-    [completedDir, "completed"],
-  ] as [string, string][]) {
-    if (!existsSync(dir)) continue;
-    let files: string[];
-    try {
-      files = readdirSync(dir)
-        .filter((f) => f.endsWith(".md"))
-        .sort();
-    } catch {
-      continue;
-    }
-    for (const f of files) {
-      console.log(`${f.replace(/\.md$/, "")}  [${label}]`);
-      found = true;
-    }
-  }
-  if (!found) {
+  const { active, completed } = listResolvedSettlements();
+  const all = [...active, ...completed];
+  if (all.length === 0) {
     console.log("No settlement records found.");
+    return 0;
+  }
+  for (const settlement of all) {
+    console.log(
+      `${settlement.fileId}  [${settlement.statusDir}] canonical-id: ${settlement.canonicalId}`
+    );
   }
   return 0;
 }

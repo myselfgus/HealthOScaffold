@@ -1,6 +1,7 @@
 import { readFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import { repoRoot } from "../repo-root.js";
+import { resolveSettlement } from "../lib/settlement-resolver.js";
 
 export function runInspect(args: string[]): number {
   const subtype = args[0];
@@ -112,34 +113,14 @@ function inspectSettler(id: string): number {
 }
 
 function inspectSettlement(id: string): number {
-  const activePath = join(
-    repoRoot,
-    ".healthos-steward",
-    "settlements",
-    "active",
-    `${id}.md`
-  );
-  const completedPath = join(
-    repoRoot,
-    ".healthos-steward",
-    "settlements",
-    "completed",
-    `${id}.md`
-  );
-  let filePath: string;
-  let label: string;
-  if (existsSync(activePath)) {
-    filePath = activePath;
-    label = "active";
-  } else if (existsSync(completedPath)) {
-    filePath = completedPath;
-    label = "completed";
-  } else {
+  const resolved = resolveSettlement(id);
+  if (!resolved) {
     process.stderr.write(`Error: Settlement '${id}' not found.\n`);
     return 1;
   }
-  const lines = readFileSync(filePath, "utf-8").split("\n");
-  console.log(`Settlement: ${id}  [${label}]`);
+  const lines = readFileSync(resolved.path, "utf-8").split("\n");
+  console.log(`Settlement: ${resolved.fileId}  [${resolved.statusDir}]`);
+  console.log(`Canonical ID: ${resolved.canonicalId}`);
   const preview = lines.slice(0, 30);
   for (const line of preview) {
     console.log(line);

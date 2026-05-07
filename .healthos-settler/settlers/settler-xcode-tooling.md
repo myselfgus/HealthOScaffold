@@ -124,9 +124,9 @@ make validate-all
 
 ## maturity
 
-`scaffolded contract`
+`implemented seam`
 
-The construction system has a scaffolded contract: the construction operating model doc, territory registry, and (after ST-012) settler profile registry exist as documentation scaffolds. No Settler execution runtime, Forge MCP implementation, or prompt generation engine is implemented. This Settler profile is doctrine-only until Settler execution infrastructure exists.
+The construction system has implemented deterministic repository-maintenance seams: the Steward CLI, prompt generation, validation/report drafting, derived-memory builder, and healthos-forge-mcp stdio/HTTP transports exist as bounded construction tooling. No Settler execution runtime, clinical/runtime MCP server, autonomous executor, merge authority, or production-hardened construction platform is implemented. This Settler profile remains an engineering instruction record, not an executable agent profile.
 
 ---
 
@@ -145,4 +145,4 @@ Before a Settler profile operating under this record exits a work unit, it must 
 
 ## non-claims
 
-This Settler profile is an engineering instruction document. It is not a clinical agent, runtime actor, HealthOS Core actor, or authority record. It does not grant merge authority, clinical access, or production-readiness. It does not implement HealthOS Forge MCP, Settler execution, Settlement lifecycle, or prompt generation. It does not make the construction system a HealthOS runtime component or clinical authority. Official docs (`docs/architecture/`, `docs/execution/`) remain canonical.
+This Settler profile is an engineering instruction document. It is not a clinical agent, runtime actor, HealthOS Core actor, or authority record. It does not grant merge authority, clinical access, or production-readiness. It does not implement Settler execution or make the construction system a HealthOS runtime component or clinical authority. Official docs (`docs/architecture/`, `docs/execution/`) remain canonical.

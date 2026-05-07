@@ -6,6 +6,8 @@ import {
   readTerritory,
   readSettler,
   parseSettlement,
+  listResolvedSettlements,
+  resolveSettlement,
   assemblePromptSpec,
   buildIndex,
   buildConstructionStatus,
@@ -83,9 +85,16 @@ export function handleScanStatus(): HandlerResult {
   try {
     const tasks = readAllTrackerTasks();
     const doneCount = tasks.filter((t) => t.status === "DONE").length;
+    const needsReviewCount = tasks.filter(
+      (t) => t.status === "NEEDS-REVIEW" || t.status === "BLOCKED_AS_WRITTEN"
+    ).length;
     return {
       content: JSON.stringify(
-        { tasks, summary: `${doneCount} of ${tasks.length} DONE`, _non_canonical: NON_CANONICAL },
+        {
+          tasks,
+          summary: `${doneCount} of ${tasks.length} DONE; ${needsReviewCount} needs review/blocked as written`,
+          _non_canonical: NON_CANONICAL,
+        },
         null,
         2
       ),
@@ -192,32 +201,21 @@ export function handleListSettlers(): HandlerResult {
 
 export function handleListSettlements(): HandlerResult {
   try {
-    const baseDir = join(repoRoot, ".healthos-steward", "settlements");
-    const active: Array<{ id: string; title: string; status: string }> = [];
-    const completed: Array<{ id: string; title: string; status: string }> = [];
-    for (const [subdir, arr] of [
-      ["active", active],
-      ["completed", completed],
-    ] as [string, typeof active][]) {
-      const dir = join(baseDir, subdir);
-      if (!existsSync(dir)) continue;
-      let files: string[];
-      try {
-        files = readdirSync(dir).filter((f) => f.endsWith(".md")).sort();
-      } catch {
-        continue;
-      }
-      for (const file of files) {
-        const stem = file.replace(/\.md$/, "");
-        try {
-          const raw = readFileSync(join(dir, file), "utf-8");
-          const rec = parseSettlement(raw);
-          arr.push({ id: rec.id, title: rec.title, status: rec.status });
-        } catch {
-          arr.push({ id: stem, title: stem, status: "UNKNOWN" });
-        }
-      }
-    }
+    const settlements = listResolvedSettlements();
+    const active = settlements.active.map((s) => ({
+      id: s.fileId,
+      canonicalId: s.canonicalId,
+      title: s.record.title,
+      status: s.record.status,
+      path: `.healthos-steward/settlements/${s.statusDir}/${s.fileId}.md`,
+    }));
+    const completed = settlements.completed.map((s) => ({
+      id: s.fileId,
+      canonicalId: s.canonicalId,
+      title: s.record.title,
+      status: s.record.status,
+      path: `.healthos-steward/settlements/${s.statusDir}/${s.fileId}.md`,
+    }));
     return {
       content: JSON.stringify({ active, completed, _non_canonical: NON_CANONICAL }, null, 2),
     };
@@ -229,14 +227,8 @@ export function handleListSettlements(): HandlerResult {
 
 export function handleValidateSettlement(id: string): HandlerResult {
   try {
-    const activePath = join(repoRoot, ".healthos-steward", "settlements", "active", `${id}.md`);
-    const completedPath = join(repoRoot, ".healthos-steward", "settlements", "completed", `${id}.md`);
-    let settlementPath: string;
-    if (existsSync(activePath)) {
-      settlementPath = activePath;
-    } else if (existsSync(completedPath)) {
-      settlementPath = completedPath;
-    } else {
+    const resolved = resolveSettlement(id);
+    if (!resolved) {
       return {
         content: JSON.stringify(
           { error: `Settlement '${id}' not found in active/ or completed/`, _non_canonical: NON_CANONICAL },
@@ -246,8 +238,7 @@ export function handleValidateSettlement(id: string): HandlerResult {
         isError: true,
       };
     }
-    const raw = readFileSync(settlementPath, "utf-8");
-    const settlement = parseSettlement(raw);
+    const settlement = resolved.record;
     const criterionResults: CriterionResult[] = settlement.doneCriteria.map(classifyCriterion);
     const passCount = criterionResults.filter((r) => r.result === "PASS").length;
     const failCount = criterionResults.filter((r) => r.result === "FAIL").length;
@@ -255,7 +246,8 @@ export function handleValidateSettlement(id: string): HandlerResult {
     return {
       content: JSON.stringify(
         {
-          id,
+          id: resolved.fileId,
+          canonicalId: resolved.canonicalId,
           criterionResults,
           summary: `${passCount} PASS, ${failCount} FAIL, ${unverifiedCount} UNVERIFIED`,
           hasFail: failCount > 0,
@@ -273,14 +265,8 @@ export function handleValidateSettlement(id: string): HandlerResult {
 
 export function handleGeneratePrompt(id: string): HandlerResult {
   try {
-    const activePath = join(repoRoot, ".healthos-steward", "settlements", "active", `${id}.md`);
-    const completedPath = join(repoRoot, ".healthos-steward", "settlements", "completed", `${id}.md`);
-    let settlementPath: string;
-    if (existsSync(activePath)) {
-      settlementPath = activePath;
-    } else if (existsSync(completedPath)) {
-      settlementPath = completedPath;
-    } else {
+    const resolved = resolveSettlement(id);
+    if (!resolved) {
       return {
         content: JSON.stringify(
           { error: `Settlement '${id}' not found in active/ or completed/`, _non_canonical: NON_CANONICAL },
@@ -290,8 +276,7 @@ export function handleGeneratePrompt(id: string): HandlerResult {
         isError: true,
       };
     }
-    const raw = readFileSync(settlementPath, "utf-8");
-    const settlement = parseSettlement(raw);
+    const settlement = resolved.record;
     const territories: TerritoryRecord[] = [];
     for (const territoryId of settlement.territoryIds) {
       territories.push(readTerritory(territoryId));
@@ -303,9 +288,9 @@ export function handleGeneratePrompt(id: string): HandlerResult {
     const promptSpec = assemblePromptSpec({ settlement, territories, settlers });
     const outputDir = join(repoRoot, ".healthos-steward", "prompts", "generated");
     mkdirSync(outputDir, { recursive: true });
-    const outputPath = join(outputDir, `${id}.md`);
+    const outputPath = join(outputDir, `${resolved.fileId}.md`);
     writeFileSync(outputPath, promptSpec, "utf-8");
-    const relPath = `.healthos-steward/prompts/generated/${id}.md`;
+    const relPath = `.healthos-steward/prompts/generated/${resolved.fileId}.md`;
     const sectionsCount = (promptSpec.match(/<[a-z_]+>/g) ?? []).length;
     return {
       content: JSON.stringify(

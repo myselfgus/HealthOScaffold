@@ -26,7 +26,7 @@ Profile IDs map to Territory records under `.healthos-settler/territories/`. The
 
 ## Non-claims
 
-This registry is a construction-system documentation scaffold. It does not implement Settlers as executable agents, multiagent orchestration, HealthOS Forge MCP, prompt generation, or Settlement lifecycle management. No profile in this registry grants merge authority, clinical access, or production-readiness. Official docs remain canonical.
+This registry is a construction-system instruction surface. The registry itself does not implement Settlers as executable agents, multiagent orchestration, runtime behavior, merge authority, clinical access, or production-readiness. Deterministic Steward/Forge seams are documented in `docs/execution/22-steward-construction-operating-model.md`; official docs remain canonical.
 
 ## Related records
 

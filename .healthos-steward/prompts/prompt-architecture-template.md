@@ -460,5 +460,5 @@ Do not include multiple alternative prompts unless explicitly asked.
 - This template is a construction-system artifact under `.healthos-steward/prompts/`.
 - It has no clinical authority, no merge authority, and no runtime authority.
 - Official docs remain canonical. This template derives from them.
-- When the HealthOS Forge MCP (`healthos-forge-mcp`) is implemented, prompt generation may be exposed as a typed operation. Until then, this file is the reference.
+- HealthOS Forge MCP (`healthos-forge-mcp`) is implemented as a repository-maintenance seam. Prompt generation may be exposed through typed operations, but generated prompts remain derived artifacts and this file remains the reference template.
 - Reference in `CLAUDE.md` under `## Prompt architecture template`.

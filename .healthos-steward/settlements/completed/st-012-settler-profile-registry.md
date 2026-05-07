@@ -86,9 +86,9 @@ Create 9 Settler profile records and a registry index under `.healthos-settler/s
 - ST-015 (Prompt Generation Engine): TODO.
 - ST-016 (Settlement Validation and PR Review Draft Engine): TODO.
 - ST-017 (Derived Memory Builder): TODO.
-- ST-018 (healthos-forge-mcp surface over deterministic operations): doctrine-only, not implemented.
-- ST-019 (Xcode/Codex/Claude integration instructions): TODO.
-- ST-020 (Use Steward to generate APP-011 prompt): TODO.
+- ST-018 (healthos-forge-mcp surface over deterministic operations): DONE after ST-012 completion; implemented seam, repository-maintenance only.
+- ST-019 (Xcode/Codex/Claude integration instructions): DONE after ST-012 completion.
+- ST-020 (Use Steward to generate APP-012 prompt): needs-review / blocked as written after ADR-0013; must be reframed as CloudClinic Custom / Boundary-readiness work before execution.
 - Settler profiles are doctrine-only; no Settler execution runtime exists for any profile.
 
 **handoff**:

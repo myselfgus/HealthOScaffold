@@ -30,7 +30,7 @@
 
 **territory**:
 <!-- Territory IDs from .healthos-settler/territories/. Each ID must match a file <id>.json in that directory. -->
-<!-- Valid IDs (from ST-011): core, gos, session-runtime, msr, aaci, providers, apps, typescript-runtimes, storage-and-data, regulatory-and-interoperability, operations-and-observability, construction-system, validation-and-ci, documentation -->
+<!-- Valid IDs (from ST-011): core, gos, session-runtime, msr, aaci, providers, apps, type-script-runtimes, storage-and-data, regulatory-and-interoperability, operations-and-observability, construction-system, validation-and-ci, documentation -->
 - `<TERRITORY-ID-1>`
 <!-- Add more territory IDs as needed. A Settlement may span multiple Territories. -->
 

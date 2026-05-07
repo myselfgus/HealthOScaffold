@@ -72,7 +72,7 @@ discover
 
 `assign` means one or more Settler profiles and Territories are selected for the work.
 
-`generate-prompt` means a future prompt generation engine creates a bounded PromptSpec from official docs, Settlement records, and templates. In ST-010 this remains a planned capability only.
+`generate-prompt` means the deterministic prompt generation engine creates a bounded PromptSpec from official docs, Settlement records, and templates. It is an implemented seam, not an executor or LLM caller.
 
 `execute` means an implementer performs only the scoped work without widening product/runtime behavior.
 
@@ -102,13 +102,13 @@ discover
 
 `.healthos-steward/memory/derived/` belongs to derived repository memory generated from official docs and validated repository state.
 
-`.healthos-steward/settlements/active/` will hold active Settlement records once the deterministic workflow exists.
+`.healthos-steward/settlements/active/` holds active Settlement records when a bounded construction work unit is in progress.
 
 `.healthos-steward/settlements/completed/` will hold completed Settlement records after validation, review, and handoff recording.
 
-`.healthos-steward/settlements/templates/` holds scaffold schemas and templates for future Settlement records.
+`.healthos-steward/settlements/templates/` holds scaffold schemas and templates for Settlement records.
 
-`.healthos-steward/prompts/generated/` will hold generated prompts from future Steward prompt generation. Generated prompts are derived artifacts, not canonical docs.
+`.healthos-steward/prompts/generated/` holds generated prompts, validation reports, and PR drafts from deterministic Steward operations. Generated artifacts are derived artifacts, not canonical docs.
 
 `.healthos-steward/prompts/templates/` will hold prompt templates that preserve HealthOS invariants and non-claims.
 
@@ -148,9 +148,9 @@ discover
 
 The construction operating model is a scaffolded contract.
 
-Steward/Settler execution remains doctrine-only or scaffolded contract, depending on existing code. Current deterministic `healthos-steward` behavior remains limited to implemented CLI surfaces and must not be expanded by documentation claim.
+Settler execution remains doctrine-only. Current deterministic `healthos-steward` behavior is an implemented repository-maintenance seam limited to documented CLI/library surfaces and must not be expanded by documentation claim.
 
-`healthos-forge-mcp` remains doctrine-only or scaffold.
+`healthos-forge-mcp` is an implemented repository-maintenance MCP seam over deterministic `steward_*` operations. It is not a HealthOS runtime MCP server.
 
 No construction component is production-hardened.
 
@@ -167,12 +167,12 @@ Each record is a construction-system domain contract with:
 - validation commands and known gaps
 - expected future Settler IDs and related Territory IDs
 
-Future Settler profiles will reference Territory IDs to inherit scope boundaries, invariant posture, validation expectations, and forbidden moves.
+Settler profiles reference Territory IDs to inherit scope boundaries, invariant posture, validation expectations, and forbidden moves.
 
-Future Settlement records will reference Territory IDs to define bounded work units and prevent scope drift.
+Settlement records reference Territory IDs to define bounded work units and prevent scope drift.
 
-Future prompt generation will read Territory records alongside official docs and Settlement records to produce bounded implementation prompts.
+Prompt generation reads Territory records alongside official docs and Settlement records to produce bounded implementation prompts.
 
-Future review/validation and HealthOS Forge MCP tooling may use Territory records for deterministic repository-maintenance checks.
+Review/validation and HealthOS Forge MCP tooling use Territory records for deterministic repository-maintenance checks.
 
-Territory records do not replace official docs, implement Settlers, create Settlement instances, implement prompt generation, implement `healthos-forge-mcp`, or authorize runtime behavior.
+Territory records do not replace official docs, implement Settler execution, authorize Settlement completion, grant clinical authority, or authorize runtime behavior.

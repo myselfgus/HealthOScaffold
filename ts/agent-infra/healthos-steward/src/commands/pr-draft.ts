@@ -1,8 +1,8 @@
-import { readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
+import { writeFileSync, mkdirSync } from "node:fs";
 import { join } from "node:path";
 import { repoRoot } from "../repo-root.js";
-import { parseSettlement } from "../lib/settlement-parser.js";
 import { buildPrDraft } from "../lib/pr-draft-builder.js";
+import { resolveSettlement } from "../lib/settlement-resolver.js";
 
 export function runPrDraft(args: string[]): number {
   const settlementId = args[0];
@@ -14,52 +14,14 @@ export function runPrDraft(args: string[]): number {
     return 1;
   }
 
-  const activePath = join(
-    repoRoot,
-    ".healthos-steward",
-    "settlements",
-    "active",
-    `${settlementId}.md`
-  );
-  const completedPath = join(
-    repoRoot,
-    ".healthos-steward",
-    "settlements",
-    "completed",
-    `${settlementId}.md`
-  );
-
-  let settlementPath: string;
-  if (existsSync(activePath)) {
-    settlementPath = activePath;
-  } else if (existsSync(completedPath)) {
-    settlementPath = completedPath;
-  } else {
+  const resolved = resolveSettlement(settlementId);
+  if (!resolved) {
     process.stderr.write(
       `Error: Settlement '${settlementId}' not found in active/ or completed/\n`
     );
     return 1;
   }
-
-  let rawMarkdown: string;
-  try {
-    rawMarkdown = readFileSync(settlementPath, "utf-8");
-  } catch (e) {
-    const msg = e instanceof Error ? e.message : String(e);
-    process.stderr.write(`Error: could not read settlement file: ${msg}\n`);
-    return 1;
-  }
-
-  let settlement;
-  try {
-    settlement = parseSettlement(rawMarkdown);
-  } catch (e) {
-    const msg = e instanceof Error ? e.message : String(e);
-    process.stderr.write(
-      `Error: Settlement '${settlementId}' parse error: ${msg}\n`
-    );
-    return 1;
-  }
+  const settlement = resolved.record;
 
   let draft: string;
   try {
@@ -73,7 +35,7 @@ export function runPrDraft(args: string[]): number {
   const outputDir = join(repoRoot, ".healthos-steward", "prompts", "generated");
   mkdirSync(outputDir, { recursive: true });
 
-  const outputPath = join(outputDir, `${settlementId}-pr-draft.md`);
+  const outputPath = join(outputDir, `${resolved.fileId}-pr-draft.md`);
   try {
     writeFileSync(outputPath, draft, "utf-8");
   } catch (e) {
@@ -82,7 +44,7 @@ export function runPrDraft(args: string[]): number {
     return 1;
   }
 
-  const relPath = `.healthos-steward/prompts/generated/${settlementId}-pr-draft.md`;
+  const relPath = `.healthos-steward/prompts/generated/${resolved.fileId}-pr-draft.md`;
   console.log(`PR draft: ${relPath}`);
   return 0;
 }

@@ -1,7 +1,7 @@
-import { readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
+import { writeFileSync, mkdirSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import { repoRoot } from "../repo-root.js";
-import { parseSettlement } from "../lib/settlement-parser.js";
+import { resolveSettlement } from "../lib/settlement-resolver.js";
 import {
   buildValidationReport,
   CriterionResult,
@@ -43,52 +43,14 @@ export function runValidateSettlement(args: string[]): number {
     return 1;
   }
 
-  const activePath = join(
-    repoRoot,
-    ".healthos-steward",
-    "settlements",
-    "active",
-    `${settlementId}.md`
-  );
-  const completedPath = join(
-    repoRoot,
-    ".healthos-steward",
-    "settlements",
-    "completed",
-    `${settlementId}.md`
-  );
-
-  let settlementPath: string;
-  if (existsSync(activePath)) {
-    settlementPath = activePath;
-  } else if (existsSync(completedPath)) {
-    settlementPath = completedPath;
-  } else {
+  const resolved = resolveSettlement(settlementId);
+  if (!resolved) {
     process.stderr.write(
       `Error: Settlement '${settlementId}' not found in active/ or completed/\n`
     );
     return 1;
   }
-
-  let rawMarkdown: string;
-  try {
-    rawMarkdown = readFileSync(settlementPath, "utf-8");
-  } catch (e) {
-    const msg = e instanceof Error ? e.message : String(e);
-    process.stderr.write(`Error: could not read settlement file: ${msg}\n`);
-    return 1;
-  }
-
-  let settlement;
-  try {
-    settlement = parseSettlement(rawMarkdown);
-  } catch (e) {
-    const msg = e instanceof Error ? e.message : String(e);
-    process.stderr.write(
-      `Error: Settlement '${settlementId}' parse error: ${msg}\n`
-    );
-    return 1;
-  }
+  const settlement = resolved.record;
 
   const criterionResults: CriterionResult[] = settlement.doneCriteria.map(
     (criterion) => classifyCriterion(criterion, repoRoot)
@@ -112,7 +74,7 @@ export function runValidateSettlement(args: string[]): number {
   const outputDir = join(repoRoot, ".healthos-steward", "prompts", "generated");
   mkdirSync(outputDir, { recursive: true });
 
-  const outputPath = join(outputDir, `${settlementId}-validation.md`);
+  const outputPath = join(outputDir, `${resolved.fileId}-validation.md`);
   try {
     writeFileSync(outputPath, report, "utf-8");
   } catch (e) {
@@ -121,7 +83,7 @@ export function runValidateSettlement(args: string[]): number {
     return 1;
   }
 
-  const relPath = `.healthos-steward/prompts/generated/${settlementId}-validation.md`;
+  const relPath = `.healthos-steward/prompts/generated/${resolved.fileId}-validation.md`;
   console.log(`Validation report: ${relPath}`);
 
   const passCount = criterionResults.filter((r) => r.result === "PASS").length;

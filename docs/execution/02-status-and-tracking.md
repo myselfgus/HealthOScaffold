@@ -6,6 +6,18 @@ Current phase: Controlled implementation — first vertical slice started
 
 ## Completed recently
 
+## DOC-APP-011-FORGE-DRIFT — documentation drift correction (2026-05-07)
+
+- Objective: correct factual documentation/tracking drift after audit without changing runtime, schemas, SQL, package manifests, or tests.
+- Files updated:
+  - `README.md` — Veridia now described as smoke-testable session boundary; CloudClinic remains scaffold placeholder / APP-012.
+  - `docs/execution/21-structural-ontology-and-product-readiness-plan.md` — APP-011 marked DONE; APP-012 remains the next app wiring task.
+  - `docs/execution/todo/apps-and-interfaces.md` — Veridia moved to COMPLETED with recorded validation evidence; APP-012 remains READY.
+  - `.healthos-steward/README.md` — stale 3-command CLI baseline corrected to the implemented deterministic baseline.
+  - `docs/architecture/17-glossary.md`, `docs/architecture/46-apple-sovereignty-architecture.md`, `docs/architecture/48-native-macos-ui-design-system-and-app-shells.md`, `docs/execution/12-next-agent-handoff.md`, `docs/execution/todo/runtimes-and-aaci.md` — Forge MCP and app readiness wording aligned with current repo state.
+- Invariants: documentation-only; product queue remains separate from construction-system queue; no production readiness, full EHR, real regulatory/provider/signature/interoperability, clinical authority, or runtime MCP claim added.
+- Next: ST-020 — use Steward to generate the APP-012 CloudClinic prompt path; CloudClinic remains READY in the product queue.
+
 ## ST-023 — session client workflows for construction lifecycle (2026-05-05)
 
 - Objective: add a typed TypeScript session client module to `@healthos/managed-agent` for human-triggered Steward construction lifecycle workflows via Anthropic Managed Agents sessions.
@@ -383,12 +395,14 @@ Current phase: Controlled implementation — first vertical slice started
 - Objective: audit READY / in-progress task trackers against recent git history and current code evidence without implementing new runtime or app behavior.
 - Evidence checked: `git log --oneline -30`, historical commits for APP-008 / OPS-003 / CL-006 / DS-007 / RT-008 / AACI-009, current adapter/test files, and all files under `docs/execution/todo/`.
 - Result: TODO trackers were corrected so completed items no longer remain under READY:
-  - APP-008 cross-app envelope propagation is completed at scaffold-contract maturity; APP-011 and APP-012 remain READY for separate Veridia/CloudClinic smoke-testable session wiring.
+  - APP-008 cross-app envelope propagation is completed at scaffold-contract maturity.
+  - APP-011 is DONE.
+  - APP-012 remains READY for separate CloudClinic smoke-testable session wiring.
   - CL-006 shared service-boundary outcome envelope is completed; no Core-law TODO is currently promoted by the TODO tracker.
   - DS-007 lawfulContext/layer-guard parity is completed; SQL/object backend hardening remains a post-scaffold gap.
   - OPS-003 incident-response command vocabulary is completed as documentation/contract vocabulary, not an implemented operator console.
   - RT-008 runtime-boundary adapter tests and AACI-009 capability-honesty signaling are completed; RT-ASYNC-001 and RT-RETRIEVAL-001 remain blocked in doc 21.
-- Current promoted pending product/repo tasks after this audit: APP-011, APP-012, and CI-001 are READY in `docs/execution/21-structural-ontology-and-product-readiness-plan.md`; RT-ASYNC-001 and RT-RETRIEVAL-001 remain BLOCKED there.
+- Current promoted pending product/repo tasks after the 2026-05-07 drift correction: APP-012 and CI-001 are READY in `docs/execution/21-structural-ontology-and-product-readiness-plan.md`; RT-ASYNC-001 and RT-RETRIEVAL-001 remain BLOCKED there. APP-011 is DONE.
 - Current promoted construction-system task: ST-012 Settler Profile Registry remains TODO after ST-011/ST-011A; it is tracked in `docs/execution/19-settler-model-task-tracker.md` and `docs/execution/22-steward-construction-operating-model.md`.
 - Non-claims preserved: no production readiness, no final UI, no real semantic retrieval, no regulatory/provider effectuation, and no movement of consent/habilitation/gate/finality law out of Core.
 

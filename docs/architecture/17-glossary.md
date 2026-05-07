@@ -59,7 +59,7 @@ TypeScript runtime (`runtime-user-agent`) for patient-governed/user-agent query 
 TypeScript runtime (`service-runtime`) for service-facing operational envelopes and service-flow guards (including CloudClinic envelope adapter and LegalAuthorizing guard where evidenced).
 
 ## HealthOS Forge MCP
-Repository-maintenance MCP/tooling surface (package/server name `healthos-forge-mcp`) for the construction layer (Steward, Settlers, Territories, Settlements). It is outside HealthOS clinical/runtime hierarchy and is not implemented in this repository.
+Repository-maintenance MCP/tooling surface (package/server name `healthos-forge-mcp`) for the construction layer (Steward, Settlers, Territories, Settlements). It is outside HealthOS clinical/runtime hierarchy. The repository implements this as `@healthos/forge-mcp` at `ts/agent-infra/healthos-forge-mcp/`, with 10 deterministic `steward_*` tools over stdio and Streamable HTTP.
 
 ## HealthOS runtime MCP servers
 Separate future Core-governed MCP family for internal runtime/clinical/operational automation. These are distinct from HealthOS Forge MCP.

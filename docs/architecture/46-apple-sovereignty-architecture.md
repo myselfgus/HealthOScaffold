@@ -112,7 +112,7 @@ The Apple sovereignty thesis produces explicit downstream constraints.
 
 **GAP-003 reframe.** SQL/object backends are complementary query/index/projection substrates, not parity replacements for file-backed canonical storage. Future SQL/object adapters must preserve `lawfulContext` and layer semantics. See `docs/execution/14-final-gap-register.md`.
 
-**Steward for Xcode posture.** Doc 45 (`docs/architecture/45-healthos-xcode-agent.md`) defines Steward for Xcode. Steward for Xcode integrates with Xcode Intelligence as an Apple-controlled engineering runtime surface, while HealthOS contributes instructions, `healthos-mcp`, derived repository memory, and deterministic CLI operations. This follows directly from the Apple-first engineering posture: Apple's native workspace intelligence belongs to the same sovereign substrate family. HealthOS does not duplicate what Xcode provides natively.
+**Steward for Xcode posture.** Doc 45 (`docs/architecture/45-healthos-xcode-agent.md`) defines Steward for Xcode. Steward for Xcode integrates with Xcode Intelligence as an Apple-controlled engineering runtime surface, while HealthOS contributes instructions, HealthOS Forge MCP (`healthos-forge-mcp`), derived repository memory, and deterministic CLI operations. This follows directly from the Apple-first engineering posture: Apple's native workspace intelligence belongs to the same sovereign substrate family. HealthOS does not duplicate what Xcode provides natively.
 
 **Provider and ML integration.** Remote inference providers outside the Apple sovereignty chain require explicit operator policy, degraded-sovereignty classification, provenance markers, and anti-fake constraints. This applies to all non-Apple inference surfaces including external LLM and STT providers currently at stub/scaffold maturity.
 
@@ -158,6 +158,7 @@ Specific component maturity:
 - Apple Silicon host posture and APFS/FileVault usage: implemented operational baseline for this repository.
 - Apple Private Cloud Compute integration: doctrine-only. Must not be claimed above doctrine-only until end-to-end verification.
 - Xcode Intelligence integration: doctrine-only or scaffolded contract depending on verified repository state; see doc 45.
-- MCP server: doctrine-only; see doc 45 and doc 17.
+- HealthOS Forge MCP (`healthos-forge-mcp`): implemented repository-maintenance seam outside the HealthOS clinical/runtime hierarchy; see doc 45 and doc 22.
+- HealthOS runtime MCP servers: doctrine-only future family; distinct from HealthOS Forge MCP.
 
 Storage invariants may be more mature than this doctrinal articulation of the thesis that unifies them. Inv 43 applies: scaffold or foundation phase closure is not production readiness.

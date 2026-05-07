@@ -2,6 +2,23 @@
 
 ## COMPLETED
 
+### APP-011 Veridia: smoke-testable executable path
+Outcome:
+- wired `UserSovereigntyContracts.swift` into a minimal `VeridiaSessionFacade` / `VeridiaSessionAdapter` so Veridia has an executable governed session boundary
+- updated `HealthOSVeridiaApp --smoke-test` to verify `veridia.session.start` and `veridia.session.end`
+- added boundary smoke tests for lawful-context denial, unknown/double end, and provenance/audit references
+Files touched:
+- `swift/Sources/HealthOSCore/VeridiaSessionContracts.swift`
+- `swift/Sources/HealthOSCore/VeridiaSessionAdapter.swift`
+- `swift/Sources/HealthOSVeridiaApp/VeridiaEntrypoint.swift`
+- `swift/Tests/HealthOSTests/VeridiaSessionFacadeTests.swift`
+Validation:
+- 268 Swift tests passed
+- `make smoke-veridia` PASS (`veridia.session.start + veridia.session.end boundary verified`)
+Residual gaps:
+- no final Veridia UI
+- no production readiness, real provider/signature/interoperability behavior, or clinical/regulatory authority
+
 ### APP-013A Remove residual legacy patient-app naming drift
 Outcome:
 - removed remaining working-tree uses of the legacy patient-app name from active docs, generated prompts, and construction metadata
@@ -361,16 +378,6 @@ Files touched:
 - `docs/execution/todo/apps-and-interfaces.md`
 
 ## READY
-
-### APP-011 Veridia: smoke-testable executable path
-Priority: Medium
-Status: READY after STR-005 and APP-013
-Skill: `docs/execution/skills/native-macos-ui/SKILL.md` + `docs/execution/skills/user-agent-veridia-skill.md` + `docs/execution/skills/liquid-glass/SKILL.md`
-Definition of done:
-- wire the existing Veridia boundary contracts into a minimal smoke-testable executable path
-- consume only mediated contracts already available for Veridia
-- do not move consent, habilitation, gate, finality, storage law, or clinical authority into the app target
-- validate with SwiftPM and the Veridia smoke path (`make smoke-veridia`)
 
 ### APP-012 CloudClinic: smoke-testable executable path
 Priority: Medium

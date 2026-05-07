@@ -258,7 +258,7 @@ graph LR
 
     CLI[HealthOSCLI\nexecutable]:::cli
     SCRIBE[HealthOSScribeApp\nexecutable · SwiftUI · Liquid Glass]:::app
-    VERIDIA[HealthOSVeridiaApp\nexecutable · scaffold placeholder]:::app
+    VERIDIA[HealthOSVeridiaApp\nexecutable · session boundary smoke]:::app
     CLOUDCLINIC[HealthOSCloudClinicApp\nexecutable · scaffold placeholder]:::app
 
     CORE --> PROV
@@ -287,7 +287,7 @@ graph LR
 | `HealthOSSessionRuntime` | Library | Session orchestration (`SessionRunner`), normalization executor, Scribe bridge adapter |
 | `HealthOSCLI` | Executable | Command-line operator interface for session and GOS lifecycle |
 | `HealthOSScribeApp` | Executable | Minimal Scribe professional workspace validation surface (SwiftUI, macOS 26+) |
-| `HealthOSVeridiaApp` | Executable | Scaffold placeholder — product-graph representation, no final UI |
+| `HealthOSVeridiaApp` | Executable | Smoke-testable Veridia session boundary, no final UI |
 | `HealthOSCloudClinicApp` | Executable | Scaffold placeholder — product-graph representation, no final UI |
 
 ---
@@ -502,7 +502,7 @@ cd swift && swift run HealthOSCLI \
   --activation-rationale "<reason>"
 ```
 
-`HealthOSVeridiaApp` and `HealthOSCloudClinicApp` are scaffold placeholder executables. They provide honest smoke-testable product-graph representation; they do not implement final UI, session behavior, clinical authority, or production readiness.
+`HealthOSVeridiaApp` has a smoke-testable Veridia session boundary. `HealthOSCloudClinicApp` remains a scaffold placeholder executable for product-graph representation. Neither implements final UI, clinical authority, real provider/signature/interoperability behavior, or production readiness.
 
 ---
 

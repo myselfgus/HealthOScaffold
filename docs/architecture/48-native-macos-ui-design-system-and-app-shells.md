@@ -12,8 +12,8 @@ HealthOS native macOS surfaces are human/operator interfaces over mediated Healt
 
 The current repository state is:
 - Scribe has a minimal SwiftPM-backed macOS SwiftUI validation surface in `swift/Sources/HealthOSScribeApp/`.
-- Veridia has app-safe patient identity contracts and screen contracts, but no native app shell.
-- CloudClinic has service-operations contracts and screen contracts, but no native app shell.
+- Veridia has app-safe patient identity contracts, screen contracts, and a smoke-testable executable session boundary in `swift/Sources/HealthOSVeridiaApp/`.
+- CloudClinic has service-operations contracts, screen contracts, and a scaffold executable target in `swift/Sources/HealthOSCloudClinicApp/`; its smoke-testable service session wiring remains APP-012.
 - A HealthOS control panel for macOS is a valid future operator surface, but no app shell or executable target exists yet.
 
 All four surfaces must consume Core/runtime-mediated state. They must not become law engines.
@@ -110,7 +110,7 @@ Still prohibited:
 
 Veridia is the patient health identity app for HealthOS. It presents Core-mediated identity, key custody controls, consent visibility, access trail, owned-data visibility, export controls, and patient agent interaction.
 
-Current shell status: contract-first; no native app shell.
+Current shell status: implemented seam / smoke-testable session boundary; no final native UI shell.
 
 Allowed native shell scaffold:
 - introduce a dedicated SwiftPM executable target only after the Veridia adapter/runtime boundary is ready to supply mediated app-safe state;
@@ -126,7 +126,7 @@ Still prohibited:
 
 CloudClinic is the service-operations interface.
 
-Current shell status: contract-first; no native app shell.
+Current shell status: scaffold executable target; service session wiring remains APP-012.
 
 Allowed native shell scaffold:
 - introduce a dedicated SwiftPM executable target only after service-operation adapter/runtime state exists;
@@ -155,7 +155,7 @@ Still prohibited:
 - Core law decisions;
 - hidden provider/network writes;
 - posting PR reviews or using provider output without explicit operator flags;
-- presenting `healthos-mcp` as clinical, AACI, GOS, or Core runtime infrastructure.
+- presenting HealthOS Forge MCP (`healthos-forge-mcp`) as clinical, AACI, GOS, or Core runtime infrastructure.
 
 ## File structure for future app shells
 

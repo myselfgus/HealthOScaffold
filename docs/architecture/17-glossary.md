@@ -7,7 +7,7 @@ The whole sovereign computational environment for health operations. HealthOS in
 The historical repository name and foundation/scaffold phase for building HealthOS. It is not a separate product from HealthOS.
 
 ## Core
-The HealthOS constitutional law layer. Core owns consent, habilitation, finalidade, storage law, provenance, gate, finality, audit, sovereign contracts, and fail-closed governance.
+The HealthOS constitutional law layer. Core owns consent, habilitation, storage law, provenance, gate, finality, audit, sovereign contracts, and fail-closed governance.
 
 ## CoreLaw
 The constitutional authority of Core expressed as enforceable law, contracts, and validation behavior. Custom, Boundary, GOS, Runtimes, and Stages are governed by CoreLaw; none of them supersede it.

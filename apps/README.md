@@ -2,7 +2,7 @@
 
 Boundary scaffolds and design surface documentation for initial HealthOS Stages.
 
-Stages are consumers of mediated platform surfaces — they never define Core law, constitutional authority, or HealthOS ontology. Each Stage consumes `HealthOSAppBoundary` (Tier 3) only; it never imports Tier 1/2 modules directly.
+Stages are consumers of mediated platform surfaces — they never define Core law, constitutional authority, or HealthOS ontology. Each Stage consumes `HealthOSBoundary` (Tier 3) only; it never imports Tier 1/2 modules directly.
 
 ```mermaid
 %%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#F6F8FB', 'primaryBorderColor': '#D6DEE8', 'primaryTextColor': '#1D2733', 'clusterBkg': '#FFFFFF', 'clusterBorder': '#D6DEE8', 'lineColor': '#5B6B7C', 'edgeLabelBackground': '#F6F8FB', 'fontFamily': 'ui-rounded, -apple-system, BlinkMacSystemFont, sans-serif'}}}%%
@@ -11,7 +11,7 @@ graph LR
     classDef stage    fill:#fdf4ff,stroke:#c084fc,stroke-width:2px,color:#581c87
     classDef design   fill:#F6F8FB,stroke:#5B6B7C,stroke-width:2px,color:#2F3C4A
 
-    AB[HealthOSAppBoundary\nTier 3 — mediated surface]:::boundary
+    AB[HealthOSBoundary\nTier 3 — mediated surface]:::boundary
     DS[HealthOSDesignSystem\npresentation guidance only]:::design
     SC[Scribe\nprofessional workspace]:::stage
     VE[Veridia\npatient health identity]:::stage
@@ -36,4 +36,4 @@ Design system: [`HealthOSDesignSystem/`](../HealthOSDesignSystem/)
 
 ---
 
-**None of these Stages are production-ready, implement a complete EHR, or constitute real regulatory/interoperability integration.**
+**None of these Stages are production-ready.**

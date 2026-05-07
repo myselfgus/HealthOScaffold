@@ -908,7 +908,7 @@ Read in order before coding:
 ```text
 HealthOS
   Core
-    consent, habilitation, finalidade, storage law,
+    consent, habilitation, storage law,
     provenance, gate, finality, audit
   GOS
     subordinate operational mediation, never constitutional authority

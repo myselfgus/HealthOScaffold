@@ -66,7 +66,7 @@ HealthOS deve ser tratado como uma plataforma composta pela hierarquia constituc
 
 | Layer | Responsabilidade | Nunca deve fazer |
 |---|---|---|
-| Core | CoreLaw: consent, habilitation, finalidade, storage law, provenance, gate, finality, audit, invariantes e contratos soberanos | Absorver semantica de Stage especifico |
+| Core | CoreLaw: consent, habilitation, storage law, provenance, gate, finality, audit, invariantes e contratos soberanos | Absorver semantica de Stage especifico |
 | GOS | Mediacao operacional subordinada a CoreLaw | Virar lei constitucional ou autorizar ato por si |
 | Runtimes | Session Runtime, AACI, MSR, Async Runtime, User-Agent Runtime, Service Runtime e providers subordinados a Core/GOS | Virar lei constitucional ou autorizar ato por si |
 | Boundary | Facades, envelopes, app-safe views, safe refs, command/result envelopes, mediated state, degraded state e consumable surfaces | Fingir estabilidade quando a superficie fornecedora nao existe |

@@ -348,7 +348,7 @@ Files touched:
 
 ## READY
 
-No READY runtime/AACI TODO is currently promoted by this tracker. For product/repo task selection, use `docs/execution/21-structural-ontology-and-product-readiness-plan.md`; current promoted pending work there remains APP-011, APP-012, CI-001, and blocked RT-ASYNC-001 / RT-RETRIEVAL-001.
+No READY runtime/AACI TODO is currently promoted by this tracker. For product/repo task selection, use `docs/execution/21-structural-ontology-and-product-readiness-plan.md`; current promoted pending work there remains APP-012, CI-001, and blocked RT-ASYNC-001 / RT-RETRIEVAL-001.
 
 
 ## TESTS / VALIDATION

@@ -4,7 +4,7 @@ This document is the canonical priority-ordered work plan produced by the ontolo
 
 Read this document **before** reading the per-domain TODO files. The priority tiers here override the ordering within any individual TODO file.
 
-Construction-system note: this document remains the product/repo task queue. Construction-system tasks ST-010 and later are tracked in `docs/execution/22-steward-construction-operating-model.md` and `docs/execution/19-settler-model-task-tracker.md`. APP-011 remains READY as the next product task; construction-system work may run before APP-011 to operationalize Steward, but it must not reorder or complete APP-011.
+Construction-system note: this document remains the product/repo task queue. Construction-system tasks ST-010 and later are tracked in `docs/execution/22-steward-construction-operating-model.md` and `docs/execution/19-settler-model-task-tracker.md`. APP-011 is DONE after the Veridia session boundary work. APP-012 is the next open app wiring task. Construction-system work may run before APP-012 to operationalize Steward, but it must not reorder or complete APP-012.
 
 ---
 
@@ -34,7 +34,7 @@ Construction-system note: this document remains the product/repo task queue. Con
 | STR-004 | **P1** | DONE | Rename `HealthOSFirstSliceSupport` → `HealthOSSessionRuntime` | — |
 | STR-005 | **P2** | DONE | Add placeholder Swift targets for Veridia and CloudClinic | — |
 | APP-013 | **P2** | DONE | Rename Veridia to Veridia and redefine patient app scope | — |
-| APP-011 | **P2** | READY | Veridia: smoke-testable executable path | STR-005, APP-013 |
+| APP-011 | **P2** | DONE | Veridia: smoke-testable executable path | STR-005, APP-013 |
 | APP-012 | **P2** | READY | CloudClinic: smoke-testable executable path | STR-005 |
 | RT-ASYNC-001 | **P3** | BLOCKED | SQL-backed async runtime executor | Core SQL migration (exists) |
 | RT-PROVIDER-001 | **P3** | DONE | Real Apple Foundation Models integration for normalization stage | — |
@@ -366,7 +366,7 @@ ts/packages/
 ├── contracts/           # PRODUCT — TypeScript contract mirror
 ├── healthos-gos-tooling/ # BUILD  — GOS compiler/validator CLI
 ├── healthos-steward/    # AGENT  — Steward agent package
-├── mcp-local/           # AGENT  — healthos-mcp scaffold
+├── mcp-local/           # AGENT  — pre-Forge MCP scaffold
 ├── runtime-async/       # PRODUCT — async runtime TS layer
 ├── runtime-user-agent/  # PRODUCT — user-agent runtime TS layer
 └── service-runtime/     # PRODUCT — service runtime TS layer
@@ -527,7 +527,7 @@ Also add to products:
 
 ### APP-011: Veridia — wire existing boundary contracts to session runtime
 
-**Priority:** P2 | **Status:** READY | **Branch:** `feat/app-011-veridia-session-wire`
+**Priority:** P2 | **Status:** DONE | **Branch:** `feat/app-011-veridia-session-wire`
 
 **Prerequisite:** STR-005 DONE. Also depends on STR-004 if already done.
 
@@ -538,6 +538,8 @@ Also add to products:
 - Provenance records at least `veridia.session.start` and `veridia.session.end`
 - `make swift-test` PASS with new Veridia boundary smoke test added
 - `make smoke-scribe` still PASS (no regression)
+
+**Completion note (2026-05-04):** APP-011 completed by adding `VeridiaSessionFacade` / `VeridiaSessionAdapter`, wiring `HealthOSVeridiaApp --smoke-test` through a governed Veridia session start/end boundary, and adding boundary tests in `VeridiaSessionFacadeTests`. Validation evidence recorded in `docs/execution/02-status-and-tracking.md`: Swift tests passed and `make smoke-veridia` verified `veridia.session.start` + `veridia.session.end`. This does not implement final Veridia UI, production readiness, real provider/signature/interoperability behavior, or clinical/regulatory authority.
 
 ---
 
@@ -696,4 +698,4 @@ When a task is done:
 **Completion note (2026-04-30):** STR-004 completed by renaming the Swift module `HealthOSFirstSliceSupport` to `HealthOSSessionRuntime` with `git mv`, updating SwiftPM target/dependency wiring, CLI/Scribe/test imports, and architecture/execution documentation references. Primary public runtime types were renamed (`FirstSliceRunner` → `SessionRunner`, `ScribeFirstSliceAdapter` → `ScribeSessionAdapter`, demo bootstrap surfaces to session-runtime vocabulary). No Core/GOS/AACI/Mental Space/app clinical behavior changed; no Veridia/CloudClinic target additions were made in this work unit. Residual internal `FirstSlice*` contract names in `HealthOSCore` remain intentionally unchanged for STR-004 scope control.
 
 
-**Completion note (2026-04-30):** STR-005 completed by adding `HealthOSVeridiaApp` and `HealthOSCloudClinicApp` as minimal Swift executable scaffold targets with honest `--smoke-test` paths. Both targets compile and print scaffold-only, no-final-UI, no-clinical-authority smoke output. No Veridia or CloudClinic session wiring, final UI shell, Core law, GOS, AACI, Mental Space Runtime, provider, storage, or Steward/Settler behavior was implemented or changed. APP-011 and APP-012 are now READY as the next app wiring tasks.
+**Completion note (2026-04-30):** STR-005 completed by adding `HealthOSVeridiaApp` and `HealthOSCloudClinicApp` as minimal Swift executable scaffold targets with honest `--smoke-test` paths. Both targets compile and print scaffold-only, no-final-UI, no-clinical-authority smoke output. No Veridia or CloudClinic session wiring, final UI shell, Core law, GOS, AACI, Mental Space Runtime, provider, storage, or Steward/Settler behavior was implemented or changed. At STR-005 completion, both app wiring tasks were unblocked; APP-011 was later completed, and APP-012 remains open.

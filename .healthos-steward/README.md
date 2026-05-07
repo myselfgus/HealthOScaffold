@@ -23,7 +23,7 @@ Official docs remain canonical (`README.md`, `AGENTS.md`, `CLAUDE.md`, `docs/exe
 
 These files are written by Claude Code automations and pushed to remote `main` after every run. They are derived memory — not canonical docs. Read `latest.md` for the most recent project status at a glance.
 
-Current `healthos-steward` CLI baseline is limited to `status`, `runtime`, and `session`. Do not infer additional deterministic operations from files in this directory unless those operations are implemented in `ts/agent-infra/healthos-steward/`.
+Current `healthos-steward` CLI baseline includes 10 implemented deterministic top-level commands in `ts/agent-infra/healthos-steward/`: `status`, `runtime`, `session`, `list` (`territories`, `settlers`, `settlements`), `inspect` (`territory <id>`, `settler <id>`, `settlement <id>`), `next`, `generate-prompt <settlement-id>`, `validate-settlement <settlement-id>`, `pr-draft <settlement-id>`, and `build-memory`. This directory remains derived state; do not infer additional deterministic operations from files here unless those operations are implemented in the package.
 
 ## Providers
 - Base config scaffold: `.healthos-steward/providers/providers.example.json`

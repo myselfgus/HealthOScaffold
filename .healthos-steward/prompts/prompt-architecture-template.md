@@ -11,6 +11,8 @@
 ```
 Crie um prompt avançado, atômico e executável para um agente de coding trabalhar no repositório `myselfgus/HealthOScaffold`.
 O prompt deve seguir o Agent Operating Protocol, preservar Core sovereignty, GOS subordination, runtime/app/construction boundaries, nomenclatura atual do HealthOS, maturity ladder oficial e validação honesta.
+Antes de aceitar a tarefa, classifique o work unit em Tier 1 Platform/Core, Tier 2 Runtime/Mediation, Tier 3 App Integration Boundary, Tier 4 App Charter, Tier 5 App Implementation, ou Tier 6 Construction System.
+Se a tarefa envolver app wiring, exija prova de que a superficie mediada consumida esta implementada e estavel, nao apenas contratada, e que o App Charter relevante esta completo.
 Estruture o prompt com:
 - system_role
 - mission
@@ -101,6 +103,8 @@ System/product side:
 - Scribe = documentation/capture interface.
 - Veridia = patient health identity app.
 - CloudClinic = professional/service operations interface.
+- App Integration Boundary = facades, envelopes, app-safe views, safe refs, command/result envelopes, and mediated state.
+- Reference App Layer = Scribe, Veridia, CloudClinic, and future apps in arbitrary number.
 Construction side:
 - Steward = construction coordinator.
 - Settler = specialized engineering profile.
@@ -149,6 +153,8 @@ Apps:
 - Apps do not own law.
 - Apps do not expose raw clinical/provider internals.
 - Placeholder targets do not imply final UI.
+- App wiring must not advance unless the mediated surface is implemented and stable, not merely contracted.
+- Substantial new app wiring requires a complete App Charter.
 Construction tooling:
 - Steward, Settlers, Territories, Settlements, and Forge MCP are outside the HealthOS clinical/runtime hierarchy.
 - They have no clinical authority.
@@ -166,17 +172,25 @@ When generating the implementation prompt:
    - construction-system
    - validation/CI
    - repository ontology
-4. Include required reading before any writing.
-5. Include current-context assumptions and precondition checks.
-6. Include exact files to create/update when known.
-7. Include forbidden files and forbidden behavior.
-8. Include validation commands.
-9. Include tracking updates.
-10. Include Git workflow instructions.
-11. Include a final response protocol.
-12. Include a self-validation checklist.
-13. Include residual gaps.
-14. Preserve maturity language.
+4. Classify the work by tier:
+   - Tier 1 — Platform/Core
+   - Tier 2 — Runtime/Mediation
+   - Tier 3 — App Integration Boundary
+   - Tier 4 — App Charter
+   - Tier 5 — App Implementation
+   - Tier 6 — Construction System
+5. If the work is Tier 5 app implementation, require explicit evidence that all relevant Tier 1-4 dependencies are DONE or explicitly accepted as degraded/out-of-scope.
+6. Include required reading before any writing.
+7. Include current-context assumptions and precondition checks.
+8. Include exact files to create/update when known.
+9. Include forbidden files and forbidden behavior.
+10. Include validation commands.
+11. Include tracking updates.
+12. Include Git workflow instructions.
+13. Include a final response protocol.
+14. Include a self-validation checklist.
+15. Include residual gaps.
+16. Preserve maturity language.
 Do not make vague prompts.
 Avoid:
 - "improve"

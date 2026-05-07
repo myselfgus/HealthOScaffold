@@ -2,7 +2,7 @@
 
 Date baseline: April 29, 2026.
 
-This document defines the scaffold/foundation scope for native macOS 26+ UI work across HealthOS app interfaces and operator tooling.
+This document defines the scaffold/foundation scope for native macOS 26+ UI work across HealthOS reference app interfaces and operator tooling.
 
 It does not implement a final product UI. It does not move HealthOS law into SwiftUI, AppKit, Xcode, or any design system component.
 
@@ -13,10 +13,13 @@ HealthOS native macOS surfaces are human/operator interfaces over mediated Healt
 The current repository state is:
 - Scribe has a minimal SwiftPM-backed macOS SwiftUI validation surface in `swift/Sources/HealthOSScribeApp/`.
 - Veridia has app-safe patient identity contracts, screen contracts, and a smoke-testable executable session boundary in `swift/Sources/HealthOSVeridiaApp/`.
-- CloudClinic has service-operations contracts, screen contracts, and a scaffold executable target in `swift/Sources/HealthOSCloudClinicApp/`; its smoke-testable service session wiring remains APP-012.
+- CloudClinic has service-operations contracts, screen contracts, and a scaffold executable target in `swift/Sources/HealthOSCloudClinicApp/`; its smoke-testable service session wiring is blocked until the upstream mediated surfaces and CloudClinic App Charter are ready.
 - A HealthOS control panel for macOS is a valid future operator surface, but no app shell or executable target exists yet.
+- Future apps may be added; Scribe/Veridia/CloudClinic remain initial reference-app examples, not a closed set.
 
 All four surfaces must consume Core/runtime-mediated state. They must not become law engines.
+
+New app shell/wiring work must follow `docs/architecture/50-app-layer-boundary-and-reference-apps.md`: platform/runtime surface first, App Integration Boundary second, App Charter third, app implementation last.
 
 ## SwiftPM, Xcode, and platform posture
 
@@ -126,7 +129,7 @@ Still prohibited:
 
 CloudClinic is the service-operations interface.
 
-Current shell status: scaffold executable target; service session wiring remains APP-012.
+Current shell status: scaffold executable target; service session wiring is blocked pending platform/runtime surface readiness and a complete CloudClinic App Charter.
 
 Allowed native shell scaffold:
 - introduce a dedicated SwiftPM executable target only after service-operation adapter/runtime state exists;

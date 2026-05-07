@@ -1,8 +1,10 @@
 # Veridia screen contracts
 
-Screen-level contracts for Veridia, the patient health identity app for HealthOS.
+Screen-level contracts for Veridia, an initial patient health identity reference app for HealthOS.
 All screens consume Core-mediated surfaces. Veridia does not own consent, habilitation, finality, gate, provenance, or storage law.
 No final UI implementation is claimed at scaffold maturity.
+
+Future Veridia screen wiring must not advance unless the mediated surface it consumes is implemented and stable, and the Veridia App Charter covers that surface.
 
 ## Identity
 

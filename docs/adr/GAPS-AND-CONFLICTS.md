@@ -39,53 +39,53 @@ Após revisão integral, **nenhuma ADR contradiz outra**. Reforços mútuos:
 
 Listadas em ordem de prioridade. Cada gap propõe uma ADR candidata (numeração tentativa).
 
-### 3.1 [ADR-0013 proposta] **Provider model governance e threshold policy**
+### 3.1 [ADR-0014 proposta] **Provider model governance e threshold policy**
 
 - **Por que.** Existe código consolidado em [swift/Sources/HealthOSProviders/ProviderProtocols.swift](../../swift/Sources/HealthOSProviders/ProviderProtocols.swift), [ProviderProtocols](../../swift/Sources/HealthOSProviders/ProviderProtocols.swift), [ModelGovernance.swift](../../swift/Sources/HealthOSProviders/ModelGovernance.swift), e doc [docs/architecture/27-provider-threshold-policy.md](../architecture/27-provider-threshold-policy.md), além de `ProviderKind` (apple-native, http-local, training-offline, remote, local), `ProviderTaskClass`, `ProviderSafetyDenialReason`. **Não há ADR formal** que cristalize a decisão.
-- **Recomendação.** Criar ADR-0013 cobrindo: kinds permitidos, regras de segurança fail-closed (denial reasons), política de threshold, requisitos de stub vs. real, `allowsPHI` / `requiresNetwork` / `allowsIdentifiableData` como contratos.
+- **Recomendação.** Criar ADR-0014 cobrindo: kinds permitidos, regras de segurança fail-closed (denial reasons), política de threshold, requisitos de stub vs. real, `allowsPHI` / `requiresNetwork` / `allowsIdentifiableData` como contratos.
 - **Risco.** Sem ADR, próximas evoluções podem flexibilizar denials sem revisão arquitetural.
 
-### 3.2 [ADR-0014 proposta] **Apple Foundation Models como provider apple-native**
+### 3.2 [ADR-0015 proposta] **Apple Foundation Models como provider apple-native**
 
 - **Por que.** Existe adapter implementado em [swift/Sources/HealthOSProviders/AppleFoundationModelsAdapter.swift](../../swift/Sources/HealthOSProviders/AppleFoundationModelsAdapter.swift) sem ADR.
 - **Recomendação.** ADR específica documentando: por que Apple Foundation Models foi escolhido como provider primário on-device; restrições de PHI; fallback e degradation; relação com ADR-0005 (stack) e ADR-0009 (soberania).
 
-### 3.3 [ADR-0015 proposta] **Observabilidade do operador como contrato**
+### 3.3 [ADR-0016 proposta] **Observabilidade do operador como contrato**
 
 - **Por que.** Existe [docs/architecture/26-operator-observability-contract.md](../architecture/26-operator-observability-contract.md) e código em `runtime-data/`. **ADR-0007** menciona surfaces de operador, mas não fixa o contrato de observabilidade.
 - **Recomendação.** ADR formalizando métricas, logs, traces obrigatórios; SLOs; redaction; relação com ADR-0004 (PHI).
 
-### 3.4 [ADR-0016 proposta] **MSR (Medical Speech Recognition) — pipeline e prompts versionados**
+### 3.4 [ADR-0017 proposta] **MSR pipeline e prompts versionados**
 
 - **Por que.** [HealthOSMSR](../../swift/Sources/HealthOSMSR) tem `MSRPipeline`, `Executors/{ASLExecutor, VDLPExecutor, GEMArtifactBuilder, MSRJSONRepair}`, e prompts em `Prompts/{asl-system.md, vdlp-system.md, gem-system.md}`. Sem ADR.
 - **Recomendação.** ADR cobrindo: papel de ASL/VDLP/GEM no pipeline, versionamento de prompts (golden tests), relação com `Prompts/` resources copy em [Package.swift:23](../../swift/Package.swift:23), governança de output, contrato com SessionRuntime.
 
-### 3.5 [ADR-0017 proposta] **Coordenação cross-app e shared surfaces**
+### 3.5 [ADR-0018 proposta] **Coordenação cross-app e shared surfaces**
 
 - **Por que.** Existe [swift/Sources/HealthOSCore/CrossAppCoordinationContracts.swift](../../swift/Sources/HealthOSCore/CrossAppCoordinationContracts.swift) e doc [docs/architecture/43-cross-app-coordination-shared-surfaces.md](../architecture/43-cross-app-coordination-shared-surfaces.md). Sem ADR.
 - **Recomendação.** ADR formalizando como Scribe/Veridia/CloudClinic coordenam (sem violar ADR-0007 e ADR-0010): handoff de session state, surfaces compartilhadas, escopo de cada app.
 
-### 3.6 [ADR-0018 proposta] **Backup, retenção e governança de objetos**
+### 3.6 [ADR-0019 proposta] **Backup, retenção e governança de objetos**
 
 - **Por que.** [BackupGovernance.swift](../../swift/Sources/HealthOSCore/BackupGovernance.swift), [docs/architecture/21-object-integrity-strategy.md](../architecture/21-object-integrity-strategy.md). Sem ADR.
 - **Recomendação.** ADR sobre estratégia de backup, retenção mínima/máxima (LGPD), integridade de objetos, recuperação.
 
-### 3.7 [ADR-0019 proposta] **Retrieval-augmented memory governance**
+### 3.7 [ADR-0020 proposta] **Retrieval-augmented memory governance**
 
 - **Por que.** [RetrievalMemoryGovernance.swift](../../swift/Sources/HealthOSCore/RetrievalMemoryGovernance.swift) implementa contratos para retrieval governado, sem ADR.
 - **Recomendação.** ADR sobre escopo permitido de retrieval, base legal, limites de bounded-context, relação com ADR-0004.
 
-### 3.8 [ADR-0020 proposta] **First-slice executable path**
+### 3.8 [ADR-0021 proposta] **First-slice executable path**
 
 - **Por que.** Existe [FirstSliceContracts.swift](../../swift/Sources/HealthOSCore/FirstSliceContracts.swift), [FirstSliceServices.swift](../../swift/Sources/HealthOSCore/FirstSliceServices.swift), [docs/architecture/03-first-slice.md](../architecture/03-first-slice.md), [docs/architecture/28-first-slice-executable-path.md](../architecture/28-first-slice-executable-path.md). Sem ADR sobre o que é "first slice" canônico.
 - **Recomendação.** ADR fixando: o que constitui first slice executable; relação com `aaci.first-slice` exemplar GOS; gates de scaffold-closure.
 
-### 3.9 [ADR-0021 proposta] **Steward e infra de agente para construção**
+### 3.9 [ADR-0022 proposta] **Steward e infra de agente para construção**
 
 - **Por que.** [.healthos-steward/](../../.healthos-steward/), [docs/architecture/44-project-steward-agent.md](../architecture/44-project-steward-agent.md). Sem ADR.
 - **Recomendação.** ADR sobre papel do Steward na construção, MCPs, segregação entre infra de construção e plataforma HealthOS.
 
-### 3.10 [ADR-0022 proposta] **Esquemas governados e drift detection**
+### 3.10 [ADR-0023 proposta] **Esquemas governados e drift detection**
 
 - **Por que.** [docs/architecture/18-schema-governance-audit.md](../architecture/18-schema-governance-audit.md), `make validate-schemas`, `make validate-contracts` mas sem ADR formal.
 - **Recomendação.** ADR sobre disciplina de schemas (JSON Schema canônico), versionamento, deprecação, drift detection no CI.
@@ -110,7 +110,7 @@ Após revisão, **nenhuma ADR existente está obsoleta**. Todas continuam materi
 
 ## 5. Recomendações de PR/processo
 
-1. **Criar ADRs 0013-0022** propostas acima, em ondas (governança → providers → MSR → cross-app → schemas).
+1. **Criar ADRs 0014-0023** propostas acima, em ondas (governança → providers → MSR → cross-app → schemas). ADR-0013 agora cobre a separação HealthOS Platform / App Layer / Construction System.
 2. **Implementar lint arquitetural em CI:**
    - Verificar ausência de redefinição de tipos `Consent*`, `Gate*`, `Habilitation*` fora do Core (ADR-0001/0010).
    - Verificar bind apenas em `127.0.0.1`/UDS (ADR-0006).
@@ -127,7 +127,7 @@ Após revisão, **nenhuma ADR existente está obsoleta**. Todas continuam materi
 |---|---|---|
 | Criar lint arquitetural em CI | Tooling | 0001, 0006, 0010 |
 | Scanner anti-PII em logs/traces no CI | Compliance + Tooling | 0004 |
-| Documentar política de threshold de provider em ADR formal | Providers eng | 0013 (proposta) |
-| Versionamento de prompts MSR + golden tests | MSR eng | 0016 (proposta) |
+| Documentar política de threshold de provider em ADR formal | Providers eng | 0014 (proposta) |
+| Versionamento de prompts MSR + golden tests | MSR eng | 0017 (proposta) |
 | Criar ADR de mesh provider antes da implementação multi-node | Platform/Infra | 0009 (já antecipa) |
 | Migração lawfulContext map → envelope rígido (quando estável) | Core eng | 0008 (já antecipa) |

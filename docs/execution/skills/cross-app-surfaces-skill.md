@@ -1,10 +1,10 @@
 # Skill: cross-app shared surfaces
 
 ## When to use
-Shared envelope/safe refs/notifications across Scribe, Veridia, CloudClinic.
+Shared envelope/safe refs/notifications across reference apps such as Scribe, Veridia, CloudClinic, and future apps.
 
 ## Required reading
-`docs/architecture/43-cross-app-coordination-shared-surfaces.md`, `19-interface-doctrine.md`.
+`docs/architecture/50-app-layer-boundary-and-reference-apps.md`, `43-cross-app-coordination-shared-surfaces.md`, `19-interface-doctrine.md`.
 
 ## Invariants
 Envelope is never legal authorization; safe refs never carry raw direct identifiers.

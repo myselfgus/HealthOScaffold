@@ -50,6 +50,7 @@ Legenda: `●` = impactada diretamente · `○` = relacionada · ` ` = não impa
 | 0010 | Compliance arquiteturalizada | ● | ● | ● | ● | ● | ● | ● | ● | ● |
 | 0011 | GOS subordinada ao Core | ● | ○ | ● | ● | ● | ○ | ○ | ○ | ○ |
 | 0012 | HealthOScaffold = HealthOS | ○ | ○ | ○ | ○ | ○ | ○ | ○ | ○ | ○ |
+| 0013 | Platform/App/Construction boundary | ● | ● | ● | ● | ● | ● | ● | ● | ● |
 
 ---
 
@@ -69,6 +70,7 @@ Legenda: `●` = impactada diretamente · `○` = relacionada · ` ` = não impa
 | 0010 | [swift/Sources/HealthOSCore/CoreLaw.swift](../../swift/Sources/HealthOSCore/CoreLaw.swift), [RegulatoryGovernance.swift](../../swift/Sources/HealthOSCore/RegulatoryGovernance.swift), [Provenance.swift](../../swift/Sources/HealthOSCore/Provenance.swift), [UserSovereigntyContracts.swift](../../swift/Sources/HealthOSCore/UserSovereigntyContracts.swift) |
 | 0011 | [swift/Sources/HealthOSCore/GovernedOperationalSpec.swift](../../swift/Sources/HealthOSCore/GovernedOperationalSpec.swift), [GOSFileBackedRegistry.swift](../../swift/Sources/HealthOSCore/GOSFileBackedRegistry.swift), [swift/Sources/HealthOSAACI/GOSBindings.swift](../../swift/Sources/HealthOSAACI/GOSBindings.swift), [GOSRuntimeActivation.swift](../../swift/Sources/HealthOSAACI/GOSRuntimeActivation.swift), [GOSRuntimeContext.swift](../../swift/Sources/HealthOSAACI/GOSRuntimeContext.swift), [GOSRuntimeResolution.swift](../../swift/Sources/HealthOSAACI/GOSRuntimeResolution.swift), [schemas/governed-operational-spec.schema.json](../../schemas/governed-operational-spec.schema.json), [ts/packages/healthos-gos-tooling/](../../ts/packages/healthos-gos-tooling/) |
 | 0012 | [README.md](../../README.md), [swift/Package.swift](../../swift/Package.swift), [AGENTS.md](../../AGENTS.md) |
+| 0013 | [docs/architecture/50-app-layer-boundary-and-reference-apps.md](../architecture/50-app-layer-boundary-and-reference-apps.md), [docs/execution/21-structural-ontology-and-product-readiness-plan.md](../execution/21-structural-ontology-and-product-readiness-plan.md), [AGENTS.md](../../AGENTS.md), [.healthos-steward/prompts/prompt-architecture-template.md](../../.healthos-steward/prompts/prompt-architecture-template.md) |
 
 ---
 
@@ -88,6 +90,7 @@ Legenda: `●` = impactada diretamente · `○` = relacionada · ` ` = não impa
 | 0010 | [RegulatoryGovernanceTests.swift](../../swift/Tests/HealthOSTests/RegulatoryGovernanceTests.swift), [UserSovereigntyGovernanceTests.swift](../../swift/Tests/HealthOSTests/UserSovereigntyGovernanceTests.swift), [StorageGovernanceTests.swift](../../swift/Tests/HealthOSTests/StorageGovernanceTests.swift), [ServiceBoundaryTests.swift](../../swift/Tests/HealthOSTests/ServiceBoundaryTests.swift), [ServiceOperationsGovernanceTests.swift](../../swift/Tests/HealthOSTests/ServiceOperationsGovernanceTests.swift) | — |
 | 0011 | [GOSRuntimeAdoptionTests.swift](../../swift/Tests/HealthOSTests/GOSRuntimeAdoptionTests.swift) | TS compiler tests em `ts/packages/healthos-gos-tooling/` |
 | 0012 | (auditoria de docs) | revisão de PR |
+| 0013 | (auditoria de docs/governança) | tier mapping, language diagnostics, Core semantic leak diagnostic |
 
 Outros testes auxiliares úteis: [AsyncRuntimeGovernanceTests.swift](../../swift/Tests/HealthOSTests/AsyncRuntimeGovernanceTests.swift), [BackupGovernanceTests.swift](../../swift/Tests/HealthOSTests/BackupGovernanceTests.swift), [MSRRuntimeTests.swift](../../swift/Tests/HealthOSTests/MSRRuntimeTests.swift) — relacionados a gaps propostos (ver [GAPS-AND-CONFLICTS.md](GAPS-AND-CONFLICTS.md)).
 
@@ -109,6 +112,7 @@ Outros testes auxiliares úteis: [AsyncRuntimeGovernanceTests.swift](../../swift
 | 0010 | `make validate-contracts` (drift detection) |
 | 0011 | [schemas/governed-operational-spec.schema.json](../../schemas/governed-operational-spec.schema.json), [schemas/governed-operational-spec-authoring.schema.json](../../schemas/governed-operational-spec-authoring.schema.json), [schemas/governed-operational-spec-bundle-manifest.schema.json](../../schemas/governed-operational-spec-bundle-manifest.schema.json), [schemas/governed-operational-spec-lifecycle-audit.schema.json](../../schemas/governed-operational-spec-lifecycle-audit.schema.json), [schemas/governed-operational-spec-review-record.schema.json](../../schemas/governed-operational-spec-review-record.schema.json) |
 | 0012 | `make validate-docs` |
+| 0013 | `make validate-docs`, `make validate-contracts`, language and Core leak diagnostics |
 
 ---
 
@@ -121,10 +125,10 @@ Outros testes auxiliares úteis: [AsyncRuntimeGovernanceTests.swift](../../swift
 | `HealthOSAACI` | lib | Core, Providers | 0001, 0003, 0010, 0011 | `GOSRuntimeAdoptionTests` |
 | `HealthOSMSR` | lib | Core, Providers (resources: Prompts) | 0003, 0004, 0010, 0011 (proposto: 0016) | `MSRRuntimeTests` |
 | `HealthOSSessionRuntime` | lib | Core, AACI, Providers, MSR | 0001, 0003, 0010, 0011 | tests integrados |
-| `HealthOSCLI` | exec | Core, SessionRuntime | 0007 | `make smoke-cli` |
-| `HealthOSScribeApp` | exec | Core, SessionRuntime | 0007, 0010 | `make smoke-scribe` |
-| `HealthOSVeridiaApp` | exec | Core | 0007, 0010 | `make smoke-veridia` |
-| `HealthOSCloudClinicApp` | exec | Core | 0007, 0010 | `make smoke-cloudclinic` |
+| `HealthOSCLI` | exec | Core, SessionRuntime | 0007, 0013 | `make smoke-cli` |
+| `HealthOSScribeApp` | exec | Core, SessionRuntime | 0007, 0010, 0013 | `make smoke-scribe` |
+| `HealthOSVeridiaApp` | exec | Core | 0007, 0010, 0013 | `make smoke-veridia` |
+| `HealthOSCloudClinicApp` | exec | Core | 0007, 0010, 0013 | `make smoke-cloudclinic` |
 | `HealthOSTests` | test | todos os módulos | (todos) | `make swift-test` |
 
 ---

@@ -21,7 +21,7 @@
 
 **This repository is not production-ready, not a complete EHR, and not a final UI delivery.** It establishes foundational architecture with executable first-slice orchestration, cross-language contracts (Swift / TypeScript / JSON Schema / SQL), and macOS 26+ native app surfaces targeting Liquid Glass as the design baseline.
 
-HealthOS is the full platform. **AACI is one runtime inside HealthOS. GOS is a governed operational layer subordinate to Core law. Scribe, Veridia, and CloudClinic are app/interfaces that consume mediated surfaces; they never define constitutional law.**
+HealthOS is the full app-agnostic platform. **AACI is one runtime inside HealthOS. GOS is a governed operational layer subordinate to Core law. Initial reference apps such as Scribe, Veridia, CloudClinic, and future apps consume mediated surfaces; they never define constitutional law or the HealthOS ontology.**
 
 ---
 
@@ -31,7 +31,7 @@ Use this README as an entry surface, not as a replacement for the canonical arch
 
 | Reader question | Current answer | Canonical follow-up |
 | :--- | :--- | :--- |
-| What is HealthOS? | The whole governed platform for health operations, not one app or an EHR skin. | `docs/architecture/01-overview.md` |
+| What is HealthOS? | The whole governed, app-agnostic platform for health operations, not one app or an EHR skin. | `docs/architecture/01-overview.md` |
 | What proves executable behavior today? | The Swift first-slice path through habilitation, consent, capture, retrieval, SOAP draft, gate, final SOAP, and provenance. | `docs/architecture/28-first-slice-executable-path.md` |
 | What is still scaffolded or placeholder? | Provider deployment, semantic retrieval, final app shells, regulatory/signature/interoperability effectuation, and production ops. | `docs/execution/11-current-maturity-map.md` |
 | Where does construction tooling sit? | Steward, Settlers, Settlements, Territories, and `healthos-forge-mcp` are repository engineering surfaces outside the clinical/runtime hierarchy. | `docs/execution/22-steward-construction-operating-model.md` |
@@ -50,10 +50,11 @@ flowchart LR
         CORE[Core law\nconsent · habilitation · gate · finality]:::core
         GOS[GOS\nsubordinate operational mediation]:::runtime
         RT[Runtimes\nSession Runtime · AACI · MSR · TS runtimes]:::runtime
-        APP[Apps/interfaces\nScribe · Veridia · CloudClinic]:::interface
+        AIB[App Integration Boundary\nfacades · envelopes · app-safe views]:::interface
+        APP[Reference apps\nScribe · Veridia · CloudClinic · future apps]:::interface
         DS[Native design system\nmacOS 26+ presentation contract\nSF Pro · semantic tint · Liquid Glass]:::design
         ART[Artifacts/effects\ndrafts · derived artifacts · gated final documents]:::core
-        CORE --> GOS --> RT --> APP
+        CORE --> GOS --> RT --> AIB --> APP
         APP --> DS
         APP --> ART
     end
@@ -89,6 +90,8 @@ flowchart LR
 ## 🏗️ Canonical Architecture
 
 HealthOS is a governance-first platform. Every clinical act flows through a strictly layered, consent- and provenance-governed fabric. Apps and interfaces consume only mediated surfaces — they never become law engines.
+
+App wiring advances only after the mediated surface the app consumes is implemented and stable, not merely contracted. See `docs/architecture/50-app-layer-boundary-and-reference-apps.md` for the App Integration Boundary, App Charter template, and tiered task ordering.
 
 Steward, Settlers, Settlements, Territories, and `healthos-forge-mcp` are repository engineering concepts **outside** this clinical/runtime hierarchy. They inspect, edit, validate, and record repository work. They do not become HealthOS law, runtime automation, or clinical effectuation.
 
@@ -426,7 +429,7 @@ This repository is in **controlled implementation / scaffold hardening**:
 | **AACI First Slice** | 🚧 Scaffold Hardening | Boundary enforcement + GOS-mediated derived drafts |
 | **MSR Pipeline** | 🚧 Scaffold | ASL · VDLP · GEM stages, provenance metadata |
 | **Provider / ML** | ⚠️ Stub / Contract | `AppleFoundationProvider` adapter; deterministic safety posture |
-| **Apps / UI** | 🧩 Contract-First | Minimal Scribe validation surface; Veridia/CloudClinic placeholder |
+| **Reference Apps / UI** | 🧩 Contract-First | Minimal Scribe validation surface; Veridia boundary scaffold; CloudClinic blocked before new wiring |
 | **Liquid Glass UI** | 🎯 macOS 26+ Baseline | HealthOSDesignSystem baseline (DS-001); glass adoption in progress |
 | **Construction System** | ✅ Implemented Seam | 10 CLI commands (healthos-steward) + 10 MCP tools (healthos-forge-mcp) |
 
@@ -435,7 +438,7 @@ Read this table as an onboarding summary. The authoritative maturity ladder is `
 **This repository is not:**
 - a production-ready product
 - a complete EHR
-- a final UI delivery of Scribe, Veridia, or CloudClinic
+- a final UI delivery of any reference app
 - a real regulatory-signature or interoperability integration
 - a real semantic retrieval stack with embeddings/vector index
 - a real external provider deployment (LM/STT/embedding remain scaffold/stub posture)
@@ -649,8 +652,9 @@ graph LR
 | AACI + first slice | `docs/architecture/09-aaci.md`, `28-first-slice-executable-path.md` | `swift/Sources/HealthOSAACI/`, `swift/Sources/HealthOSSessionRuntime/` |
 | MSR | `docs/architecture/49-mental-space-runtime.md` | `swift/Sources/HealthOSMSR/` |
 | GOS | `29-governed-operational-spec.md` → `34-gos-review-and-activation-policy.md` | `ts/packages/healthos-gos-tooling/`, `swift/Sources/HealthOSCore/` |
+| App Integration Boundary | `docs/architecture/50-app-layer-boundary-and-reference-apps.md`, `19-interface-doctrine.md` | mediated facades/envelopes in `swift/Sources/HealthOSCore/` and runtime adapters |
 | Native UI + Liquid Glass | `docs/architecture/48-native-macos-ui-design-system-and-app-shells.md` | `swift/Sources/HealthOSScribeApp/` |
-| Apps/interfaces | `11-scribe.md`, `12-veridia.md`, `13-cloudclinic.md`, `43-cross-app-coordination-shared-surfaces.md` | `swift/Sources/HealthOSScribeApp/`, `HealthOSVeridiaApp/`, `HealthOSCloudClinicApp/` |
+| Reference apps/interfaces | `11-scribe.md`, `12-veridia.md`, `13-cloudclinic.md`, `43-cross-app-coordination-shared-surfaces.md` | `swift/Sources/HealthOSScribeApp/`, `HealthOSVeridiaApp/`, `HealthOSCloudClinicApp/` |
 | Providers / ML | `docs/architecture/16-providers-and-ml.md`, `27-provider-threshold-policy.md` | `swift/Sources/HealthOSProviders/` |
 | Steward | `45-healthos-xcode-agent.md`, `47-steward-settler-engineering-model.md` | `ts/agent-infra/healthos-steward/`, `.healthos-steward/` |
 
@@ -876,10 +880,13 @@ HealthOS Runtimes
   └─ User-Agent runtime (patient-facing interactions)
 Actors / Agents
   └─ bounded actors and role-governed agents
-Apps / Interfaces  (macOS 26+ · Liquid Glass design baseline)
-  ├─ Scribe (professional workspace)
-  ├─ Veridia (patient health identity)
-  └─ CloudClinic (service operations)
+App Integration Boundary
+  └─ facades, envelopes, app-safe views, safe refs, command/result envelopes
+Reference App Layer  (macOS 26+ · Liquid Glass design baseline)
+  ├─ initial examples: Scribe (professional workspace)
+  ├─ initial examples: Veridia (patient health identity)
+  ├─ initial examples: CloudClinic (service operations)
+  └─ future apps in arbitrary number
 Artifacts / Effects
   └─ drafts, gate records, final artifacts, provenance/audit traces
 ```

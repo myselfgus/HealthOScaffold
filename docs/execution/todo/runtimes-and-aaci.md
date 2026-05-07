@@ -348,7 +348,17 @@ Files touched:
 
 ## READY
 
-No READY runtime/AACI TODO is currently promoted by this tracker. For product/repo task selection, use `docs/execution/21-structural-ontology-and-product-readiness-plan.md`; current promoted pending work there remains APP-012, CI-001, and blocked RT-ASYNC-001 / RT-RETRIEVAL-001.
+Current promoted runtime/platform foundation work comes from `docs/execution/21-structural-ontology-and-product-readiness-plan.md` after ADR-0013:
+
+### RT-ASYNC-001 SQL-backed async runtime executor
+Status: READY as Tier 1 platform/runtime foundation.
+Reason: durable async/job execution provides app-consumable queue/worklist/retry truth and should advance before new app wiring that may depend on it.
+Unblock for higher tiers: SQL-backed executor implemented or missing local database explicitly environment-gated while preserving fail-closed semantics.
+
+### RT-RETRIEVAL-001 Semantic retrieval with real embeddings provider
+Status: READY as Tier 1 platform/runtime foundation.
+Reason: app-facing semantic retrieval must not be faked; a real provider/path or explicit unavailable/degraded posture must be implemented before apps consume it non-provisionally.
+Unblock for higher tiers: real embeddings provider/path implemented under policy, or dependent app scope explicitly excludes semantic retrieval.
 
 
 ## TESTS / VALIDATION

@@ -26,9 +26,9 @@
     "docs/execution/todo/gos-and-compilers.md"
   ],
   "forbiddenPaths": [
-    "swift/Sources/HealthOSScribeApp",
-    "swift/Sources/HealthOSVeridiaApp",
-    "swift/Sources/HealthOSCloudClinicApp",
+    "swift/Sources/HealthOSScribeStage",
+    "swift/Sources/HealthOSVeridiaStage",
+    "swift/Sources/HealthOSCloudClinicStage",
     "ts/agent-infra"
   ],
   "invariants": [

@@ -14,7 +14,7 @@ Read in order:
 3. `docs/architecture/48-native-macos-ui-design-system-and-app-shells.md`
 4. the app-specific doc: `11-scribe.md`, `12-veridia.md`, or `13-cloudclinic.md`
 5. the matching screen-contract doc: `23-scribe-screen-contracts.md`, `24-veridia-screen-contracts.md`, or `25-cloudclinic-screen-contracts.md`
-6. `docs/execution/skills/app-boundary-skill.md`
+6. `docs/execution/skills/boundary-skill.md`
 7. the relevant macOS skill under `docs/execution/skills/` (`swiftpm`, `scaffolding`, `view-refactor`, `appkit-interop`, `build-run-debug`, or `testing`)
 8. `docs/execution/skills/liquid-glass/SKILL.md` for macOS 26+ visual treatment or custom glass surfaces
 
@@ -51,7 +51,7 @@ For documentation-only scope changes:
 For SwiftUI/app target changes:
 - `cd swift && swift build`
 - `cd swift && swift test`
-- relevant smoke path, usually `cd swift && swift run HealthOSScribeApp --smoke-test` for Scribe-facing behavior
+- relevant smoke path, usually `cd swift && swift run HealthOSScribeStage --smoke-test` for Scribe-facing behavior
 
 ## Definition of done
 

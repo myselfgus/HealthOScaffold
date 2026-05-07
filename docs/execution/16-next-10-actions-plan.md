@@ -56,8 +56,8 @@ Each task block uses the same fields so an agent can execute deterministically.
 - Closure mapping: `GAP-001` (scaffold blocker) in `14-final-gap-register.md`
 - Phase: Scaffold/Foundation RC Fixes + Tag Prep
 - Priority: High
-- Skills: `docs/execution/skills/cross-app-surfaces-skill.md` +
-  `docs/execution/skills/app-boundary-skill.md`
+- Skills: `docs/execution/skills/cross-stage-surfaces-skill.md` +
+  `docs/execution/skills/boundary-skill.md`
 - Owner modules:
   - existing contract surface: `swift/Sources/HealthOSCore/CrossAppCoordinationContracts.swift`
   - non-Scribe adapters: `ts/packages/runtime-user-agent/` (Veridia path) and
@@ -122,8 +122,8 @@ In order:
    32, 39, 40, 41)
 6. `docs/execution/14-final-gap-register.md` (GAP-001 is the blocker you close)
 7. `docs/execution/todo/apps-and-interfaces.md` (find APP-008)
-8. `docs/execution/skills/cross-app-surfaces-skill.md`
-9. `docs/execution/skills/app-boundary-skill.md`
+8. `docs/execution/skills/cross-stage-surfaces-skill.md`
+9. `docs/execution/skills/boundary-skill.md`
 10. `swift/Sources/HealthOSCore/CrossAppCoordinationContracts.swift` — read
     fully; this is the contract you propagate
 11. `swift/Tests/HealthOSTests/CrossAppCoordinationContractsTests.swift` —
@@ -1140,7 +1140,7 @@ Title format: `ci: wire validate-all gates into GitHub Actions (GAP-010)`
     - `cd swift && swift build && swift test`
     - `cd ts && npm install && npm run build && npm test --if-present`
     - `cd python && python -m compileall .`
-    - `cd swift && swift run HealthOSCLI && swift run HealthOSScribeApp --smoke-test`
+    - `cd swift && swift run HealthOSCLI && swift run HealthOSScribeStage --smoke-test`
   - Reconcile entry docs (`README.md`, `AGENTS.md`, `CLAUDE.md`) and
     execution docs (`02-`, `06-`, `10-`, `11-`, `12-`, `13-`, `14-`,
     `15-`) so maturity claims agree.

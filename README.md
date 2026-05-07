@@ -212,7 +212,7 @@ graph TD
 
 ### First Slice — Executable Orchestration Path
 
-The current scaffold-level executable path, consumed by `HealthOSCLI` and `HealthOSScribeApp`:
+The current scaffold-level executable path, consumed by `HealthOSCLI` and `HealthOSScribeStage`:
 
 ```mermaid
 %%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#f0f9ff', 'primaryBorderColor': '#bae6fd', 'primaryTextColor': '#0c4a6e', 'edgeLabelBackground': '#fafafa', 'fontFamily': 'ui-sans-serif, system-ui, -apple-system'}}}%%
@@ -287,13 +287,13 @@ graph LR
     end
 
     subgraph T3["Tier 3 — Boundary"]
-        AB[HealthOSAppBoundary\nfacades · safe refs · envelopes]:::boundary
+        AB[HealthOSBoundary\nfacades · safe refs · envelopes]:::boundary
     end
 
     subgraph T4["Tier 4 — Stage"]
-        SCRIBE[HealthOSScribeApp\nSwiftUI · Liquid Glass]:::app
-        VERIDIA[HealthOSVeridiaApp\npatient identity]:::app
-        CC[HealthOSCloudClinicApp\nservice operations]:::app
+        SCRIBE[HealthOSScribeStage\nSwiftUI · Liquid Glass]:::app
+        VERIDIA[HealthOSVeridiaStage\npatient identity]:::app
+        CC[HealthOSCloudClinicStage\nservice operations]:::app
     end
 
     CLI[HealthOSCLI\noperator executable]:::cli
@@ -321,11 +321,11 @@ graph LR
 | `HealthOSUserAgentRuntime` | 2 | Library | Patient/user-side session lifecycle and sovereignty enforcement — scaffold stub |
 | `HealthOSServiceRuntime` | 2 | Library | Professional/service-operations session lifecycle — scaffold stub |
 | `HealthOSSessionRuntime` | 2 | Library | Session orchestration (`SessionRunner`), transcript normalization executor, Scribe bridge adapter |
-| `HealthOSAppBoundary` | 3 | Library | Boundary compatibility module — the technical import surface Stage executables should converge on; scaffold stub pending Tier 2 facade stabilization |
+| `HealthOSBoundary` | 3 | Library | Boundary compatibility module — the technical import surface Stage executables should converge on; scaffold stub pending Tier 2 facade stabilization |
 | `HealthOSCLI` | — | Executable | Operator command-line interface for session and GOS lifecycle |
-| `HealthOSScribeApp` | 4 | Executable | Scribe professional workspace Stage validation surface (SwiftUI, macOS 26+) |
-| `HealthOSVeridiaApp` | 4 | Executable | Veridia patient identity Stage boundary — smoke-testable, no final UI |
-| `HealthOSCloudClinicApp` | 4 | Executable | CloudClinic service operations Stage — scaffold placeholder, no final UI |
+| `HealthOSScribeStage` | 4 | Executable | Scribe professional workspace Stage validation surface (SwiftUI, macOS 26+) |
+| `HealthOSVeridiaStage` | 4 | Executable | Veridia patient identity Stage boundary — smoke-testable, no final UI |
+| `HealthOSCloudClinicStage` | 4 | Executable | CloudClinic service operations Stage — scaffold placeholder, no final UI |
 
 ---
 
@@ -335,7 +335,7 @@ HealthOS native macOS surfaces target macOS 26+ and adopt **Liquid Glass as the 
 
 Standard SwiftUI/AppKit controls and navigation surfaces (sidebars, toolbars, sheets, `NavigationSplitView`) inherit system Liquid Glass behavior automatically. Custom `glassEffect`, `GlassEffectContainer`, and glass button styles are reserved for app-specific HealthOS surfaces not covered by standard controls.
 
-**Current scaffold state:** `HealthOSScribeApp` uses `GroupBox` + `.thinMaterial` with standard SwiftUI controls. `HealthOSDesignSystem` is the implemented design system baseline (DS-001, 2026-05-05). Full Liquid Glass adoption is in progress as the macOS 26+ native app shell matures.
+**Current scaffold state:** `HealthOSScribeStage` uses `GroupBox` + `.thinMaterial` with standard SwiftUI controls. `HealthOSDesignSystem` is the implemented design system baseline (DS-001, 2026-05-05). Full Liquid Glass adoption is in progress as the macOS 26+ native app shell matures.
 
 <p align="center">
   <img src="docs/assets/liquidglass_intro.gif" width="100%" alt="Demonstração do Liquid Glass UI — HealthOS Scribe First Slice">
@@ -369,7 +369,7 @@ graph TD
         CUS[Custom glass only when needed\nGlassEffectContainer per logical group]:::design
     end
 
-    subgraph SCRIBEAPP["HealthOSScribeApp"]
+    subgraph SCRIBEAPP["HealthOSScribeStage"]
         APP[WindowGroup\nScribe First Slice]:::view
         ROOT[ScribeFirstSliceView\nScrollView root]:::view
         C1[Surface summary\nstatus capsule + provenance summary]:::state
@@ -517,10 +517,10 @@ make smoke-cloudclinic
 ```bash
 cd swift && swift run HealthOSCLI
 cd swift && swift run HealthOSCLI --reject-gate
-cd swift && swift run HealthOSScribeApp --smoke-test
-cd swift && swift run HealthOSScribeApp --smoke-test-audio
-cd swift && swift run HealthOSVeridiaApp --smoke-test
-cd swift && swift run HealthOSCloudClinicApp --smoke-test
+cd swift && swift run HealthOSScribeStage --smoke-test
+cd swift && swift run HealthOSScribeStage --smoke-test-audio
+cd swift && swift run HealthOSVeridiaStage --smoke-test
+cd swift && swift run HealthOSCloudClinicStage --smoke-test
 ```
 
 **GOS bundle lifecycle:**
@@ -539,7 +539,7 @@ cd swift && swift run HealthOSCLI \
   --activation-rationale "<reason>"
 ```
 
-`HealthOSVeridiaApp` has a smoke-testable Veridia session boundary. `HealthOSCloudClinicApp` remains a scaffold placeholder executable for product-graph representation. Neither implements final UI, clinical authority, real provider/signature/interoperability behavior, or production readiness.
+`HealthOSVeridiaStage` has a smoke-testable Veridia session boundary. `HealthOSCloudClinicStage` remains a scaffold placeholder executable for product-graph representation. Neither implements final UI, clinical authority, real provider/signature/interoperability behavior, or production readiness.
 
 ---
 
@@ -581,7 +581,7 @@ flowchart LR
 | Understand the executable slice | `docs/architecture/28-first-slice-executable-path.md` | `swift/Sources/HealthOSSessionRuntime/SessionRunner.swift`, `swift/Sources/HealthOSCore/FirstSliceContracts.swift` |
 | Understand GOS | `docs/architecture/29-governed-operational-spec.md` | `30-gos-authoring-and-compiler.md` → `33-gos-app-consumption-patterns.md` |
 | Understand MSR | `docs/architecture/49-mental-space-runtime.md` | `swift/Sources/HealthOSMSR/`, `swift/Sources/HealthOSCore/MSRRuntime.swift` |
-| Understand native UI + Liquid Glass | `docs/architecture/48-native-macos-ui-design-system-and-app-shells.md` | `swift/Sources/HealthOSScribeApp/` |
+| Understand native UI + Liquid Glass | `docs/architecture/48-native-macos-ui-design-system-and-app-shells.md` | `swift/Sources/HealthOSScribeStage/` |
 | Understand Apple sovereignty | `docs/architecture/46-apple-sovereignty-architecture.md` | `swift/Sources/HealthOSProviders/AppleFoundationModelsAdapter.swift` |
 | Understand apps and boundaries | `docs/architecture/11-scribe.md` | `12-veridia.md`, `13-cloudclinic.md`, `43-cross-app-coordination-shared-surfaces.md` |
 | Understand maturity and gaps | `docs/execution/11-current-maturity-map.md` | `13-scaffold-release-candidate-criteria.md`, `14-final-gap-register.md` |
@@ -687,8 +687,8 @@ graph LR
 | MSR | `docs/architecture/49-mental-space-runtime.md` | `swift/Sources/HealthOSMSR/` |
 | GOS | `29-governed-operational-spec.md` → `34-gos-review-and-activation-policy.md` | `ts/packages/healthos-gos-tooling/`, `swift/Sources/HealthOSCore/` |
 | Boundary | `docs/architecture/50-app-layer-boundary-and-reference-apps.md`, `19-interface-doctrine.md` | mediated facades/envelopes in `swift/Sources/HealthOSCore/` and runtime adapters |
-| Native UI + Liquid Glass | `docs/architecture/48-native-macos-ui-design-system-and-app-shells.md` | `swift/Sources/HealthOSScribeApp/` |
-| Stages | `11-scribe.md`, `12-veridia.md`, `13-cloudclinic.md`, `43-cross-app-coordination-shared-surfaces.md` | `swift/Sources/HealthOSScribeApp/`, `HealthOSVeridiaApp/`, `HealthOSCloudClinicApp/` |
+| Native UI + Liquid Glass | `docs/architecture/48-native-macos-ui-design-system-and-app-shells.md` | `swift/Sources/HealthOSScribeStage/` |
+| Stages | `11-scribe.md`, `12-veridia.md`, `13-cloudclinic.md`, `43-cross-app-coordination-shared-surfaces.md` | `swift/Sources/HealthOSScribeStage/`, `HealthOSVeridiaStage/`, `HealthOSCloudClinicStage/` |
 | Providers / ML | `docs/architecture/16-providers-and-ml.md`, `27-provider-threshold-policy.md` | `swift/Sources/HealthOSProviders/` |
 | Steward | `45-healthos-xcode-agent.md`, `47-steward-settler-engineering-model.md` | `ts/agent-infra/healthos-steward/`, `.healthos-steward/` |
 
@@ -707,8 +707,8 @@ graph LR
 | `swift/Sources/HealthOSUserAgentRuntime/` | [README](swift/Sources/HealthOSUserAgentRuntime/README.md) | User-Agent Runtime stub — patient session lifecycle and sovereignty enforcement |
 | `swift/Sources/HealthOSServiceRuntime/` | [README](swift/Sources/HealthOSServiceRuntime/README.md) | Service Runtime stub — professional/service-operations session lifecycle |
 | `swift/Sources/HealthOSSessionRuntime/` | — | Session orchestration, normalization executor, Scribe bridge adapter |
-| `swift/Sources/HealthOSAppBoundary/` | [README](swift/Sources/HealthOSAppBoundary/README.md) | Boundary compatibility module — Tier 3 facade; Stage executables should consume mediated surfaces through it as it matures |
-| `swift/Sources/HealthOSScribeApp/` | [README](swift/Sources/HealthOSScribeApp/README.md) | Scribe validation surface, SwiftUI architecture, Liquid Glass adoption path |
+| `swift/Sources/HealthOSBoundary/` | [README](swift/Sources/HealthOSBoundary/README.md) | Boundary compatibility module — Tier 3 facade; Stage executables should consume mediated surfaces through it as it matures |
+| `swift/Sources/HealthOSScribeStage/` | [README](swift/Sources/HealthOSScribeStage/README.md) | Scribe validation surface, SwiftUI architecture, Liquid Glass adoption path |
 | `docs/architecture/` | [index](docs/architecture/) | 50+ canonical architecture doctrine documents |
 | `docs/execution/` | [README](docs/execution/README.md) | Execution protocol, status tracking, TODO tracker, maturity/handoff |
 | `ts/` | [README](ts/README.md) | TypeScript workspace: contracts, GOS tooling, async runtime, Steward CLI |
@@ -723,7 +723,7 @@ graph LR
 - `docs/architecture/` — canonical architecture and doctrine docs (GOS, app-boundary, regulatory, cross-app, native UI)
 - `docs/execution/` — governed execution protocol, status tracking, coverage, invariants, TODOs, maturity/handoff
 - `schemas/` — JSON Schema entity contracts and GOS schemas
-- `swift/` — Core (T1) · Providers, GOS, AACI, MSR, AsyncRuntime, UserAgentRuntime, ServiceRuntime, SessionRuntime (T2) · AppBoundary (T3 technical compatibility module) · CLI · Scribe/Veridia/CloudClinic Stage executables (T4) · test suites
+- `swift/` — Core (T1) · Providers, GOS, AACI, MSR, AsyncRuntime, UserAgentRuntime, ServiceRuntime, SessionRuntime (T2) · Boundary (T3 technical compatibility module) · CLI · Scribe/Veridia/CloudClinic Stage executables (T4) · test suites
 - `ts/` — workspace packages (`contracts`, `runtime-async`, `runtime-user-agent`, `healthos-gos-tooling`, `healthos-steward`, `healthos-forge-mcp`)
 - `ml/` — Create ML training scaffolds for on-device models (transcript normalizer stub; gated by ModelGovernance)
 - `python/` — offline ML governance scaffolds only

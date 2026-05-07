@@ -15,7 +15,7 @@ graph TD
 
     CORE[HealthOSCore\nAsyncRuntimeJobs.swift — job type vocabulary]:::core
     ASYNC[HealthOSAsyncRuntime\nThis module]:::runtime
-    BOUND[HealthOSAppBoundary\nBoundary compatibility module]:::boundary
+    BOUND[HealthOSBoundary\nBoundary compatibility module]:::boundary
 
     CORE --> ASYNC
     ASYNC --> BOUND

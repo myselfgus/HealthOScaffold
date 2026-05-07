@@ -84,7 +84,7 @@ Scribe is a scaffold contract and minimal validation surface only:
 ## Current minimal SwiftUI surface
 
 The scaffold includes a minimal macOS SwiftUI validation surface in:
-- `swift/Sources/HealthOSScribeApp/`
+- `swift/Sources/HealthOSScribeStage/`
 
 This surface is intentionally narrow:
 - one window with session start, patient selection, capture-mode choice (seeded text or local audio file), SOAP draft preview, referral/prescription derived draft previews, gate review summary, and final-document result sections

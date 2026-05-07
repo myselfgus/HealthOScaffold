@@ -26,7 +26,7 @@ Its current products are:
 - `HealthOSProviders`
 - `HealthOSSessionRuntime`
 - `HealthOSCLI`
-- `HealthOSScribeApp`
+- `HealthOSScribeStage`
 
 Its current structure includes:
 
@@ -35,7 +35,7 @@ Its current structure includes:
 - `swift/Sources/HealthOSProviders/`
 - `swift/Sources/HealthOSSessionRuntime/`
 - `swift/Sources/HealthOSCLI/`
-- `swift/Sources/HealthOSScribeApp/`
+- `swift/Sources/HealthOSScribeStage/`
 - `swift/Tests/HealthOSTests/`
 
 ### Finding 2: there was no top-level Xcode entrypoint
@@ -71,7 +71,7 @@ HealthOScaffold/
       HealthOSProviders/
       HealthOSSessionRuntime/
       HealthOSCLI/
-      HealthOSScribeApp/
+      HealthOSScribeStage/
     Tests/
       HealthOSTests/
   ts/

@@ -19,15 +19,15 @@ let package = Package(
         .library(name: "HealthOSSessionRuntime",   targets: ["HealthOSSessionRuntime"]),
 
         // ── Tier 3 — Boundary ──────────────────────────────────────────────
-        .library(name: "HealthOSAppBoundary",      targets: ["HealthOSAppBoundary"]),
+        .library(name: "HealthOSBoundary",         targets: ["HealthOSBoundary"]),
 
         // ── Operator CLI (not a Stage) ─────────────────────────────────────
         .executable(name: "HealthOSCLI",           targets: ["HealthOSCLI"]),
 
         // ── Tier 4 — Stages ────────────────────────────────────────────────
-        .executable(name: "HealthOSScribeApp",      targets: ["HealthOSScribeApp"]),
-        .executable(name: "HealthOSVeridiaApp",     targets: ["HealthOSVeridiaApp"]),
-        .executable(name: "HealthOSCloudClinicApp", targets: ["HealthOSCloudClinicApp"]),
+        .executable(name: "HealthOSScribeStage",      targets: ["HealthOSScribeStage"]),
+        .executable(name: "HealthOSVeridiaStage",     targets: ["HealthOSVeridiaStage"]),
+        .executable(name: "HealthOSCloudClinicStage", targets: ["HealthOSCloudClinicStage"]),
     ],
     targets: [
 
@@ -55,8 +55,8 @@ let package = Package(
                 dependencies: ["HealthOSCore", "HealthOSAACI", "HealthOSProviders", "HealthOSMSR"]),
 
         // ── Tier 3 ──────────────────────────────────────────────────────────
-        // Stages must only import HealthOSAppBoundary, never Tier 2 modules directly.
-        .target(name: "HealthOSAppBoundary",
+        // Stages must only import HealthOSBoundary, never Tier 2 modules directly.
+        .target(name: "HealthOSBoundary",
                 dependencies: [
                     "HealthOSCore",
                     "HealthOSGOS",
@@ -73,16 +73,18 @@ let package = Package(
                           dependencies: ["HealthOSCore", "HealthOSSessionRuntime"]),
 
         // ── Tier 4 — Stages ─────────────────────────────────────────────────
-        // TODO: depend solely on HealthOSAppBoundary once its session facade is complete.
-        .executableTarget(name: "HealthOSScribeApp",
-                          dependencies: ["HealthOSAppBoundary", "HealthOSSessionRuntime"],
+        // HealthOSBoundary is the primary Stage surface.
+        // TODO: remove direct Tier 1/2 dependencies once the Scribe session facade is complete in Boundary.
+        .executableTarget(name: "HealthOSScribeStage",
+                          dependencies: ["HealthOSBoundary", "HealthOSCore", "HealthOSSessionRuntime"],
                           resources: [.process("Resources")]),
-        // TODO: remove HealthOSCore once VeridiaSession types migrate into HealthOSAppBoundary.
-        .executableTarget(name: "HealthOSVeridiaApp",
-                          dependencies: ["HealthOSAppBoundary", "HealthOSCore"],
+        // HealthOSBoundary is the primary Stage surface.
+        // TODO: remove HealthOSCore once VeridiaSession types migrate into HealthOSBoundary.
+        .executableTarget(name: "HealthOSVeridiaStage",
+                          dependencies: ["HealthOSBoundary", "HealthOSCore"],
                           resources: [.process("Resources")]),
-        .executableTarget(name: "HealthOSCloudClinicApp",
-                          dependencies: ["HealthOSAppBoundary"],
+        .executableTarget(name: "HealthOSCloudClinicStage",
+                          dependencies: ["HealthOSBoundary"],
                           resources: [.process("Resources")]),
 
         // ── Tests ────────────────────────────────────────────────────────────
@@ -100,8 +102,8 @@ let package = Package(
                         "HealthOSServiceRuntime",
                         "HealthOSSessionRuntime",
                     ]),
-        .testTarget(name: "HealthOSAppBoundaryTests",
-                    dependencies: ["HealthOSAppBoundary"]),
+        .testTarget(name: "HealthOSBoundaryTests",
+                    dependencies: ["HealthOSBoundary"]),
         // Existing integration tests — migrate to per-module targets incrementally.
         .testTarget(name: "HealthOSTests",
                     dependencies: [

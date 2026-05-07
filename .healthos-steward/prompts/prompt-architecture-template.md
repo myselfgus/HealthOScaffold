@@ -340,9 +340,9 @@ Common full validation sequence:
 Swift runtime/product work may require:
   cd swift && swift build
   cd swift && swift test
-  cd swift && swift run HealthOSScribeApp --smoke-test
-  cd swift && swift run HealthOSVeridiaApp --smoke-test
-  cd swift && swift run HealthOSCloudClinicApp --smoke-test
+  cd swift && swift run HealthOSScribeStage --smoke-test
+  cd swift && swift run HealthOSVeridiaStage --smoke-test
+  cd swift && swift run HealthOSCloudClinicStage --smoke-test
 
 TypeScript work may require:
   cd ts && npm install

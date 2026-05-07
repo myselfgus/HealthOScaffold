@@ -35,7 +35,7 @@ The current Swift executable path (CLI plus minimal Scribe SwiftUI surface) exer
 - `swift/Sources/HealthOSSessionRuntime/ScribeSessionDemoBootstrap.swift`
 - `services/<service-id>/records/patient-record-index.json` (runtime-data, seeded when missing for demo execution)
 - `swift/Sources/HealthOSCLI/CLIEntrypoint.swift`
-- `swift/Sources/HealthOSScribeApp/`
+- `swift/Sources/HealthOSScribeStage/`
 
 ## What is real now
 - first-slice flow is no longer only conceptual

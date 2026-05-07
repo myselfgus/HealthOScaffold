@@ -1,11 +1,11 @@
-# Proposta de UX Copy — HealthOSScribeApp
+# Proposta de UX Copy — HealthOSScribeStage
 > Revisões de rótulos, diálogos, empty states e fluxos críticos para o app de captura clínica.
 
 ---
 
 ## Contexto
 
-HealthOSScribeApp é a interface de captura de sessão clínica para profissionais de saúde. É o alvo com mais texto visível ao usuário. Atualmente mistura inglês e português, expõe jargão técnico e arquitetural ao clínico, e carece de mensagens de orientação em estados críticos. Esta proposta cobre o fluxo completo: bootstrap → sessão → paciente → captura → rascunho → revisão → documento final.
+HealthOSScribeStage é a interface de captura de sessão clínica para profissionais de saúde. É o alvo com mais texto visível ao usuário. Atualmente mistura inglês e português, expõe jargão técnico e arquitetural ao clínico, e carece de mensagens de orientação em estados críticos. Esta proposta cobre o fluxo completo: bootstrap → sessão → paciente → captura → rascunho → revisão → documento final.
 
 ---
 

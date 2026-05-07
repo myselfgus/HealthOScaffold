@@ -525,7 +525,7 @@ public enum ScribeBoundaryValidator {
         }
     }
 
-    public static func validateAppBoundary(state: ScribeAppRuntimeState) throws {
+    public static func validateBoundary(state: ScribeAppRuntimeState) throws {
         let forbiddenTokens = ["cpf", "identidades_civis", "reidentification", "storage://", "gos_compiled", "provider_secret"]
         let payload = [
             state.workspaceContext.lawfulContext.description,

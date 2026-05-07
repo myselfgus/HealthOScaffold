@@ -101,8 +101,8 @@ All flows are governed through Core-mediated surfaces. Veridia does not initiate
 - No cryptographic key operations are implemented in this target.
 - No LGPD/regulatory compliance is established by this scaffold.
 - No production readiness is claimed.
-- Swift target: `HealthOSVeridiaApp` — executable scaffold placeholder.
-- Smoke command: `make smoke-veridia` / `cd swift && swift run HealthOSVeridiaApp --smoke-test`
+- Swift target: `HealthOSVeridiaStage` — executable scaffold placeholder.
+- Smoke command: `make smoke-veridia` / `cd swift && swift run HealthOSVeridiaStage --smoke-test`
 - The current smoke-testable session boundary is valid proof of Boundary scaffold, not a reason to add unrelated Stage wiring before its upstream mediated surfaces are implemented and stable.
 
 Future Veridia wiring must follow `docs/architecture/50-app-layer-boundary-and-reference-apps.md`: the consumed mediated surface must be implemented and stable, and the Veridia Custom must cover the new surface.

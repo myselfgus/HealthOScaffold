@@ -1,9 +1,10 @@
 #if canImport(SwiftUI)
 import Darwin
+import HealthOSBoundary
 import SwiftUI
 
 @main
-struct HealthOSScribeApp: App {
+struct HealthOSScribeStage: App {
     @State private var model = ScribeFirstSliceViewModel()
 
     var body: some Scene {
@@ -22,16 +23,17 @@ struct HealthOSScribeApp: App {
 }
 #else
 import Foundation
+import HealthOSBoundary
 import HealthOSCore
 import HealthOSSessionRuntime
 
 @main
-struct HealthOSScribeApp {
+struct HealthOSScribeStage {
     static func main() async {
         guard ProcessInfo.processInfo.arguments.contains("--smoke-test")
             || ProcessInfo.processInfo.arguments.contains("--smoke-test-audio")
         else {
-            print("HealthOSScribeApp requires macOS/SwiftUI for interactive mode.")
+            print("HealthOSScribeStage requires macOS/SwiftUI for interactive mode.")
             return
         }
 
@@ -67,10 +69,10 @@ struct HealthOSScribeApp {
             guard resolved.state != nil else {
                 throw SmokeError.invalidState("Gate resolution failed: \(resolved.issues)")
             }
-            print("HealthOSScribeApp smoke test passed (headless fallback).")
+            print("HealthOSScribeStage smoke test passed (headless fallback).")
             exit(0)
         } catch {
-            FileHandle.standardError.write(Data("HealthOSScribeApp smoke test failed: \(error)\n".utf8))
+            FileHandle.standardError.write(Data("HealthOSScribeStage smoke test failed: \(error)\n".utf8))
             exit(1)
         }
     }

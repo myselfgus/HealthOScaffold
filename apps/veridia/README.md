@@ -1,11 +1,11 @@
 # Veridia
 
-Patient health identity Stage for HealthOS. Veridia gives patients governed access to their identity, consent state, data custody, and export controls via `HealthOSAppBoundary`. It never defines Core law or holds clinical authority.
+Patient health identity Stage for HealthOS. Veridia gives patients governed access to their identity, consent state, data custody, and export controls via `HealthOSBoundary`. It never defines Core law or holds clinical authority.
 
-**Architecture:** `docs/architecture/12-veridia.md`  
-**Executable surface:** [`swift/Sources/HealthOSVeridiaApp/`](../../swift/Sources/HealthOSVeridiaApp/)  
-**Design surface:** [`HealthOSDesignSystem/ui_kits/veridia/`](../../HealthOSDesignSystem/ui_kits/veridia/)  
-**Runtime:** `HealthOSUserAgentRuntime` (Tier 2) via `HealthOSAppBoundary`
+**Architecture:** `docs/architecture/12-veridia.md`
+**Executable surface:** [`swift/Sources/HealthOSVeridiaStage/`](../../swift/Sources/HealthOSVeridiaStage/)
+**Design surface:** [`HealthOSDesignSystem/ui_kits/veridia/`](../../HealthOSDesignSystem/ui_kits/veridia/)
+**Runtime:** `HealthOSUserAgentRuntime` (Tier 2) via `HealthOSBoundary`
 
 ## Screens
 
@@ -30,7 +30,7 @@ flowchart LR
     classDef core     fill:#dcfce7,stroke:#22c55e,stroke-width:2px,color:#14532d
 
     VE[Veridia\nStage]:::stage
-    AB[HealthOSAppBoundary\nTier 3]:::boundary
+    AB[HealthOSBoundary\nTier 3]:::boundary
     UAR[HealthOSUserAgentRuntime\nTier 2]:::runtime
     CORE[HealthOSCore\nlaw · consent · identity]:::core
 
@@ -41,6 +41,6 @@ flowchart LR
 
 ## Maturity
 
-Session boundary is smoke-testable (`HealthOSVeridiaApp --smoke-test`).  
-No final UI shell is implemented. All screens are contract-first — `VeridiaSessionContracts.swift` and `UserSovereigntyContracts.swift` define the mediated surface.  
-`HealthOSVeridiaApp` currently retains a direct `HealthOSCore` dependency pending `HealthOSAppBoundary` facade completion (marked TODO in `swift/Package.swift`).
+Session boundary is smoke-testable (`HealthOSVeridiaStage --smoke-test`).
+No final UI shell is implemented. All screens are contract-first — `VeridiaSessionContracts.swift` and `UserSovereigntyContracts.swift` define the mediated surface.
+`HealthOSVeridiaStage` currently retains a direct `HealthOSCore` dependency pending `HealthOSBoundary` facade completion (marked TODO in `swift/Package.swift`).

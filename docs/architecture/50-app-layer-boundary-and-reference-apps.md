@@ -139,7 +139,7 @@ This audit found four classes of drift:
 
 | Drift | Evidence | Disposition |
 |---|---|---|
-| Boundary naming drift | Some docs still named the canonical layer "App Integration Boundary" | Replace conceptual use with Boundary while preserving technical names such as `HealthOSAppBoundary` |
+| Boundary naming drift | Some docs still named the canonical layer "App Integration Boundary" or used "app boundary" as the constitutional term | Replace conceptual use with Boundary while preserving explicit compatibility/history notes |
 | Stage naming drift | Some docs treated Scribe, Veridia, and CloudClinic as a closed reference-app layer | Replace with Stage language and state that future governed consumers may exist in arbitrary number |
 | Custom drift | The governed Stage definition was still called App Charter and sometimes modeled as a separate tier | Replace with Custom and state that Custom is CoreLaw-governed, applied through Boundary, and not a HealthOS tier |
 | Ordering drift | APP-012 was READY while platform/runtime surfaces such as async execution, semantic retrieval, and CI still provide Stage-consumable foundations | APP-012 remains BLOCKED until Core/GOS/Runtime/Boundary/Custom readiness criteria are satisfied |

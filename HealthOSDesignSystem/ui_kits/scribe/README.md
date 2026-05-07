@@ -1,6 +1,6 @@
 # Scribe UI kit
 
-Professional clinical workspace. Recreation of the macOS 26+ first-slice surface defined in `swift/Sources/HealthOSScribeApp/` of the source repo, evolved one step toward the documented `NavigationSplitView` target in `docs/architecture/48-native-macos-ui-design-system-and-app-shells.md`.
+Professional clinical workspace. Recreation of the macOS 26+ first-slice surface defined in `swift/Sources/HealthOSScribeStage/` of the source repo, evolved one step toward the documented `NavigationSplitView` target in `docs/architecture/48-native-macos-ui-design-system-and-app-shells.md`.
 
 ## Components
 

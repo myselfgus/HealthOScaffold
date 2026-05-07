@@ -10,7 +10,7 @@ Scribe workspace/session contracts, first-slice Boundary, draft-gate-finalizatio
 Scribe consumes mediated state only; gate and finalization remain Core-controlled.
 
 ## Main files
-`swift/Sources/HealthOSCore/ScribeProfessionalWorkspaceContracts.swift`, `ScribeFirstSliceBridge.swift`, `swift/Sources/HealthOSScribeApp/`.
+`swift/Sources/HealthOSCore/ScribeProfessionalWorkspaceContracts.swift`, `ScribeFirstSliceBridge.swift`, `swift/Sources/HealthOSScribeStage/`.
 
 ## Expected tests
 `cd swift && swift test --filter ScribeProfessionalWorkspaceContractsTests`; smoke test when app-facing change occurs.

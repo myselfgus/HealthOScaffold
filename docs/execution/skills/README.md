@@ -19,11 +19,11 @@ Read when working on governance, runtimes, contracts, or cross-layer concerns:
 - `core-law-skill.md`
 - `gos-skill.md`
 - `aaci-skill.md`
-- `app-boundary-skill.md`
+- `boundary-skill.md`
 - `scribe-professional-workspace-skill.md`
 - `user-agent-veridia-skill.md`
 - `service-operations-cloudclinic-skill.md`
-- `cross-app-surfaces-skill.md`
+- `cross-stage-surfaces-skill.md`
 - `storage-data-layer-skill.md`
 - `provider-governance-skill.md`
 - `async-runtime-skill.md`

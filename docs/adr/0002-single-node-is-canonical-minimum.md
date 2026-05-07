@@ -14,9 +14,9 @@ modules_impacted:
   - HealthOSMSR
   - HealthOSSessionRuntime
   - HealthOSCLI
-  - HealthOSScribeApp
-  - HealthOSVeridiaApp
-  - HealthOSCloudClinicApp
+  - HealthOSScribeStage
+  - HealthOSVeridiaStage
+  - HealthOSCloudClinicStage
 related_adrs:
   supersedes: []
   superseded_by: []

@@ -1,6 +1,7 @@
 #if canImport(SwiftUI)
 import Foundation
 import Observation
+import HealthOSBoundary
 import HealthOSCore
 import HealthOSSessionRuntime
 
@@ -378,12 +379,12 @@ final class ScribeFirstSliceViewModel {
         await resolveGate(approve: true)
 
         guard let state = bridgeState, let summary = state.runSummary else {
-            print("HealthOSScribeApp smoke test failed")
+            print("HealthOSScribeStage smoke test failed")
             print(displayIssues)
             return false
         }
 
-        print("HealthOSScribeApp smoke test complete")
+        print("HealthOSScribeStage smoke test complete")
         print("session=\(state.sessionId.uuidString)")
         print("capture_mode=\(state.captureMode?.rawValue ?? "none")")
         print("transcription_status=\(state.transcription.status.rawValue)")

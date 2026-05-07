@@ -1,11 +1,11 @@
-# Proposta de UX Copy — HealthOSCloudClinicApp
+# Proposta de UX Copy — HealthOSCloudClinicStage
 > Revisões para o app de operações profissionais e de serviço. Foco: operadores técnicos e profissionais de saúde em contexto organizacional.
 
 ---
 
 ## Contexto
 
-HealthOSCloudClinicApp é a interface de operações profissionais e de serviço do HealthOS. Atualmente é um scaffold sem UI final — o único texto visível está nas saídas de `--smoke-test` e do modo padrão. O público inclui operadores de serviço de saúde e profissionais. A linguagem deve ser clara, profissional e sem jargão de engenharia.
+HealthOSCloudClinicStage é a interface de operações profissionais e de serviço do HealthOS. Atualmente é um scaffold sem UI final — o único texto visível está nas saídas de `--smoke-test` e do modo padrão. O público inclui operadores de serviço de saúde e profissionais. A linguagem deve ser clara, profissional e sem jargão de engenharia.
 
 ---
 

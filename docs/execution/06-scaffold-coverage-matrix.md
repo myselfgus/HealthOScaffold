@@ -89,7 +89,7 @@ Legend:
 - [x] authoring/compiler architecture document established
 - [x] runtime-binding architecture document established
 - [x] lifecycle/storage architecture document established
-- [x] app consumption patterns documented for Scribe, Veridia, and CloudClinic
+- [x] app consumption patterns documented for initial reference apps
 - [x] canonical JSON schema established for compiled GOS form
 - [x] lightweight authoring schema established for YAML source documents
 - [x] bundle-manifest schema established for compiled-bundle lifecycle representation
@@ -157,7 +157,7 @@ Legend:
 - [x] CloudClinic defined
 - [x] app/core separation established
 - [x] shared state vocabulary exists
-- [x] primary flow maps exist for all three apps
+- [x] primary flow maps exist for the initial reference apps
 - [x] runtime-state surfaces are defined
 - [x] screen-level interaction contracts exist
 - [x] first-slice-to-Scribe bridge contract exists (facade/state surface, no UI law ownership)

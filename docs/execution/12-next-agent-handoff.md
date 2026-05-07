@@ -20,7 +20,7 @@ ST-011 created the Territory Registry under `.healthos-settler/territories/`, in
 
 ST-011B created the product technical specification baseline at `docs/product/01-healthos-technical-product-specification.md`. Future construction and product tasks should read this product baseline together with canonical architecture and execution docs when generating scoped work units.
 
-Future construction-system work should read doc 22 before creating Settler profiles, Settlement templates, prompt generation, PR review drafts, derived memory builders, or `healthos-forge-mcp` surfaces. Product queue work still reads doc 21. APP-011 remains the next product task, but ST-012 is the next construction-system task.
+Future construction-system work should read doc 22 before creating Settler profiles, Settlement templates, prompt generation, PR review drafts, derived memory builders, or `healthos-forge-mcp` surfaces. Product queue work still reads doc 21. APP-012 is no longer READY as app implementation; it is blocked until platform/runtime surfaces, App Integration Boundary, and CloudClinic App Charter readiness are satisfied. Independent construction-system work may proceed, but app-prompt generation for blocked app wiring must be reframed as charter/boundary-readiness work.
 
 ## CRITICAL: Read the master plan first
 
@@ -37,26 +37,29 @@ This document is the authoritative priority-ordered work plan as of 2026-04-29. 
 - The canonical Git + PR workflow every task must follow
 - Ontology invariants that must never be violated
 
-**The product/repo priority order after the latest TODO audit is:**
+**The product/repo priority order after the 2026-05-07 app-layer boundary audit is:**
 
 | Tier | What | Why |
 |------|------|-----|
 | **P0/P1 completed** | STR-001, RT-MSR-001, RT-MSR-002, RT-MSR-003, STR-002, STR-003, STR-004 | MSR provider-backed stages and structural cleanup are already landed; do not reselect them from stale TODO text |
-| **P2 active** | APP-012 | Wire existing CloudClinic boundary contracts into a smoke-testable session path |
-| **P3** | RT-PROVIDER-001, RT-ASYNC-001, RT-RETRIEVAL-001 | Runtime hardening (real providers, SQL-backed executor, semantic retrieval) |
-| **P4** | CI-001 | GitHub Actions CI integration |
+| **Tier 1 READY** | CI-001, RT-ASYNC-001, RT-RETRIEVAL-001 | Platform/runtime surfaces and validation gates must advance before new app wiring |
+| **Tier 2 / 3 needs-review** | CloudClinic service/runtime mediated surface + App Integration Boundary | Define the exact stable facade/envelope/app-safe view before APP-012 |
+| **Tier 4 needs-review** | CloudClinic App Charter | Complete app role, consumed surfaces, degraded behavior, data exposure, validation |
+| **Tier 5 BLOCKED** | APP-012 | App implementation/wiring blocked until tiers 1-4 are DONE or explicitly accepted |
+| **Tier 6 parallel** | Independent construction-system work | May run in parallel; ST-020 must be reframed if it targets APP-012 implementation |
 
 Current status details:
 - RT-PROVIDER-001 is DONE.
 - APP-011 is DONE.
-- APP-012 and CI-001 remain READY.
-- RT-ASYNC-001 and RT-RETRIEVAL-001 remain BLOCKED in doc 21.
+- CI-001, RT-ASYNC-001, and RT-RETRIEVAL-001 are READY Tier 1 platform/runtime foundation tasks.
+- APP-012 is BLOCKED as Tier 5 app implementation.
+- ST-020 is needs-review/blocked as written because it targets generating an APP-012 implementation prompt before APP-012 is unblocked.
 - APP-008, CL-006, DS-007, OPS-003, RT-008, and AACI-009 were reconciled as completed in the TODO trackers during the 2026-05-01 local / 2026-05-02 UTC audit.
 
 ## How to choose next task
 
 1. Read `docs/execution/21-structural-ontology-and-product-readiness-plan.md` → Priority Grid.
-2. Find highest-priority task with Status = `READY` and all prerequisites `DONE`; after the latest audit, that means APP-012 for product app wiring unless the operator explicitly selects CI-001 or construction-system work.
+2. Find highest-priority task with Status = `READY` and all prerequisites `DONE`; after the app-layer boundary audit, that means CI-001, RT-ASYNC-001, or RT-RETRIEVAL-001 before any new app wiring.
 3. Read that task's full spec in doc 21 (branch name, files, DoD, validation, git workflow).
 4. Use the deterministic Steward baseline for repository state context:
    `cd ts && npx --yes --workspace @healthos/steward healthos-steward status`

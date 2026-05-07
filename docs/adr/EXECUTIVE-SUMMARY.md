@@ -17,7 +17,7 @@ Escopo: ADRs 0001-0012 elevadas ao template canônico, validadas contra [swift/P
 
 ---
 
-## 2. Top 12 decisões e impactos
+## 2. Top 13 decisões e impactos
 
 | # | ADR | Decisão (uma linha) | Risco | Impacto |
 |---|---|---|---|---|
@@ -30,9 +30,10 @@ Escopo: ADRs 0001-0012 elevadas ao template canônico, validadas contra [swift/P
 | 7 | 0005 | **Stack híbrida** — Swift (runtime/apps), TypeScript (tooling/agentes), Python (offline ML). | Medium | Cada linguagem no ponto forte; gates CI independentes. |
 | 8 | 0006 | **Seam local** Swift↔TS via loopback HTTP + Postgres + filesystem. | Medium | Inspecionável, debugável; payloads grandes por referência. |
 | 9 | 0008 | **lawfulContext** permanece mapa canônico flexível em v1 (com chaves canônicas tipadas no Core). | Low | Reduz churn em fase scaffold; envelope rígido fica para versão futura. |
-| 10 | 0007 | HealthOS **não tem UX de usuário-final própria**; UX vive em Scribe/Veridia/CloudClinic. | Low | Separação clara plataforma↔app; lei não vaza para UI. |
+| 10 | 0007 | HealthOS **não tem UX de usuário-final própria**; UX vive em reference apps/future apps. | Low | Separação clara plataforma↔app; lei não vaza para UI. |
 | 11 | 0012 | HealthOScaffold = **repositório de construção** do HealthOS; "scaffold" é maturidade. | Low | Sem bifurcação semântica; código no repo é HealthOS code. |
-| 12 | (Conjunto) | ADRs 0001-0012 formam um **sistema coerente** sem conflitos diretos. | — | Núcleo constitucional auditável e estável. |
+| 12 | 0013 | HealthOS Platform, App Layer e Construction System permanecem separados; app wiring exige surface estável + App Charter. | High | HealthOS app-agnostic; APP-012 reclassificada; construção fica fora da hierarquia clínica/runtime. |
+| 13 | (Conjunto) | ADRs 0001-0013 formam um **sistema coerente** sem conflitos diretos. | — | Núcleo constitucional auditável e estável. |
 
 ---
 
@@ -89,16 +90,16 @@ Apps:
 3. **Verificação de bind** apenas em `127.0.0.1`/UDS para serviços loopback (ADR-0006).
 
 ### Prioridade 2 — Cobrir gaps de ADR (ver [GAPS-AND-CONFLICTS.md](GAPS-AND-CONFLICTS.md))
-4. **ADR-0013** — Provider model governance e threshold policy.
-5. **ADR-0014** — Apple Foundation Models como provider apple-native.
-6. **ADR-0015** — Observabilidade do operador como contrato.
-7. **ADR-0016** — MSR pipeline e prompts versionados (golden tests).
-8. **ADR-0017** — Coordenação cross-app e shared surfaces.
-9. **ADR-0018** — Backup, retenção e governança de objetos.
-10. **ADR-0019** — Retrieval-augmented memory governance.
-11. **ADR-0020** — First-slice executable path.
-12. **ADR-0021** — Steward e infra de agente para construção.
-13. **ADR-0022** — Esquemas governados e drift detection.
+4. **ADR-0014** — Provider model governance e threshold policy.
+5. **ADR-0015** — Apple Foundation Models como provider apple-native.
+6. **ADR-0016** — Observabilidade do operador como contrato.
+7. **ADR-0017** — MSR pipeline e prompts versionados (golden tests).
+8. **ADR-0018** — Coordenação cross-app e shared surfaces.
+9. **ADR-0019** — Backup, retenção e governança de objetos.
+10. **ADR-0020** — Retrieval-augmented memory governance.
+11. **ADR-0021** — First-slice executable path.
+12. **ADR-0022** — Steward e infra de agente para construção.
+13. **ADR-0023** — Esquemas governados e drift detection.
 
 ### Prioridade 3 — Manutenção contínua
 14. Auditoria trimestral de contadores de drift (`gate.bypass_attempt`, `lawfulcontext.unknown_key`, `identifier.leak.detected`).
@@ -123,12 +124,12 @@ Apps:
 
 ## 7. Conclusão
 
-As ADRs 0001-0012 formam um núcleo constitucional **coerente, auditável e materialmente refletido** no código. A elevação ao template canônico:
+As ADRs 0001-0013 formam um núcleo constitucional **coerente, auditável e materialmente refletido** no código e na governança de tarefas. A elevação ao template canônico:
 
 - explicitou critérios mensuráveis de sucesso para cada decisão;
 - amarrou cada ADR a paths de código, testes e schemas concretos;
 - formalizou observabilidade, segurança/privacidade e plano de testes;
-- expôs gaps (ADRs 0013-0022 propostas) sem encobrí-los.
+- expôs gaps (ADRs 0014-0023 propostas) sem encobrí-los.
 
 O foco imediato deve ser:
 1. **Enforcement automático** das três regras críticas (Core-only law, anti-PII, loopback-only).

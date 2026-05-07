@@ -13,6 +13,15 @@ HealthOScaffold is the historical repository name and construction repository fo
 3. Read `06-scaffold-coverage-matrix.md` and `10-invariant-matrix.md`.
 4. Read relevant `todo/*.md` + matching `skills/*.md`.
 5. Confirm dependency readiness. If not ready, record blocker instead of coding around it.
+6. Classify the task by tier before accepting it:
+   - Tier 1 Platform/Core
+   - Tier 2 Runtime/Mediation
+   - Tier 3 App Integration Boundary
+   - Tier 4 App Charter
+   - Tier 5 App Implementation
+   - Tier 6 Construction System
+
+For Tier 5 work, app wiring advances only after the mediated surface it consumes is implemented and stable, not merely contracted, and after the relevant App Charter is complete. If evidence is ambiguous, mark `needs-review`.
 
 ## Task selection order
 

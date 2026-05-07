@@ -24,6 +24,7 @@ Todas as ADRs seguem o **template canônico** (ver `Template ADR Canônico` em [
 | [0010](0010-health-exclusive-ontology-and-architecturalized-compliance.md) | Ontologia health-exclusiva e compliance arquiteturalizada | Accepted | High | Todos |
 | [0011](0011-governed-operational-spec-is-subordinate-to-core.md) | Governed Operational Spec subordinada ao Core | Accepted | High | Core, AACI, MSR, SessionRuntime, Providers |
 | [0012](0012-healthoscaffold-is-healthos-construction-repository.md) | HealthOScaffold é o repositório de construção do HealthOS | Accepted | Low | Todos |
+| [0013](0013-healthos-platform-app-layer-construction-system-boundary.md) | HealthOS Platform, App Layer e Construction System permanecem separados | Accepted | High | Todos |
 
 ### Documentos auxiliares
 
@@ -74,7 +75,9 @@ HealthOS Runtimes          (AACI, MSR, SessionRuntime; ADR 0001, 0010)
       ↓
 Agentes / Atores
       ↓
-Apps / Interfaces          (Scribe, Veridia, CloudClinic; ADR 0007)
+App Integration Boundary   (mediated app-safe surfaces; ADR 0013)
+      ↓
+Reference App Layer        (Scribe, Veridia, CloudClinic, future apps; ADR 0007, 0013)
       ↓
 Artefatos / Efeitos        (ADR 0003, 0004)
 ```

@@ -11,6 +11,10 @@ The HealthOScaffold repository is where HealthOS is being built. App/interface d
 HealthOS also remains health-exclusive by ontology.
 Apps do not convert it into generic workflow infrastructure.
 
+Apps are multiplicable consumers of mediated HealthOS surfaces. Scribe, Veridia, CloudClinic, and future apps are reference-app consumers, not a closed set and not the ontology of HealthOS. HealthOS can exist without any specific app.
+
+App wiring advances only after the mediated surface the app consumes is implemented and stable, not merely contracted. Contract-only surfaces may be documented and tested as boundary evidence, but they do not justify non-provisional app implementation by themselves.
+
 ## Canonical split
 
 ### HealthOS
@@ -47,6 +51,7 @@ Therefore apps:
 - do not own gate/effectuation law
 - do not interpret GOS as a sovereign source of law
 - must call HealthOS contracts for governed operations
+- must have an App Charter before substantial new wiring
 
 This is a platform virtue: new apps can be added without cloning regulatory logic.
 
@@ -68,6 +73,7 @@ This boundary does not weaken the central rule that app-layer compliance logic s
 - Scribe = professional-facing UX
 - Veridia = patient health identity app
 - CloudClinic = service-facing UX
+- future apps = additional consumers of the same mediated HealthOS boundary, not new Core law
 
 ## Allowed HealthOS-facing surfaces
 
@@ -87,10 +93,12 @@ Native macOS UI work follows the same boundary. The shared design system and app
 
 ## Scaffold-stage HealthOS posture / non-claims
 
-All three app interfaces (Scribe, Veridia, CloudClinic) are HealthOS interfaces currently at scaffold-stage maturity:
+The initial reference app interfaces are HealthOS interfaces currently at scaffold-stage maturity:
 - Scribe has a minimal macOS SwiftUI validation surface for first-slice wiring only; it is not a final production UI
 - Veridia and CloudClinic remain contract-first documentation surfaces with no UI shells implemented
 - native macOS app-shell and design-system scope is now defined as scaffold guidance, not implemented final UX
 - no app owns or reimplements consent/habilitation/gate/finality law; all governance remains in HealthOS Core
 - app-facing surfaces are explicitly mediated (no raw direct identifiers, no reidentification mappings, no storage path leakage by default)
 - cross-app coordination envelope (`AppSurfaceEnvelope`) exists as a scaffold contract with tested boundary validators, but no production multi-app workflow is wired
+
+See `docs/architecture/50-app-layer-boundary-and-reference-apps.md` for the tiered ordering rule and App Charter template.

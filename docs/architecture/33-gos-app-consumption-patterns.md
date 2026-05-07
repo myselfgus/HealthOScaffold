@@ -4,10 +4,13 @@
 
 Define what apps are allowed to consume from GOS-driven runtime work without becoming sovereign interpreters of GOS.
 
+This applies to initial reference apps and future apps. App consumption patterns are not a closed ontology of HealthOS apps.
+
 ## Core rule
 
 Apps do not load compiled GOS bundles as their source of law.
 Apps consume runtime-mediated state derived from GOS execution.
+Substantial app wiring also requires the relevant mediated surface to be implemented and stable, plus a complete App Charter.
 
 This preserves the correct split:
 - HealthOS Core governs law

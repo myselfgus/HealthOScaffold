@@ -294,11 +294,13 @@ Outcome (2026-05-05):
 
 ### ST-020 — Use Steward to generate APP-012 (CloudClinic) prompt
 
-Status: TODO.
+Status: NEEDS-REVIEW / BLOCKED AS WRITTEN after ADR-0013.
 
 Goal:
-- use the construction system to generate the APP-012 (CloudClinic smoke-testable executable path) prompt after the needed construction pieces exist
-- note: APP-011 is DONE (VeridiaSessionFacade, PR #98, 2026-05-04); ST-020 goal revised to target APP-012
+- current wording asks the construction system to generate an APP-012 implementation prompt
+- APP-012 is now blocked as Tier 5 app implementation until Tier 1 platform/runtime tasks, Tier 3 CloudClinic App Integration Boundary, and Tier 4 CloudClinic App Charter criteria are satisfied
+- acceptable reframe: use Steward to generate a CloudClinic App Charter / boundary-readiness prompt instead of an APP-012 implementation prompt
+- note: APP-011 is DONE (VeridiaSessionFacade, PR #98, 2026-05-04); APP-011 remains valid boundary scaffold evidence, not a reason to bypass ADR-0013 ordering
 
 ## Historical streams
 

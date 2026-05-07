@@ -1,7 +1,27 @@
 # Glossary
 
 ## HealthOS
-The whole sovereign computational environment for health operations.
+The whole app-agnostic sovereign computational environment for health operations. HealthOS includes Core, runtime/mediation layers, app integration boundaries, reference apps, tooling, tests, and docs at their explicit maturity levels. It is not defined by any one app or fixed set of apps.
+
+## HealthOScaffold
+The historical repository name and foundation/scaffold phase for building HealthOS. It is not a separate product from HealthOS.
+
+## Platform/Core Layer
+The HealthOS layer that owns Core law, sovereign contracts, storage law, consent, habilitation, finalidade, provenance, gate, and fail-closed governance.
+
+## Runtime/Mediation Layer
+The HealthOS layer that orchestrates and mediates work under Core law. It includes Session Runtime, AACI, GOS, MSR, providers, Async Runtime, User-Agent Runtime, and Service Runtime where evidenced.
+
+## App Integration Boundary
+The boundary between runtimes/Core and apps. It includes facades, command/result envelopes, safe refs, app-safe views, mediated state, degraded-state truth, and provenance-facing summaries. Apps consume this boundary; they do not define it.
+
+## Reference App Layer
+The app/interface layer containing initial reference apps such as Scribe, Veridia, CloudClinic, and future apps in arbitrary number. Reference apps are consumers of mediated HealthOS surfaces, not Core, runtime law, or the definition of HealthOS.
+
+## Construction System
+The engineering-tooling layer for building HealthOS: Steward, Settler, Territory, Settlement, and HealthOS Forge MCP. It is outside the HealthOS clinical/runtime hierarchy and has no clinical, constitutional, authorizing, or merge authority.
+
+See `docs/architecture/50-app-layer-boundary-and-reference-apps.md` for the canonical app boundary and task-ordering doctrine.
 
 ## AACI
 Ambient-Agentic Clinical Intelligence. A runtime inside HealthOS for parallel operational/bureaucratic automation during or around health work.

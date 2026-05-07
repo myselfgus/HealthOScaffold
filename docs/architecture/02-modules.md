@@ -26,7 +26,15 @@
 - Mental Space Runtime
 - User-Agent Runtime
 
-## Apps
+## App Integration Boundary
+- app-safe facades
+- command/result envelopes
+- mediated state
+- safe refs
+- degraded-state truth
+
+## Reference apps
 - Scribe: professional-facing interface
 - Veridia: patient health identity app
 - CloudClinic: service operations interface
+- future apps: additional consumers of mediated HealthOS surfaces

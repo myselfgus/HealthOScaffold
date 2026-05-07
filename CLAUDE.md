@@ -13,7 +13,7 @@ Use "scaffold" only to describe maturity or bootstrap/foundation phase, never to
 - **HealthOS is the whole platform**.
 - **AACI is one runtime inside HealthOS**.
 - **GOS is subordinate to Core law** (operational mediation, never constitutional authority).
-- **Scribe/Veridia/CloudClinic are app/interfaces** consuming mediated surfaces, not law engines.
+- **Scribe/Veridia/CloudClinic are initial reference app/interfaces** consuming mediated surfaces, not law engines or the definition of HealthOS.
 - This repository contains HealthOS components at scaffold/foundation maturity, **not production-ready**, **not a full EHR**, and **not a real regulatory/provider integration**.
 
 ## Required reading order before coding
@@ -38,6 +38,16 @@ Use "scaffold" only to describe maturity or bootstrap/foundation phase, never to
 18. relevant `docs/architecture/*.md`
 19. matching `docs/execution/skills/*.md` (HealthOS domain skills)
 20. if touching Swift/SwiftUI/Xcode/Apple platform code: matching `docs/execution/skills/<name>/SKILL.md` (macOS skills — see `docs/execution/skills/README.md` for index)
+
+Before accepting any task, classify it by layer and record the classification in the work unit:
+- **Tier 1 — Platform/Core:** Core law, validation harness, storage law, CI, platform surfaces that apps may later consume.
+- **Tier 2 — Runtime/Mediation:** Session Runtime, AACI, GOS, MSR, providers, Async Runtime, User-Agent Runtime, Service Runtime.
+- **Tier 3 — App Integration Boundary:** facades, envelopes, app-safe views, safe refs, command/result envelopes, mediated state.
+- **Tier 4 — App Charter:** app role, users, mediated surfaces, boundaries, degraded states, validation expectations.
+- **Tier 5 — App Implementation:** Scribe, Veridia, CloudClinic, or future app wiring/UI.
+- **Tier 6 — Construction System:** Steward, Settler, Territory, Settlement, HealthOS Forge MCP, prompt/validation/derived-memory tooling.
+
+App wiring advances only after the mediated surface it consumes is implemented and stable, not merely contracted, and after the relevant App Charter is complete. If a Tier 5 task depends on an absent or unstable Tier 1-3 surface, mark it `BLOCKED` with the objective unblock criterion instead of building provisional app scaffold. If evidence is ambiguous, mark `needs-review`.
 
 Task selection order:
 1. `READY` task in current phase

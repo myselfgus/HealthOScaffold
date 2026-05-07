@@ -13,6 +13,8 @@ Apps consume core/runtime contracts. They do not invent separate law models.
 
 Compliance is architecturalized in HealthOS seams; apps render and request through contracts rather than reimplementing governance logic.
 
+The app state model is app-agnostic. Initial reference apps use it as examples; future apps may consume the same mediated boundary after their App Charter is complete.
+
 ## Cross-app shared state groups
 - AuthenticationContext
 - ServiceContext
@@ -99,6 +101,7 @@ Compliance is architecturalized in HealthOS seams; apps render and request throu
 ## Rule for apps
 An app may show degraded states, but it may not reinterpret them as legal/governance success.
 For example, a degraded retrieval does not imply access was authorized; it only indicates an operational state.
+App wiring must not treat absent or unstable platform/runtime state as if it were implemented.
 
 ## Runtime-state surfaces doctrine
 Detailed doctrine for how runtime truth appears in apps lives in:

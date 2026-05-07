@@ -306,6 +306,7 @@ Branch: `feat/str-005-veridia-cloudclinic-targets`
 
 ### CI-001 Wire `make validate-all` into GitHub Actions
 Priority: **P4** — after P0–P2 complete
+Status: READY as Tier 1 platform/repository validation foundation after ADR-0013
 Plan: `docs/execution/21-structural-ontology-and-product-readiness-plan.md` → CI-001
 Definition of done:
 - `.github/workflows/validate.yml` runs `make validate-all` on push/PR to main

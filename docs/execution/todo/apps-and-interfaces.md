@@ -190,7 +190,7 @@ Files touched:
 
 ### APP-003 Deepen screen-level interaction contracts
 Outcome:
-- per-screen commands, contract calls, and result/error states documented for Scribe, Veridia, and CloudClinic
+- per-screen commands, contract calls, and result/error states documented for the initial reference apps
 Files touched:
 - `docs/architecture/23-scribe-screen-contracts.md`
 - `docs/architecture/24-veridia-screen-contracts.md`
@@ -350,7 +350,7 @@ Files touched:
 
 ### APP-009 Documentation drift check for app-boundary claims
 Outcome:
-- added explicit "Scaffold posture / non-claims" sections to Scribe, Veridia, and CloudClinic architecture docs
+- added explicit "Scaffold posture / non-claims" sections to initial reference app architecture docs
 - interface doctrine doc now includes scaffold-honest summary clarifying Scribe as minimal SwiftUI validation surface and Veridia/CloudClinic as contract-first only
 - wording hardened to avoid implying final UI, production readiness, or real provider integration
 - execution tracking updated with APP-009 completion entry
@@ -379,15 +379,27 @@ Files touched:
 
 ## READY
 
+No app implementation TODO is currently READY after ADR-0013. New app wiring must wait for platform/runtime surface readiness, an explicit App Integration Boundary, and a complete App Charter.
+
+## BLOCKED / NEEDS-REVIEW
+
 ### APP-012 CloudClinic: smoke-testable executable path
 Priority: Medium
-Status: READY after STR-005
+Status: BLOCKED after ADR-0013
 Skill: `docs/execution/skills/native-macos-ui/SKILL.md` + relevant app skill + `docs/execution/skills/liquid-glass/SKILL.md`
 Definition of done:
 - wire the existing CloudClinic boundary contracts into a minimal smoke-testable executable path
 - consume only mediated contracts already available for CloudClinic
 - do not move service access law, membership policy, gate/finality law, storage law, or clinical authority into the app target
 - validate with SwiftPM and the CloudClinic smoke path
+
+Blockers:
+- Tier 1 platform/runtime foundations must be DONE or explicitly accepted as out-of-scope/degraded for APP-012: `CI-001`, `RT-ASYNC-001`, `RT-RETRIEVAL-001`.
+- Tier 3 CloudClinic App Integration Boundary needs review: exact facade/envelope/app-safe view must be defined and proven stable.
+- Tier 4 CloudClinic App Charter is incomplete: degraded behavior, consumed surfaces, data exposure limits, and validation expectations must be completed before implementation.
+
+Unblock criterion:
+- Update `docs/architecture/50-app-layer-boundary-and-reference-apps.md` or a follow-up charter doc with a complete CloudClinic charter, prove the consumed mediated surfaces are implemented/stable, then reclassify APP-012 explicitly.
 
 
 ## TESTS / VALIDATION

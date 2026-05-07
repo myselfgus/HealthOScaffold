@@ -1,5 +1,7 @@
 # Scribe screen contracts
 
+Scribe is an initial reference app consuming mediated HealthOS surfaces. These screen contracts describe app-facing consumption, not Core law or the definition of HealthOS.
+
 ## Authentication / service selection
 Primary actions:
 - authenticate
@@ -110,6 +112,8 @@ Result states:
 ## Bridge command/result contract (first executable slice)
 
 The first executable bridge now uses explicit command/result envelopes backed by shared HealthOS envelope vocabulary to reduce ambiguity between app intent and core/runtime execution.
+
+Future screen wiring must not advance unless the mediated surface it consumes is implemented and stable, and the Scribe App Charter covers that surface.
 
 Commands:
 - `startProfessionalSession(StartProfessionalSessionCommand)`

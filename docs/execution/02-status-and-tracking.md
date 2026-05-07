@@ -6,17 +6,40 @@ Current phase: Controlled implementation — first vertical slice started
 
 ## Completed recently
 
+## DOC-APP-LAYER-BOUNDARY-ORDERING — app-agnostic platform/app/construction ordering (2026-05-07)
+
+- Objective: correct documentation/governance so HealthOS is explicitly app-agnostic and task ordering is platform/runtime surface first, App Integration Boundary second, App Charter third, app implementation last.
+- Files created:
+  - `docs/adr/0013-healthos-platform-app-layer-construction-system-boundary.md`
+  - `docs/architecture/50-app-layer-boundary-and-reference-apps.md`
+- Files updated:
+  - `AGENTS.md` and `CLAUDE.md` — layer/tier classification required before accepting a task; app wiring blocked unless the mediated surface is implemented/stable and App Charter is complete.
+  - `README.md`, `docs/architecture/17-glossary.md`, `19-interface-doctrine.md`, and app/interface docs — initial reference apps described as consumers, not a closed set or HealthOS ontology.
+  - `docs/adr/README.md`, `TRACEABILITY-MATRIX.md`, `GAPS-AND-CONFLICTS.md` — ADR-0013 registered and proposed ADR numbering adjusted.
+  - `docs/execution/21-structural-ontology-and-product-readiness-plan.md`, `12-next-agent-handoff.md`, `todo/apps-and-interfaces.md`, `todo/runtimes-and-aaci.md`, `todo/ops-network-ml.md`, `19-settler-model-task-tracker.md`, `22-steward-construction-operating-model.md` — open tasks mapped by tier and app wiring reclassified.
+  - `.healthos-steward/prompts/prompt-architecture-template.md` — prompt template requires tier classification and forbids app wiring without stable mediated surfaces + App Charter.
+- Task reclassification:
+  - Tier 1 READY: `CI-001`, `RT-ASYNC-001`, `RT-RETRIEVAL-001`.
+  - Tier 3 needs-review: CloudClinic App Integration Boundary / exact facade-envelope decision.
+  - Tier 4 needs-review: CloudClinic App Charter is incomplete.
+  - Tier 5 BLOCKED: `APP-012` until Tier 1-4 unblock criteria are met or explicitly accepted with degraded/out-of-scope semantics.
+  - Tier 6 needs-review/blocked as written: `ST-020`, because its current target is APP-012 prompt generation before APP-012 is unblocked; independent construction-system work remains parallelizable.
+- Drift registered: closed-set reference-app wording, APP-012 ordering drift, and risk of treating Scribe/Veridia boundary scaffold as permission for further app wiring before upstream surfaces stabilize.
+- Invariants: documentation/governance only; no source code, schemas, SQL, or package manifests changed; Core sovereignty preserved; apps remain optional/multiplicable consumers; no production/EHR/provider/signature/interoperability/semantic retrieval claim added.
+- Residual gaps: CloudClinic App Charter remains incomplete; CloudClinic App Integration Boundary needs a focused follow-up; semantic retrieval and SQL async runtime remain platform work; CI remains local-only until `CI-001`.
+- Next recommended work: Tier 1 platform work, preferably `CI-001` or `RT-ASYNC-001` / `RT-RETRIEVAL-001`, not app wiring.
+
 ## DOC-APP-011-FORGE-DRIFT — documentation drift correction (2026-05-07)
 
 - Objective: correct factual documentation/tracking drift after audit without changing runtime, schemas, SQL, package manifests, or tests.
 - Files updated:
   - `README.md` — Veridia now described as smoke-testable session boundary; CloudClinic remains scaffold placeholder / APP-012.
-  - `docs/execution/21-structural-ontology-and-product-readiness-plan.md` — APP-011 marked DONE; APP-012 remains the next app wiring task.
-  - `docs/execution/todo/apps-and-interfaces.md` — Veridia moved to COMPLETED with recorded validation evidence; APP-012 remains READY.
+  - `docs/execution/21-structural-ontology-and-product-readiness-plan.md` — APP-011 marked DONE; at that time APP-012 was the next app wiring task.
+  - `docs/execution/todo/apps-and-interfaces.md` — Veridia moved to COMPLETED with recorded validation evidence; at that time APP-012 was READY.
   - `.healthos-steward/README.md` — stale 3-command CLI baseline corrected to the implemented deterministic baseline.
   - `docs/architecture/17-glossary.md`, `docs/architecture/46-apple-sovereignty-architecture.md`, `docs/architecture/48-native-macos-ui-design-system-and-app-shells.md`, `docs/execution/12-next-agent-handoff.md`, `docs/execution/todo/runtimes-and-aaci.md` — Forge MCP and app readiness wording aligned with current repo state.
 - Invariants: documentation-only; product queue remains separate from construction-system queue; no production readiness, full EHR, real regulatory/provider/signature/interoperability, clinical authority, or runtime MCP claim added.
-- Next: ST-020 — use Steward to generate the APP-012 CloudClinic prompt path; CloudClinic remains READY in the product queue.
+- Next at that time: ST-020 — use Steward to generate the APP-012 CloudClinic prompt path; DOC-APP-LAYER-BOUNDARY-ORDERING later reclassified APP-012 as BLOCKED.
 
 ## ST-023 — session client workflows for construction lifecycle (2026-05-05)
 
@@ -33,7 +56,7 @@ Current phase: Controlled implementation — first vertical slice started
 - Invariants: construction-system only; no clinical authority; no merge authority; no production-readiness claim; execute stage remains external; no git automation; no Swift, Xcode, product, runtime, contracts, forge-mcp, or steward CLI files touched; no new npm dependencies; credentials are never logged
 - Maturity: implemented seam
 - Residual gaps: no live Managed Agents API workflow run in validation because that requires registered `agent.json`, beta-enabled Anthropic auth, and a publicly accessible `FORGE_MCP_URL`; no CLI entry point for individual workflows; remote Managed Agent access still depends on public reachability of `healthos-forge-mcp`
-- Next: ST-020 — use Steward to generate the APP-012 CloudClinic prompt path; APP-012 remains READY in doc-21
+- Next at that time: ST-020 — use Steward to generate the APP-012 CloudClinic prompt path; DOC-APP-LAYER-BOUNDARY-ORDERING later reclassified APP-012 as BLOCKED in doc 21.
 
 ## ST-022 — Steward Coordinator Managed Agent definition (2026-05-05)
 
@@ -397,12 +420,12 @@ Current phase: Controlled implementation — first vertical slice started
 - Result: TODO trackers were corrected so completed items no longer remain under READY:
   - APP-008 cross-app envelope propagation is completed at scaffold-contract maturity.
   - APP-011 is DONE.
-  - APP-012 remains READY for separate CloudClinic smoke-testable session wiring.
+  - APP-012 was READY for separate CloudClinic smoke-testable session wiring at the time of this audit; DOC-APP-LAYER-BOUNDARY-ORDERING later reclassified it as BLOCKED pending platform/runtime, boundary, and App Charter readiness.
   - CL-006 shared service-boundary outcome envelope is completed; no Core-law TODO is currently promoted by the TODO tracker.
   - DS-007 lawfulContext/layer-guard parity is completed; SQL/object backend hardening remains a post-scaffold gap.
   - OPS-003 incident-response command vocabulary is completed as documentation/contract vocabulary, not an implemented operator console.
-  - RT-008 runtime-boundary adapter tests and AACI-009 capability-honesty signaling are completed; RT-ASYNC-001 and RT-RETRIEVAL-001 remain blocked in doc 21.
-- Current promoted pending product/repo tasks after the 2026-05-07 drift correction: APP-012 and CI-001 are READY in `docs/execution/21-structural-ontology-and-product-readiness-plan.md`; RT-ASYNC-001 and RT-RETRIEVAL-001 remain BLOCKED there. APP-011 is DONE.
+  - RT-008 runtime-boundary adapter tests and AACI-009 capability-honesty signaling are completed; RT-ASYNC-001 and RT-RETRIEVAL-001 were still blocked in doc 21 at the time of this audit, then reclassified as READY Tier 1 platform/runtime foundation tasks by DOC-APP-LAYER-BOUNDARY-ORDERING.
+- Current promoted pending product/repo tasks after DOC-APP-LAYER-BOUNDARY-ORDERING: CI-001, RT-ASYNC-001, and RT-RETRIEVAL-001 are READY; APP-012 is BLOCKED; APP-011 is DONE.
 - Current promoted construction-system task: ST-012 Settler Profile Registry remains TODO after ST-011/ST-011A; it is tracked in `docs/execution/19-settler-model-task-tracker.md` and `docs/execution/22-steward-construction-operating-model.md`.
 - Non-claims preserved: no production readiness, no final UI, no real semantic retrieval, no regulatory/provider effectuation, and no movement of consent/habilitation/gate/finality law out of Core.
 
@@ -504,7 +527,7 @@ Current phase: Controlled implementation — first vertical slice started
   - `swift/Sources/HealthOSVeridiaApp/VeridiaEntrypoint.swift`
   - `swift/Sources/HealthOSCloudClinicApp/CloudClinicEntrypoint.swift`
 - Package wiring added: `HealthOSVeridiaApp` and `HealthOSCloudClinicApp` executable products/targets in `swift/Package.swift`, each depending only on `HealthOSCore`.
-- Smoke targets added: `make smoke-veridia` and `make smoke-cloudclinic`; `swift-smoke` now includes CLI, Scribe, Veridia, and CloudClinic smoke paths.
+- Smoke targets added: `make smoke-veridia` and `make smoke-cloudclinic`; `swift-smoke` now includes CLI and initial reference-app smoke paths.
 - Validation run: `git status --short`, entrypoint file assertions, `cd swift && swift package dump-package | grep -A10 HealthOSVeridiaApp`, `cd swift && swift package dump-package | grep -A10 HealthOSCloudClinicApp`, `cd swift && swift build`, `cd swift && swift run HealthOSVeridiaApp --smoke-test`, `cd swift && swift run HealthOSCloudClinicApp --smoke-test`, `cd swift && swift test`, `make swift-build`, `make swift-test`, `make smoke-cli`, `make smoke-scribe`, `make smoke-veridia`, `make smoke-cloudclinic`, `make validate-docs`, `make validate-schemas`, `make validate-contracts`, `make ts-build`, `make validate-all`.
 - Result: STR-005 complete after validation; APP-011 and APP-012 are unblocked and ready, but not implemented.
 - Invariants: Inv 1 (Core sovereignty), app boundary invariants (Veridia/CloudClinic remain mediated app surfaces), Inv 43 (scaffold/foundation maturity is not production readiness).
@@ -1130,7 +1153,7 @@ Files touched:
 
 ## APP-009 — Documentation drift check for app-boundary claims (2026-04-27)
 
-- app architecture docs now carry explicit "Scaffold posture / non-claims" sections for Scribe, Veridia, and CloudClinic
+- app architecture docs now carry explicit "Scaffold posture / non-claims" sections for the initial reference apps
 - interface doctrine doc (`19-interface-doctrine.md`) now includes scaffold-honest summary of all three app surfaces (Scribe minimal SwiftUI, Veridia/CloudClinic contract-first only)
 - wording hardened across app docs to avoid implying final UI, production readiness, or real provider integration
 - Scribe doc now clarifies scaffold-only status for microphone capture, transcription, semantic retrieval, and draft refresh
@@ -1268,7 +1291,7 @@ Files touched:
 - first-slice runner now attempts optional GOS activation and uses the resulting active bundle to mediate persisted SOAP/referral/prescription drafts, storage metadata, event attributes, and provenance when an active bundle exists
 - AACI activation now normalizes loader failures into typed runtime-consumable categories (`GOSLoadTypedError` + `GOSLoaderFailure`) while preserving underlying registry errors for diagnostics/tests
 - GOS validator now performs minimal evidence-hook completeness checks for task and draft-output phases
-- GOS app consumption patterns document added, clarifying what Scribe, Veridia, and CloudClinic may consume from GOS-driven runtime work
+- GOS app consumption patterns document added, clarifying what initial reference apps may consume from GOS-driven runtime work
 - GOS TypeScript tooling now performs authoring-schema validation, compiled-schema validation, cross-reference validation, and simple invariant checks
 - GOS compiler output now includes source provenance hashing/reporting
 - GOS CLI now supports `validate`, `compile`, and `bundle`
@@ -1339,9 +1362,9 @@ Files touched:
 - provider-routing baseline documented by task class
 - provider threshold guidance documented by task class
 - shared app state vocabulary expanded
-- Scribe, Veridia, and CloudClinic flow maps expanded
+- initial reference app flow maps expanded
 - runtime-state surfacing doctrine documented
-- screen-level contracts documented for Scribe, Veridia, and CloudClinic
+- screen-level contracts documented for the initial reference apps
 - operator observability contract documented
 - operations runbook strengthened
 - MeshProvider contract strengthened

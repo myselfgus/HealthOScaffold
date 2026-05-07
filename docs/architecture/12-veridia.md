@@ -2,6 +2,8 @@
 
 Veridia is the canonical patient app name and uses patient health identity app wording.
 
+Veridia is an initial reference app, not the definition of HealthOS. It consumes Core/runtime-mediated patient health identity surfaces through the App Integration Boundary.
+
 ## Purpose
 
 Veridia is the patient health identity app for HealthOS.
@@ -101,3 +103,6 @@ All flows are governed through Core-mediated surfaces. Veridia does not initiate
 - No production readiness is claimed.
 - Swift target: `HealthOSVeridiaApp` — executable scaffold placeholder.
 - Smoke command: `make smoke-veridia` / `cd swift && swift run HealthOSVeridiaApp --smoke-test`
+- The current smoke-testable session boundary is valid proof of boundary scaffold, not a reason to add unrelated app wiring before its upstream mediated surfaces are implemented and stable.
+
+Future Veridia wiring must follow `docs/architecture/50-app-layer-boundary-and-reference-apps.md`: the consumed mediated surface must be implemented and stable, and the Veridia App Charter must cover the new surface.

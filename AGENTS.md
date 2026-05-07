@@ -11,7 +11,7 @@ Use "scaffold" only to describe maturity or bootstrap/foundation phase, never to
 ## Constitutional identity (never collapse)
 
 - **HealthOS is the whole platform**.
-- **Core is constitutional law**: consent, habilitation, finalidade, storage law, provenance, gate, finality, and audit.
+- **Core is constitutional law**: consent, habilitation, storage law, provenance, gate, finality, and audit.
 - **AACI is one runtime inside HealthOS**.
 - **GOS is subordinate to Core law** (operational mediation, never constitutional authority).
 - **Runtimes execute and mediate work under Core/GOS**: Session Runtime, AACI, MSR, Async Runtime, User-Agent Runtime, and Service Runtime.

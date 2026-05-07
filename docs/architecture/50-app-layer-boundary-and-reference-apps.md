@@ -11,7 +11,7 @@ HealthOS can exist without any specific Stage. Scribe, Veridia, CloudClinic, and
 ```text
 HealthOS
   Core
-    constitutional law: consent, habilitation, finalidade, storage law,
+    constitutional law: consent, habilitation, storage law,
     provenance, gate, finality, audit, fail-closed governance
         |
         v

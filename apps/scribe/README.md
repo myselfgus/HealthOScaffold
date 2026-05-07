@@ -1,6 +1,6 @@
 # Scribe
 
-Professional clinical workspace for HealthOS. Scribe is a Tier 5 reference app — it consumes `HealthOSAppBoundary` only and never holds clinical authority, consent law, or Core governance.
+Professional clinical workspace Stage for HealthOS. Scribe consumes `HealthOSAppBoundary` only and never holds clinical authority, consent law, or Core governance.
 
 **Architecture:** `docs/architecture/11-scribe.md`  
 **Executable surface:** [`swift/Sources/HealthOSScribeApp/`](../../swift/Sources/HealthOSScribeApp/)  
@@ -39,5 +39,5 @@ stateDiagram-v2
 ## Maturity
 
 Minimal SwiftUI validation surface (`HealthOSScribeApp`) is operational for smoke testing.  
-Full Liquid Glass UI shell, final gate panel, and derived-draft workflows are pending Tier 2 stabilization.  
+Full Liquid Glass UI shell, final gate panel, and derived-draft workflows are pending Tier 2 stabilization.
 Scribe never owns governance law — all authority flows via `HealthOSAppBoundary`.

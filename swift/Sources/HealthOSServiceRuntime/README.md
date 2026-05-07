@@ -12,12 +12,12 @@ graph TD
     classDef core     fill:#dcfce7,stroke:#22c55e,stroke-width:2px,color:#14532d
     classDef runtime  fill:#dbeafe,stroke:#60a5fa,stroke-width:2px,color:#1e3a8a
     classDef boundary fill:#fce7f3,stroke:#f472b6,stroke-width:2px,color:#831843
-    classDef app      fill:#fdf4ff,stroke:#c084fc,stroke-width:2px,color:#581c87
+    classDef stage    fill:#fdf4ff,stroke:#c084fc,stroke-width:2px,color:#581c87
 
     CORE[HealthOSCore\nServiceOperationsContracts.swift]:::core
     SR[HealthOSServiceRuntime\nThis module]:::runtime
-    BOUND[HealthOSAppBoundary\nApp integration boundary]:::boundary
-    CC[HealthOSCloudClinicApp\nService operations app]:::app
+    BOUND[HealthOSAppBoundary\nBoundary compatibility module]:::boundary
+    CC[HealthOSCloudClinicApp\nService operations Stage]:::stage
 
     CORE --> SR
     SR --> BOUND
@@ -42,7 +42,7 @@ graph TD
 
 **Scaffold stub.** `ServiceRuntime.swift` declares the module namespace only. The service-operations session surface, habilitation enforcement path, and audit trail are not yet implemented.
 
-`HealthOSCloudClinicApp` (the service operations interface) is the primary Tier 5 consumer of this runtime via `HealthOSAppBoundary`. CloudClinic app wiring to this surface is blocked until the mediated session surface is implemented and stable.
+`HealthOSCloudClinicApp` (technical executable for the service operations Stage) is the primary Stage consumer of this runtime via `HealthOSAppBoundary`. CloudClinic Stage wiring to this surface is blocked until the mediated session surface is implemented and stable.
 
 Type vocabulary cross-reference: `HealthOSCore/ServiceOperationsContracts.swift`
 

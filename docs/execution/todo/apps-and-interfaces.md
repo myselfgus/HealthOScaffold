@@ -1,4 +1,4 @@
-# TODO — Apps and interfaces
+# TODO — Stages and interfaces
 
 ## COMPLETED
 
@@ -51,7 +51,7 @@ Outcome:
 - added `HealthOSVeridiaApp` and `HealthOSCloudClinicApp` as minimal Swift executable scaffold targets so the HealthOS product graph no longer represents only Scribe as an app/interface surface
 - added honest `--smoke-test` paths for both placeholders: scaffold-only, no final UI, no clinical authority, and no production-readiness claim
 - added `make smoke-veridia` and `make smoke-cloudclinic` while preserving existing CLI/Scribe smoke targets
-- unblocked APP-011 and APP-012 as next app wiring tasks without implementing either session path
+- unblocked APP-011 and APP-012 as next Stage wiring tasks without implementing either session path at that time; ADR-0013 later blocked APP-012 pending Core/GOS/runtime/Boundary/Custom readiness
 Files touched:
 - `swift/Package.swift`
 - `swift/Sources/HealthOSVeridiaApp/VeridiaEntrypoint.swift`
@@ -190,7 +190,7 @@ Files touched:
 
 ### APP-003 Deepen screen-level interaction contracts
 Outcome:
-- per-screen commands, contract calls, and result/error states documented for the initial reference apps
+- per-screen commands, contract calls, and result/error states documented for the initial Stages
 Files touched:
 - `docs/architecture/23-scribe-screen-contracts.md`
 - `docs/architecture/24-veridia-screen-contracts.md`
@@ -350,7 +350,7 @@ Files touched:
 
 ### APP-009 Documentation drift check for app-boundary claims
 Outcome:
-- added explicit "Scaffold posture / non-claims" sections to initial reference app architecture docs
+- added explicit "Scaffold posture / non-claims" sections to initial Stage architecture docs
 - interface doctrine doc now includes scaffold-honest summary clarifying Scribe as minimal SwiftUI validation surface and Veridia/CloudClinic as contract-first only
 - wording hardened to avoid implying final UI, production readiness, or real provider integration
 - execution tracking updated with APP-009 completion entry
@@ -379,7 +379,7 @@ Files touched:
 
 ## READY
 
-No app implementation TODO is currently READY after ADR-0013. New app wiring must wait for platform/runtime surface readiness, an explicit App Integration Boundary, and a complete App Charter.
+No Stage implementation TODO is currently READY after ADR-0013. New Stage wiring must wait for Core/GOS/runtime surface readiness, explicit Boundary, and complete Custom.
 
 ## BLOCKED / NEEDS-REVIEW
 
@@ -395,11 +395,11 @@ Definition of done:
 
 Blockers:
 - Tier 1 platform/runtime foundations must be DONE or explicitly accepted as out-of-scope/degraded for APP-012: `CI-001`, `RT-ASYNC-001`, `RT-RETRIEVAL-001`.
-- Tier 3 CloudClinic App Integration Boundary needs review: exact facade/envelope/app-safe view must be defined and proven stable.
-- Tier 4 CloudClinic App Charter is incomplete: degraded behavior, consumed surfaces, data exposure limits, and validation expectations must be completed before implementation.
+- CloudClinic Boundary needs review: exact facade/envelope/app-safe view must be defined and proven stable.
+- CloudClinic Custom is incomplete: degraded behavior, consumed surfaces, data exposure limits, and validation expectations must be completed before implementation.
 
 Unblock criterion:
-- Update `docs/architecture/50-app-layer-boundary-and-reference-apps.md` or a follow-up charter doc with a complete CloudClinic charter, prove the consumed mediated surfaces are implemented/stable, then reclassify APP-012 explicitly.
+- Update `docs/architecture/50-app-layer-boundary-and-reference-apps.md` or a follow-up Custom doc with a complete CloudClinic Custom, prove the consumed mediated surfaces are implemented/stable, then reclassify APP-012 explicitly.
 
 
 ## TESTS / VALIDATION

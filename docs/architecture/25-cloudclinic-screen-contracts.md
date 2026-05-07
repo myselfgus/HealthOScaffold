@@ -1,8 +1,8 @@
 # CloudClinic screen contracts
 
-CloudClinic is an initial service-operations reference app consuming mediated HealthOS surfaces. These contracts do not define Core, Service Runtime, queue authorization, gate/finality law, or HealthOS itself.
+CloudClinic is an initial service-operations Stage consuming mediated HealthOS surfaces. These contracts do not define Core, Service Runtime, queue authorization, gate/finality law, or HealthOS itself.
 
-Future CloudClinic screen wiring must not advance unless the mediated surface it consumes is implemented and stable, and the CloudClinic App Charter is complete.
+Future CloudClinic screen wiring must not advance unless the mediated surface it consumes is implemented and stable, and the CloudClinic Custom is complete.
 
 ## Dashboard
 Primary actions:

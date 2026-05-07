@@ -32,15 +32,15 @@ As of April 26, 2026, repository posture is:
 
 ## Automations
 
-Three Claude Code automations maintain this directory automatically. All push to `origin/main` after each run.
+Scheduled maintenance is owned by grouped Codex automations outside the repository. There is no repository-local Claude Code cron registry.
 
-| Automation | Schedule | Reads from this dir | Writes |
+| Automation group | Cadence | Reads from this dir | Writes |
 | :--- | :--- | :--- | :--- |
-| `daily-todo-tracker` | Daily 08:07 | `todo/` · `02-status-and-tracking.md` · `12-next-agent-handoff.md` · `14-final-gap-register.md` | `.healthos-steward/memory/automations/daily-todo-tracker/` |
-| `sync-work-plan` | Mon/Wed/Fri 08:47 | `todo/` · trackers · `14-final-gap-register.md` + git log | `20-documental-todos-work-plan.md` + memory log |
-| `update-claude-md` | Mon 09:03 | `02-status-and-tracking.md` + Makefile + Steward CLI | `CLAUDE.md` + memory log |
+| `HealthOScaffold Status Digest` | Mon/Wed/Fri 08:30 | `todo/` · trackers · `02-status-and-tracking.md` · `12-next-agent-handoff.md` · `14-final-gap-register.md` + git log | Read-only report |
+| `HealthOScaffold Agent Guidance Maintenance` | Weekly Tue 10:00 | execution docs plus AGENTS/CLAUDE/README and Steward/Xcode docs | Branch/PR only when drift is proven |
+| `HealthOScaffold Dependency and SDK Drift` | Weekly Thu 11:00 | manifests, lockfiles, SDK/toolchain references | Read-only report |
 
-Definitions: `.claude/automations/` · Latest digest: `.healthos-steward/memory/automations/daily-todo-tracker/latest.md`
+Historical derived logs may remain under `.healthos-steward/memory/automations/`, but they are not scheduler definitions.
 
 ## Maturity ladder (required language)
 

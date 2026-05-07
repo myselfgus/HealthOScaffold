@@ -3,7 +3,7 @@
 ## Purpose
 Service-facing operational interface for patient management and service work visibility.
 
-CloudClinic is an initial reference app, not the definition of HealthOS. It consumes mediated service-operations surfaces through the App Integration Boundary.
+CloudClinic is an initial Stage, not the definition of HealthOS. It consumes mediated service-operations surfaces through Boundary.
 
 ## What CloudClinic is
 - the service operations UX
@@ -69,6 +69,6 @@ CloudClinic is a scaffold contract and documentation-only surface:
 - service operations contracts exist in Swift Core + TypeScript + JSON Schema with fail-closed validators, but no runtime adapter is implemented
 - CloudClinic does not own service access law or membership policy; it consumes mediated surfaces from HealthOS Core
 - operational queue visibility is contract-first only (no production workflow engine)
-- APP-012-style wiring is blocked until the relevant service/runtime mediated surfaces are implemented and stable, and the CloudClinic App Charter is complete.
+- APP-012-style wiring is blocked until the relevant service/runtime mediated surfaces are implemented and stable, and the CloudClinic Custom is complete.
 
-Future CloudClinic wiring must follow `docs/architecture/50-app-layer-boundary-and-reference-apps.md`: the consumed mediated surface must be implemented and stable, and the CloudClinic App Charter must define degraded behavior for missing platform/runtime capabilities.
+Future CloudClinic wiring must follow `docs/architecture/50-app-layer-boundary-and-reference-apps.md`: the consumed mediated surface must be implemented and stable, and the CloudClinic Custom must define degraded behavior for missing platform/runtime capabilities.

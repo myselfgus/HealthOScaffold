@@ -1,6 +1,6 @@
 # Veridia
 
-Patient health identity app for HealthOS. Veridia is a Tier 5 reference app — it gives patients governed access to their identity, consent state, data custody, and export controls via `HealthOSAppBoundary`. It never defines Core law or holds clinical authority.
+Patient health identity Stage for HealthOS. Veridia gives patients governed access to their identity, consent state, data custody, and export controls via `HealthOSAppBoundary`. It never defines Core law or holds clinical authority.
 
 **Architecture:** `docs/architecture/12-veridia.md`  
 **Executable surface:** [`swift/Sources/HealthOSVeridiaApp/`](../../swift/Sources/HealthOSVeridiaApp/)  
@@ -25,11 +25,11 @@ Patient health identity app for HealthOS. Veridia is a Tier 5 reference app — 
 %%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#F6F8FB', 'primaryBorderColor': '#D6DEE8', 'primaryTextColor': '#1D2733', 'lineColor': '#5B6B7C', 'edgeLabelBackground': '#F6F8FB', 'fontFamily': 'ui-rounded, -apple-system, BlinkMacSystemFont, sans-serif'}}}%%
 flowchart LR
     classDef boundary fill:#fce7f3,stroke:#f472b6,stroke-width:2px,color:#831843
-    classDef app      fill:#fdf4ff,stroke:#c084fc,stroke-width:2px,color:#581c87
+    classDef stage    fill:#fdf4ff,stroke:#c084fc,stroke-width:2px,color:#581c87
     classDef runtime  fill:#dbeafe,stroke:#60a5fa,stroke-width:2px,color:#1e3a8a
     classDef core     fill:#dcfce7,stroke:#22c55e,stroke-width:2px,color:#14532d
 
-    VE[VeridiaApp\nTier 5]:::app
+    VE[Veridia\nStage]:::stage
     AB[HealthOSAppBoundary\nTier 3]:::boundary
     UAR[HealthOSUserAgentRuntime\nTier 2]:::runtime
     CORE[HealthOSCore\nlaw · consent · identity]:::core

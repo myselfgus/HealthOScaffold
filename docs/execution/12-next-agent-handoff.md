@@ -20,7 +20,7 @@ ST-011 created the Territory Registry under `.healthos-settler/territories/`, in
 
 ST-011B created the product technical specification baseline at `docs/product/01-healthos-technical-product-specification.md`. Future construction and product tasks should read this product baseline together with canonical architecture and execution docs when generating scoped work units.
 
-Future construction-system work should read doc 22 before creating Settler profiles, Settlement templates, prompt generation, PR review drafts, derived memory builders, or `healthos-forge-mcp` surfaces. Product queue work still reads doc 21. APP-012 is no longer READY as app implementation; it is blocked until platform/runtime surfaces, App Integration Boundary, and CloudClinic App Charter readiness are satisfied. Independent construction-system work may proceed, but app-prompt generation for blocked app wiring must be reframed as charter/boundary-readiness work.
+Future construction-system work should read doc 22 before creating Settler profiles, Settlement templates, prompt generation, PR review drafts, derived memory builders, or `healthos-forge-mcp` surfaces. Product queue work still reads doc 21. APP-012 is no longer READY as Stage implementation; it is blocked until Core/GOS/runtime surfaces, Boundary, and CloudClinic Custom readiness are satisfied. Independent construction-system work may proceed, but prompt generation for blocked Stage wiring must be reframed as Custom/Boundary-readiness work.
 
 ## CRITICAL: Read the master plan first
 
@@ -42,24 +42,24 @@ This document is the authoritative priority-ordered work plan as of 2026-04-29. 
 | Tier | What | Why |
 |------|------|-----|
 | **P0/P1 completed** | STR-001, RT-MSR-001, RT-MSR-002, RT-MSR-003, STR-002, STR-003, STR-004 | MSR provider-backed stages and structural cleanup are already landed; do not reselect them from stale TODO text |
-| **Tier 1 READY** | CI-001, RT-ASYNC-001, RT-RETRIEVAL-001 | Platform/runtime surfaces and validation gates must advance before new app wiring |
-| **Tier 2 / 3 needs-review** | CloudClinic service/runtime mediated surface + App Integration Boundary | Define the exact stable facade/envelope/app-safe view before APP-012 |
-| **Tier 4 needs-review** | CloudClinic App Charter | Complete app role, consumed surfaces, degraded behavior, data exposure, validation |
-| **Tier 5 BLOCKED** | APP-012 | App implementation/wiring blocked until tiers 1-4 are DONE or explicitly accepted |
-| **Tier 6 parallel** | Independent construction-system work | May run in parallel; ST-020 must be reframed if it targets APP-012 implementation |
+| **Core / Runtime READY** | CI-001, RT-ASYNC-001, RT-RETRIEVAL-001 | Core/runtime surfaces and validation gates must advance before new Stage wiring |
+| **Boundary needs-review** | CloudClinic service/runtime mediated surface + Boundary | Define the exact stable facade/envelope/app-safe view before APP-012 |
+| **Custom needs-review** | CloudClinic Custom | Complete Stage role, consumed surfaces, degraded behavior, data exposure, validation |
+| **Stage BLOCKED** | APP-012 | Stage implementation/wiring blocked until Core/GOS/runtime/Boundary/Custom readiness is satisfied or explicitly accepted |
+| **Construction System parallel** | Independent construction-system work | May run in parallel; ST-020 must be reframed if it targets APP-012 implementation |
 
 Current status details:
 - RT-PROVIDER-001 is DONE.
 - APP-011 is DONE.
 - CI-001, RT-ASYNC-001, and RT-RETRIEVAL-001 are READY Tier 1 platform/runtime foundation tasks.
-- APP-012 is BLOCKED as Tier 5 app implementation.
+- APP-012 is BLOCKED as Stage implementation.
 - ST-020 is needs-review/blocked as written because it targets generating an APP-012 implementation prompt before APP-012 is unblocked.
 - APP-008, CL-006, DS-007, OPS-003, RT-008, and AACI-009 were reconciled as completed in the TODO trackers during the 2026-05-01 local / 2026-05-02 UTC audit.
 
 ## How to choose next task
 
 1. Read `docs/execution/21-structural-ontology-and-product-readiness-plan.md` → Priority Grid.
-2. Find highest-priority task with Status = `READY` and all prerequisites `DONE`; after the app-layer boundary audit, that means CI-001, RT-ASYNC-001, or RT-RETRIEVAL-001 before any new app wiring.
+2. Find highest-priority task with Status = `READY` and all prerequisites `DONE`; after the Boundary/Stage/Custom audit, that means CI-001, RT-ASYNC-001, or RT-RETRIEVAL-001 before any new Stage wiring.
 3. Read that task's full spec in doc 21 (branch name, files, DoD, validation, git workflow).
 4. Use the deterministic Steward baseline for repository state context:
    `cd ts && npx --yes --workspace @healthos/steward healthos-steward status`
@@ -136,7 +136,7 @@ Settler model note: the Steward / Settler / Settlement / Territory model was add
 
 Construction operating model note: `docs/execution/22-steward-construction-operating-model.md` now defines the lifecycle, directories, ST-010 through ST-020 sequence, and non-claims for operationalizing Steward construction work. The Territory Registry exists; the next construction-system task is ST-012 — Create Settler Profile Registry.
 
-Codex may support Steward-scoped Xcode-facing repository maintenance as an external executor. The local Codex automation is `$CODEX_HOME/automations/steward-xcode-facing-maintenance/`; use it for PR-based review of Claude Code automations, scheduled-task definitions, Xcode/Steward instructions, and automation drift. Do not treat this as a new Steward authority category, merge authority, or clinical/runtime capability.
+Codex may support Steward-scoped Xcode-facing repository maintenance as an external executor. The local Codex automation is `$CODEX_HOME/automations/steward-xcode-facing-maintenance/`; use it for PR-based review of repository-maintenance automation guidance, Xcode/Steward instructions, and automation drift. Do not treat this as a new Steward authority category, merge authority, or clinical/runtime capability.
 
 Repository-local roots now exist for the model:
 - `.healthos-settler/` is a documentation-only root for Territory Registry records and future Settler profiles.

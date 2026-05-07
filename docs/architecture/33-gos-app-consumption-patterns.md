@@ -2,25 +2,25 @@
 
 ## Purpose
 
-Define what apps are allowed to consume from GOS-driven runtime work without becoming sovereign interpreters of GOS.
+Define what Stages are allowed to consume from GOS-driven runtime work without becoming sovereign interpreters of GOS.
 
-This applies to initial reference apps and future apps. App consumption patterns are not a closed ontology of HealthOS apps.
+This applies to initial Stages and future Stages. Stage consumption patterns are not a closed ontology of HealthOS.
 
 ## Core rule
 
-Apps do not load compiled GOS bundles as their source of law.
-Apps consume runtime-mediated state derived from GOS execution.
-Substantial app wiring also requires the relevant mediated surface to be implemented and stable, plus a complete App Charter.
+Stages do not load compiled GOS bundles as their source of law.
+Stages consume runtime-mediated state derived from GOS execution.
+Substantial Stage wiring also requires the relevant mediated surface to be implemented and stable, plus a complete Custom.
 
 This preserves the correct split:
 - HealthOS Core governs law
 - GOS structures operational work
 - runtimes execute within that structure
-- apps present bounded results and states
+- Stages present bounded results and states
 
-## Allowed app consumption categories
+## Allowed Stage consumption categories
 
-Apps may consume runtime-mediated outputs such as:
+Stages may consume runtime-mediated outputs such as:
 - stage/status indicators
 - degraded-state indicators
 - retrieval summaries
@@ -30,7 +30,7 @@ Apps may consume runtime-mediated outputs such as:
 - provenance-facing summaries
 - human-review summaries
 
-Apps may not consume GOS in order to independently decide:
+Stages may not consume GOS in order to independently decide:
 - whether lawful access exists
 - whether a health act is effective
 - whether a gate can be bypassed
@@ -82,7 +82,7 @@ CloudClinic may not:
 
 ## Recommended UI posture
 
-Apps should present GOS-derived runtime information as:
+Stages should present GOS-derived runtime information as:
 - mediated
 - bounded
 - reviewable

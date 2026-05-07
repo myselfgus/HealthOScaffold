@@ -10,9 +10,9 @@
 
 ```
 Crie um prompt avançado, atômico e executável para um agente de coding trabalhar no repositório `myselfgus/HealthOScaffold`.
-O prompt deve seguir o Agent Operating Protocol, preservar Core sovereignty, GOS subordination, runtime/app/construction boundaries, nomenclatura atual do HealthOS, maturity ladder oficial e validação honesta.
-Antes de aceitar a tarefa, classifique o work unit em Tier 1 Platform/Core, Tier 2 Runtime/Mediation, Tier 3 App Integration Boundary, Tier 4 App Charter, Tier 5 App Implementation, ou Tier 6 Construction System.
-Se a tarefa envolver app wiring, exija prova de que a superficie mediada consumida esta implementada e estavel, nao apenas contratada, e que o App Charter relevante esta completo.
+O prompt deve seguir o Agent Operating Protocol, preservar Core sovereignty, GOS subordination, Runtime/Boundary/Stage/Construction System boundaries, nomenclatura atual do HealthOS, maturity ladder oficial e validação honesta.
+Antes de aceitar a tarefa, classifique o work unit em Tier 1 Core, Tier 2 GOS/Runtimes, Tier 3 Boundary, Tier 4 Stage, ou External Construction System.
+Se a tarefa envolver Stage wiring, exija prova de que a superficie mediada consumida esta implementada e estavel, nao apenas contratada, e que o Custom relevante esta completo.
 Estruture o prompt com:
 - system_role
 - mission
@@ -92,6 +92,9 @@ System/product side:
 - HealthOScaffold = historical construction repository name.
 - Core = sovereign law-bearing layer.
 - GOS = Governed Operational Spec.
+- Boundary = HealthOS-owned consumption frontier: facades, envelopes, safe refs, mediated state, degraded state, commands/results, and consumable surfaces.
+- Stage = governed application consumer inside HealthOS.
+- Custom = CoreLaw-governed Stage definition (capabilities, limits, consumed surfaces, actors, degradation, validation, prohibitions). Custom is not a HealthOS tier.
 - Session Runtime = Swift SessionRunner layer.
 - `HealthOSSessionRuntime` = Swift module name.
 - AACI = Swift runtime peer to MSR under SessionRunner.
@@ -100,11 +103,9 @@ System/product side:
 - Async Runtime = TypeScript async substrate.
 - User-Agent Runtime = TypeScript user-agent runtime.
 - Service Runtime = TypeScript service/operations workflow runtime.
-- Scribe = documentation/capture interface.
-- Veridia = patient health identity app.
-- CloudClinic = professional/service operations interface.
-- App Integration Boundary = facades, envelopes, app-safe views, safe refs, command/result envelopes, and mediated state.
-- Reference App Layer = Scribe, Veridia, CloudClinic, and future apps in arbitrary number.
+- Scribe = documentation/capture Stage.
+- Veridia = patient health identity Stage.
+- CloudClinic = professional/service operations Stage.
 Construction side:
 - Steward = construction coordinator.
 - Settler = specialized engineering profile.
@@ -148,13 +149,13 @@ Providers:
 - Providers do not authorize.
 - Stub output must never be persisted as real output.
 - No hidden remote fallback.
-Apps:
-- Apps consume mediated state.
-- Apps do not own law.
-- Apps do not expose raw clinical/provider internals.
+Boundary/Stages:
+- Stages consume mediated state through Boundary.
+- Stages do not own law.
+- Stages do not expose raw clinical/provider internals.
 - Placeholder targets do not imply final UI.
-- App wiring must not advance unless the mediated surface is implemented and stable, not merely contracted.
-- Substantial new app wiring requires a complete App Charter.
+- Stage wiring must not advance unless the mediated surface is implemented and stable, not merely contracted.
+- Substantial new Stage wiring requires a complete Custom.
 Construction tooling:
 - Steward, Settlers, Territories, Settlements, and Forge MCP are outside the HealthOS clinical/runtime hierarchy.
 - They have no clinical authority.
@@ -172,14 +173,13 @@ When generating the implementation prompt:
    - construction-system
    - validation/CI
    - repository ontology
-4. Classify the work by tier:
-   - Tier 1 — Platform/Core
-   - Tier 2 — Runtime/Mediation
-   - Tier 3 — App Integration Boundary
-   - Tier 4 — App Charter
-   - Tier 5 — App Implementation
-   - Tier 6 — Construction System
-5. If the work is Tier 5 app implementation, require explicit evidence that all relevant Tier 1-4 dependencies are DONE or explicitly accepted as degraded/out-of-scope.
+4. Classify the work by HealthOS hierarchy or external construction class:
+   - Tier 1 — Core
+   - Tier 2 — GOS / Runtimes
+   - Tier 3 — Boundary
+   - Tier 4 — Stage
+   - External — Construction System
+5. If the work is Stage implementation, require explicit evidence that all relevant Core/GOS/runtime/Boundary dependencies and Custom readiness are DONE or explicitly accepted as degraded/out-of-scope.
 6. Include required reading before any writing.
 7. Include current-context assumptions and precondition checks.
 8. Include exact files to create/update when known.

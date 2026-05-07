@@ -76,8 +76,8 @@ Hierarquia constitucional canônica (refletida em [swift/Package.swift](../../sw
 | HealthOS Core | `HealthOSCore` | Constituição: lei, contratos (consent, habilitation, gate, finality, provenance, storage). |
 | Governed Operational Spec (GOS) | `HealthOSCore/GovernedOperationalSpec.swift`, `schemas/governed-operational-spec*.schema.json` | Camada de spec subordinada (ADR-0011). |
 | Runtimes | `HealthOSAACI`, `HealthOSMSR`, `HealthOSSessionRuntime`, `HealthOSProviders` | Execução sob lei do Core e guidance de GOS. |
-| Agentes / Atores | `AACIOrchestrator`, executores MSR | Subagentes com escopo bounded. |
-| Apps / Interfaces | `HealthOSScribeApp`, `HealthOSVeridiaApp`, `HealthOSCloudClinicApp`, `HealthOSCLI` | UX/CLI consumindo saídas mediadas (ADR-0007). |
+| Boundary | `HealthOSAppBoundary`, mediated facades/envelopes | Fronteira HealthOS-owned para consumo seguro por Stages. |
+| Stage / Interfaces | `HealthOSScribeApp`, `HealthOSVeridiaApp`, `HealthOSCloudClinicApp`, `HealthOSCLI` | UX/CLI consumindo saídas mediadas (ADR-0007, ADR-0013). |
 | Artefatos / Efeitos | Arquivos persistidos, registros de gate, provenance | Saídas governadas com proveniência (ADR-0003). |
 
 - **Escopo.** Decisão constitucional sobre identidade e topologia lógica do sistema. Não decide stack (ADR-0005), topologia operacional (ADR-0009) nem nome de repositório (ADR-0012).

@@ -110,7 +110,7 @@ Após revisão, **nenhuma ADR existente está obsoleta**. Todas continuam materi
 
 ## 5. Recomendações de PR/processo
 
-1. **Criar ADRs 0014-0023** propostas acima, em ondas (governança → providers → MSR → cross-app → schemas). ADR-0013 agora cobre a separação HealthOS Platform / App Layer / Construction System.
+1. **Criar ADRs 0014-0023** propostas acima, em ondas (governança → providers → MSR → cross-app → schemas). ADR-0013 agora cobre a separação HealthOS Core/GOS/Runtimes/Boundary/Stage, Custom e Construction System.
 2. **Implementar lint arquitetural em CI:**
    - Verificar ausência de redefinição de tipos `Consent*`, `Gate*`, `Habilitation*` fora do Core (ADR-0001/0010).
    - Verificar bind apenas em `127.0.0.1`/UDS (ADR-0006).

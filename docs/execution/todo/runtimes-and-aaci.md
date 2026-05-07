@@ -352,12 +352,12 @@ Current promoted runtime/platform foundation work comes from `docs/execution/21-
 
 ### RT-ASYNC-001 SQL-backed async runtime executor
 Status: READY as Tier 1 platform/runtime foundation.
-Reason: durable async/job execution provides app-consumable queue/worklist/retry truth and should advance before new app wiring that may depend on it.
+Reason: durable async/job execution provides Stage-consumable queue/worklist/retry truth and should advance before new Stage wiring that may depend on it.
 Unblock for higher tiers: SQL-backed executor implemented or missing local database explicitly environment-gated while preserving fail-closed semantics.
 
 ### RT-RETRIEVAL-001 Semantic retrieval with real embeddings provider
 Status: READY as Tier 1 platform/runtime foundation.
-Reason: app-facing semantic retrieval must not be faked; a real provider/path or explicit unavailable/degraded posture must be implemented before apps consume it non-provisionally.
+Reason: Stage-facing semantic retrieval must not be faked; a real provider/path or explicit unavailable/degraded posture must be implemented before Stages consume it non-provisionally.
 Unblock for higher tiers: real embeddings provider/path implemented under policy, or dependent app scope explicitly excludes semantic retrieval.
 
 

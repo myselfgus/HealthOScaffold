@@ -1,6 +1,6 @@
 # swift/
 
-Swift package for HealthOS — all native platform targets, from Core law through reference apps.
+Swift package for HealthOS — all native platform targets, from Core law through Stages.
 Open `swift/Package.swift` in Xcode (or `cd swift && swift build`) to work with this surface.
 
 External dependencies: none. Sovereignty by design.
@@ -9,7 +9,7 @@ External dependencies: none. Sovereignty by design.
 
 ## Package Structure
 
-Fifteen targets across four tiers, plus the operator CLI and three reference apps.
+Fifteen targets across Core, GOS/runtimes, Boundary, and Stage groups, plus the operator CLI.
 
 ```mermaid
 %%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#F6F8FB', 'primaryBorderColor': '#D6DEE8', 'primaryTextColor': '#1D2733', 'clusterBkg': '#FFFFFF', 'clusterBorder': '#D6DEE8', 'lineColor': '#5B6B7C', 'edgeLabelBackground': '#F6F8FB', 'fontFamily': 'ui-rounded, -apple-system, BlinkMacSystemFont, sans-serif'}}}%%
@@ -82,19 +82,19 @@ Core law, governance invariants, entity model, storage contracts, consent/habili
 
 ---
 
-### Tier 3 — App Integration Boundary
+### Tier 3 — Boundary
 
 | Module | README | Maturity |
 | :--- | :--- | :--- |
 | `HealthOSAppBoundary` | [README](Sources/HealthOSAppBoundary/README.md) | Scaffold stub — facade pending Tier 2 stabilization |
 
-The only surface Tier 5 apps are permitted to import. Apps must never import Core, SessionRuntime, or any Tier 2 module directly. Known deviations (Veridia → Core, Scribe → SessionRuntime) are marked TODO in `Package.swift` pending AppBoundary facade completion.
+The only surface Stages are permitted to import. Stages must never import Core, SessionRuntime, or any Tier 2 module directly. Known deviations (Veridia to Core, Scribe to SessionRuntime) are marked TODO in `Package.swift` pending Boundary facade completion.
 
 ---
 
 ### Operator CLI
 
-`HealthOSCLI` — command-line interface for session and GOS bundle lifecycle. Not a Tier 5 app; depends directly on Core and SessionRuntime as an operator-facing tool.
+`HealthOSCLI` — command-line interface for session and GOS bundle lifecycle. Not a Stage; depends directly on Core and SessionRuntime as an operator-facing tool.
 
 ```bash
 cd swift && swift run HealthOSCLI
@@ -106,9 +106,9 @@ cd swift && swift run HealthOSCLI \
 
 ---
 
-### Tier 5 — Reference Apps
+### Tier 4 — Stages
 
-| App | Scheme | Smoke command | Maturity |
+| Stage target | Scheme | Smoke command | Maturity |
 | :--- | :--- | :--- | :--- |
 | `HealthOSScribeApp` | `HealthOSScribeApp` | `swift run HealthOSScribeApp --smoke-test` | Minimal validation surface (SwiftUI, macOS 26+) |
 | `HealthOSVeridiaApp` | `HealthOSVeridiaApp` | `swift run HealthOSVeridiaApp --smoke-test` | Session boundary smoke — no final UI |
@@ -116,7 +116,7 @@ cd swift && swift run HealthOSCLI \
 
 Shared Xcode schemes live in `.swiftpm/xcode/xcshareddata/xcschemes/` and are committed — open `swift/Package.swift` in Xcode to use them. Each scheme pre-configures smoke-test launch arguments (disabled by default) and a Release profile action for Instruments.
 
-App icon asset catalogs (`Resources/Assets.xcassets/AppIcon.appiconset/`) are present as slots; actual icon images are produced by Icon Composer and placed there before release.
+Stage icon asset catalogs (`Resources/Assets.xcassets/AppIcon.appiconset/`) are present as slots; actual icon images are produced by Icon Composer and placed there before release.
 
 ---
 

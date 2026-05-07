@@ -474,13 +474,16 @@ Prompts auto-contidos prontos para execução por qualquer agente de IA, um por 
 
 Cada prompt contém: identidade, invariantes absolutas, branch setup, leitura obrigatória, specs por tarefa, tracking requirements, workflow git, e definição de done.
 
-### Automações Claude Code registradas
+### Automações de manutenção registradas
 
-| Automação | Schedule | Arquivo de definição | O que faz |
+As automações Claude Code foram aposentadas como cron jobs versionados. A manutenção agendada atual é feita por grupos Codex fora do repositório:
+
+| Automação | Schedule | Modo | O que faz |
 |---|---|---|---|
-| `update-claude-md` | Seg 09:03 | `.claude/automations/update-claude-md.md` | Atualiza CLAUDE.md com padrões descobertos |
-| `daily-todo-tracker` | Diário 08:07 | `.claude/automations/daily-todo-tracker.md` | Digest diário de TODOs e status |
-| `sync-work-plan` | Seg/Qua/Sex 08:47 | `.claude/automations/sync-work-plan.md` | Mantém este plano sincronizado com o estado real |
+| `HealthOScaffold Agent Guidance Maintenance` | Ter 10:00 | worktree, PR-only | Revisa AGENTS/CLAUDE/README, docs Steward/Xcode e drift de orientação |
+| `HealthOScaffold Status Digest` | Seg/Qua/Sex 08:30 | worktree, read-only | Reporta READY/BLOCKED/DONE, gaps, inconsistências e próximas ações |
+| `HealthOScaffold Dependency and SDK Drift` | Qui 11:00 | worktree, read-only | Reporta drift de manifests, lockfiles, SDK e toolchain |
+| `HealthOScaffold Retrospective Skill Map` | Quinzenal, Sex 10:00 | worktree, read-only | Sugere habilidades a aprofundar com evidência de PR/review/commit |
 
 ---
 
@@ -581,5 +584,5 @@ Este plano está: **EM PROGRESSO**.
 
 Tarefas concluídas: 5 de 9.
 
-Última sincronização: 2026-05-06 (sync-work-plan automation).
-Próxima sincronização: automática — segunda/quarta/sexta 08:47.
+Última sincronização automática histórica: 2026-05-06 (`sync-work-plan`, aposentada).
+Próxima sincronização: sob demanda via work unit explícito; o Status Digest Codex é read-only.

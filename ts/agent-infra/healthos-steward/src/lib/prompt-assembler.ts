@@ -16,6 +16,9 @@ System/product side:
 - HealthOScaffold = historical construction repository name.
 - Core = sovereign law-bearing layer.
 - GOS = Governed Operational Spec.
+- Boundary = HealthOS-owned consumption frontier: facades, envelopes, safe refs, mediated state, degraded state, commands/results, and consumable surfaces.
+- Stage = governed application consumer inside HealthOS.
+- Custom = CoreLaw-governed Stage definition (capabilities, limits, consumed surfaces, actors, degradation, validation, prohibitions). Custom is not a HealthOS tier.
 - Session Runtime = Swift SessionRunner layer.
 - \`HealthOSSessionRuntime\` = Swift module name.
 - AACI = Swift runtime peer to MSR under SessionRunner.
@@ -24,9 +27,9 @@ System/product side:
 - Async Runtime = TypeScript async substrate.
 - User-Agent Runtime = TypeScript user-agent runtime.
 - Service Runtime = TypeScript service/operations workflow runtime.
-- Scribe = documentation/capture interface.
-- Veridia = patient health identity app.
-- CloudClinic = professional/service operations interface.
+- Scribe = documentation/capture Stage.
+- Veridia = patient health identity Stage.
+- CloudClinic = professional/service operations Stage.
 Construction side:
 - Steward = construction coordinator.
 - Settler = specialized engineering profile.

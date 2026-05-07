@@ -11,7 +11,7 @@ before making production-readiness claims.
 ## Instruments
 
 **When to use:** Before any performance or memory claim on `HealthOSSessionRuntime`, `HealthOSCLI`,
-or any Tier 5 reference app. Required gating criterion before RC declaration.
+or any Stage executable. Required gating criterion before RC declaration.
 
 **HealthOS targets to profile:**
 - `HealthOSSessionRuntime` — session pipeline latency, transcript normalization throughput
@@ -36,7 +36,7 @@ or any Tier 5 reference app. Required gating criterion before RC declaration.
 
 ## Simulator
 
-**When to use:** Smoke-testing Tier 5 apps before committing without physical hardware.
+**When to use:** Smoke-testing Stage executables before committing without physical hardware.
 Simulator does not replace device validation for audio capture (AVAudioSession) — use
 stub/mock audio paths in Simulator runs.
 
@@ -57,7 +57,7 @@ cd swift && swift run HealthOSCloudClinicApp --smoke-test
 
 ## Accessibility Inspector
 
-**When to use:** Any time a SwiftUI view is added or modified in a Tier 5 app UI shell.
+**When to use:** Any time a SwiftUI view is added or modified in a Stage UI shell.
 Accessibility validation is a hard criterion in the Scaffold Release Candidate checklist
 (`docs/execution/13-scaffold-release-candidate-criteria.md`).
 
@@ -99,7 +99,7 @@ governance checks as Foundation Models output. Do not bypass `ModelGovernance`.
 No Reality Composer Pro assets are committed to this repository.
 
 **If a visionOS surface appears:**
-- Scope is Tier 5 only (reference app UI)
+- Scope is Stage UI only
 - Any 3D health content must obey the same de-identification rules as 2D surfaces
 - Consult `docs/architecture/46-apple-sovereignty-architecture.md` before adding
 

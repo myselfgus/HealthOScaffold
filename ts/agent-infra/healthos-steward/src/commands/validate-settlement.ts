@@ -2,36 +2,13 @@ import { writeFileSync, mkdirSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import { repoRoot } from "../repo-root.js";
 import { resolveSettlement } from "../lib/settlement-resolver.js";
+import { classifySettlementCriteria } from "../lib/settlement-validation.js";
 import {
   buildValidationReport,
   CriterionResult,
   FileCheckResult,
   ValidationEvidence,
 } from "../lib/validation-report-builder.js";
-
-const SHELL_TOKENS = ["make ", "swift run", "npm run", "cd ", "npx "];
-const PATH_REGEX = /(?:^|[\s`'"])(\.[/\w.-]+|[\w-]+\/[\w./-]+)/;
-
-function classifyCriterion(
-  criterion: string,
-  repoRootPath: string
-): CriterionResult {
-  for (const token of SHELL_TOKENS) {
-    if (criterion.includes(token)) {
-      return { criterion, result: "UNVERIFIED" };
-    }
-  }
-
-  const match = PATH_REGEX.exec(criterion);
-  if (match && match[1]) {
-    const token = match[1];
-    const absolutePath = join(repoRootPath, token);
-    const exists = existsSync(absolutePath);
-    return { criterion, result: exists ? "PASS" : "FAIL", path: token };
-  }
-
-  return { criterion, result: "UNVERIFIED" };
-}
 
 export function runValidateSettlement(args: string[]): number {
   const settlementId = args[0];
@@ -52,8 +29,9 @@ export function runValidateSettlement(args: string[]): number {
   }
   const settlement = resolved.record;
 
-  const criterionResults: CriterionResult[] = settlement.doneCriteria.map(
-    (criterion) => classifyCriterion(criterion, repoRoot)
+  const criterionResults: CriterionResult[] = classifySettlementCriteria(
+    settlement.doneCriteria,
+    repoRoot
   );
 
   const fileCheckResults: FileCheckResult[] = settlement.filesInScope.map(

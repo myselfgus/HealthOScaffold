@@ -6,6 +6,23 @@ Current phase: Controlled implementation — first vertical slice started
 
 ## Completed recently
 
+## CS-FORGE-PARITY — Forge MCP parity tests and shared settlement validation (2026-05-07)
+
+- Objective: continue Construction System hardening by making Forge MCP parity executable in tests and sharing Settlement done-criteria classification between `healthos-steward` and `healthos-forge-mcp`.
+- Classification: External — Construction System. No HealthOS clinical/runtime hierarchy, Core law, Boundary, Stage, provider behavior, schema contract, SQL, or production-readiness claim changed.
+- Implementation updates:
+  - Extracted Settlement done-criteria classification into `@healthos/steward` shared library exports so CLI validation and Forge MCP validation use the same PASS/FAIL/UNVERIFIED heuristic.
+  - Added `@healthos/forge-mcp` package tests covering the documented 10 `steward_*` tools, callable Settlement `id` plus `canonicalId`, and `steward_validate_settlement` / `steward_generate_prompt` resolution for both ID forms.
+  - Added test-only read-only prompt generation support in the Forge MCP handler so ID resolution can be tested without writing generated artifacts from workspace test cwd.
+- Validation status:
+  - `cd ts && npm test --workspace @healthos/steward` PASS.
+  - `cd ts && npm test --workspace @healthos/forge-mcp` PASS.
+  - `make validate-construction-system` PASS.
+  - `make ts-build` PASS.
+  - `make ts-test` PASS.
+  - `make validate-docs` PASS.
+  - `git diff --check` PASS.
+
 ## CS-HARDENING — Construction System truth, validation, and generated artifact policy (2026-05-07)
 
 - Objective: harden the external Construction System by aligning live docs/records with implemented Steward/Forge seams, making ST-020 explicitly CloudClinic Boundary/Custom readiness work, and adding deterministic validation for Construction System invariants.

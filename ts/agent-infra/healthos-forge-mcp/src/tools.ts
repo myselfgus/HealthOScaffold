@@ -8,7 +8,22 @@ import {
   handleListSettlements,
   handleBuildMemory,
 } from "./handlers.js";
-import { registerIdArgTools } from "./tools-id-arg.js";
+import { ID_ARG_TOOL_NAMES, registerIdArgTools } from "./tools-id-arg.js";
+
+export const NO_ARG_TOOL_NAMES = [
+  "steward_next_task",
+  "steward_scan_status",
+  "steward_get_handoff",
+  "steward_list_territories",
+  "steward_list_settlers",
+  "steward_list_settlements",
+  "steward_build_memory",
+] as const;
+
+export const FORGE_MCP_TOOL_NAMES = [
+  ...NO_ARG_TOOL_NAMES,
+  ...ID_ARG_TOOL_NAMES,
+] as const;
 
 // Minimal inline result builder — avoids importing CallToolResult (which involves
 // deep Zod inference from the SDK types) and keeps this module's type context lean.

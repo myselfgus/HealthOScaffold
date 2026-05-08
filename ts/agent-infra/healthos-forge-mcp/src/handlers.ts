@@ -15,6 +15,7 @@ import {
   buildSettlerIndex,
   buildSettlementIndex,
   buildHandoffSnapshot,
+  classifySettlementCriteria,
 } from "@healthos/steward";
 import type {
   TrackerTask,
@@ -32,26 +33,6 @@ const NON_CANONICAL =
   "Repository-maintenance tool response. No clinical authority, merge authority, or production-readiness claim.";
 
 export type HandlerResult = { content: string; isError?: boolean };
-
-// Criterion classification for validate-settlement (no shell execution)
-const SHELL_TOKENS = ["make ", "swift run", "npm run", "cd ", "npx "];
-const PATH_REGEX = /(?:^|[\s`'"])(\.[/\w.-]+|[\w-]+\/[\w./-]+)/;
-
-function classifyCriterion(criterion: string): CriterionResult {
-  for (const token of SHELL_TOKENS) {
-    if (criterion.includes(token)) {
-      return { criterion, result: "UNVERIFIED" };
-    }
-  }
-  const match = PATH_REGEX.exec(criterion);
-  if (match && match[1]) {
-    const token = match[1];
-    const absolutePath = join(repoRoot, token);
-    const exists = existsSync(absolutePath);
-    return { criterion, result: exists ? "PASS" : "FAIL", path: token };
-  }
-  return { criterion, result: "UNVERIFIED" };
-}
 
 export function handleNextTask(): HandlerResult {
   try {
@@ -239,7 +220,10 @@ export function handleValidateSettlement(id: string): HandlerResult {
       };
     }
     const settlement = resolved.record;
-    const criterionResults: CriterionResult[] = settlement.doneCriteria.map(classifyCriterion);
+    const criterionResults: CriterionResult[] = classifySettlementCriteria(
+      settlement.doneCriteria,
+      repoRoot
+    );
     const passCount = criterionResults.filter((r) => r.result === "PASS").length;
     const failCount = criterionResults.filter((r) => r.result === "FAIL").length;
     const unverifiedCount = criterionResults.filter((r) => r.result === "UNVERIFIED").length;
@@ -263,7 +247,10 @@ export function handleValidateSettlement(id: string): HandlerResult {
   }
 }
 
-export function handleGeneratePrompt(id: string): HandlerResult {
+export function handleGeneratePrompt(
+  id: string,
+  options: { writeOutput?: boolean } = {}
+): HandlerResult {
   try {
     const resolved = resolveSettlement(id);
     if (!resolved) {
@@ -287,14 +274,23 @@ export function handleGeneratePrompt(id: string): HandlerResult {
     }
     const promptSpec = assemblePromptSpec({ settlement, territories, settlers });
     const outputDir = join(repoRoot, ".healthos-steward", "prompts", "generated");
-    mkdirSync(outputDir, { recursive: true });
     const outputPath = join(outputDir, `${resolved.fileId}.md`);
-    writeFileSync(outputPath, promptSpec, "utf-8");
     const relPath = `.healthos-steward/prompts/generated/${resolved.fileId}.md`;
+    if (options.writeOutput !== false) {
+      mkdirSync(outputDir, { recursive: true });
+      writeFileSync(outputPath, promptSpec, "utf-8");
+    }
     const sectionsCount = (promptSpec.match(/<[a-z_]+>/g) ?? []).length;
     return {
       content: JSON.stringify(
-        { outputPath: relPath, sectionsCount, _non_canonical: NON_CANONICAL },
+        {
+          id: resolved.fileId,
+          canonicalId: resolved.canonicalId,
+          outputPath: relPath,
+          sectionsCount,
+          wroteOutput: options.writeOutput !== false,
+          _non_canonical: NON_CANONICAL,
+        },
         null,
         2
       ),

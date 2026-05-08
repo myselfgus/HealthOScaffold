@@ -25,6 +25,12 @@ import {
   handleGeneratePrompt,
 } from "./handlers.js";
 
+export const ID_ARG_TOOL_NAMES = [
+  "steward_inspect_territory",
+  "steward_validate_settlement",
+  "steward_generate_prompt",
+] as const;
+
 function ok(content: string, isError?: boolean) {
   const r: { content: Array<{ type: "text"; text: string }>; isError?: boolean } = {
     content: [{ type: "text", text: content }],

@@ -5,6 +5,7 @@ import {
   resolveSettlement,
   readAllTrackerTasks,
   validateConstructionSystem,
+  classifyCriterion,
 } from "../dist/index.js";
 
 test("settlement registry resolves by fileId and canonicalId", () => {
@@ -32,4 +33,23 @@ test("construction-system validator passes current repository invariants", () =>
     checks.filter((check) => check.result === "FAIL"),
     []
   );
+});
+
+test("criterion classifier separates filesystem evidence from command evidence", () => {
+  assert.deepEqual(classifyCriterion("../../../README.md exists", process.cwd()), {
+    criterion: "../../../README.md exists",
+    result: "PASS",
+    path: "../../../README.md",
+  });
+
+  assert.deepEqual(classifyCriterion("make validate-docs passes", process.cwd()), {
+    criterion: "make validate-docs passes",
+    result: "UNVERIFIED",
+  });
+
+  assert.deepEqual(classifyCriterion("../../../missing/path.md exists", process.cwd()), {
+    criterion: "../../../missing/path.md exists",
+    result: "FAIL",
+    path: "../../../missing/path.md",
+  });
 });

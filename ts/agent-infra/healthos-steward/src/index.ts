@@ -86,5 +86,9 @@ export type {
   ValidationEvidence,
 } from "./lib/validation-report-builder.js";
 export { buildValidationReport } from "./lib/validation-report-builder.js";
+export {
+  classifyCriterion,
+  classifySettlementCriteria,
+} from "./lib/settlement-validation.js";
 export type { ConstructionValidationCheck } from "./lib/construction-system-validator.js";
 export { validateConstructionSystem } from "./lib/construction-system-validator.js";

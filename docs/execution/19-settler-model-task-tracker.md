@@ -200,6 +200,12 @@ Outcome (2026-05-05):
 - Maturity: implemented seam (stdio MCP, 10 deterministic tools)
 - Non-claims: no clinical tools, no LLM calls, no shell execution, no merge authority, separate from HealthOS runtime MCPs
 
+Hardening follow-up (2026-05-07):
+- Added `@healthos/forge-mcp` tests for the documented 10 `steward_*` tools and round-trip Settlement ID behavior (`id` / `canonicalId`).
+- Shared Settlement done-criteria classification now lives in `@healthos/steward` and is consumed by both `healthos-steward validate-settlement` and Forge MCP validation handlers.
+- Forge MCP prompt generation can be exercised in read-only test mode for ID-resolution coverage; normal MCP handler behavior still writes generated prompt artifacts.
+- Validation: `cd ts && npm test --workspace @healthos/forge-mcp` PASS; `cd ts && npm test --workspace @healthos/steward` PASS; `make validate-construction-system` PASS; `make ts-build` PASS; `make ts-test` PASS; `make validate-docs` PASS; `git diff --check` PASS.
+
 ### ST-019 — Xcode/Codex/Claude integration instructions
 
 Status: DONE.

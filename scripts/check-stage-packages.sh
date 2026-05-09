@@ -67,10 +67,12 @@ for stage in Scribe Veridia CloudClinic; do
       echo "[stage-package-check] $stage imports SwiftData but does not document projection/cache-only usage"
       exit 1
     fi
-    if rg -qi 'canonical custody' "$custom" "$source_dir/README.md" 2>/dev/null && ! rg -qi 'never canonical custody' "$custom" "$source_dir/README.md" 2>/dev/null; then
-      echo "[stage-package-check] $stage SwiftData docs must say never canonical custody"
-      exit 1
-    fi
+    for doc in "$custom" "$source_dir/README.md"; do
+      if [ -f "$doc" ] && rg -qi 'canonical custody' "$doc" >/dev/null && ! rg -qi 'never canonical custody' "$doc" >/dev/null; then
+        echo "[stage-package-check] $stage SwiftData docs in $(basename "$doc") must say never canonical custody"
+        exit 1
+      fi
+    done
   fi
 
   if rg -n 'HealthOSScribeStage|HealthOSVeridiaStage|HealthOSCloudClinicStage' "$source_dir" "$package"; then

@@ -15,7 +15,8 @@
   "secondaryPaths": [
     "HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSMSR",
     "HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSSessionRuntime/Normalization",
-    "swift/Tests",
+    "HealthOS/Tier2-GOS-Runtimes/Tests",
+    "HealthOS/Shared/Tests",
     "HealthOS/Shared/docs/execution/todo/ops-network-ml.md"
   ],
   "forbiddenPaths": [

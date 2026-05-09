@@ -5,7 +5,7 @@
 //   swift TrainTranscriptNormalizer.swift
 //
 // Output: TranscriptNormalizer.mlmodel → copy to
-//   swift/Sources/HealthOSProviders/Resources/TranscriptNormalizer.mlmodel
+//   HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSProviders/Resources/TranscriptNormalizer.mlmodel
 // Then enable via HealthOSProviders/ModelGovernance with explicit operator approval.
 //
 // SCAFFOLD: training data, validation split, and model spec are placeholders.
@@ -57,7 +57,7 @@ do {
     let outputURL = URL(fileURLWithPath: "TranscriptNormalizer.mlmodel")
     try model.write(to: outputURL)
     print("Model written to \(outputURL.path)")
-    print("Copy to swift/Sources/HealthOSProviders/Resources/ and register with ModelGovernance.")
+    print("Copy to HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSProviders/Resources/ and register with ModelGovernance.")
 } catch {
     print("Training failed: \(error)")
     exit(1)

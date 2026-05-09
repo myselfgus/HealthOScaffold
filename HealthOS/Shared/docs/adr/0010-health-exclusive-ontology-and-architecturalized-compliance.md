@@ -119,12 +119,12 @@ Esse risco residual é mitigado por:
 
 ## Detalhes de Implementação
 
-- **Fronteiras entre módulos.** Lei vive em [HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/CoreLaw.swift](../../HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/CoreLaw.swift), [GateContracts.swift](../../HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/GateContracts.swift), [RegulatoryGovernance.swift](../../HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/RegulatoryGovernance.swift), [ReidentificationGovernance.swift](../../HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/ReidentificationGovernance.swift), [UserSovereigntyContracts.swift](../../HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/UserSovereigntyContracts.swift), [Provenance.swift](../../HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/Provenance.swift), [BackupGovernance.swift](../../HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/BackupGovernance.swift).
+- **Fronteiras entre módulos.** Lei vive em [HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/CoreLaw.swift](../../../HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/CoreLaw.swift), [GateContracts.swift](../../../HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/GateContracts.swift), [RegulatoryGovernance.swift](../../../HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/RegulatoryGovernance.swift), [ReidentificationGovernance.swift](../../../HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/ReidentificationGovernance.swift), [UserSovereigntyContracts.swift](../../../HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/UserSovereigntyContracts.swift), [Provenance.swift](../../../HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/Provenance.swift), [BackupGovernance.swift](../../../HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/BackupGovernance.swift).
 - **Conformidade com Package.swift.** Apps dependem de Core; Core não depende de apps. Nenhuma redefinição de contratos de lei fora de Core.
 - **Concurrency.** Atores garantem serialização em pontos de aplicação de lei.
 - **Segurança/Privacidade.** Lei aplicada antes de qualquer travessia que toque PHI.
 - **Observabilidade.** Eventos de seam emitidos no Core; apps consomem.
-- **Testes.** `RegulatoryGovernanceTests`, `UserSovereigntyGovernanceTests`, `StorageGovernanceTests` ([HealthOS/Shared/Tests/HealthOSTests/](../../HealthOS/Shared/Tests/HealthOSTests/)).
+- **Testes.** `RegulatoryGovernanceTests`, `UserSovereigntyGovernanceTests`, `StorageGovernanceTests` ([HealthOS/Shared/Tests/HealthOSTests/](../../../HealthOS/Shared/Tests/HealthOSTests/)).
 
 ## Plano de Adoção e Migração
 

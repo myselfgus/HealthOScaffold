@@ -3,8 +3,8 @@
 Service operations Stage for HealthOS. CloudClinic surfaces professional service-context operations via `HealthOSBoundary`. It never defines Core law or holds clinical authority.
 
 **Architecture:** `HealthOS/Shared/docs/architecture/13-cloudclinic.md`
-**Executable surface:** [`HealthOS/Tier4-Stages-Cast/CloudClinic/Sources/HealthOSCloudClinicStage/`](../../HealthOS/Tier4-Stages-Cast/CloudClinic/Sources/HealthOSCloudClinicStage/)
-**Design surface:** [`HealthOS/Shared/DesignSystem/ui_kits/cloudclinic/`](../../HealthOS/Shared/DesignSystem/ui_kits/cloudclinic/)
+**Executable surface:** [`HealthOS/Tier4-Stages-Cast/CloudClinic/Sources/HealthOSCloudClinicStage/`](../../CloudClinic/Sources/HealthOSCloudClinicStage/)
+**Design surface:** [`HealthOS/Shared/DesignSystem/ui_kits/cloudclinic/`](../../../Shared/DesignSystem/ui_kits/cloudclinic/)
 **Runtime:** `HealthOSServiceRuntime` (Tier 2) via `HealthOSBoundary`
 
 ## Screens

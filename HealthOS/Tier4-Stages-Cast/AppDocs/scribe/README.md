@@ -3,8 +3,8 @@
 Professional clinical workspace Stage for HealthOS. Scribe consumes `HealthOSBoundary` only and never holds clinical authority, consent law, or Core governance.
 
 **Architecture:** `HealthOS/Shared/docs/architecture/11-scribe.md`
-**Executable surface:** [`HealthOS/Tier4-Stages-Cast/Scribe/Sources/HealthOSScribeStage/`](../../HealthOS/Tier4-Stages-Cast/Scribe/Sources/HealthOSScribeStage/)
-**Design surface:** [`HealthOS/Shared/DesignSystem/ui_kits/scribe/`](../../HealthOS/Shared/DesignSystem/ui_kits/scribe/)
+**Executable surface:** [`HealthOS/Tier4-Stages-Cast/Scribe/Sources/HealthOSScribeStage/`](../../Scribe/Sources/HealthOSScribeStage/)
+**Design surface:** [`HealthOS/Shared/DesignSystem/ui_kits/scribe/`](../../../Shared/DesignSystem/ui_kits/scribe/)
 
 ## Session Lifecycle
 

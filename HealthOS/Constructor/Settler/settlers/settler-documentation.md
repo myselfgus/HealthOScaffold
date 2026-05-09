@@ -53,7 +53,10 @@ Primary paths this Settler may read and propose writes to:
 
 Forbidden paths (must not propose writes here):
 
-- `swift/Sources/`
+- `HealthOS/Tier1-Mestral-Core/Sources/`
+- `HealthOS/Tier2-GOS-Runtimes/Sources/`
+- `HealthOS/Tier3-Custom-Boundary/Sources/`
+- `HealthOS/Tier4-Stages-Cast/*/Sources/`
 - `HealthOS/Constructor/ts/packages/`
 - `HealthOS/Constructor/ts/agent-infra/`
 - `HealthOS/Tier1-Mestral-Core/Schemas/`

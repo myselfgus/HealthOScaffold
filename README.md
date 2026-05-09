@@ -116,7 +116,7 @@ graph TD
     end
 
     subgraph DS_L["  Native Design System — Presentation Contract  "]
-        DS[HealthOSDesignSystem\nSF Pro · semantic state colors\nstandard controls first · Liquid Glass when needed]
+        DS[HealthOS/Shared/DesignSystem\nSF Pro · semantic state colors\nstandard controls first · Liquid Glass when needed]
     end
 
     subgraph GOS_L["  GOS — Governed Operational Spec  "]
@@ -257,7 +257,7 @@ flowchart LR
 
 ## 📦 Swift Package Graph
 
-All fifteen targets build from `HealthOS/Package.swift` (Swift tools 6.2, platform `.macOS(.v26)`). External dependencies: none — sovereignty by design.
+The public Swift products build from `HealthOS/Package.swift` (Swift tools 6.2, platform `.macOS(.v26)`). The package also carries structural test targets for Construction System, Support, Stage smokes, and shared governance suites. External dependencies: none — sovereignty by design.
 
 ```mermaid
 %%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#f8f4ff', 'primaryBorderColor': '#c4b5fd', 'primaryTextColor': '#3b0764', 'clusterBkg': '#fdfbff', 'clusterBorder': '#e9d5ff', 'titleColor': '#0f172a', 'edgeLabelBackground': '#fdf8ff', 'fontFamily': 'ui-sans-serif, system-ui, -apple-system'}}}%%
@@ -335,7 +335,7 @@ HealthOS native macOS surfaces target macOS 26+ and adopt **Liquid Glass as the 
 
 Standard SwiftUI/AppKit controls and navigation surfaces (sidebars, toolbars, sheets, `NavigationSplitView`) inherit system Liquid Glass behavior automatically. Custom `glassEffect`, `GlassEffectContainer`, and glass button styles are reserved for app-specific HealthOS surfaces not covered by standard controls.
 
-**Current scaffold state:** `HealthOSScribeStage` uses `GroupBox` + `.thinMaterial` with standard SwiftUI controls. `HealthOSDesignSystem` is the implemented design system baseline (DS-001, 2026-05-05). Full Liquid Glass adoption is in progress as the macOS 26+ native app shell matures.
+**Current scaffold state:** `HealthOSScribeStage` uses `GroupBox` + `.thinMaterial` with standard SwiftUI controls. `HealthOS/Shared/DesignSystem/` is the implemented design system baseline (DS-001, 2026-05-05). Full Liquid Glass adoption is in progress as the macOS 26+ native app shell matures.
 
 <p align="center">
   <img src="HealthOS/Shared/docs/assets/liquidglass_intro.gif" width="100%" alt="Demonstração do Liquid Glass UI — HealthOS Scribe First Slice">
@@ -363,7 +363,7 @@ graph TD
         MVM[ScribeFirstSliceViewModel\nObservable - MainActor]:::vm
     end
 
-    subgraph DS["HealthOSDesignSystem"]
+    subgraph DS["HealthOS/Shared/DesignSystem"]
         TOK[Semantic tokens\nsovereign · mediated · ready · degraded · denied]:::design
         STD[Native controls first\nWindowGroup · toolbar · sidebar · sheet]:::sys
         CUS[Custom glass only when needed\nGlassEffectContainer per logical group]:::design
@@ -464,7 +464,7 @@ This repository is in **controlled implementation / scaffold hardening**:
 | **MSR Pipeline** | 🚧 Scaffold | ASL · VDLP · GEM stages, provenance metadata |
 | **Provider / ML** | ⚠️ Stub / Contract | `AppleFoundationProvider` adapter; deterministic safety posture |
 | **Stage / UI** | 🧩 Contract-First | Minimal Scribe validation surface; Veridia Boundary scaffold; CloudClinic blocked before new wiring |
-| **Liquid Glass UI** | 🎯 macOS 26+ Baseline | HealthOSDesignSystem baseline (DS-001); glass adoption in progress |
+| **Liquid Glass UI** | 🎯 macOS 26+ Baseline | `HealthOS/Shared/DesignSystem/` baseline (DS-001); glass adoption in progress |
 | **Construction System** | ✅ Implemented Seam | 10 CLI commands (healthos-steward) + 10 MCP tools (healthos-forge-mcp) |
 
 Read this table as an onboarding summary. The authoritative maturity ladder is `doctrine-only` → `scaffolded contract` → `implemented seam` → `tested operational path` → `production-hardened`, maintained in `HealthOS/Shared/docs/execution/11-current-maturity-map.md`.
@@ -615,10 +615,10 @@ flowchart TD
 
     A1[Architecture\n01 overview · 19 doctrine · 46 sovereignty]:::arch
     A2[Execution\nREADME · protocol · status · maturity · gaps]:::exec
-    A3[Code Surfaces\nswift · ts · schemas · sql]:::code
+    A3[Code Surfaces\nHealthOS tiers · Constructor/ts · schemas · SQL]:::code
     A4[Repository Engineering\nSteward · Settlers · Territories]:::steward
     A5[Claude Code Automations\nupdate · digest · sync]:::steward
-    A6[Native UI + Liquid Glass\n48-native-macos-ui · HealthOSDesignSystem · ScribeApp]:::ui
+    A6[Native UI + Liquid Glass\n48-native-macos-ui · Shared/DesignSystem · Scribe Stage]:::ui
 
     R --> A1 & A2 & A3 & A4 & A5 & A6
 
@@ -653,10 +653,10 @@ graph LR
 
     D[HealthOS/Shared/docs/architecture\nCanonical doctrine]:::docs
     E[HealthOS/Shared/docs/execution\nProtocol · status · TODO · handoff]:::exec
-    S[schemas + sql\nContract and metadata shape]:::data
-    W[swift/\nCore · AACI · MSR · apps · tests]:::code
-    T[HealthOS/Constructor/ts/\ncontracts · runtimes · tooling · steward]:::code
-    DS[HealthOSDesignSystem\npresentation tokens · UI kits · assets]:::code
+    S[HealthOS/Tier1-Mestral-Core\nSchemas · SQL]:::data
+    W[HealthOS/Package.swift\nTiered Swift graph]:::code
+    T[HealthOS/Constructor/ts\ncontracts · tooling · agent infra]:::code
+    DS[HealthOS/Shared/DesignSystem\npresentation tokens · UI kits · assets]:::code
     P[HealthOS/Support/python/\nOffline ML governance scaffolds]:::code
     EG[HealthOS/Constructor\nSteward + Settler state]:::agent
     CA[Codex automations\nGuidance · status · dependency · skill map]:::agent
@@ -671,7 +671,7 @@ graph LR
     S -->|align with| T
     D -->|bounds presentation claims for| DS
     DS -->|proposes app-safe interface skin for| W
-    W -->|first executable slice| T
+    W -->|contract checks align with| T
     P -->|offline-only support posture| W
     EG -. outside clinical/runtime hierarchy .-> D
     CA -->|reports drift for| E
@@ -688,7 +688,7 @@ graph LR
 | GOS | `29-governed-operational-spec.md` → `34-gos-review-and-activation-policy.md` | `HealthOS/Constructor/ts/packages/healthos-gos-tooling/`, `HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/` |
 | Boundary | `HealthOS/Shared/docs/architecture/50-app-layer-boundary-and-reference-apps.md`, `19-interface-doctrine.md` | mediated facades/envelopes in `HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/` and runtime adapters |
 | Native UI + Liquid Glass | `HealthOS/Shared/docs/architecture/48-native-macos-ui-design-system-and-app-shells.md` | `HealthOS/Tier4-Stages-Cast/Scribe/Sources/HealthOSScribeStage/` |
-| Stages | `11-scribe.md`, `12-veridia.md`, `13-cloudclinic.md`, `43-cross-app-coordination-shared-surfaces.md` | `HealthOS/Tier4-Stages-Cast/Scribe/Sources/HealthOSScribeStage/`, `HealthOSVeridiaStage/`, `HealthOSCloudClinicStage/` |
+| Stages | `11-scribe.md`, `12-veridia.md`, `13-cloudclinic.md`, `43-cross-app-coordination-shared-surfaces.md` | `HealthOS/Tier4-Stages-Cast/Scribe/Sources/HealthOSScribeStage/`, `HealthOS/Tier4-Stages-Cast/Veridia/Sources/HealthOSVeridiaStage/`, `HealthOS/Tier4-Stages-Cast/CloudClinic/Sources/HealthOSCloudClinicStage/` |
 | Providers / ML | `HealthOS/Shared/docs/architecture/16-providers-and-ml.md`, `27-provider-threshold-policy.md` | `HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSProviders/` |
 | Steward | `45-healthos-xcode-agent.md`, `47-steward-settler-engineering-model.md` | `HealthOS/Constructor/ts/agent-infra/healthos-steward/`, `HealthOS/Constructor/Steward/` |
 
@@ -709,12 +709,17 @@ graph LR
 | `HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSSessionRuntime/` | — | Session orchestration, normalization executor, Scribe bridge adapter |
 | `HealthOS/Tier3-Custom-Boundary/Sources/HealthOSBoundary/` | [README](HealthOS/Tier3-Custom-Boundary/Sources/HealthOSBoundary/README.md) | Boundary compatibility module — Tier 3 facade; Stage executables should consume mediated surfaces through it as it matures |
 | `HealthOS/Tier4-Stages-Cast/Scribe/Sources/HealthOSScribeStage/` | [README](HealthOS/Tier4-Stages-Cast/Scribe/Sources/HealthOSScribeStage/README.md) | Scribe validation surface, SwiftUI architecture, Liquid Glass adoption path |
+| `HealthOS/Tier4-Stages-Cast/Veridia/Sources/HealthOSVeridiaStage/` | — | Veridia smoke-testable Stage executable and app-safe patient identity surface |
+| `HealthOS/Tier4-Stages-Cast/CloudClinic/Sources/HealthOSCloudClinicStage/` | — | CloudClinic smoke-testable Stage executable and service operations placeholder |
+| `HealthOS/Shared/DesignSystem/` | [README](HealthOS/Shared/DesignSystem/README.md) | Shared presentation tokens, UI kits, previews, and Stage visual assets |
 | `HealthOS/Shared/docs/architecture/` | [index](HealthOS/Shared/docs/architecture/) | 50+ canonical architecture doctrine documents |
 | `HealthOS/Shared/docs/execution/` | [README](HealthOS/Shared/docs/execution/README.md) | Execution protocol, status tracking, TODO tracker, maturity/handoff |
-| `HealthOS/Constructor/ts/` | [README](HealthOS/Constructor/ts/README.md) | TypeScript workspace: contracts, GOS tooling, async runtime, Steward CLI |
+| `HealthOS/Constructor/` | [README](HealthOS/Constructor/README.md) | Visible external Construction System root: Steward, Settler, Territory, TS tooling, and structural tests |
+| `HealthOS/Constructor/ts/` | [README](HealthOS/Constructor/ts/README.md) | TypeScript workspace: contracts, GOS tooling, runtime reference packages, Steward CLI, Forge MCP, Managed Agent seam |
 | `HealthOS/Support/ML/` | [README](HealthOS/Support/ML/README.md) | Create ML/Core ML/MLX scaffolds — transcript normalization; gated by ModelGovernance |
+| `HealthOS/Support/` | [README](HealthOS/Support/README.md) | Visible Support root for ops, Python, and governed ML tooling |
 | `HealthOS/Constructor/Steward/` | [README](HealthOS/Constructor/Steward/README.md) | Steward derived state, session memory, automation logs |
-| `HealthOS/Constructor/ts/agent-infra/healthos-forge-mcp/` | — | Forge MCP stdio server — 10 deterministic repository-maintenance tools |
+| `HealthOS/Constructor/ts/agent-infra/healthos-forge-mcp/` | [README](HealthOS/Constructor/ts/agent-infra/healthos-forge-mcp/README.md) | Forge MCP stdio and Streamable HTTP server — 10 deterministic repository-maintenance tools |
 
 ---
 
@@ -725,6 +730,8 @@ graph LR
 - `HealthOS/Tier1-Mestral-Core/Schemas/` — JSON Schema entity contracts and GOS schemas
 - `HealthOS/Package.swift` — canonical SwiftPM graph for Core (T1), Providers/GOS/AACI/MSR/Runtimes (T2), Boundary (T3), Stage executables (T4), CLI, Support/Construction structural tests, and shared test suites
 - `HealthOS/Constructor/ts/` — workspace packages (`contracts`, `runtime-async`, `runtime-user-agent`, `healthos-gos-tooling`, `healthos-steward`, `healthos-forge-mcp`)
+- `HealthOS/Constructor/ts/agent-infra/` — Construction System agent infrastructure (`healthos-steward`, `healthos-forge-mcp`, `healthos-managed-agent`)
+- `HealthOS/Constructor/Tests/` — Swift structural tests that keep Construction System files visible and outside the clinical/runtime hierarchy
 - `HealthOS/Support/ML/` — Create ML/Core ML/MLX scaffolds for governed local model tooling (transcript normalizer stub; gated by ModelGovernance)
 - `HealthOS/Support/python/` — offline ML governance scaffolds only
 - `HealthOS/Tier1-Mestral-Core/SQL/migrations/001_init.sql` — canonical metadata schema scaffold
@@ -945,7 +952,7 @@ Full detail: `HealthOS/Shared/docs/execution/11-current-maturity-map.md`.
 - **GOS authoring/compiler/lifecycle:** implemented seam / tested operational path (scaffold hardening)
 - **AACI + first slice orchestration:** implemented seam / tested operational path (bounded scope)
 - **MSR pipeline:** scaffold — executors present, provenance metadata defined, provider integration pending
-- **Liquid Glass UI:** design baseline established; HealthOSDesignSystem implemented (DS-001)
+- **Liquid Glass UI:** design baseline established; `HealthOS/Shared/DesignSystem/` implemented (DS-001)
 - **Construction system (Steward + Forge MCP):** implemented seam — 10 CLI commands + 10 MCP tools deterministic; no LLM, no merge authority, no clinical scope
 
 ## Scaffold/Foundation Phase Closure References

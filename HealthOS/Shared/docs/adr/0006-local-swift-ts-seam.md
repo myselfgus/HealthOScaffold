@@ -67,7 +67,7 @@ O seam local inicial entre Swift e TypeScript é:
 | **PostgreSQL local** | Source of truth canônico para metadata/state compartilhado (governança, registries, índice de bundles GOS). |
 | **Filesystem / object paths** | Payloads grandes (transcripts, áudio, embeddings) trafegam por referência, não inline. |
 
-A `ProviderKind.httpLocal` em [HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSProviders/ProviderProtocols.swift](../../HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSProviders/ProviderProtocols.swift) materializa o seam para providers que vivem em TS.
+A `ProviderKind.httpLocal` em [HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSProviders/ProviderProtocols.swift](../../../HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSProviders/ProviderProtocols.swift) materializa o seam para providers que vivem em TS.
 
 - **Escopo.** Comunicação cross-language local. Não é seam externo (ADR-0009 trata fabric soberano).
 - **Justificativa.** Loopback HTTP é universalmente debugável (curl, tcpdump local, OpenAPI), Postgres é a base canônica de metadata em HealthOS, e filesystem evita serialização absurda de blobs.
@@ -92,7 +92,7 @@ A `ProviderKind.httpLocal` em [HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSProvi
 
 - **Positivas.**
   - Apps e runtimes integram via endpoints locais explícitos.
-  - Schemas/contratos escritos como payloads boundary-safe (Codable Swift + Zod/AJV TS sobre o mesmo JSON Schema em [HealthOS/Tier1-Mestral-Core/Schemas/](../../HealthOS/Tier1-Mestral-Core/Schemas/)).
+  - Schemas/contratos escritos como payloads boundary-safe (Codable Swift + Zod/AJV TS sobre o mesmo JSON Schema em [HealthOS/Tier1-Mestral-Core/Schemas/](../../../HealthOS/Tier1-Mestral-Core/Schemas/)).
   - Artefatos pesados não passam por RPC payload.
 - **Negativas / trade-offs.**
   - Overhead HTTP em loops apertados (mitigar com batching ou path-by-reference).
@@ -110,7 +110,7 @@ A `ProviderKind.httpLocal` em [HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSProvi
 ## Detalhes de Implementação
 
 - **Fronteiras entre módulos.** Swift `HealthOSProviders` expõe adapters `httpLocal`. Apps consumem via SessionRuntime → Providers → endpoint loopback TS.
-- **Conformidade com Package.swift.** `HealthOSProviders` depende apenas de `HealthOSCore` (validado em [HealthOS/Package.swift:20](../../HealthOS/Package.swift:20)).
+- **Conformidade com Package.swift.** `HealthOSProviders` depende apenas de `HealthOSCore` (validado em [HealthOS/Package.swift:20](../../../HealthOS/Package.swift:20)).
 - **Concurrency.** Cliente HTTP em Swift usa `URLSession` async/await; cancelamento estruturado propaga via `Task`.
 - **Segurança/Privacidade.** Bind em `127.0.0.1`/UDS apenas; tokens locais; payloads conformes ADR-0004.
 - **Observabilidade.** `correlation_id` cross-language; `traceparent` HTTP; logs estruturados em ambos os lados.

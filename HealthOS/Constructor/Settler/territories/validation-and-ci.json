@@ -14,17 +14,23 @@
   "primaryPaths": [
     "Makefile",
     "scripts",
-    "swift/Tests"
+    "HealthOS/Tier1-Mestral-Core/Tests",
+    "HealthOS/Tier2-GOS-Runtimes/Tests",
+    "HealthOS/Tier3-Custom-Boundary/Tests",
+    "HealthOS/Tier4-Stages-Cast/Tests",
+    "HealthOS/Constructor/Tests",
+    "HealthOS/Support/Tests",
+    "HealthOS/Shared/Tests"
   ],
   "secondaryPaths": [
     "HealthOS/Shared/docs/execution/10-invariant-matrix.md",
     "HealthOS/Shared/docs/execution/todo",
-    "schemas",
+    "HealthOS/Tier1-Mestral-Core/Schemas",
     "HealthOS/Constructor/ts/package.json",
     "HealthOS/Package.swift"
   ],
   "forbiddenPaths": [
-    "swift/Sources",
+    "HealthOS/*/Sources",
     "HealthOS/Constructor/ts/packages",
     "HealthOS/Constructor/ts/agent-infra"
   ],

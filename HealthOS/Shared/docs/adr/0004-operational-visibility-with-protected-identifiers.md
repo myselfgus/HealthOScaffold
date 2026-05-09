@@ -77,8 +77,8 @@ Mecanismos de proteção:
 |---|---|
 | Pseudonimização no ingress | Superfícies de captura (Scribe, MSR ingest) substituem direto por pseudônimo estável o quanto antes. |
 | Separação forte | Superfícies de app recebem referências pseudonimizadas, nunca identificadores diretos brutos. |
-| Re-identificação auditada | Operação explícita, logada, gated por habilitação ([ReidentificationGovernance.swift](../../HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/ReidentificationGovernance.swift)). |
-| Provenance | Todo acesso a registro identificável é registrado com ator, timestamp, finalidade, base legal ([Provenance.swift](../../HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/Provenance.swift)). |
+| Re-identificação auditada | Operação explícita, logada, gated por habilitação ([ReidentificationGovernance.swift](../../../HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/ReidentificationGovernance.swift)). |
+| Provenance | Todo acesso a registro identificável é registrado com ator, timestamp, finalidade, base legal ([Provenance.swift](../../../HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/Provenance.swift)). |
 
 - **Escopo.** Toda travessia de identidade entre camadas (capture → storage → runtime → app) e toda emissão de telemetria.
 - **Justificativa.** Único modelo que satisfaz simultaneamente soberania computacional, minimização legal e auditabilidade.
@@ -120,7 +120,7 @@ Mecanismos de proteção:
 - **Concurrency.** Operações de re-identificação executam em `actor` dedicado para serializar acesso à tabela de mapping; backpressure via `Task` cooperativo.
 - **Segurança/Privacidade.** Mapeamento criptografado em repouso (chave por operador); rotação documentada em runbook (`HealthOS/Shared/docs/architecture/14-operations-runbook.md`).
 - **Observabilidade.** Métricas e logs conforme front matter. Painel `identifier-leak-detector`.
-- **Testes.** `StorageGovernanceTests`, `RetrievalMemoryGovernanceTests`, `UserSovereigntyGovernanceTests` ([HealthOS/Shared/Tests/HealthOSTests/](../../HealthOS/Shared/Tests/HealthOSTests/)).
+- **Testes.** `StorageGovernanceTests`, `RetrievalMemoryGovernanceTests`, `UserSovereigntyGovernanceTests` ([HealthOS/Shared/Tests/HealthOSTests/](../../../HealthOS/Shared/Tests/HealthOSTests/)).
 
 ## Plano de Adoção e Migração
 

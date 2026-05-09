@@ -71,7 +71,7 @@ rollout:
 Qualquer artefato com efeito regulatório ou clínico permanece em estado `draft` até que um **gate humano** o resolva explicitamente para um estado final (`approved` ou `rejected`). Nenhum runtime, agente ou superfície de app pode burlar ou auto-resolver o gate.
 
 Resolução de gate exige:
-- ator humano explícito com habilitação apropriada (validada em [HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/UserSovereigntyContracts.swift](../../HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/UserSovereigntyContracts.swift) e governança em [HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/RegulatoryGovernance.swift](../../HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/RegulatoryGovernance.swift));
+- ator humano explícito com habilitação apropriada (validada em [HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/UserSovereigntyContracts.swift](../../../HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/UserSovereigntyContracts.swift) e governança em [HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/RegulatoryGovernance.swift](../../../HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/RegulatoryGovernance.swift));
 - decisão registrada (approve / reject / defer) com racional;
 - registro de proveniência ligando artefato, evento de gate e ator resolvedor (ver `Provenance.swift`).
 
@@ -110,7 +110,7 @@ Resolução de gate exige:
 
 ## Detalhes de Implementação
 
-- **Fronteiras entre módulos.** Tipos canônicos em `HealthOSCore` ([HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/GateContracts.swift](../../HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/GateContracts.swift)). Runtimes (AACI/MSR/SessionRuntime) emitem `GateRequest` e consomem `GateResolution`. Apps oferecem UX para resolver. **Apps NÃO definem novos tipos de gate.**
+- **Fronteiras entre módulos.** Tipos canônicos em `HealthOSCore` ([HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/GateContracts.swift](../../../HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/GateContracts.swift)). Runtimes (AACI/MSR/SessionRuntime) emitem `GateRequest` e consomem `GateResolution`. Apps oferecem UX para resolver. **Apps NÃO definem novos tipos de gate.**
 - **Conformidade com Package.swift.** `GateContracts` em `HealthOSCore` é dependência transitiva de todos os runtimes e apps. Nenhuma camada acima do Core pode redefinir gate.
 - **Concurrency.** `SimpleGateService` (em `HealthOSSessionRuntime`) opera dentro do `actor SessionRunner`. Resolução é cancelável; `defer` mantém estado pendente persistente.
 - **Segurança/Privacidade.** Habilitation validada antes; rationale validado; provenance imutável.

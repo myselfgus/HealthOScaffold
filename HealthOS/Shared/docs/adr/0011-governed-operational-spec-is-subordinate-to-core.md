@@ -94,7 +94,7 @@ HealthOS introduz uma camada arquitetural chamada **Governed Operational Spec (G
 GOS **é**:
 - camada declarativa de spec intermediária;
 - autorada para colaboração humano/IA (formato declarativo amigável, ex.: YAML);
-- compilada para forma canônica machine-readable (JSON sob schema em [HealthOS/Tier1-Mestral-Core/Schemas/governed-operational-spec.schema.json](../../HealthOS/Tier1-Mestral-Core/Schemas/governed-operational-spec.schema.json));
+- compilada para forma canônica machine-readable (JSON sob schema em [HealthOS/Tier1-Mestral-Core/Schemas/governed-operational-spec.schema.json](../../../HealthOS/Tier1-Mestral-Core/Schemas/governed-operational-spec.schema.json));
 - consumida por runtimes HealthOS como AACI;
 - **sempre subordinada à lei do HealthOS Core**.
 
@@ -212,15 +212,15 @@ Esta ADR **não** introduz:
 ## Detalhes de Implementação
 
 - **Fronteiras entre módulos.**
-  - Tipos canônicos: `HealthOSCore` ([GovernedOperationalSpec.swift](../../HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/GovernedOperationalSpec.swift), [GOSFileBackedRegistry.swift](../../HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/GOSFileBackedRegistry.swift)).
-  - Bindings/ativação: `HealthOSAACI` ([GOSBindings.swift](../../HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSAACI/GOSBindings.swift), [GOSRuntimeActivation.swift](../../HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSAACI/GOSRuntimeActivation.swift), [GOSRuntimeContext.swift](../../HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSAACI/GOSRuntimeContext.swift), [GOSRuntimeResolution.swift](../../HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSAACI/GOSRuntimeResolution.swift)).
+  - Tipos canônicos: `HealthOSCore` ([GovernedOperationalSpec.swift](../../../HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/GovernedOperationalSpec.swift), [GOSFileBackedRegistry.swift](../../../HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/GOSFileBackedRegistry.swift)).
+  - Bindings/ativação: `HealthOSAACI` ([GOSBindings.swift](../../../HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSAACI/GOSBindings.swift), [GOSRuntimeActivation.swift](../../../HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSAACI/GOSRuntimeActivation.swift), [GOSRuntimeContext.swift](../../../HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSAACI/GOSRuntimeContext.swift), [GOSRuntimeResolution.swift](../../../HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSAACI/GOSRuntimeResolution.swift)).
   - Compiler authoring → canonical: `HealthOS/Constructor/ts/packages/healthos-gos-tooling` (TypeScript).
-  - Schemas: [HealthOS/Tier1-Mestral-Core/Schemas/governed-operational-spec*.schema.json](../../HealthOS/Tier1-Mestral-Core/Schemas/).
-- **Conformidade com Package.swift.** GOS no Core respeita a hierarquia: Core base → AACI consome (com `dependencies: ["HealthOSCore", "HealthOSProviders"]` em [HealthOS/Package.swift:21](../../HealthOS/Package.swift:21)). Apps não importam GOS internals.
-- **Concurrency.** Activation runs in `actor AACIOrchestrator` ([HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSAACI/AACI.swift:5](../../HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSAACI/AACI.swift:5)); cancelamento estruturado.
+  - Schemas: [HealthOS/Tier1-Mestral-Core/Schemas/governed-operational-spec*.schema.json](../../../HealthOS/Tier1-Mestral-Core/Schemas/).
+- **Conformidade com Package.swift.** GOS no Core respeita a hierarquia: Core base → AACI consome (com `dependencies: ["HealthOSCore", "HealthOSProviders"]` em [HealthOS/Package.swift:21](../../../HealthOS/Package.swift:21)). Apps não importam GOS internals.
+- **Concurrency.** Activation runs in `actor AACIOrchestrator` ([HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSAACI/AACI.swift:5](../../../HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSAACI/AACI.swift:5)); cancelamento estruturado.
 - **Segurança/Privacidade.** Bundles validados por schema antes de ativação; lifecycle audit registra ativação/desativação; sem PHI no spec.
 - **Observabilidade.** Métricas/logs/traces conforme front matter; cada execução de spec emite `gos.execute` span.
-- **Testes.** `GOSRuntimeAdoptionTests` ([HealthOS/Shared/Tests/HealthOSTests/GOSRuntimeAdoptionTests.swift](../../HealthOS/Shared/Tests/HealthOSTests/GOSRuntimeAdoptionTests.swift)); golden specs para `aaci.first-slice`; testes de compiler em TS.
+- **Testes.** `GOSRuntimeAdoptionTests` ([HealthOS/Shared/Tests/HealthOSTests/GOSRuntimeAdoptionTests.swift](../../../HealthOS/Shared/Tests/HealthOSTests/GOSRuntimeAdoptionTests.swift)); golden specs para `aaci.first-slice`; testes de compiler em TS.
 
 ## Plano de Adoção e Migração
 
@@ -232,13 +232,13 @@ Esta ADR **não** introduz:
 
 Itens encerrados:
 - arch docs adicionados: [HealthOS/Shared/docs/architecture/29-governed-operational-spec.md](../architecture/29-governed-operational-spec.md) até [HealthOS/Shared/docs/architecture/34-gos-review-and-activation-policy.md](../architecture/34-gos-review-and-activation-policy.md);
-- schema canônico: [HealthOS/Tier1-Mestral-Core/Schemas/governed-operational-spec.schema.json](../../HealthOS/Tier1-Mestral-Core/Schemas/governed-operational-spec.schema.json) e variantes;
+- schema canônico: [HealthOS/Tier1-Mestral-Core/Schemas/governed-operational-spec.schema.json](../../../HealthOS/Tier1-Mestral-Core/Schemas/governed-operational-spec.schema.json) e variantes;
 - schemas authoring e bundle-manifest adicionados;
 - backlog de execução: `HealthOS/Shared/docs/execution/todo/gos-and-compilers.md`;
-- compilador TS scaffolded: [HealthOS/Constructor/ts/packages/healthos-gos-tooling/](../../HealthOS/Constructor/ts/packages/healthos-gos-tooling/);
-- contratos Swift scaffolded: [HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/GovernedOperationalSpec.swift](../../HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/GovernedOperationalSpec.swift) e relacionados;
-- registry file-backed e loader: [GOSFileBackedRegistry](../../HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/GOSFileBackedRegistry.swift);
-- seam de ativação AACI: [GOSRuntimeActivation.swift](../../HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSAACI/GOSRuntimeActivation.swift) e `AACIOrchestrator.activateGOS`;
+- compilador TS scaffolded: [HealthOS/Constructor/ts/packages/healthos-gos-tooling/](../../../HealthOS/Constructor/ts/packages/healthos-gos-tooling/);
+- contratos Swift scaffolded: [HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/GovernedOperationalSpec.swift](../../../HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/GovernedOperationalSpec.swift) e relacionados;
+- registry file-backed e loader: [GOSFileBackedRegistry](../../../HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/GOSFileBackedRegistry.swift);
+- seam de ativação AACI: [GOSRuntimeActivation.swift](../../../HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSAACI/GOSRuntimeActivation.swift) e `AACIOrchestrator.activateGOS`;
 - caminho de first-slice runtime integrado com ativação GOS;
 - bundle exemplar shipped para `aaci.first-slice`.
 

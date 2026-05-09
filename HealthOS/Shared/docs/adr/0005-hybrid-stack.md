@@ -70,9 +70,9 @@ HealthOS usa stack deliberada de três linguagens, com cada uma alocada à camad
 
 | Linguagem | Versão/alvo | Papel |
 |---|---|---|
-| **Swift** | Swift 6.2, `.macOS(.v26)` ([HealthOS/Package.swift](../../HealthOS/Package.swift)) | Núcleo, runtime nativo, providers, apps macOS (Scribe/Veridia/CloudClinic), CLI. Concurrency via `actor` e structured concurrency. |
-| **TypeScript** | Node moderno, workspace TS ([HealthOS/Constructor/ts/package.json](../../HealthOS/Constructor/ts/package.json)) | Serviços assíncronos, APIs, tooling de orquestração, infra de agente (Steward, Steward MCP), compilador GOS, scripts CI/CD. |
-| **Python** | Pyproject ([HealthOS/Support/python/pyproject.toml](../../HealthOS/Support/python/pyproject.toml)) | Pipelines offline de ML, fine-tuning, processamento de dados. **Nunca** no caminho clínico ao vivo. |
+| **Swift** | Swift 6.2, `.macOS(.v26)` ([HealthOS/Package.swift](../../../HealthOS/Package.swift)) | Núcleo, runtime nativo, providers, apps macOS (Scribe/Veridia/CloudClinic), CLI. Concurrency via `actor` e structured concurrency. |
+| **TypeScript** | Node moderno, workspace TS ([HealthOS/Constructor/ts/package.json](../../../HealthOS/Constructor/ts/package.json)) | Serviços assíncronos, APIs, tooling de orquestração, infra de agente (Steward, Steward MCP), compilador GOS, scripts CI/CD. |
+| **Python** | Pyproject ([HealthOS/Support/python/pyproject.toml](../../../HealthOS/Support/python/pyproject.toml)) | Pipelines offline de ML, fine-tuning, processamento de dados. **Nunca** no caminho clínico ao vivo. |
 
 - **Escopo.** Decisão sobre linguagens permitidas e fronteiras de uso. Não decide framework específico (ex.: SwiftUI vs AppKit fica em outra ADR/spec).
 - **Justificativa.** Cada linguagem ocupa o nicho onde sua tooling/maturidade entrega o maior valor por menor risco; seams explícitos (ADR-0006) tornam a heterogeneidade auditável.
@@ -114,8 +114,8 @@ HealthOS usa stack deliberada de três linguagens, com cada uma alocada à camad
 
 ## Detalhes de Implementação
 
-- **Fronteiras entre módulos.** Swift para `HealthOS*` em [swift/](../../swift/); TS para tooling em [HealthOS/Constructor/ts/](../../HealthOS/Constructor/ts/); Python isolado em [HealthOS/Support/python/](../../HealthOS/Support/python/). Seam Swift↔TS é loopback HTTP + Postgres + filesystem (ADR-0006).
-- **Conformidade com Package.swift.** Todos os 9 produtos (5 libs + 4 executáveis) e 1 test target são Swift puros, sem dependências em Node/Python.
+- **Fronteiras entre módulos.** Swift para produtos `HealthOS*` em [HealthOS/Package.swift](../../../HealthOS/Package.swift) com paths por tier; TS para tooling e agent-infra em [HealthOS/Constructor/ts/](../../../HealthOS/Constructor/ts/); Python isolado em [HealthOS/Support/python/](../../../HealthOS/Support/python/). Seam Swift↔TS é loopback HTTP + Postgres + filesystem (ADR-0006).
+- **Conformidade com Package.swift.** Os produtos públicos Swift ficam no pacote `HealthOS`; test targets estruturais cobrem Core, Runtime, Boundary, Stages, Construction System, Support e suites compartilhadas, sem dependências em Node/Python no grafo Swift.
 - **Concurrency.** Swift: `actor`/structured concurrency. TS: async/await + workers. Python: jobs offline, sem concorrência clínica relevante.
 - **Segurança/Privacidade.** Swift opera sobre PHI; TS toca metadados governance; Python opera sobre datasets sintéticos/anonimizados.
 - **Observabilidade.** `correlation_id` propagado pelo seam HTTP; cada runtime emite logs estruturados.

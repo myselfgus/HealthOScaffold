@@ -43,7 +43,7 @@ Primary paths this Settler may read and propose writes to:
 
 - `Makefile` — primary build and validation target definitions
 - `scripts/` — repository validation scripts
-- `swift/Tests/` — Swift test targets
+- `HealthOS/*/Tests/` — Swift test targets by tier/support/construction/shared surface
 - `HealthOS/Constructor/ts/` — TypeScript build and test configuration (when affecting validation targets)
 - `.github/` — CI configuration (when present)
 - `HealthOS/Shared/docs/execution/06-scaffold-coverage-matrix.md` — coverage matrix doc

@@ -82,4 +82,4 @@ Forge MCP — stdio MCP server exposing 10 `steward_*` tools for deterministic r
 
 ## Cross-Language Contract Discipline
 
-When ontology or contracts change, align TypeScript contracts here in the same work unit as `swift/`, `HealthOS/Tier1-Mestral-Core/Schemas/`, and `HealthOS/Tier1-Mestral-Core/SQL/`. See root `README.md § Cross-Language Contract Discipline`.
+When ontology or contracts change, align TypeScript contracts here in the same work unit as `HealthOS/Package.swift` tiered Swift sources, `HealthOS/Tier1-Mestral-Core/Schemas/`, and `HealthOS/Tier1-Mestral-Core/SQL/`. See root `README.md § Cross-Language Contract Discipline`.

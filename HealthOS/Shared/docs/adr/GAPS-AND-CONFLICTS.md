@@ -1,7 +1,7 @@
 # Relatório de Gaps & Conflitos — ADRs HealthOS
 
 Data da revisão: 2026-05-06
-Escopo: ADRs 0001-0012 + auditoria contra [HealthOS/Package.swift](../../HealthOS/Package.swift) e árvore de código.
+Escopo: ADRs 0001-0012 + auditoria contra [HealthOS/Package.swift](../../../HealthOS/Package.swift) e árvore de código.
 
 Este relatório lista (a) gaps de cobertura ADR (decisões importantes ainda não documentadas formalmente), (b) conflitos potenciais ou ambiguidades entre ADRs existentes, (c) ADRs novas propostas, e (d) recomendações de evolução.
 
@@ -10,7 +10,7 @@ Este relatório lista (a) gaps de cobertura ADR (decisões importantes ainda nã
 ## 1. Resumo
 
 - **Decisões fundacionais.** ADRs 0001-0012 cobrem o núcleo constitucional, topologia, stack, seam local, UX, lawfulContext, ontologia/compliance, GOS e identidade do repositório. **Não há conflitos diretos** entre as ADRs existentes; várias se reforçam mutuamente.
-- **Conformidade com Package.swift.** Direção de dependências declarada em [HealthOS/Package.swift](../../HealthOS/Package.swift) é compatível com toda a hierarquia constitucional descrita no ADR-0001. **Sem violações** detectadas.
+- **Conformidade com Package.swift.** Direção de dependências declarada em [HealthOS/Package.swift](../../../HealthOS/Package.swift) é compatível com toda a hierarquia constitucional descrita no ADR-0001. **Sem violações** detectadas.
 - **Gaps materiais.** Existe substancial trabalho de arquitetura **implementado** ([HealthOS/Shared/docs/architecture/](../architecture/) inclui arquivos 01-44, e há ~30 arquivos Swift no Core, MSR/AACI bindings, providers reais) que **ainda não tem cobertura ADR específica**. Exemplos: política de threshold de provedor, observabilidade de operador, coordenação cross-app, integração MSR, prompts versionados.
 
 ---
@@ -41,13 +41,13 @@ Listadas em ordem de prioridade. Cada gap propõe uma ADR candidata (numeração
 
 ### 3.1 [ADR-0014 proposta] **Provider model governance e threshold policy**
 
-- **Por que.** Existe código consolidado em [HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSProviders/ProviderProtocols.swift](../../HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSProviders/ProviderProtocols.swift), [ProviderProtocols](../../HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSProviders/ProviderProtocols.swift), [ModelGovernance.swift](../../HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSProviders/ModelGovernance.swift), e doc [HealthOS/Shared/docs/architecture/27-provider-threshold-policy.md](../architecture/27-provider-threshold-policy.md), além de `ProviderKind` (apple-native, http-local, training-offline, remote, local), `ProviderTaskClass`, `ProviderSafetyDenialReason`. **Não há ADR formal** que cristalize a decisão.
+- **Por que.** Existe código consolidado em [HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSProviders/ProviderProtocols.swift](../../../HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSProviders/ProviderProtocols.swift), [ProviderProtocols](../../../HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSProviders/ProviderProtocols.swift), [ModelGovernance.swift](../../../HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSProviders/ModelGovernance.swift), e doc [HealthOS/Shared/docs/architecture/27-provider-threshold-policy.md](../architecture/27-provider-threshold-policy.md), além de `ProviderKind` (apple-native, http-local, training-offline, remote, local), `ProviderTaskClass`, `ProviderSafetyDenialReason`. **Não há ADR formal** que cristalize a decisão.
 - **Recomendação.** Criar ADR-0014 cobrindo: kinds permitidos, regras de segurança fail-closed (denial reasons), política de threshold, requisitos de stub vs. real, `allowsPHI` / `requiresNetwork` / `allowsIdentifiableData` como contratos.
 - **Risco.** Sem ADR, próximas evoluções podem flexibilizar denials sem revisão arquitetural.
 
 ### 3.2 [ADR-0015 proposta] **Apple Foundation Models como provider apple-native**
 
-- **Por que.** Existe adapter implementado em [HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSProviders/AppleFoundationModelsAdapter.swift](../../HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSProviders/AppleFoundationModelsAdapter.swift) sem ADR.
+- **Por que.** Existe adapter implementado em [HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSProviders/AppleFoundationModelsAdapter.swift](../../../HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSProviders/AppleFoundationModelsAdapter.swift) sem ADR.
 - **Recomendação.** ADR específica documentando: por que Apple Foundation Models foi escolhido como provider primário on-device; restrições de PHI; fallback e degradation; relação com ADR-0005 (stack) e ADR-0009 (soberania).
 
 ### 3.3 [ADR-0016 proposta] **Observabilidade do operador como contrato**
@@ -57,32 +57,32 @@ Listadas em ordem de prioridade. Cada gap propõe uma ADR candidata (numeração
 
 ### 3.4 [ADR-0017 proposta] **MSR pipeline e prompts versionados**
 
-- **Por que.** [HealthOSMSR](../../HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSMSR) tem `MSRPipeline`, `Executors/{ASLExecutor, VDLPExecutor, GEMArtifactBuilder, MSRJSONRepair}`, e prompts em `Prompts/{asl-system.md, vdlp-system.md, gem-system.md}`. Sem ADR.
-- **Recomendação.** ADR cobrindo: papel de ASL/VDLP/GEM no pipeline, versionamento de prompts (golden tests), relação com `Prompts/` resources copy em [Package.swift:23](../../HealthOS/Package.swift:23), governança de output, contrato com SessionRuntime.
+- **Por que.** [HealthOSMSR](../../../HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSMSR) tem `MSRPipeline`, `Executors/{ASLExecutor, VDLPExecutor, GEMArtifactBuilder, MSRJSONRepair}`, e prompts em `Prompts/{asl-system.md, vdlp-system.md, gem-system.md}`. Sem ADR.
+- **Recomendação.** ADR cobrindo: papel de ASL/VDLP/GEM no pipeline, versionamento de prompts (golden tests), relação com `Prompts/` resources copy em [Package.swift:23](../../../HealthOS/Package.swift:23), governança de output, contrato com SessionRuntime.
 
 ### 3.5 [ADR-0018 proposta] **Coordenação cross-app e shared surfaces**
 
-- **Por que.** Existe [HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/CrossAppCoordinationContracts.swift](../../HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/CrossAppCoordinationContracts.swift) e doc [HealthOS/Shared/docs/architecture/43-cross-app-coordination-shared-surfaces.md](../architecture/43-cross-app-coordination-shared-surfaces.md). Sem ADR.
+- **Por que.** Existe [HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/CrossAppCoordinationContracts.swift](../../../HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/CrossAppCoordinationContracts.swift) e doc [HealthOS/Shared/docs/architecture/43-cross-app-coordination-shared-surfaces.md](../architecture/43-cross-app-coordination-shared-surfaces.md). Sem ADR.
 - **Recomendação.** ADR formalizando como Scribe/Veridia/CloudClinic coordenam (sem violar ADR-0007 e ADR-0010): handoff de session state, surfaces compartilhadas, escopo de cada app.
 
 ### 3.6 [ADR-0019 proposta] **Backup, retenção e governança de objetos**
 
-- **Por que.** [BackupGovernance.swift](../../HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/BackupGovernance.swift), [HealthOS/Shared/docs/architecture/21-object-integrity-strategy.md](../architecture/21-object-integrity-strategy.md). Sem ADR.
+- **Por que.** [BackupGovernance.swift](../../../HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/BackupGovernance.swift), [HealthOS/Shared/docs/architecture/21-object-integrity-strategy.md](../architecture/21-object-integrity-strategy.md). Sem ADR.
 - **Recomendação.** ADR sobre estratégia de backup, retenção mínima/máxima (LGPD), integridade de objetos, recuperação.
 
 ### 3.7 [ADR-0020 proposta] **Retrieval-augmented memory governance**
 
-- **Por que.** [RetrievalMemoryGovernance.swift](../../HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/RetrievalMemoryGovernance.swift) implementa contratos para retrieval governado, sem ADR.
+- **Por que.** [RetrievalMemoryGovernance.swift](../../../HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/RetrievalMemoryGovernance.swift) implementa contratos para retrieval governado, sem ADR.
 - **Recomendação.** ADR sobre escopo permitido de retrieval, base legal, limites de bounded-context, relação com ADR-0004.
 
 ### 3.8 [ADR-0021 proposta] **First-slice executable path**
 
-- **Por que.** Existe [FirstSliceContracts.swift](../../HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/FirstSliceContracts.swift), [FirstSliceServices.swift](../../HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/FirstSliceServices.swift), [HealthOS/Shared/docs/architecture/03-first-slice.md](../architecture/03-first-slice.md), [HealthOS/Shared/docs/architecture/28-first-slice-executable-path.md](../architecture/28-first-slice-executable-path.md). Sem ADR sobre o que é "first slice" canônico.
+- **Por que.** Existe [FirstSliceContracts.swift](../../../HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/FirstSliceContracts.swift), [FirstSliceServices.swift](../../../HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/FirstSliceServices.swift), [HealthOS/Shared/docs/architecture/03-first-slice.md](../architecture/03-first-slice.md), [HealthOS/Shared/docs/architecture/28-first-slice-executable-path.md](../architecture/28-first-slice-executable-path.md). Sem ADR sobre o que é "first slice" canônico.
 - **Recomendação.** ADR fixando: o que constitui first slice executable; relação com `aaci.first-slice` exemplar GOS; gates de scaffold-closure.
 
 ### 3.9 [ADR-0022 proposta] **Steward e infra de agente para construção**
 
-- **Por que.** [HealthOS/Constructor/Steward/](../../HealthOS/Constructor/Steward/), [HealthOS/Shared/docs/architecture/44-project-steward-agent.md](../architecture/44-project-steward-agent.md). Sem ADR.
+- **Por que.** [HealthOS/Constructor/Steward/](../../../HealthOS/Constructor/Steward/), [HealthOS/Shared/docs/architecture/44-project-steward-agent.md](../architecture/44-project-steward-agent.md). Sem ADR.
 - **Recomendação.** ADR sobre papel do Steward na construção, MCPs, segregação entre infra de construção e plataforma HealthOS.
 
 ### 3.10 [ADR-0023 proposta] **Esquemas governados e drift detection**
@@ -92,10 +92,10 @@ Listadas em ordem de prioridade. Cada gap propõe uma ADR candidata (numeração
 
 ### 3.11 Outros gaps menores (podem virar uma ADR conjunta ou registros menores)
 
-- **Async runtime jobs** ([AsyncRuntimeJobs.swift](../../HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/AsyncRuntimeJobs.swift)) — política de jobs assíncronos.
-- **Service operations** ([ServiceOperationsContracts.swift](../../HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/ServiceOperationsContracts.swift)) — contratos operacionais.
-- **Veridia session contracts** ([VeridiaSessionContracts.swift](../../HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/VeridiaSessionContracts.swift)) — escopo da app Veridia.
-- **Scribe professional workspace** ([ScribeProfessionalWorkspaceContracts.swift](../../HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/ScribeProfessionalWorkspaceContracts.swift)) — escopo Scribe.
+- **Async runtime jobs** ([AsyncRuntimeJobs.swift](../../../HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/AsyncRuntimeJobs.swift)) — política de jobs assíncronos.
+- **Service operations** ([ServiceOperationsContracts.swift](../../../HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/ServiceOperationsContracts.swift)) — contratos operacionais.
+- **Veridia session contracts** ([VeridiaSessionContracts.swift](../../../HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/VeridiaSessionContracts.swift)) — escopo da app Veridia.
+- **Scribe professional workspace** ([ScribeProfessionalWorkspaceContracts.swift](../../../HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/ScribeProfessionalWorkspaceContracts.swift)) — escopo Scribe.
 
 ---
 

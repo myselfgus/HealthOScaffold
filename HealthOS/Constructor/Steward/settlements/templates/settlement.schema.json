@@ -194,7 +194,7 @@
         "HealthOS/Shared/docs/execution/22-steward-construction-operating-model.md"
       ],
       "forbiddenFiles": [
-        "swift/Sources/",
+        "HealthOS/*/Sources/",
         "HealthOS/Constructor/ts/",
         "HealthOS/Tier1-Mestral-Core/Schemas/",
         "HealthOS/Tier1-Mestral-Core/SQL/",
@@ -207,7 +207,7 @@
         "healthos-forge-mcp naming must be used (not healthos-mcp)."
       ],
       "restrictions": [
-        "Do not modify Swift source under swift/Sources/ or swift/Tests/.",
+        "Do not modify Swift source under HealthOS/*/Sources/ or HealthOS/*/Tests/.",
         "Do not modify TypeScript source under HealthOS/Constructor/ts/.",
         "Do not modify Territory records under HealthOS/Constructor/Settler/territories/.",
         "Do not create Settlement instances, Steward CLI, Forge MCP, or prompt generation engine."

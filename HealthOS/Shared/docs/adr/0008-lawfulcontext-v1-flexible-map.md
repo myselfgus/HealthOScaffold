@@ -71,7 +71,7 @@ Flexível **não significa arbitrário**. O mapa deve usar **chaves canônicas**
 - `scope`
 - `accessBasis`
 
-`HealthOSCore` define `CoreLawfulContext` ([HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/CoreLaw.swift](../../HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/CoreLaw.swift)) com campos canônicos tipados **e** um campo `raw: [String: String]` para o transporte flexível.
+`HealthOSCore` define `CoreLawfulContext` ([HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/CoreLaw.swift](../../../HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/CoreLaw.swift)) com campos canônicos tipados **e** um campo `raw: [String: String]` para o transporte flexível.
 
 - **Escopo.** Decisão sobre forma de transporte de lawfulContext em v1. Não decide vocabulário final, nem reclassifica chaves.
 - **Justificativa.** Reduz churn em fase de scaffold; mantém lei estrita validando no Core.

@@ -3,8 +3,8 @@
 Patient health identity Stage for HealthOS. Veridia gives patients governed access to their identity, consent state, data custody, and export controls via `HealthOSBoundary`. It never defines Core law or holds clinical authority.
 
 **Architecture:** `HealthOS/Shared/docs/architecture/12-veridia.md`
-**Executable surface:** [`HealthOS/Tier4-Stages-Cast/Veridia/Sources/HealthOSVeridiaStage/`](../../HealthOS/Tier4-Stages-Cast/Veridia/Sources/HealthOSVeridiaStage/)
-**Design surface:** [`HealthOS/Shared/DesignSystem/ui_kits/veridia/`](../../HealthOS/Shared/DesignSystem/ui_kits/veridia/)
+**Executable surface:** [`HealthOS/Tier4-Stages-Cast/Veridia/Sources/HealthOSVeridiaStage/`](../../Veridia/Sources/HealthOSVeridiaStage/)
+**Design surface:** [`HealthOS/Shared/DesignSystem/ui_kits/veridia/`](../../../Shared/DesignSystem/ui_kits/veridia/)
 **Runtime:** `HealthOSUserAgentRuntime` (Tier 2) via `HealthOSBoundary`
 
 ## Screens

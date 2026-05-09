@@ -95,7 +95,7 @@ Toda PR que adiciona/modifica ADRs deve:
 
 - [ ] Atualizar este README.
 - [ ] Atualizar [TRACEABILITY-MATRIX.md](TRACEABILITY-MATRIX.md) se módulos ou códigos referenciados mudaram.
-- [ ] Verificar que a hierarquia de dependências em [HealthOS/Package.swift](../../HealthOS/Package.swift) **continua respeitada** após a decisão proposta:
+- [ ] Verificar que a hierarquia de dependências em [HealthOS/Package.swift](../../../HealthOS/Package.swift) **continua respeitada** após a decisão proposta:
   - `HealthOSCore` não depende de nenhum outro módulo.
   - `HealthOSProviders` depende apenas de `HealthOSCore`.
   - `HealthOSAACI` depende de `HealthOSCore` e `HealthOSProviders`.

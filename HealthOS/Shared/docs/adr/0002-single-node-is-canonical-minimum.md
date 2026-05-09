@@ -59,7 +59,7 @@ rollout:
 ## Contexto
 
 - **Problema e motivação.** HealthOS precisa de um alvo concreto e testável que valide ontologia e fronteiras de módulos sem exigir infraestrutura multi-host. Decisões iniciais corriam risco de (a) over-engineering, com consenso distribuído antes de contratos clínicos estáveis, ou (b) under-engineering, com assunções single-node "queimadas" nos contratos.
-- **Pressupostos e restrições.** (a) Apple Silicon é a plataforma alvo (`.macOS(.v26)` em [HealthOS/Package.swift:6](../../HealthOS/Package.swift:6)); (b) operadores podem rodar em hardware próprio; (c) ADR-0009 esclarece que single-node é forma de bootstrap, não topologia permanente.
+- **Pressupostos e restrições.** (a) Apple Silicon é a plataforma alvo (`.macOS(.v26)` em [HealthOS/Package.swift:6](../../../HealthOS/Package.swift:6)); (b) operadores podem rodar em hardware próprio; (c) ADR-0009 esclarece que single-node é forma de bootstrap, não topologia permanente.
 - **Objetivos e critérios de sucesso.**
   - **Objetivo.** Toda lei do Core e contratos são topology-invariant.
   - **Critério mensurável.** `make bootstrap && make swift-build && make swift-test` passa em uma máquina Apple Silicon limpa, sem Postgres remoto, sem mesh, sem rede pública. Smoke por executável (`make swift-smoke`) verde.
@@ -104,12 +104,12 @@ Expansão multi-node é **escala operacional**, não reescrita ontológica. Lei 
 
 ## Detalhes de Implementação
 
-- **Fronteiras entre módulos.** Mantidas como em [HealthOS/Package.swift](../../HealthOS/Package.swift). Single-node não relaxa a hierarquia constitucional (ADR-0001).
+- **Fronteiras entre módulos.** Mantidas como em [HealthOS/Package.swift](../../../HealthOS/Package.swift). Single-node não relaxa a hierarquia constitucional (ADR-0001).
 - **Conformidade com Package.swift.** Plataforma `.macOS(.v26)`; targets executáveis (CLI, Scribe, Veridia, CloudClinic) constroem e rodam local.
-- **Concurrency.** `actor SessionRunner` ([HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSSessionRuntime/SessionRunner.swift:6](../../HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSSessionRuntime/SessionRunner.swift:6)) e `actor AACIOrchestrator` ([HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSAACI/AACI.swift:5](../../HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSAACI/AACI.swift:5)) são suficientes para isolamento single-host; cancelamento estruturado (`Task.cancel`) garante shutdown limpo.
+- **Concurrency.** `actor SessionRunner` ([HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSSessionRuntime/SessionRunner.swift:6](../../../HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSSessionRuntime/SessionRunner.swift:6)) e `actor AACIOrchestrator` ([HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSAACI/AACI.swift:5](../../../HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSAACI/AACI.swift:5)) são suficientes para isolamento single-host; cancelamento estruturado (`Task.cancel`) garante shutdown limpo.
 - **Segurança/Privacidade.** PHI persistido em `root: URL` controlado pelo operador. Criptografia em repouso herdada do FileVault macOS. Loopback HTTP (ADR-0006) garante que tráfego não saia do host.
 - **Observabilidade.** Logs em filesystem local com rotação; sampling local; sem dependência cloud.
-- **Testes.** `make swift-build`, `make swift-test`, `make swift-smoke` formam o gate. Suite `HealthOSTests` ([HealthOS/Shared/Tests/HealthOSTests/](../../HealthOS/Shared/Tests/HealthOSTests/)) cobre fronteiras críticas single-node.
+- **Testes.** `make swift-build`, `make swift-test`, `make swift-smoke` formam o gate. Suite `HealthOSTests` ([HealthOS/Shared/Tests/HealthOSTests/](../../../HealthOS/Shared/Tests/HealthOSTests/)) cobre fronteiras críticas single-node.
 
 ## Plano de Adoção e Migração
 

@@ -12,7 +12,7 @@ graph LR
     classDef design   fill:#F6F8FB,stroke:#5B6B7C,stroke-width:2px,color:#2F3C4A
 
     AB[HealthOSBoundary\nTier 3 — mediated surface]:::boundary
-    DS[HealthOSDesignSystem\npresentation guidance only]:::design
+    DS[HealthOS/Shared/DesignSystem\npresentation guidance only]:::design
     SC[Scribe\nprofessional workspace]:::stage
     VE[Veridia\npatient health identity]:::stage
     CC[CloudClinic\nservice operations]:::stage

@@ -15,7 +15,7 @@
     "README.md",
     "AGENTS.md",
     "CLAUDE.md",
-    "docs"
+    "HealthOS/Shared/docs"
   ],
   "secondaryPaths": [
     "Settler",
@@ -24,11 +24,14 @@
     "HealthOS/Shared/docs/execution/todo"
   ],
   "forbiddenPaths": [
-    "swift/Sources",
+    "HealthOS/Tier1-Mestral-Core/Sources",
+    "HealthOS/Tier2-GOS-Runtimes/Sources",
+    "HealthOS/Tier3-Custom-Boundary/Sources",
+    "HealthOS/Tier4-Stages-Cast",
     "HealthOS/Constructor/ts/packages",
     "HealthOS/Constructor/ts/agent-infra",
-    "schemas",
-    "sql"
+    "HealthOS/Tier1-Mestral-Core/Schemas",
+    "HealthOS/Tier1-Mestral-Core/SQL"
   ],
   "invariants": [
     "HealthOS is the system; HealthOScaffold is the historical construction repository/foundation phase.",

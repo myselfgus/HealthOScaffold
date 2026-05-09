@@ -109,7 +109,7 @@ Esta ADR **não**:
 ## Detalhes de Implementação
 
 - **Fronteiras entre módulos.** N/A — decisão é semântica/identitária.
-- **Conformidade com Package.swift.** Pacote chama-se `HealthOS` ([HealthOS/Package.swift:5](../../HealthOS/Package.swift:5)) — identidade do sistema preservada no naming técnico.
+- **Conformidade com Package.swift.** Pacote chama-se `HealthOS` ([HealthOS/Package.swift:5](../../../HealthOS/Package.swift:5)) — identidade do sistema preservada no naming técnico.
 - **Concurrency.** N/A.
 - **Segurança/Privacidade.** N/A.
 - **Observabilidade.** N/A.

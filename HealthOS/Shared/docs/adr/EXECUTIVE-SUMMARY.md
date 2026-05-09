@@ -1,14 +1,14 @@
 # Resumo Executivo — Revisão de ADRs HealthOS
 
 Data da revisão: 2026-05-06
-Escopo: ADRs 0001-0012 elevadas ao template canônico, validadas contra [HealthOS/Package.swift](../../HealthOS/Package.swift) e árvore de código.
+Escopo: ADRs 0001-0012 elevadas ao template canônico, validadas contra [HealthOS/Package.swift](../../../HealthOS/Package.swift) e árvore de código.
 
 ---
 
 ## 1. O que foi feito
 
 - **12 ADRs reescritas** no template canônico com front matter YAML completo (id, status, deciders, consulted, informed, tags, modules_impacted, related_adrs, code_references, risk_level, compliance, observability, testing, rollout) e seções: Contexto, Decisão, Alternativas Consideradas, Consequências, Detalhes de Implementação, Plano de Adoção e Migração, Checklist de Completude.
-- **Validação cruzada** das decisões contra a topologia de dependências em [HealthOS/Package.swift](../../HealthOS/Package.swift) — **zero violações** detectadas.
+- **Validação cruzada** das decisões contra a topologia de dependências em [HealthOS/Package.swift](../../../HealthOS/Package.swift) — **zero violações** detectadas.
 - **README.md (índice ADR) atualizado** com risco, módulos impactados e links para documentos auxiliares.
 - **Três documentos auxiliares produzidos:**
   - [GAPS-AND-CONFLICTS.md](GAPS-AND-CONFLICTS.md) — relatório de gaps e conflitos.
@@ -39,7 +39,7 @@ Escopo: ADRs 0001-0012 elevadas ao template canônico, validadas contra [HealthO
 
 ## 3. Conformidade arquitetural verificada
 
-Todas as 12 ADRs **respeitam e dependem de** a hierarquia em [HealthOS/Package.swift](../../HealthOS/Package.swift):
+Todas as 12 ADRs **respeitam e dependem de** a hierarquia em [HealthOS/Package.swift](../../../HealthOS/Package.swift):
 
 ```
 HealthOSCore (não depende de nada)
@@ -76,7 +76,7 @@ Apps:
 | R2 | Vazamento de PII direta em logs/traces | ADR-0004 | Scanner anti-PII em CI (proposto); redaction obrigatório; alarme crítico se detectado. |
 | R3 | Tentativa de bypass de gate humano | ADR-0003 | `gate.bypass_attempt` com alerta crítico; testes adversariais; tipos do Core não permitem finalização sem `GateResolution`. |
 | R4 | Vocabulário lawfulContext desvia entre runtimes | ADR-0008 | Métricas `lawfulcontext.unknown_key.total` + `invalid.total`; documentação canônica. |
-| R5 | Schema drift entre Swift e TS no seam | ADR-0006 | Schemas em [HealthOS/Tier1-Mestral-Core/Schemas/](../../HealthOS/Tier1-Mestral-Core/Schemas/); `make validate-schemas` em CI; testes de contrato em ambos os lados. |
+| R5 | Schema drift entre Swift e TS no seam | ADR-0006 | Schemas em [HealthOS/Tier1-Mestral-Core/Schemas/](../../../HealthOS/Tier1-Mestral-Core/Schemas/); `make validate-schemas` em CI; testes de contrato em ambos os lados. |
 | R6 | Mesh privada futura mal configurada vira rede pública | ADR-0009 | Runbook de mesh; templates de config; auditoria; ADR específica antes de implementação multi-node. |
 | R7 | Bundles GOS ativados sem revisão | ADR-0011 | Schema validation pré-ativação; lifecycle audit imutável; activation requer registro. |
 

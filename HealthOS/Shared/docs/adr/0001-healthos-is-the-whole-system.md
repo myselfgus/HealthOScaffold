@@ -59,7 +59,7 @@ rollout:
 ## Contexto
 
 - **Problema e motivação.** Em fases iniciais de design houve risco de tratar AACI, Scribe ou apps individuais como o "produto principal", com HealthOS como rótulo guarda-chuva difuso. Esta confusão constitucional faz com que a lógica de governança (consent, habilitation, gate, finality, provenance) migre para a camada errada e fragmenta a lei do núcleo. O nome `HealthOScaffold` agrava o risco de implicar que o repositório é "pré-HealthOS" em vez de HealthOS em maturidade de scaffold (ver ADR-0012).
-- **Pressupostos e restrições.** (a) Existe uma constituição única e auditável; (b) compliance regulatório (LGPD, HIPAA-aware, CFM) exige identidade clara de controlador/operador; (c) o Swift Package em [HealthOS/Package.swift](../../HealthOS/Package.swift) já materializa a hierarquia em direção de dependências.
+- **Pressupostos e restrições.** (a) Existe uma constituição única e auditável; (b) compliance regulatório (LGPD, HIPAA-aware, CFM) exige identidade clara de controlador/operador; (c) o Swift Package em [HealthOS/Package.swift](../../../HealthOS/Package.swift) já materializa a hierarquia em direção de dependências.
 - **Objetivos e critérios de sucesso.**
   - **Objetivo 1.** Toda decisão sobre lei (consent/habilitation/gate/finality/provenance/storage) tem um único endereço: `HealthOSCore`.
   - **Objetivo 2.** Runtimes (AACI/MSR/SessionRuntime), agentes/atores e apps consomem a lei do Core; nunca a definem.
@@ -69,7 +69,7 @@ rollout:
 
 HealthOS é o ambiente computacional soberano inteiro — o sistema. Todo runtime, agente, app, interface, schema, contrato e mecanismo de governança existe **dentro** de HealthOS, não ao lado dele.
 
-Hierarquia constitucional canônica (refletida em [HealthOS/Package.swift](../../HealthOS/Package.swift)):
+Hierarquia constitucional canônica (refletida em [HealthOS/Package.swift](../../../HealthOS/Package.swift)):
 
 | Camada | Targets / artefatos | Papel |
 |---|---|---|
@@ -116,11 +116,11 @@ Hierarquia constitucional canônica (refletida em [HealthOS/Package.swift](../..
 ## Detalhes de Implementação
 
 - **Fronteiras entre módulos.** Direção única: Core ← Providers ← (AACI, MSR) ← SessionRuntime ← Apps/CLI. `HealthOSVeridiaStage` e `HealthOSCloudClinicStage` dependem apenas de `HealthOSCore`.
-- **Conformidade com Package.swift.** Topologia em [HealthOS/Package.swift](../../HealthOS/Package.swift) reflete a hierarquia. Qualquer adição que invertesse a direção (ex.: Core dependendo de Providers) seria violação direta desta ADR.
-- **Concurrency.** A camada de execução (AACI/MSR/SessionRuntime) usa `actor` Swift para isolamento (ex.: `public actor AACIOrchestrator` em [HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSAACI/AACI.swift:5](../../HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSAACI/AACI.swift:5); `public actor SessionRunner` em [HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSSessionRuntime/SessionRunner.swift:6](../../HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSSessionRuntime/SessionRunner.swift:6)). Core expõe contratos `Sendable` (ex.: `CoreLawfulContext`).
+- **Conformidade com Package.swift.** Topologia em [HealthOS/Package.swift](../../../HealthOS/Package.swift) reflete a hierarquia. Qualquer adição que invertesse a direção (ex.: Core dependendo de Providers) seria violação direta desta ADR.
+- **Concurrency.** A camada de execução (AACI/MSR/SessionRuntime) usa `actor` Swift para isolamento (ex.: `public actor AACIOrchestrator` em [HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSAACI/AACI.swift:5](../../../HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSAACI/AACI.swift:5); `public actor SessionRunner` em [HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSSessionRuntime/SessionRunner.swift:6](../../../HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSSessionRuntime/SessionRunner.swift:6)). Core expõe contratos `Sendable` (ex.: `CoreLawfulContext`).
 - **Segurança/Privacidade.** A identidade "HealthOS" é a âncora do controlador para fins de LGPD; downstream apps são processadores delegados sob essa identidade.
 - **Observabilidade.** Toda emissão de log/trace deve carregar `healthos.layer` para rastrear travessias de seam.
-- **Testes.** Testes em [HealthOS/Shared/Tests/HealthOSTests/](../../HealthOS/Shared/Tests/HealthOSTests/) verificam que apps consomem contratos do Core (ex.: `ScribeProfessionalWorkspaceContractsTests`, `VeridiaSessionFacadeTests`).
+- **Testes.** Testes em [HealthOS/Shared/Tests/HealthOSTests/](../../../HealthOS/Shared/Tests/HealthOSTests/) verificam que apps consomem contratos do Core (ex.: `ScribeProfessionalWorkspaceContractsTests`, `VeridiaSessionFacadeTests`).
 
 ## Plano de Adoção e Migração
 

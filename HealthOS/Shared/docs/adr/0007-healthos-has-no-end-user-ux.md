@@ -74,9 +74,9 @@ Suas superfícies canônicas de operador são:
 - workflows de coding/ops assistidos por agente (Steward etc.)
 
 UX de usuário-final pertence a HealthOS/Tier4-Stages-Cast/AppDocs/interfaces construídos sobre HealthOS, como:
-- **Scribe** ([HealthOS/Tier4-Stages-Cast/Scribe/Sources/HealthOSScribeStage](../../HealthOS/Tier4-Stages-Cast/Scribe/Sources/HealthOSScribeStage))
-- **Veridia** ([HealthOS/Tier4-Stages-Cast/Veridia/Sources/HealthOSVeridiaStage](../../HealthOS/Tier4-Stages-Cast/Veridia/Sources/HealthOSVeridiaStage))
-- **CloudClinic** ([HealthOS/Tier4-Stages-Cast/CloudClinic/Sources/HealthOSCloudClinicStage](../../HealthOS/Tier4-Stages-Cast/CloudClinic/Sources/HealthOSCloudClinicStage))
+- **Scribe** ([HealthOS/Tier4-Stages-Cast/Scribe/Sources/HealthOSScribeStage](../../../HealthOS/Tier4-Stages-Cast/Scribe/Sources/HealthOSScribeStage))
+- **Veridia** ([HealthOS/Tier4-Stages-Cast/Veridia/Sources/HealthOSVeridiaStage](../../../HealthOS/Tier4-Stages-Cast/Veridia/Sources/HealthOSVeridiaStage))
+- **CloudClinic** ([HealthOS/Tier4-Stages-Cast/CloudClinic/Sources/HealthOSCloudClinicStage](../../../HealthOS/Tier4-Stages-Cast/CloudClinic/Sources/HealthOSCloudClinicStage))
 - HealthOS/Tier4-Stages-Cast/AppDocs/interfaces futuros
 
 - **Escopo.** Decisão sobre onde UX clínica/UX-paciente vive. Não proíbe ferramentas administrativas/dashboards técnicos.
@@ -107,7 +107,7 @@ UX de usuário-final pertence a HealthOS/Tier4-Stages-Cast/AppDocs/interfaces co
   - Ecossistema de apps cresce sem dependência de "app oficial".
 - **Negativas / trade-offs.**
   - Plataforma precisa investir em DX (CLI, APIs admin, observabilidade) para ser usável.
-  - Cada app team replica ergonomia comum (mitigado por design system compartilhado em [HealthOS/Shared/DesignSystem/](../../HealthOS/Shared/DesignSystem/), fora de Core).
+  - Cada app team replica ergonomia comum (mitigado por design system compartilhado em [HealthOS/Shared/DesignSystem/](../../../HealthOS/Shared/DesignSystem/), fora de Core).
 - **Riscos e mitigação.**
   - **Risco.** "Vai-só-um-componentinho-de-UI-no-Core". **Mitigação.** Code review + esta ADR como referência.
 
@@ -117,7 +117,7 @@ Esta ADR **não** proíbe ferramentas administrativas internas ou dashboards té
 
 ## Detalhes de Implementação
 
-- **Fronteiras entre módulos.** `HealthOSCore`, `HealthOSProviders`, `HealthOSAACI`, `HealthOSMSR`, `HealthOSSessionRuntime` não importam frameworks de UX (SwiftUI, AppKit). Apps fazem isso (ver [HealthOS/Tier4-Stages-Cast/Scribe/Sources/HealthOSScribeStage/Views/](../../HealthOS/Tier4-Stages-Cast/Scribe/Sources/HealthOSScribeStage/Views/)). CLI usa apenas APIs de terminal.
+- **Fronteiras entre módulos.** `HealthOSCore`, `HealthOSProviders`, `HealthOSAACI`, `HealthOSMSR`, `HealthOSSessionRuntime` não importam frameworks de UX (SwiftUI, AppKit). Apps fazem isso (ver [HealthOS/Tier4-Stages-Cast/Scribe/Sources/HealthOSScribeStage/Views/](../../../HealthOS/Tier4-Stages-Cast/Scribe/Sources/HealthOSScribeStage/Views/)). CLI usa apenas APIs de terminal.
 - **Conformidade com Package.swift.** `HealthOSCLI`/`HealthOSScribeStage`/`HealthOSVeridiaStage`/`HealthOSCloudClinicStage` são executáveis; libs core/runtime não.
 - **Concurrency.** N/A para esta decisão.
 - **Segurança/Privacidade.** Surfaces de operador não exibem PHI direta; apps seguem ADR-0004.

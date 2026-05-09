@@ -561,17 +561,17 @@ Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>
 Examples:
 ```bash
 # After Task 1:
-git add HealthOS/Constructor/Territory/territories/*.md HealthOS/Shared/docs/execution/19-settler-model-task-tracker.md
+git add HealthOS/Constructor/Settler/territories/*.json HealthOS/Shared/docs/execution/19-settler-model-task-tracker.md
 git commit -m "docs(settler): ST-006 — define 11 Territory record files
 
-Files created: HealthOS/Constructor/Territory/territories/{core-law,storage,gos,aaci,async-runtime,providers,apps,ops,xcode-tooling,documentation,validation}.md
+Files created: HealthOS/Constructor/Settler/territories/*.json
 Invariants: engineering-agent boundary doctrine; no production-readiness claims
 Validation: make validate-docs PASS
 
 Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>"
 
 # After Task 2:
-git add HealthOS/Constructor/Settler/profiles/*.md HealthOS/Shared/docs/execution/19-settler-model-task-tracker.md
+git add HealthOS/Constructor/Settler/settlers/*.md HealthOS/Shared/docs/execution/19-settler-model-task-tracker.md
 git commit -m "docs(settler): ST-002 — create 9 Settler profile instruction files
 
 Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>"
@@ -591,8 +591,8 @@ git push -u origin codex/phase-1-settler-territory-docs
 gh pr create \
   --title "docs: Phase 1 — Settler/Territory documentation (ST-006, ST-002, ST-003)" \
   --body "## Summary
-- ST-006: 11 Territory records created under HealthOS/Constructor/Territory/territories/
-- ST-002: 9 Settler profile instruction files created under HealthOS/Constructor/Settler/profiles/
+- ST-006: Territory records created under HealthOS/Constructor/Settler/territories/
+- ST-002: 9 Settler profile instruction files created under HealthOS/Constructor/Settler/settlers/
 - ST-003: Settlement record schema defined at HealthOS/Constructor/Settler/settlements/SCHEMA.md
 - Tracking updated in 19-settler-model-task-tracker.md and 02-status-and-tracking.md
 

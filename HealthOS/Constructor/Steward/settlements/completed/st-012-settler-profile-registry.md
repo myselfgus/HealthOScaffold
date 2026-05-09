@@ -56,7 +56,7 @@ Create 9 Settler profile records and a registry index under `HealthOS/Constructo
 6. Each Settler profile must include a non-claims block and a maturity field set to `doctrine-only`.
 
 **restrictions**:
-- Do not modify any Swift source under `swift/Sources/` or `swift/Tests/`.
+- Do not modify any Swift source under `HealthOS/*/Sources/` or `HealthOS/*/Tests/`.
 - Do not modify any TypeScript source under `HealthOS/Constructor/ts/`.
 - Do not modify Territory records under `HealthOS/Constructor/Settler/territories/` (read-only for this Settlement).
 - Do not create Settlement instances, Steward CLI, HealthOS Forge MCP, or prompt generation engine.

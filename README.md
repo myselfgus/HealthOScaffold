@@ -971,7 +971,7 @@ There are two alignment triggers:
 | Agent Society contract change | JSON Schema (`governed-ai-agent-society.schema.json`) · Swift (`GovernedAIAgentContracts.swift`) · TypeScript (`@healthos/contracts` agent types) |
 
 ```mermaid
-%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#f8fbff', 'primaryBorderColor': '#cadcf0', 'primaryTextColor': '#17324d', 'clusterBkg': '#ffffff', 'clusterBorder': '#dbeafe', 'titleColor': '#0f172a', 'edgeLabelBackground': '#f8fbff', 'fontFamily': 'ui-rounded, -apple-system, BlinkMacSystemFont, sans-serif'}}}%%
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#f8fbff', 'primaryBorderColor': '#cadcf0', 'primaryTextColor': '#17324d', 'edgeLabelBackground': '#f8fbff', 'fontFamily': 'ui-rounded, -apple-system, BlinkMacSystemFont, sans-serif'}}}%%
 flowchart LR
     classDef source fill:#ecfeff,stroke:#06b6d4,stroke-width:2px,color:#164e63
     classDef schema fill:#dcfce7,stroke:#22c55e,stroke-width:2px,color:#14532d
@@ -981,19 +981,14 @@ flowchart LR
     classDef agent  fill:#fef9c3,stroke:#b45309,stroke-width:2px,color:#78350f
 
     C[Canonical doctrine\narchitecture + execution docs]:::source
+    J[JSON Schemas\nentity · GOS · storage contracts\nTier1-Mestral-Core/Schemas]:::schema
+    JA[Agent schemas\ngoverned-ai-agent-society.schema.json\nAgentMandate · AgentNegotiationEnvelope]:::agent
+    SW[Platform Swift\nHealthOS/Package.swift\nGovernedAIAgentContracts · CustomSDK]:::swift
+    STAGEPKG[Stage packages\nScribe · Veridia · CloudClinic]:::swift
+    TS[TypeScript workspace\nConstructor/ts\ncontracts · runtimes · tooling]:::ts
+    SQL[SQL migrations\nmetadata shape]:::sql
 
-    subgraph SCHEMAS["  JSON Schemas · Tier1-Mestral-Core/Schemas/  "]
-        direction TB
-        J[entity · GOS · storage contracts]:::schema
-        JA[governed-ai-agent-society.schema.json\nagent-descriptor.schema.json\nAgentMandate · AgentNegotiationEnvelope]:::agent
-    end
-
-    SW[HealthOS/Package.swift\nPlatform Swift · Core · runtimes · Boundary\nGovernedAIAgentContracts · CustomSDK]:::swift
-    STAGEPKG[Stage packages\nScribe · Veridia · CloudClinic\nper-Stage Package.swift in Tier4-Stages-Cast]:::swift
-    TS[HealthOS/Constructor/ts/\n@healthos/contracts · runtimes · tooling\nagent type mirrors]:::ts
-    SQL[SQL/migrations/\nmetadata shape]:::sql
-
-    C --> SCHEMAS & SW & STAGEPKG & TS & SQL
+    C --> J & JA & SW & STAGEPKG & TS & SQL
     J <--> SW
     J <--> TS
     JA <--> SW

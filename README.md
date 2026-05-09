@@ -143,51 +143,62 @@ graph TB
     classDef design   fill:#F1F5F9,stroke:#94A3B8,stroke-width:1px,color:#475569
     classDef support  fill:#FFF7ED,stroke:#C2410C,stroke-width:1px,color:#9A3412
     classDef sub      fill:#F8FAFC,stroke:#CBD5E1,stroke-width:1px,color:#64748B
+    classDef build    fill:#FDF2F8,stroke:#DB2777,stroke-width:1.5px,color:#9D174D
 
     subgraph T1["  Tier 1 — Mestral Core · Constitutional Law  "]
         direction LR
-        ID["Identity · Habilitation"]:::core
-        CO["Consent · Finalidade"]:::core
-        PR["Provenance · Audit"]:::core
-        GA["Gate · Finalization"]:::core
+        ID["Identity · Habilitation\nconsent-governed identity claims\nhabilitation check before every session"]:::core
+        CO["Consent · Finalidade\npatient-facing purpose claims\nfail-closed consent gate"]:::core
+        PR["Provenance · Audit\nimmutable trail for all clinical acts\nappend-only provenance model"]:::core
+        GA["Gate · Finalization\ngoverned gate before artifact effectuation\napproved → final · rejected → withheld"]:::core
     end
 
     subgraph T2A["  Tier 2 — GOS + Session Orchestration  "]
         direction LR
-        GOS_N["HealthOSGOS\nBundle lifecycle · binding plan\nTypeScript tooling + Swift runtime"]:::gos
-        SR_N["HealthOSSessionRuntime\nFirst-slice orchestrator · normalization\nScribe bridge adapter"]:::gos
+        GOS_N["HealthOSGOS\nBundle lifecycle · binding plan · AACI binding\nTypeScript compiler + validator + Swift runtime"]:::gos
+        SR_N["HealthOSSessionRuntime\nSessionRunner (Swift actor) · first-slice orchestrator\ntranscript normalization executor · Scribe bridge"]:::gos
     end
 
     subgraph T2B["  Tier 2 — Clinical Runtimes  "]
         direction LR
-        AACI_N["HealthOSAACI\nCapture · transcription\nDraft composition · GOS binding"]:::runtime
-        MSR_N["HealthOSMSR · Mental Space Runtime\nASL · VDLP · GEM · provenance metadata"]:::runtime
-        PROV_N["HealthOSProviders\nAppleFoundationModels · ProviderRouter\nstubs · capability profiles"]:::provider
+        AACI_N["HealthOSAACI\nCapture · transcription (ready / degraded / unavailable)\nDraft composition · GOS binding consumption"]:::runtime
+        MSR_N["HealthOSMSR · Mental Space Runtime\nASL (lexical normalization) · VDLP (semantic structuring)\nGEM (enrichment) · provenance metadata per stage"]:::runtime
+        PROV_N["HealthOSProviders\nAppleFoundationModels adapter · ProviderRouter\nstub providers · capability profiles · ModelGovernance"]:::provider
     end
 
     subgraph T2C["  Tier 2 — Scaffold Stubs (Swift + TS reference)  "]
         direction LR
-        AS_N["HealthOSAsyncRuntime\nJob queue · idempotency\nDead-lettering"]:::runtime
-        UA_N["HealthOSUserAgentRuntime\nPatient-governed session\nProhibited-capability enforcement"]:::runtime
-        SV_N["HealthOSServiceRuntime\nService operations session\nLegalAuthorizing guard"]:::runtime
+        AS_N["HealthOSAsyncRuntime\nDurable job queue · idempotency keys\ndead-lettering · retry lifecycle"]:::runtime
+        UA_N["HealthOSUserAgentRuntime\nPatient-governed query lifecycle\nProhibited-capability enforcement"]:::runtime
+        SV_N["HealthOSServiceRuntime\nService operations session lifecycle\nLegalAuthorizing context guard"]:::runtime
     end
 
     subgraph T3["  Tier 3 — Custom Boundary · HealthOS-Owned Consumption Frontier  "]
         direction LR
-        CS_N["CustomSDK\nStage definitions · capabilities\nProhibitions · degradation policy · validation"]:::boundary
-        BN_N["HealthOSBoundary\nFacades · envelopes · safe refs\nMediated state · degraded state · consumable surfaces"]:::boundary
+        CS_N["CustomSDK\nStage-definition SDK · Custom manifests\nCapabilities · prohibitions · degradation policy\nvalidation requirements · compliance checks"]:::boundary
+        BN_N["HealthOSBoundary\nFacades · safe refs · envelopes\nMediated state · degraded state\nCommands · results · consumable surfaces"]:::boundary
     end
 
     subgraph T4["  Tier 4 — Stages Cast · Separate Governed Consumer Universe  "]
         direction LR
-        SC_N["Scribe\nProfessional workspace\nimplemented seam"]:::stage
-        VD_N["Veridia\nPatient health identity\nscaffolded contract"]:::stage
-        CC_N["CloudClinic\nService operations\nscaffold — Custom incomplete"]:::stage
+        SC_N["Scribe\nProfessional clinical workspace · macOS 26+\nSwiftUI · Liquid Glass baseline\nimplemented seam"]:::stage
+        VD_N["Veridia\nPatient health identity · macOS 26+\napp-safe patient identity surface\nscaffolded contract"]:::stage
+        CC_N["CloudClinic\nService operations · macOS 26+\nscaffold — Custom incomplete\nBLOCKED — APP-012"]:::stage
     end
 
-    DS_N["DesignSystem\nmacOS 26+ · SF Pro · Liquid Glass\npresentation contract — never law"]:::design
-    SP_N["HealthOS/Support\nops · python · ML scaffolds\nnot a runtime import target"]:::support
-    SB_N["Material Substrate\nAPFS · FileVault · Secure Enclave · private mesh"]:::sub
+    subgraph BUILD["  Constructor / Construction System · External Repository-Maintenance Layer  "]
+        direction LR
+        STEW_N["Steward\ncoordinator · 10 CLI commands (ST-010–ST-017)\nderived memory · session state"]:::build
+        SETT_N["Settler profiles\n9 specialized engineering profiles\noperates within Territory scope"]:::build
+        TERR_N["Territory Registry\n15 JSON-defined repository domains\nscope · boundaries · maturity"]:::build
+        WORK_N["Settlements\nbounded work records · done criteria\nscope · validation · evidence"]:::build
+        FMCP_N["healthos-forge-mcp\n10 steward_* MCP tools · ST-018\nstdio + Streamable HTTP"]:::build
+        MA_N["Managed Agent seam\nST-022 · Anthropic Managed Agents API\ndiscover · brief · validate · handoff\nhuman-triggered only"]:::build
+    end
+
+    DS_N["HealthOS/Shared/DesignSystem\nmacOS 26+ · SF Pro · semantic tint · Liquid Glass\npresentation contract — never constitutional law"]:::design
+    SP_N["HealthOS/Support\nops · python · ML scaffolds · Create ML · Core ML · MLX\nnot a runtime import target · governed by Core law"]:::support
+    SB_N["Material Substrate\nAPFS · FileVault · Secure Enclave\nprivate mesh · encrypted backups"]:::sub
 
     T1 -->|"governs"| T2A
     T1 -->|"governs"| T2B
@@ -200,11 +211,19 @@ graph TB
     T2A & T2B & T2C -->|"contracts and mediated state"| T3
     T3 -->|"mediated surfaces only — no direct Tier 1/2 access"| T4
     DS_N -.->|"presentation guidance"| T4
-    T1 -.->|"governs policy"| SP_N
+    T1 -.->|"governs"| SP_N
     SP_N -.->|"tooling support under ModelGovernance"| T2B
     T1 --> SB_N
     T2A --> SB_N
     T2B --> SB_N
+    STEW_N -->|"selects"| SETT_N
+    STEW_N -->|"frames"| WORK_N
+    SETT_N -->|"operates within"| TERR_N
+    FMCP_N -. "wraps" .-> STEW_N
+    MA_N -. "human-triggered sessions" .-> STEW_N
+    T1 -.->|"canonical docs are truth for"| BUILD
+    BUILD -. "inspects · validates · proposes PRs\nnever clinical authority · never merge authority" .-> T3
+    SP_N -. "governed tooling available to Constructor" .-> BUILD
 ```
 
 ### First Slice — Executable Orchestration Path
@@ -268,6 +287,8 @@ graph TB
     classDef app      fill:#FDF4FF,stroke:#C026D3,stroke-width:1.5px,color:#701A75
     classDef cli      fill:#F1F5F9,stroke:#475569,stroke-width:1px,color:#1E293B
     classDef test     fill:#F8FAFC,stroke:#94A3B8,stroke-width:1px,color:#64748B
+    classDef ts       fill:#FFF7ED,stroke:#EA580C,stroke-width:1.5px,color:#9A3412
+    classDef build    fill:#FDF2F8,stroke:#DB2777,stroke-width:1.5px,color:#9D174D
 
     subgraph T1["  Tier 1 — Mestral Core · HealthOS/Tier1-Mestral-Core  "]
         CORE["HealthOSCore\nCore law · governance types · storage contracts\nGOS types · MSR runtime types · entity model\nSources/HealthOSCore"]:::core
@@ -327,6 +348,25 @@ graph TB
     SUPPORT -. supports provider tooling under ModelGovernance .-> PROV
     SUPPORT -. validated by .-> SUPT
     SHT -. shared governance regression suite .-> CORE
+
+    subgraph TSPKG["  Constructor/ts TypeScript Workspace · HealthOS/Constructor/ts  "]
+        direction LR
+        TSCON["@healthos/contracts\nCore type mirrors · GOS contracts\nentity model · runtime types\npackages/contracts/"]:::ts
+        TSGOS["@healthos/healthos-gos-tooling\nGOS compiler · validator · bundler\nbundle lifecycle tooling\npackages/healthos-gos-tooling/"]:::ts
+        TSASYNC["@healthos/runtime-async\nTS reference implementation\nfor HealthOSAsyncRuntime\npackages/runtime-async/"]:::ts
+        TSUA["@healthos/runtime-user-agent\nTS reference implementation\nfor HealthOSUserAgentRuntime\npackages/runtime-user-agent/"]:::ts
+        TSSTEW["@healthos/steward\n10 CLI commands · ST-010–ST-017\ncoordinator · derived memory · sessions\nagent-infra/healthos-steward/"]:::build
+        TSMCP["@healthos/forge-mcp\n10 steward_* MCP tools · ST-018\nstdio + Streamable HTTP · repo-maintenance only\nagent-infra/healthos-forge-mcp/"]:::build
+        TSMA["@healthos/managed-agent\nST-022 · Anthropic Managed Agents API\ndiscover · brief · validate · handoff\nhuman-triggered only · not a clinical surface\nagent-infra/healthos-managed-agent/"]:::build
+    end
+
+    %% Cross-language alignment — TypeScript to Swift
+    TSCON -. "cross-language type alignment" .-> CORE
+    TSGOS -. "compiles/validates bundles consumed by" .-> GOS
+    TSASYNC -. "TS reference impl for" .-> ASYNC
+    TSUA -. "TS reference impl for" .-> UAR
+    TSMCP -. "wraps CLI commands of" .-> TSSTEW
+    TSMA -. "uses Forge MCP HTTP for session workflows" .-> TSMCP
 ```
 
 | Target | Tier | Kind | Description |

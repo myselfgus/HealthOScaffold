@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://healthos.dev/HealthOS/Tier1-Mestral-Core/Schemas/contracts/mental-space-artifact.schema.json",
+  "title": "MSRArtifact",
+  "type": "object",
+  "required": ["metadata"],
+  "properties": {
+    "metadata": {
+      "type": "object",
+      "required": [
+        "stage",
+        "sourceTranscriptRef",
+        "stageVersion",
+        "promptVersion",
+        "modelProvider",
+        "inputHash",
+        "outputHash",
+        "lawfulContextSummary",
+        "clinicianReviewStatus",
+        "limitations",
+        "legalAuthorizing",
+        "gateStillRequired"
+      ],
+      "properties": {
+        "stage": {
+          "type": "string",
+          "enum": ["asl", "vdlp", "gem"]
+        },
+        "sourceTranscriptRef": {"type": "string", "minLength": 1},
+        "stageVersion": {"type": "string", "minLength": 1},
+        "promptVersion": {"type": "string", "minLength": 1},
+        "modelProvider": {"type": "string", "minLength": 1},
+        "modelId": {"type": ["string", "null"]},
+        "inputHash": {"type": "string", "minLength": 1},
+        "outputHash": {"type": "string", "minLength": 1},
+        "lawfulContextSummary": {"type": "string", "minLength": 1},
+        "clinicianReviewStatus": {
+          "type": "string",
+          "enum": ["unreviewed", "in_review", "reviewed", "rejected"]
+        },
+        "limitations": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"type": "string"}
+        },
+        "legalAuthorizing": {"type": "boolean", "const": false},
+        "gateStillRequired": {"type": "boolean", "const": true}
+      },
+      "additionalProperties": false
+    },
+    "linguisticSummary": {"type": "string"},
+    "dimensionalSummary": {"type": "string"},
+    "graphSummary": {"type": "string"},
+    "evidenceRefs": {"type": "array", "items": {"type": "string"}},
+    "dimensionRefs": {"type": "array", "items": {"type": "string"}},
+    "layerRefs": {"type": "array", "items": {"type": "string"}}
+  },
+  "additionalProperties": true
+}

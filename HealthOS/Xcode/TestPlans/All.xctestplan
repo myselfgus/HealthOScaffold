@@ -1,0 +1,73 @@
+{
+  "configurations" : [
+    {
+      "id" : "85A9E5D6-C0C4-4829-96E8-A33DB17D7786",
+      "name" : "Default",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "codeCoverage" : false
+  },
+  "testTargets" : [
+    {
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "HealthOSCoreTests",
+        "name" : "HealthOSCoreTests"
+      }
+    },
+    {
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "HealthOSRuntimeTests",
+        "name" : "HealthOSRuntimeTests"
+      }
+    },
+    {
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "HealthOSBoundaryTests",
+        "name" : "HealthOSBoundaryTests"
+      }
+    },
+    {
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "StagePackageStructureTests",
+        "name" : "StagePackageStructureTests"
+      }
+    },
+    {
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "HealthOSConstructionSystemTests",
+        "name" : "HealthOSConstructionSystemTests"
+      }
+    },
+    {
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "HealthOSSupportToolingTests",
+        "name" : "HealthOSSupportToolingTests"
+      }
+    },
+    {
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "HealthOSTests",
+        "name" : "HealthOSTests"
+      }
+    }
+  ],
+  "version" : 1
+}

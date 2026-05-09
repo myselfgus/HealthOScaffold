@@ -1,0 +1,74 @@
+{
+  "id": "session-runtime",
+  "name": "Session Runtime",
+  "summary": "Swift session orchestration around SessionRunner, transcript normalization, app-safe session state, and mediated handoff to AACI and MSR.",
+  "maturity": "tested operational path",
+  "canonicalDocs": [
+    "README.md",
+    "HealthOS/Shared/docs/architecture/20-runtime-operational-policy.md",
+    "HealthOS/Shared/docs/architecture/28-first-slice-executable-path.md",
+    "HealthOS/Shared/docs/architecture/49-mental-space-runtime.md",
+    "HealthOS/Shared/docs/architecture/17-glossary.md"
+  ],
+  "primaryPaths": [
+    "HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSSessionRuntime"
+  ],
+  "secondaryPaths": [
+    "HealthOS/Shared/Sources/HealthOSCLI",
+    "HealthOS/Tier4-Stages-Cast/Scribe/Sources/Scribe",
+    "HealthOS/Tier4-Stages-Cast/Veridia/Sources/Veridia",
+    "HealthOS/Tier4-Stages-Cast/CloudClinic/Sources/CloudClinic",
+    "HealthOS/Tier2-GOS-Runtimes/Tests",
+    "HealthOS/Shared/Tests",
+    "HealthOS/Shared/docs/execution/todo/runtimes-and-aaci.md"
+  ],
+  "forbiddenPaths": [
+    "HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore",
+    "HealthOS/Constructor/ts/packages/runtime-async",
+    "HealthOS/Constructor/ts/agent-infra"
+  ],
+  "invariants": [
+    "Session Runtime owns session orchestration and transcript normalization.",
+    "MSR starts after normalized transcript input and owns ASL, VDLP, and GEM only.",
+    "Session Runtime consumes Core law; it does not become Core law.",
+    "Session surfaces remain scaffold/app-safe and non-authorizing."
+  ],
+  "allowedWork": [
+    "Maintain SessionRunner ordering and first-slice orchestration evidence.",
+    "Maintain transcript normalization as a Session Runtime stage.",
+    "Wire app adapters to mediated session state without adding app authority.",
+    "Run CLI and app smoke paths after session behavior changes."
+  ],
+  "forbiddenWork": [
+    "Move normalization into MSR.",
+    "Make Session Runtime a Core-law authority.",
+    "Add clinical, regulatory, or provider authority to session orchestration.",
+    "Conflate Swift Session Runtime with TypeScript Async Runtime or Service Runtime."
+  ],
+  "validationCommands": [
+    "make swift-build",
+    "make swift-test",
+    "make smoke-cli",
+    "make smoke-scribe",
+    "make validate-all"
+  ],
+  "knownGaps": [
+    "Veridia and CloudClinic session wiring remain product tasks, not ST-011 work.",
+    "Final app UI shells are not implemented."
+  ],
+  "defaultSettlerIds": [
+    "aaci-settler",
+    "app-boundary-settler"
+  ],
+  "relatedTerritoryIds": [
+    "core",
+    "aaci",
+    "msr",
+    "providers",
+    "apps"
+  ],
+  "notes": [
+    "Use the current name HealthOSSessionRuntime in implementation references.",
+    "Territory metadata does not change runtime ordering."
+  ]
+}

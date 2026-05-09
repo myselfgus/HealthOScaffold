@@ -1,0 +1,68 @@
+{
+  "id": "msr",
+  "name": "MSR",
+  "summary": "Mental Space Runtime contracts and Swift pipeline for ASL, VDLP, GEM, prompt contracts, stage provenance, and archived legacy references.",
+  "maturity": "tested operational path",
+  "canonicalDocs": [
+    "HealthOS/Shared/docs/architecture/49-mental-space-runtime.md",
+    "HealthOS/Shared/docs/reference/mental-space-legacy/README.md",
+    "HealthOS/Shared/docs/execution/skills/mental-space-runtime-skill.md"
+  ],
+  "primaryPaths": [
+    "HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSMSR"
+  ],
+  "secondaryPaths": [
+    "HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/MSRRuntime.swift",
+    "HealthOS/Tier1-Mestral-Core/Schemas/contracts/mental-space-artifact.schema.json",
+    "HealthOS/Shared/docs/reference/mental-space-legacy",
+    "HealthOS/Shared/docs/execution/todo/runtimes-and-aaci.md"
+  ],
+  "forbiddenPaths": [
+    "HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSSessionRuntime/Normalization",
+    "HealthOS/Tier4-Stages-Cast/Scribe/Sources/Scribe",
+    "HealthOS/Constructor/ts/packages/runtime-async"
+  ],
+  "invariants": [
+    "MSR owns ASL, VDLP, and GEM after normalized transcript input.",
+    "Normalization belongs to Session Runtime, not MSR.",
+    "MSR outputs are derived, gated, app-safe artifacts and not diagnosis.",
+    "Provider and prompt behavior must preserve provenance, limitations, and fail-closed boundaries."
+  ],
+  "allowedWork": [
+    "Maintain ASL, VDLP, and GEM executor boundaries and prompt contracts.",
+    "Maintain MSR provenance and derived artifact contracts.",
+    "Use legacy TypeScript scripts only as archived reference material.",
+    "Add tests that prove stage dependency and provider-honesty behavior."
+  ],
+  "forbiddenWork": [
+    "Treat ASL, VDLP, or GEM as diagnosis or final clinical authority.",
+    "Move transcript normalization into MSR.",
+    "Expose raw provider JSON, prompt internals, or direct identifiers to apps.",
+    "Claim production-ready ML from scaffold or local validation."
+  ],
+  "validationCommands": [
+    "make swift-build",
+    "make swift-test",
+    "make validate-contracts",
+    "make validate-schemas",
+    "make validate-all"
+  ],
+  "knownGaps": [
+    "Production provider policy and operational ML hardening remain future work.",
+    "Clinical use claims require validation outside this construction registry."
+  ],
+  "defaultSettlerIds": [
+    "msr-settler",
+    "provider-settler"
+  ],
+  "relatedTerritoryIds": [
+    "session-runtime",
+    "providers",
+    "core",
+    "apps"
+  ],
+  "notes": [
+    "MSR is the official sigla for Mental Space Runtime.",
+    "Territory records do not alter prompt contracts or provider routing."
+  ]
+}

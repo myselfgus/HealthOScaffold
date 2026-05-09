@@ -1,0 +1,71 @@
+{
+  "id": "aaci",
+  "name": "AACI",
+  "summary": "Ambient-Agentic Clinical Intelligence runtime for Core-mediated draft composition, GOS binding, capture/transcription support, and operational automation.",
+  "maturity": "tested operational path",
+  "canonicalDocs": [
+    "HealthOS/Shared/docs/architecture/09-aaci.md",
+    "HealthOS/Shared/docs/architecture/20-runtime-operational-policy.md",
+    "HealthOS/Shared/docs/architecture/28-first-slice-executable-path.md",
+    "HealthOS/Shared/docs/architecture/31-gos-runtime-binding.md"
+  ],
+  "primaryPaths": [
+    "HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSAACI"
+  ],
+  "secondaryPaths": [
+    "HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSSessionRuntime",
+    "HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore",
+    "HealthOS/Shared/docs/execution/skills/aaci-skill.md",
+    "HealthOS/Shared/docs/execution/skills/aaci-runtime-skill.md",
+    "HealthOS/Shared/docs/execution/todo/runtimes-and-aaci.md"
+  ],
+  "forbiddenPaths": [
+    "HealthOS/Tier4-Stages-Cast/Scribe/Sources/Scribe",
+    "HealthOS/Tier4-Stages-Cast/Veridia/Sources/Veridia",
+    "HealthOS/Tier4-Stages-Cast/CloudClinic/Sources/CloudClinic",
+    "HealthOS/Constructor/ts/agent-infra"
+  ],
+  "invariants": [
+    "AACI is one runtime inside HealthOS and never constitutional authority.",
+    "AACI draft composition remains Core-mediated and gate-bound.",
+    "AACI may consume GOS runtime binding but cannot override Core law.",
+    "Provider, retrieval, and transcription degradation must remain explicit."
+  ],
+  "allowedWork": [
+    "Maintain AACI runtime, capture, transcription, draft composition, and GOS binding seams.",
+    "Add tests for draft-only, gate, provenance, and degradation behavior.",
+    "Repair Core-mediated handoff to Session Runtime when contracts drift.",
+    "Clarify docs that AACI is operational support, not final authority."
+  ],
+  "forbiddenWork": [
+    "Give AACI final clinical authority.",
+    "Bypass gate, consent, habilitation, provenance, or lawfulContext.",
+    "Bypass Core or GOS boundaries for convenience.",
+    "Fabricate provider, transcription, retrieval, referral, prescription, or clinical evidence."
+  ],
+  "validationCommands": [
+    "make swift-build",
+    "make swift-test",
+    "make smoke-cli",
+    "make smoke-scribe",
+    "make validate-all"
+  ],
+  "knownGaps": [
+    "AACI remains scaffold/foundation maturity and is not production clinical automation.",
+    "Semantic retrieval and broader provider hardening remain future work."
+  ],
+  "defaultSettlerIds": [
+    "aaci-settler"
+  ],
+  "relatedTerritoryIds": [
+    "core",
+    "gos",
+    "session-runtime",
+    "providers",
+    "apps"
+  ],
+  "notes": [
+    "AACI changes should usually be validated through Swift tests and first-slice smoke paths.",
+    "Territory metadata does not create AACI subagents or autonomous behavior."
+  ]
+}

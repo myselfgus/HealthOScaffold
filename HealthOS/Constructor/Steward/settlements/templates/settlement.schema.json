@@ -1,0 +1,242 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://healthos.local/HealthOS/Tier1-Mestral-Core/Schemas/steward/settlement.schema.json",
+  "$comment": "Reviewed and patched in ST-013 (2026-05-04): added objective (string), restrictions (array), and handoff (string) fields which were required by the Markdown spec (SCHEMA.md) but absent from the initial ST-010 scaffold.",
+  "title": "Steward Settlement Record",
+      "description": "Schema for bounded construction work units. This schema validates shape only and does not grant Steward execution, clinical authority, merge authority, or production readiness.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "taskId",
+    "title",
+    "status",
+    "priority",
+    "objective",
+    "territoryIds",
+    "settlerIds",
+    "sourceDocs",
+    "filesInScope",
+    "forbiddenFiles",
+    "invariants",
+    "restrictions",
+    "allowedChanges",
+    "forbiddenChanges",
+    "validationCommands",
+    "doneCriteria",
+    "residualGaps",
+    "handoffRequired",
+    "handoff"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "taskId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1
+    },
+    "objective": {
+      "type": "string",
+      "minLength": 1,
+      "description": "One-paragraph statement of what this Settlement delivers. Required per SCHEMA.md."
+    },
+    "restrictions": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "description": "Additional restrictions beyond Territory invariants that apply specifically to this Settlement."
+    },
+    "handoff": {
+      "type": "string",
+      "minLength": 1,
+      "description": "What is produced for the next agent: artifacts created, tracking docs updated, recommended next Settlement."
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "assigned",
+        "in_progress",
+        "validation_failed",
+        "ready_for_review",
+        "completed",
+        "blocked"
+      ]
+    },
+    "priority": {
+      "type": "string",
+      "minLength": 1
+    },
+    "territoryIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "settlerIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "sourceDocs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "filesInScope": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "forbiddenFiles": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "invariants": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "allowedChanges": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "forbiddenChanges": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "validationCommands": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "doneCriteria": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "residualGaps": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "handoffRequired": {
+      "type": "boolean"
+    }
+  },
+  "examples": [
+    {
+      "id": "SETTLEMENT-20260504-settler-profile-registry",
+      "taskId": "ST-012",
+      "title": "ST-012 Settler Profile Registry",
+      "status": "completed",
+      "priority": "P1",
+      "objective": "Create 9 Settler profile records and a registry index under HealthOS/Constructor/Settler/settlers/ without implementing Settlers as executable agents, Settlement instances, Steward CLI, Forge MCP, or runtime behavior.",
+      "territoryIds": [
+        "construction-system",
+        "documentation"
+      ],
+      "settlerIds": [
+        "settler-xcode-tooling",
+        "settler-documentation"
+      ],
+      "sourceDocs": [
+        "HealthOS/Shared/docs/execution/22-steward-construction-operating-model.md",
+        "HealthOS/Shared/docs/architecture/47-steward-settler-engineering-model.md",
+        "HealthOS/Shared/docs/execution/19-settler-model-task-tracker.md"
+      ],
+      "filesInScope": [
+        "HealthOS/Constructor/Settler/settlers/README.md",
+        "HealthOS/Constructor/Settler/settlers/settler-core-law.md",
+        "HealthOS/Constructor/Settler/settlers/settler-storage.md",
+        "HealthOS/Constructor/Settler/settlers/settler-gos.md",
+        "HealthOS/Constructor/Settler/settlers/settler-aaci.md",
+        "HealthOS/Constructor/Settler/settlers/settler-ops.md",
+        "HealthOS/Constructor/Settler/settlers/settler-apps.md",
+        "HealthOS/Constructor/Settler/settlers/settler-xcode-tooling.md",
+        "HealthOS/Constructor/Settler/settlers/settler-documentation.md",
+        "HealthOS/Constructor/Settler/settlers/settler-validation.md",
+        "HealthOS/Shared/docs/execution/02-status-and-tracking.md",
+        "HealthOS/Shared/docs/execution/19-settler-model-task-tracker.md",
+        "HealthOS/Shared/docs/execution/20-documental-todos-work-plan.md",
+        "HealthOS/Shared/docs/execution/22-steward-construction-operating-model.md"
+      ],
+      "forbiddenFiles": [
+        "HealthOS/*/Sources/",
+        "HealthOS/Constructor/ts/",
+        "HealthOS/Tier1-Mestral-Core/Schemas/",
+        "HealthOS/Tier1-Mestral-Core/SQL/",
+        "HealthOS/Constructor/Settler/territories/"
+      ],
+      "invariants": [
+        "Construction-system boundary: no clinical authority, no merge authority, no runtime behavior modified.",
+        "Settler profiles are documentation scaffolds only; no profile may claim executable agent status.",
+        "Official docs remain canonical; Settler profile records are subordinate.",
+        "healthos-forge-mcp naming must be used (not healthos-mcp)."
+      ],
+      "restrictions": [
+        "Do not modify Swift source under HealthOS/*/Sources/ or HealthOS/*/Tests/.",
+        "Do not modify TypeScript source under HealthOS/Constructor/ts/.",
+        "Do not modify Territory records under HealthOS/Constructor/Settler/territories/.",
+        "Do not create Settlement instances, Steward CLI, Forge MCP, or prompt generation engine."
+      ],
+      "allowedChanges": [
+        "Create Settler profile .md files under HealthOS/Constructor/Settler/settlers/.",
+        "Update 4 tracking docs."
+      ],
+      "forbiddenChanges": [
+        "Any Swift or TypeScript source modification.",
+        "Any production-readiness, clinical authority, or merge authority claim."
+      ],
+      "validationCommands": [
+        "make validate-docs",
+        "make validate-all"
+      ],
+      "doneCriteria": [
+        "HealthOS/Constructor/Settler/settlers/README.md exists with registry table.",
+        "9 Settler profile files exist under HealthOS/Constructor/Settler/settlers/.",
+        "4 tracking docs updated."
+      ],
+      "residualGaps": [
+        "ST-013 Settlement Record Schema: TODO.",
+        "ST-014 Deterministic Steward CLI: TODO.",
+        "ST-015 Prompt Generation Engine: TODO.",
+        "ST-018 healthos-forge-mcp: implemented seam, repository-maintenance only."
+      ],
+      "handoffRequired": true,
+      "handoff": "10 files created under HealthOS/Constructor/Settler/settlers/ (README.md + 9 profiles). 4 tracking docs updated. Validation: make validate-docs PASS, make validate-all PASS. ST-013 is the next construction-system task."
+    }
+  ]
+}

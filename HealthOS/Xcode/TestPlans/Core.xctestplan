@@ -1,0 +1,25 @@
+{
+  "configurations" : [
+    {
+      "id" : "1E737405-31D1-41EE-8F3A-98E8C786B3A1",
+      "name" : "Default",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "codeCoverage" : false
+  },
+  "testTargets" : [
+    {
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "HealthOSCoreTests",
+        "name" : "HealthOSCoreTests"
+      }
+    }
+  ],
+  "version" : 1
+}

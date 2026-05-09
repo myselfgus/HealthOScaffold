@@ -1,0 +1,81 @@
+{
+  "id": "apps",
+  "name": "Stages",
+  "summary": "Scribe, Veridia, and CloudClinic Stage/interface surfaces that consume mediated Core, GOS, Session Runtime, AACI, and MSR state.",
+  "maturity": "implemented seam",
+  "canonicalDocs": [
+    "HealthOS/Shared/docs/architecture/11-scribe.md",
+    "HealthOS/Shared/docs/architecture/12-veridia.md",
+    "HealthOS/Shared/docs/architecture/13-cloudclinic.md",
+    "HealthOS/Shared/docs/architecture/19-interface-doctrine.md",
+    "HealthOS/Shared/docs/architecture/43-cross-app-coordination-shared-surfaces.md",
+    "HealthOS/Shared/docs/architecture/48-native-macos-ui-design-system-and-app-shells.md"
+  ],
+  "primaryPaths": [
+    "HealthOS/Tier4-Stages-Cast/Scribe/Sources/Scribe",
+    "HealthOS/Tier4-Stages-Cast/Veridia/Sources/Veridia",
+    "HealthOS/Tier4-Stages-Cast/CloudClinic/Sources/CloudClinic"
+  ],
+  "secondaryPaths": [
+    "HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSSessionRuntime",
+    "HealthOS/Tier1-Mestral-Core/Schemas/contracts/cross-app-coordination-shared-surfaces.schema.json",
+    "HealthOS/Tier1-Mestral-Core/Schemas/contracts/user-agent-patient-identity-veridia.schema.json",
+    "HealthOS/Tier1-Mestral-Core/Schemas/contracts/service-operations-cloudclinic.schema.json",
+    "HealthOS/Shared/docs/execution/skills/boundary-skill.md",
+    "HealthOS/Shared/docs/execution/skills/user-agent-veridia-skill.md",
+    "HealthOS/Shared/docs/execution/todo/apps-and-interfaces.md"
+  ],
+  "forbiddenPaths": [
+    "HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore",
+    "HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSAACI",
+    "HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSMSR",
+    "HealthOS/Constructor/ts/agent-infra"
+  ],
+  "invariants": [
+    "Stages are governed application consumers, not law engines.",
+    "Stages consume mediated surfaces and do not own Core law, GOS policy, or clinical authority.",
+    "Stage surfaces must avoid direct raw clinical data exposure and direct identifiers.",
+    "Native macOS UI remains scaffold/foundation maturity until explicitly implemented and validated."
+  ],
+  "allowedWork": [
+    "Maintain Stage-safe mediated surfaces for Scribe, Veridia, and CloudClinic.",
+    "Add or repair smoke-testable Stage executable paths.",
+    "Align Stage docs with interface doctrine and macOS 26+ Liquid Glass baseline.",
+    "Validate Stage changes through Swift tests and Stage smoke commands."
+  ],
+  "forbiddenWork": [
+    "Move Core law into Stages.",
+    "Claim final UI delivery without implementation.",
+    "Expose raw direct identifiers or unmediated clinical payloads.",
+    "Give Stages clinical, regulatory, signature, prescription, referral, or finalization authority."
+  ],
+  "validationCommands": [
+    "make swift-build",
+    "make swift-test",
+    "make smoke-scribe",
+    "make smoke-veridia",
+    "make smoke-cloudclinic",
+    "make validate-all"
+  ],
+  "knownGaps": [
+    "APP-011 is DONE for Veridia session path work.",
+    "APP-012 is BLOCKED until Core/GOS/runtime/Boundary/Custom readiness is satisfied.",
+    "Final Stage UI shells are not implemented."
+  ],
+  "defaultSettlerIds": [
+    "app-boundary-settler"
+  ],
+  "relatedTerritoryIds": [
+    "core",
+    "session-runtime",
+    "aaci",
+    "gos",
+    "msr"
+  ],
+  "notes": [
+    "The territory id remains `apps` for compatibility, but the canonical HealthOS concept is Stage.",
+    "This territory covers Stage/interface boundaries, not product task completion.",
+    "APP-013 established Veridia as the canonical patient identity Stage name (2026-05-04). All future work uses Veridia naming.",
+    "ST-011 did not change APP-011 or APP-012 status; ADR-0013 later blocked APP-012 as Stage implementation."
+  ]
+}

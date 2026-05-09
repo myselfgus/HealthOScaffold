@@ -35,16 +35,16 @@ __pycache__/
 # Data
 runtime-data/
 coverage/
-.healthos-steward/providers/providers.local.json
-.healthos-steward/providers/*.local.json
+HealthOS/Constructor/Steward/providers/providers.local.json
+HealthOS/Constructor/Steward/providers/*.local.json
 *.env
 runtime-data/steward/model-invocations.jsonl
 
 # Steward generated/derived construction artifacts
-.healthos-steward/memory/derived/*
-!.healthos-steward/memory/derived/README.md
-.healthos-steward/prompts/generated/*
-!.healthos-steward/prompts/generated/README.md
+HealthOS/Constructor/Steward/memory/derived/*
+!HealthOS/Constructor/Steward/memory/derived/README.md
+HealthOS/Constructor/Steward/prompts/generated/*
+!HealthOS/Constructor/Steward/prompts/generated/README.md
 
 # Xcode per-user workspace state
 xcuserdata/

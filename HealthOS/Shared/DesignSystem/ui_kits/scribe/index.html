@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>Scribe — HealthOS UI kit</title>
+<link rel="stylesheet" href="scribe.css"/>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel" src="Components.jsx"></script>
+<script type="text/babel" src="Shell.jsx"></script>
+<script type="text/babel" src="Cards.jsx"></script>
+<script type="text/babel">
+const { useState, useEffect } = React;
+
+const SEED = 'Paciente relata dor de cabeça, insônia e piora do sono há uma semana. Refere fadiga diurna e dificuldade de concentração no trabalho.';
+
+function App() {
+  const [stage, setStage] = useState('idle'); // idle | opening | active | submitted | draft | gate | final
+  const [activeSession, setActiveSession] = useState('s1');
+  const [patient, setPatient] = useState(null);
+  const [captureMode, setCaptureMode] = useState('seeded_text');
+  const [captureText, setCaptureText] = useState(SEED);
+  const [decision, setDecision] = useState(null);
+
+  const start = () => { setStage('opening'); setTimeout(() => setStage('active'), 600); };
+  const submit = () => setStage('submitted');
+  const advance = () => setStage('draft');
+  const onGate = () => setStage('gate');
+  const resolve = (d) => { setDecision(d); setStage('final'); };
+  const reset = () => { setStage('idle'); setPatient(null); setCaptureText(SEED); setDecision(null); };
+
+  const transcription = stage === 'idle' || stage === 'opening' || stage === 'active'
+    ? { status: 'pending', source: 'none' }
+    : { status: 'ready', source: 'seeded' };
+
+  const retrieval = ['submitted','draft','gate','final'].includes(stage)
+    ? { status: 'partial', matches: 3, highlights: [
+        'insônia · 2 episódios anteriores documentados',
+        'fadiga diurna · padrão recorrente',
+        'sono · queixa principal previa há 6 meses',
+      ] } : null;
+
+  const draft = ['draft','gate','final'].includes(stage)
+    ? `S: cefaleia, insônia há 1 semana, fadiga diurna, queixa de concentração.
+O: paciente vigil, AF preservada, BEG, consciente, orientado.
+A: insônia primária provável; descartar componente ansioso.
+P: orientação higiene do sono; reavaliação em 2 semanas; questionário PSQI.`
+    : '';
+
+  const finalDoc = stage === 'final'
+    ? { state: decision === 'approved' ? 'finalized' : 'withheld' } : null;
+
+  const stateLabel = stage === 'idle' ? 'idle'
+    : stage === 'opening' ? 'opening'
+    : stage === 'gate' ? 'awaiting_gate'
+    : stage === 'final' ? (decision === 'approved' ? 'finalized' : 'withheld')
+    : 'active';
+
+  const issues = stage === 'idle' ? []
+    : transcription.status === 'pending' ? []
+    : retrieval && retrieval.status === 'partial'
+      ? [{ kind: 'degraded', code: 'RETRIEVAL_PARTIAL', msg: 'context coverage below threshold' }]
+      : [];
+
+  useEffect(() => { lucide.createIcons(); }, [stage, patient, captureMode]);
+
+  const canSubmit = stage === 'active' && patient && captureText.trim();
+  const canAdvance = stage === 'submitted';
+  const showGate = ['draft','gate','final'].includes(stage);
+
+  return (
+    <div className="app">
+      <Toolbar stateLabel={stateLabel} runtimeLabel="Apple FoundationModels"/>
+      <div className="body">
+        <Sidebar activeSession={activeSession} onPick={setActiveSession}/>
+        <main className="detail">
+          <div className="detail-inner">
+            <div className="page-h">
+              <h1>Active session</h1>
+              <span className="crumb">Workspace · Today · {patient || 'no patient selected'}</span>
+              <div style={{marginLeft:'auto'}}>
+                <Button icon="rotate-ccw" onClick={reset}>Reset demo</Button>
+              </div>
+            </div>
+
+            <Banner kind="info" title="Scaffold validation surface">
+              recreation of Scribe · transcription stubbed · retrieval bounded · law remains in HealthOS Core.
+            </Banner>
+
+            {stage === 'idle' || stage === 'opening' ? (
+              <SessionStartCard onStart={start} opening={stage === 'opening'}/>
+            ) : (
+              <WorkspaceCard
+                patient={patient} onPickPatient={setPatient}
+                captureMode={captureMode} setCaptureMode={setCaptureMode}
+                captureText={captureText} setCaptureText={setCaptureText}
+                onSubmit={submit} canSubmit={canSubmit}
+                onAdvance={advance} canAdvance={canAdvance}
+              />
+            )}
+
+            {stage !== 'idle' && stage !== 'opening' && (
+              <OutputsCard
+                stage={stage}
+                capture={['submitted','draft','gate','final'].includes(stage) ? captureText : ''}
+                transcription={transcription}
+                retrieval={retrieval}
+                draft={draft}
+                gate={stage === 'final' ? { resolved: true, decision } : showGate ? { resolved: false } : null}
+                finalDoc={finalDoc}
+              />
+            )}
+
+            {stage === 'draft' && (
+              <div className="row-actions">
+                <Button kind="primary" icon="shield" onClick={onGate}>Send to gate review</Button>
+              </div>
+            )}
+
+            <GatePanel
+              visible={stage === 'gate' || stage === 'final'}
+              resolved={stage === 'final'}
+              decision={decision}
+              onResolve={resolve}
+            />
+
+            <IssuesCard issues={issues}/>
+          </div>
+        </main>
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+</body></html>

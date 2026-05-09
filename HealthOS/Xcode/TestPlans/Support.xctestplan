@@ -1,0 +1,25 @@
+{
+  "configurations" : [
+    {
+      "id" : "1C01F699-F5AA-420F-8E21-6F543A8AD078",
+      "name" : "Default",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "codeCoverage" : false
+  },
+  "testTargets" : [
+    {
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "HealthOSSupportToolingTests",
+        "name" : "HealthOSSupportToolingTests"
+      }
+    }
+  ],
+  "version" : 1
+}

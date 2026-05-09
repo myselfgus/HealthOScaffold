@@ -24,22 +24,22 @@ Use "scaffold" only to describe maturity or bootstrap/foundation phase, never to
 ## Required reading order before coding
 
 1. `README.md`
-2. `docs/execution/README.md`
-3. `docs/execution/00-master-plan.md`
-4. `docs/execution/01-agent-operating-protocol.md`
-5. `docs/execution/02-status-and-tracking.md`
-6. `docs/execution/06-scaffold-coverage-matrix.md`
-7. `docs/execution/10-invariant-matrix.md`
-8. `docs/execution/11-current-maturity-map.md`
-9. `docs/execution/12-next-agent-handoff.md`
-10. `docs/execution/13-scaffold-release-candidate-criteria.md`
-11. `docs/execution/14-final-gap-register.md`
-12. `docs/execution/15-scaffold-finalization-plan.md`
-13. `docs/execution/16-next-10-actions-plan.md`
-14. relevant `docs/execution/todo/*.md`
-15. relevant `docs/architecture/*.md`
-16. matching `docs/execution/skills/*.md` (HealthOS domain skills)
-17. if touching Swift/SwiftUI/Xcode/Apple platform code: matching `docs/execution/skills/<name>/SKILL.md` (macOS skills — see `docs/execution/skills/README.md` for index)
+2. `HealthOS/Shared/docs/execution/README.md`
+3. `HealthOS/Shared/docs/execution/00-master-plan.md`
+4. `HealthOS/Shared/docs/execution/01-agent-operating-protocol.md`
+5. `HealthOS/Shared/docs/execution/02-status-and-tracking.md`
+6. `HealthOS/Shared/docs/execution/06-scaffold-coverage-matrix.md`
+7. `HealthOS/Shared/docs/execution/10-invariant-matrix.md`
+8. `HealthOS/Shared/docs/execution/11-current-maturity-map.md`
+9. `HealthOS/Shared/docs/execution/12-next-agent-handoff.md`
+10. `HealthOS/Shared/docs/execution/13-scaffold-release-candidate-criteria.md`
+11. `HealthOS/Shared/docs/execution/14-final-gap-register.md`
+12. `HealthOS/Shared/docs/execution/15-scaffold-finalization-plan.md`
+13. `HealthOS/Shared/docs/execution/16-next-10-actions-plan.md`
+14. relevant `HealthOS/Shared/docs/execution/todo/*.md`
+15. relevant `HealthOS/Shared/docs/architecture/*.md`
+16. matching `HealthOS/Shared/docs/execution/skills/*.md` (HealthOS domain skills)
+17. if touching Swift/SwiftUI/Xcode/Apple platform code: matching `HealthOS/Shared/docs/execution/skills/<name>/SKILL.md` (macOS skills — see `HealthOS/Shared/docs/execution/skills/README.md` for index)
 
 Before accepting any task, classify it by the HealthOS hierarchy or the external construction class and record the classification in the work unit:
 - **Tier 1 — Core:** Core law, validation harness, storage law, CI, and platform surfaces that Stages may later consume.
@@ -57,8 +57,8 @@ Task selection order:
 4. validation for just-finished work
 
 After each work unit, update:
-- `docs/execution/02-status-and-tracking.md`
-- corresponding file in `docs/execution/todo/`
+- `HealthOS/Shared/docs/execution/02-status-and-tracking.md`
+- corresponding file in `HealthOS/Shared/docs/execution/todo/`
 
 ## Absolute execution restrictions
 
@@ -77,8 +77,8 @@ Always:
 ## Canonical first-slice reference
 
 Primary executable slice orchestration lives in:
-- `swift/Sources/HealthOSSessionRuntime/SessionRunner.swift`
-- consumed by `HealthOSCLI` and the minimal `HealthOSScribeStage`
+- `HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSSessionRuntime/SessionRunner.swift`
+- consumed by `HealthOSCLI` and the separate `Scribe` Stage package
 
 Reference ordering:
 habilitation validate → consent validate → session start → capture → transcript provenance → retrieval provenance → SOAP draft provenance → gate request → gate resolve → final artifact (only if approved) + provenance.
@@ -90,10 +90,10 @@ capture/transcription → transcript normalization → MSR (`ASL -> VDLP -> GEM`
 
 For v1, normalization may use the local Apple Foundation Models adapter when compiled in and available for the current locale. Remote fallback remains denied unless future policy explicitly changes this. Stub-only or unavailable providers must produce explicit degraded state and must not persist stub output as a real normalized transcript.
 
-When touching transcript normalization, MSR, or provider behavior, read `docs/architecture/49-mental-space-runtime.md` and validate at minimum with:
+When touching transcript normalization, MSR, or provider behavior, read `HealthOS/Shared/docs/architecture/49-mental-space-runtime.md` and validate at minimum with:
 ```bash
-cd swift && swift build
-cd swift && swift test
+cd HealthOS && swift build
+cd HealthOS && swift test
 ```
 
 ## Real command baseline
@@ -121,18 +121,18 @@ make smoke-cloudclinic
 
 Recently confirmed direct smoke commands:
 ```bash
-cd swift && swift run HealthOSCLI
-cd swift && swift run HealthOSCLI --reject-gate
-cd swift && swift run HealthOSScribeStage --smoke-test
-cd swift && swift run HealthOSScribeStage --smoke-test-audio
-cd swift && swift run HealthOSVeridiaStage --smoke-test
-cd swift && swift run HealthOSCloudClinicStage --smoke-test
+cd HealthOS && swift run HealthOSCLI
+cd HealthOS && swift run HealthOSCLI --reject-gate
+cd HealthOS/Tier4-Stages-Cast/Scribe && swift run Scribe --smoke-test
+cd HealthOS/Tier4-Stages-Cast/Scribe && swift run Scribe --smoke-test-audio
+cd HealthOS/Tier4-Stages-Cast/Veridia && swift run Veridia --smoke-test
+cd HealthOS/Tier4-Stages-Cast/CloudClinic && swift run CloudClinic --smoke-test
 ```
 
 For GOS bundle lifecycle smoke, use the minimal operator-facing CLI path and keep reviewer/operator identity explicit:
 ```bash
-cd swift && swift run HealthOSCLI --gos-review-bundle <bundle-id> --gos-spec-id <spec-id> --reviewer-id <id> --review-rationale "<reason>"
-cd swift && swift run HealthOSCLI --gos-promote-bundle <bundle-id> --gos-spec-id <spec-id> --activator-id <id> --activation-rationale "<reason>"
+cd HealthOS && swift run HealthOSCLI --gos-review-bundle <bundle-id> --gos-spec-id <spec-id> --reviewer-id <id> --review-rationale "<reason>"
+cd HealthOS && swift run HealthOSCLI --gos-promote-bundle <bundle-id> --gos-spec-id <spec-id> --activator-id <id> --activation-rationale "<reason>"
 ```
 
 Workflow notes from recent repository use:
@@ -140,16 +140,18 @@ Workflow notes from recent repository use:
 - Serialize SwiftPM validation commands; concurrent Swift builds/runs can contend on `.build` locks.
 - For documentation-only work, run `make validate-docs` and `git diff --check`; if a broader gate fails, record the exact failing gate instead of weakening the validation claim.
 - `make validate-docs` checks documentation/reference consistency; it does not prove that claimed CLI commands or package source paths exist. Verify executable command claims with the package source and a smoke run, or add a short TODO instead of documenting them as delivered.
-- Open `swift/Package.swift` in Xcode for committed shared schemes under `swift/.swiftpm/xcode/xcshareddata/xcschemes/`; the schemes carry smoke-test launch arguments disabled by default and Release profile actions for Instruments.
-- Create ML work under `ml/` is scaffold-only. Do not run `swift ml/transcript-normalizer/TrainTranscriptNormalizer.swift` against real patient data or document any produced `.mlmodel` as loadable until `ModelGovernance` approval and provenance are implemented.
+- Open `HealthOS/Package.swift` in Xcode for committed shared schemes under `HealthOS/.swiftpm/xcode/xcshareddata/xcschemes/`; the schemes carry smoke-test launch arguments disabled by default and Release profile actions for Instruments.
+- Keep `HealthOS/Constructor/` and `HealthOS/Support/` explicitly visible in Xcode workspace navigation. They are outside the clinical/runtime hierarchy, but they contain required AI organization, Steward/Settler/Forge MCP, provider support, ops, Python, and ML tooling.
+- Shared schemes must cover Core, runtimes, Boundary, providers, Construction System, Support, Stage package smokes, All, and profile-oriented Core/runtime/provider/validation-gate flows. Test plans live under `HealthOS/Xcode/TestPlans/` by layer.
+- Create ML, Core ML, and MLX work under `HealthOS/Support/ML/` is scaffold/governed tooling only. Do not run `swift HealthOS/Support/ML/transcript-normalizer/TrainTranscriptNormalizer.swift` against real patient data or document any produced `.mlmodel` as loadable until `ModelGovernance` approval and provenance are implemented.
 
 ## Cross-language contract discipline
 
 When ontology/contracts change, align in the same work unit:
-- JSON Schemas (`schemas/`)
-- Swift contracts (`swift/Sources/HealthOSCore/` etc.)
-- TypeScript contracts (`ts/packages/contracts/src/index.ts`)
-- SQL shape (`sql/migrations/001_init.sql`) when relevant
+- JSON Schemas (`HealthOS/Tier1-Mestral-Core/Schemas/`)
+- Swift contracts (`HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/` etc.)
+- TypeScript contracts (`HealthOS/Constructor/ts/packages/contracts/src/index.ts`)
+- SQL shape (`HealthOS/Tier1-Mestral-Core/SQL/migrations/001_init.sql`) when relevant
 
 ## Commit discipline
 
@@ -162,12 +164,12 @@ When ontology/contracts change, align in the same work unit:
 
 Steward is the canonical engineering agent for this repository. `healthos-steward` is the CLI, package, and repository-local state root.
 
-- CLI and package: `ts/agent-infra/healthos-steward/`
-- Derived memory, sessions, handoffs, policies, state: `.healthos-steward/`
-- Territory Registry: `.healthos-settler/territories/`
-- Construction operating model: `docs/execution/22-steward-construction-operating-model.md`
+- CLI and package: `HealthOS/Constructor/ts/agent-infra/healthos-steward/`
+- Derived memory, sessions, handoffs, policies, state: `HealthOS/Constructor/Steward/`
+- Territory Registry: `HealthOS/Constructor/Settler/territories/`
+- Construction operating model: `HealthOS/Shared/docs/execution/22-steward-construction-operating-model.md`
 
-Steward for Xcode is the Xcode-integration posture for Steward. Steward for Xcode integrates with Xcode Intelligence as an Apple-controlled engineering runtime surface, while HealthOS contributes instructions, `healthos-forge-mcp`, derived repository memory, and deterministic CLI operations. See `docs/architecture/45-healthos-xcode-agent.md` and `docs/architecture/46-apple-sovereignty-architecture.md`.
+Steward for Xcode is the Xcode-integration posture for Steward. Steward for Xcode integrates with Xcode Intelligence as an Apple-controlled engineering runtime surface, while HealthOS contributes instructions, `healthos-forge-mcp`, derived repository memory, and deterministic CLI operations. See `HealthOS/Shared/docs/architecture/45-healthos-xcode-agent.md` and `HealthOS/Shared/docs/architecture/46-apple-sovereignty-architecture.md`.
 
 Do not treat Steward memory as canonical truth; official docs are canonical. Steward memory is a derived index.
 
@@ -180,48 +182,48 @@ make ts-build
 
 For a targeted package rebuild, use:
 ```bash
-cd ts && npm run build --workspace @healthos/forge-mcp
-cd ts && npm run build --workspace @healthos/managed-agent
-cd ts && npm run build --workspace @healthos/steward
+cd HealthOS/Constructor/ts && npm run build --workspace @healthos/forge-mcp
+cd HealthOS/Constructor/ts && npm run build --workspace @healthos/managed-agent
+cd HealthOS/Constructor/ts && npm run build --workspace @healthos/steward
 ```
 
 Current deterministic baseline:
 ```bash
-cd ts && npx --yes --workspace @healthos/steward healthos-steward status
-cd ts && npx --yes --workspace @healthos/steward healthos-steward runtime
-cd ts && npx --yes --workspace @healthos/steward healthos-steward session
-cd ts && npx --yes --workspace @healthos/steward healthos-steward list territories
-cd ts && npx --yes --workspace @healthos/steward healthos-steward list settlers
-cd ts && npx --yes --workspace @healthos/steward healthos-steward list settlements
-cd ts && npx --yes --workspace @healthos/steward healthos-steward inspect territory <id>
-cd ts && npx --yes --workspace @healthos/steward healthos-steward inspect settler <id>
-cd ts && npx --yes --workspace @healthos/steward healthos-steward inspect settlement <id>
-cd ts && npx --yes --workspace @healthos/steward healthos-steward next
-cd ts && npx --yes --workspace @healthos/steward healthos-steward generate-prompt <settlement-id>
-cd ts && npx --yes --workspace @healthos/steward healthos-steward validate-settlement <settlement-id>
-cd ts && npx --yes --workspace @healthos/steward healthos-steward pr-draft <settlement-id>
-cd ts && npx --yes --workspace @healthos/steward healthos-steward build-memory
+cd HealthOS/Constructor/ts && npx --yes --workspace @healthos/steward healthos-steward status
+cd HealthOS/Constructor/ts && npx --yes --workspace @healthos/steward healthos-steward runtime
+cd HealthOS/Constructor/ts && npx --yes --workspace @healthos/steward healthos-steward session
+cd HealthOS/Constructor/ts && npx --yes --workspace @healthos/steward healthos-steward list territories
+cd HealthOS/Constructor/ts && npx --yes --workspace @healthos/steward healthos-steward list settlers
+cd HealthOS/Constructor/ts && npx --yes --workspace @healthos/steward healthos-steward list settlements
+cd HealthOS/Constructor/ts && npx --yes --workspace @healthos/steward healthos-steward inspect territory <id>
+cd HealthOS/Constructor/ts && npx --yes --workspace @healthos/steward healthos-steward inspect settler <id>
+cd HealthOS/Constructor/ts && npx --yes --workspace @healthos/steward healthos-steward inspect settlement <id>
+cd HealthOS/Constructor/ts && npx --yes --workspace @healthos/steward healthos-steward next
+cd HealthOS/Constructor/ts && npx --yes --workspace @healthos/steward healthos-steward generate-prompt <settlement-id>
+cd HealthOS/Constructor/ts && npx --yes --workspace @healthos/steward healthos-steward validate-settlement <settlement-id>
+cd HealthOS/Constructor/ts && npx --yes --workspace @healthos/steward healthos-steward pr-draft <settlement-id>
+cd HealthOS/Constructor/ts && npx --yes --workspace @healthos/steward healthos-steward build-memory
 ```
 
 Treat those as the implemented `healthos-steward` CLI commands as of ST-017/FORGE-MCP-V2. Do not describe `scan-status`, `validate-docs`, `validate-all`, `check-invariants`, `check-doc-drift`, or other target repository-maintenance operations as delivered CLI behavior until implemented and locally smoked.
 
 For repository-maintenance MCP access, `@healthos/forge-mcp` exposes the same 10 deterministic `steward_*` tools over stdio and, as of ST-021, over Streamable HTTP for Managed Agents compatibility:
 ```bash
-cd ts && npx --yes --workspace @healthos/forge-mcp healthos-forge-mcp
-cd ts && npx --yes --workspace @healthos/forge-mcp healthos-forge-mcp-http
-cd ts && FORGE_MCP_PORT=3791 npx --yes --workspace @healthos/forge-mcp healthos-forge-mcp-http
+cd HealthOS/Constructor/ts && npx --yes --workspace @healthos/forge-mcp healthos-forge-mcp
+cd HealthOS/Constructor/ts && npx --yes --workspace @healthos/forge-mcp healthos-forge-mcp-http
+cd HealthOS/Constructor/ts && FORGE_MCP_PORT=3791 npx --yes --workspace @healthos/forge-mcp healthos-forge-mcp-http
 ```
 
 The HTTP server binds `127.0.0.1:${FORGE_MCP_PORT:-3791}/mcp`. Managed Agents API use requires a publicly reachable tunnel URL set through `FORGE_MCP_URL`; do not document localhost as sufficient for a remote Managed Agent connection.
 
 For the Steward Coordinator Managed Agent seam (`@healthos/managed-agent`, ST-022/ST-023):
 ```bash
-cd ts && npm run create-agent:dry-run --workspace @healthos/managed-agent
-cd ts && npm run create-agent --workspace @healthos/managed-agent
-cd ts && npm run create-agent:force --workspace @healthos/managed-agent
+cd HealthOS/Constructor/ts && npm run create-agent:dry-run --workspace @healthos/managed-agent
+cd HealthOS/Constructor/ts && npm run create-agent --workspace @healthos/managed-agent
+cd HealthOS/Constructor/ts && npm run create-agent:force --workspace @healthos/managed-agent
 ```
 
-Live create/update requires `ANTHROPIC_API_KEY` or `ANTHROPIC_AUTH_TOKEN` and writes `.healthos-steward/managed-agent/agent.json`. The typed session workflows are `discover`, `brief`, `validate`, and `handoff`; they are human-triggered construction lifecycle helpers, not a CLI, cron runner, autonomous executor, clinical/runtime surface, or merge authority.
+Live create/update requires `ANTHROPIC_API_KEY` or `ANTHROPIC_AUTH_TOKEN` and writes `HealthOS/Constructor/Steward/managed-agent/agent.json`. The typed session workflows are `discover`, `brief`, `validate`, and `handoff`; they are human-triggered construction lifecycle helpers, not a CLI, cron runner, autonomous executor, clinical/runtime surface, or merge authority.
 
 Codex, Claude Code, and other external coding assistants are external executors operating on this repository. They are not internal Steward providers.
 
@@ -231,7 +233,7 @@ The local Codex automation for this posture is `$CODEX_HOME/automations/steward-
 
 ## Steward and healthos-forge-mcp boundary
 
-`healthos-forge-mcp` is the repository-maintenance MCP server for Steward. It is implemented as a stdio MCP server at `ts/agent-infra/healthos-forge-mcp/` (maturity: implemented seam, ST-018/FORGE-MCP-V2, 2026-05-05). It exposes 10 deterministic repository-maintenance tools: `steward_next_task`, `steward_scan_status`, `steward_get_handoff`, `steward_list_territories`, `steward_inspect_territory`, `steward_list_settlers`, `steward_list_settlements`, `steward_validate_settlement`, `steward_generate_prompt`, `steward_build_memory`.
+`healthos-forge-mcp` is the repository-maintenance MCP server for Steward. It is implemented as a stdio MCP server at `HealthOS/Constructor/ts/agent-infra/healthos-forge-mcp/` (maturity: implemented seam, ST-018/FORGE-MCP-V2, 2026-05-05). It exposes 10 deterministic repository-maintenance tools: `steward_next_task`, `steward_scan_status`, `steward_get_handoff`, `steward_list_territories`, `steward_inspect_territory`, `steward_list_settlers`, `steward_list_settlements`, `steward_validate_settlement`, `steward_generate_prompt`, `steward_build_memory`.
 
 `healthos-forge-mcp` is outside the HealthOS clinical/runtime hierarchy. It is used by Steward for Xcode, Xcode Intelligence where available, CI tools, or external coding assistants operating on this repository. It must never be described as a clinical automation server, AACI tool server, GOS runtime server, or Core law server.
 

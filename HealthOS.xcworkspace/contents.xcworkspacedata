@@ -2,6 +2,42 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "group:swift/Package.swift">
+      location = "group:HealthOS/Package.swift">
+   </FileRef>
+   <FileRef
+      location = "group:HealthOS/Tier1-Mestral-Core">
+   </FileRef>
+   <FileRef
+      location = "group:HealthOS/Tier2-GOS-Runtimes">
+   </FileRef>
+   <FileRef
+      location = "group:HealthOS/Tier3-Custom-Boundary">
+   </FileRef>
+   <FileRef
+      location = "group:HealthOS/Tier4-Stages-Cast">
+   </FileRef>
+   <FileRef
+      location = "group:HealthOS/Tier4-Stages-Cast/Scribe/Package.swift">
+   </FileRef>
+   <FileRef
+      location = "group:HealthOS/Tier4-Stages-Cast/Veridia/Package.swift">
+   </FileRef>
+   <FileRef
+      location = "group:HealthOS/Tier4-Stages-Cast/CloudClinic/Package.swift">
+   </FileRef>
+   <FileRef
+      location = "group:HealthOS/Xcode">
+   </FileRef>
+   <FileRef
+      location = "group:HealthOS/Shared">
+   </FileRef>
+   <FileRef
+      location = "group:HealthOS/Shared/docs">
+   </FileRef>
+   <FileRef
+      location = "group:HealthOS/Constructor">
+   </FileRef>
+   <FileRef
+      location = "group:HealthOS/Support">
    </FileRef>
 </Workspace>

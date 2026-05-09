@@ -1,0 +1,68 @@
+{
+  "id": "providers",
+  "name": "Providers",
+  "summary": "Model/provider adapter contracts, Apple Foundation Models integration, provider router seams, stubs, and capability profiles.",
+  "maturity": "implemented seam",
+  "canonicalDocs": [
+    "HealthOS/Shared/docs/architecture/16-providers-and-ml.md",
+    "HealthOS/Shared/docs/architecture/46-apple-sovereignty-architecture.md",
+    "HealthOS/Shared/docs/architecture/49-mental-space-runtime.md",
+    "HealthOS/Shared/docs/execution/skills/provider-governance-skill.md"
+  ],
+  "primaryPaths": [
+    "HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSProviders"
+  ],
+  "secondaryPaths": [
+    "HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSMSR",
+    "HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSSessionRuntime/Normalization",
+    "HealthOS/Tier2-GOS-Runtimes/Tests",
+    "HealthOS/Shared/Tests",
+    "HealthOS/Shared/docs/execution/todo/ops-network-ml.md"
+  ],
+  "forbiddenPaths": [
+    "HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore",
+    "HealthOS/Tier4-Stages-Cast/Scribe/Sources/Scribe",
+    "HealthOS/Constructor/ts/agent-infra"
+  ],
+  "invariants": [
+    "Providers are infrastructure, not law or clinical authority.",
+    "Local Apple Foundation Models use must be explicit and unavailable states must be honest.",
+    "Remote fallback is denied unless official policy explicitly enables it.",
+    "Stub output must never be persisted as real provider output."
+  ],
+  "allowedWork": [
+    "Maintain provider adapter seams, router behavior, stubs, and capability profiles.",
+    "Expose provider availability and degradation truth without overclaiming.",
+    "Add tests for provider honesty and fail-closed behavior.",
+    "Document provider limitations and local-first policy."
+  ],
+  "forbiddenWork": [
+    "Fake provider success.",
+    "Add hidden remote fallback.",
+    "Use providers as Core, gate, clinical, or regulatory authority.",
+    "Persist stub output as real output."
+  ],
+  "validationCommands": [
+    "make swift-build",
+    "make swift-test",
+    "make validate-docs",
+    "make validate-all"
+  ],
+  "knownGaps": [
+    "Production provider hardening remains future work.",
+    "Remote provider policy remains explicit and constrained by future governance decisions."
+  ],
+  "defaultSettlerIds": [
+    "provider-settler"
+  ],
+  "relatedTerritoryIds": [
+    "session-runtime",
+    "msr",
+    "aaci",
+    "core"
+  ],
+  "notes": [
+    "Provider work often intersects Session Runtime normalization and MSR stage execution.",
+    "Territory records do not authorize network calls or provider credential use."
+  ]
+}

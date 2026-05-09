@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Scheme
+   LastUpgradeVersion = "1620"
+   version = "1.7">
+   <BuildAction parallelizeBuildables = "YES" buildImplicitDependencies = "YES">
+      <BuildActionEntries>
+         <BuildActionEntry buildForTesting = "YES" buildForRunning = "YES" buildForProfiling = "YES" buildForArchiving = "YES" buildForAnalyzing = "YES">
+            <BuildableReference BuildableIdentifier = "primary" BlueprintIdentifier = "HealthOSCLI" BuildableName = "HealthOSCLI" BlueprintName = "HealthOSCLI" ReferencedContainer = "container:"></BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry buildForTesting = "YES" buildForRunning = "NO" buildForProfiling = "NO" buildForArchiving = "NO" buildForAnalyzing = "YES">
+            <BuildableReference BuildableIdentifier = "primary" BlueprintIdentifier = "HealthOSCoreTests" BuildableName = "HealthOSCoreTests" BlueprintName = "HealthOSCoreTests" ReferencedContainer = "container:"></BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry buildForTesting = "YES" buildForRunning = "NO" buildForProfiling = "NO" buildForArchiving = "NO" buildForAnalyzing = "YES">
+            <BuildableReference BuildableIdentifier = "primary" BlueprintIdentifier = "HealthOSRuntimeTests" BuildableName = "HealthOSRuntimeTests" BlueprintName = "HealthOSRuntimeTests" ReferencedContainer = "container:"></BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry buildForTesting = "YES" buildForRunning = "NO" buildForProfiling = "NO" buildForArchiving = "NO" buildForAnalyzing = "YES">
+            <BuildableReference BuildableIdentifier = "primary" BlueprintIdentifier = "HealthOSBoundaryTests" BuildableName = "HealthOSBoundaryTests" BlueprintName = "HealthOSBoundaryTests" ReferencedContainer = "container:"></BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry buildForTesting = "YES" buildForRunning = "NO" buildForProfiling = "NO" buildForArchiving = "NO" buildForAnalyzing = "YES">
+            <BuildableReference BuildableIdentifier = "primary" BlueprintIdentifier = "StagePackageStructureTests" BuildableName = "StagePackageStructureTests" BlueprintName = "StagePackageStructureTests" ReferencedContainer = "container:"></BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry buildForTesting = "YES" buildForRunning = "NO" buildForProfiling = "NO" buildForArchiving = "NO" buildForAnalyzing = "YES">
+            <BuildableReference BuildableIdentifier = "primary" BlueprintIdentifier = "HealthOSConstructionSystemTests" BuildableName = "HealthOSConstructionSystemTests" BlueprintName = "HealthOSConstructionSystemTests" ReferencedContainer = "container:"></BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry buildForTesting = "YES" buildForRunning = "NO" buildForProfiling = "NO" buildForArchiving = "NO" buildForAnalyzing = "YES">
+            <BuildableReference BuildableIdentifier = "primary" BlueprintIdentifier = "HealthOSSupportToolingTests" BuildableName = "HealthOSSupportToolingTests" BlueprintName = "HealthOSSupportToolingTests" ReferencedContainer = "container:"></BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry buildForTesting = "YES" buildForRunning = "NO" buildForProfiling = "NO" buildForArchiving = "NO" buildForAnalyzing = "YES">
+            <BuildableReference BuildableIdentifier = "primary" BlueprintIdentifier = "HealthOSTests" BuildableName = "HealthOSTests" BlueprintName = "HealthOSTests" ReferencedContainer = "container:"></BuildableReference>
+         </BuildActionEntry>
+      </BuildActionEntries>
+   </BuildAction>
+   <TestAction buildConfiguration = "Debug" selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB" selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB" shouldUseLaunchSchemeArgsEnv = "YES">
+      <TestPlans>
+         <TestPlanReference reference = "container:Xcode/TestPlans/All.xctestplan" default = "YES"></TestPlanReference>
+      </TestPlans>
+      <Testables>
+         <TestableReference skipped = "NO">
+            <BuildableReference BuildableIdentifier = "primary" BlueprintIdentifier = "HealthOSCoreTests" BuildableName = "HealthOSCoreTests" BlueprintName = "HealthOSCoreTests" ReferencedContainer = "container:"></BuildableReference>
+         </TestableReference>
+         <TestableReference skipped = "NO">
+            <BuildableReference BuildableIdentifier = "primary" BlueprintIdentifier = "HealthOSRuntimeTests" BuildableName = "HealthOSRuntimeTests" BlueprintName = "HealthOSRuntimeTests" ReferencedContainer = "container:"></BuildableReference>
+         </TestableReference>
+         <TestableReference skipped = "NO">
+            <BuildableReference BuildableIdentifier = "primary" BlueprintIdentifier = "HealthOSBoundaryTests" BuildableName = "HealthOSBoundaryTests" BlueprintName = "HealthOSBoundaryTests" ReferencedContainer = "container:"></BuildableReference>
+         </TestableReference>
+         <TestableReference skipped = "NO">
+            <BuildableReference BuildableIdentifier = "primary" BlueprintIdentifier = "StagePackageStructureTests" BuildableName = "StagePackageStructureTests" BlueprintName = "StagePackageStructureTests" ReferencedContainer = "container:"></BuildableReference>
+         </TestableReference>
+         <TestableReference skipped = "NO">
+            <BuildableReference BuildableIdentifier = "primary" BlueprintIdentifier = "HealthOSConstructionSystemTests" BuildableName = "HealthOSConstructionSystemTests" BlueprintName = "HealthOSConstructionSystemTests" ReferencedContainer = "container:"></BuildableReference>
+         </TestableReference>
+         <TestableReference skipped = "NO">
+            <BuildableReference BuildableIdentifier = "primary" BlueprintIdentifier = "HealthOSSupportToolingTests" BuildableName = "HealthOSSupportToolingTests" BlueprintName = "HealthOSSupportToolingTests" ReferencedContainer = "container:"></BuildableReference>
+         </TestableReference>
+         <TestableReference skipped = "NO">
+            <BuildableReference BuildableIdentifier = "primary" BlueprintIdentifier = "HealthOSTests" BuildableName = "HealthOSTests" BlueprintName = "HealthOSTests" ReferencedContainer = "container:"></BuildableReference>
+         </TestableReference>
+      </Testables>
+   </TestAction>
+   <LaunchAction buildConfiguration = "Debug" selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB" selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB" launchStyle = "0" useCustomWorkingDirectory = "NO" ignoresPersistentStateOnLaunch = "NO" debugDocumentVersioning = "YES" debugServiceExtension = "internal" allowLocationSimulation = "YES">
+   </LaunchAction>
+   <ProfileAction buildConfiguration = "Release" shouldUseLaunchSchemeArgsEnv = "YES" savedToolIdentifier = "" useCustomWorkingDirectory = "NO" debugDocumentVersioning = "YES">
+   </ProfileAction>
+   <AnalyzeAction buildConfiguration = "Debug">
+   </AnalyzeAction>
+   <ArchiveAction buildConfiguration = "Release" revealArchiveInOrganizer = "YES">
+   </ArchiveAction>
+</Scheme>

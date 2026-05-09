@@ -1,0 +1,240 @@
+# Steward / Settler engineering model
+
+## Canonical statement
+
+Steward is the canonical engineering coordinator for the HealthOS construction repository.
+
+Settlers are specialized engineering agent profiles.
+
+Settlements are bounded engineering work units.
+
+Territories are documented repository domains.
+
+This model is outside the HealthOS clinical/runtime hierarchy.
+
+It does not create clinical agents.
+
+## Why this model exists
+
+HealthOS now spans multiple specialized engineering territories: Core law, storage, GOS, AACI, async runtime, providers, apps, regulatory posture, operations, Xcode tooling, documentation, and validation.
+
+A single generic assistant can lose domain invariants when it moves across these territories without explicit boundaries.
+
+Settlers allow specialization without relocating authority. A Settler narrows attention to one Territory and its invariants. It does not become a sovereign agent.
+
+Steward remains the coordinator and reviewer. Steward frames the Settlement, chooses the profile, checks official docs, requests validation, and records handoff.
+
+Humans remain accountable for review, merge decisions, clinical authority, regulatory claims, and production-readiness claims.
+
+## Naming
+
+Steward: canonical engineering coordinator for this repository. Steward maintains derived repository memory, reads official docs before acting, frames and supervises Settlements, and remains non-clinical, non-constitutional, and non-authorizing.
+
+Settler: specialized engineering agent profile assigned to a bounded Territory. A Settler follows Steward framing and repository instructions. It never replaces official docs or human review.
+
+Settlement: bounded engineering work unit assigned to one or more Settlers. A Settlement contains objective, Territory, files in scope, invariants, restrictions, validation commands, done criteria, and handoff requirements.
+
+Territory: documented repository domain with canonical docs, code or schema paths, invariants, known gaps, test expectations, validation commands, forbidden moves, and an owner profile.
+
+healthos-forge-mcp: repository-maintenance MCP for Steward and Settlers. It is implemented as a stdio MCP seam at `HealthOS/Constructor/ts/agent-infra/healthos-forge-mcp/` and currently exposes 10 deterministic `steward_*` tools: `steward_next_task`, `steward_scan_status`, `steward_get_handoff`, `steward_list_territories`, `steward_inspect_territory`, `steward_list_settlers`, `steward_list_settlements`, `steward_validate_settlement`, `steward_generate_prompt`, and `steward_build_memory`. It is outside the HealthOS clinical/runtime hierarchy.
+
+HealthOS runtime MCP servers: separate future family of Core-governed runtime, clinical, operational, or bureaucratic MCP servers. They must obey lawfulContext, consent, habilitation, finality, storage layer policy, provenance, audit, and gate. They are not `healthos-forge-mcp`.
+
+`healthos-forge-mcp` is repository-maintenance MCP for Steward and Settlers. HealthOS runtime MCP servers are future Core-governed runtime/clinical/operational MCP servers.
+
+## Repository-local roots
+
+The engineering layer uses three repository-local roots:
+
+- `HealthOS/Constructor/Steward/` stores derived Steward state, policies, prompts, and session memory.
+- `HealthOS/Constructor/Settler/` stores documentation-only Settler profile and Settlement record scaffolds.
+- `HealthOS/Constructor/Territory/` stores documentation-only Territory record scaffolds.
+
+These roots are not canonical law. They do not implement clinical agents, runtime agents, or multiagent orchestration.
+
+Official docs remain canonical. Repository-local records may help navigation, handoff, and validation discipline only when they stay subordinate to `HealthOS/Shared/docs/`, project manifests, and human review.
+
+Current maturity:
+- `HealthOS/Constructor/Steward/` has scaffolded derived state plus deterministic Steward CLI and derived-memory seams.
+- `HealthOS/Constructor/Settler/` contains construction metadata for Territory, Settler, and Settlement records; it is non-authority and non-clinical.
+- `HealthOS/Constructor/Territory/` is historical documentation scaffolding; current Territory records live under `HealthOS/Constructor/Settler/territories/`.
+
+No Settler profile, Settlement record, or Territory record becomes executable by being present in these roots.
+
+## Relationship to HealthOS hierarchy
+
+```text
+HealthOS clinical/runtime hierarchy
+  +-- Core / GOS / Runtimes / Apps / Artifacts
+
+Repository engineering layer (outside hierarchy)
+  +-- Steward
+  +-- Settlers
+  +-- Settlements
+  +-- healthos-forge-mcp
+```
+
+No Settler is a Core actor.
+
+No Settler is AACI.
+
+No Settler is GOS.
+
+No Settler is an app/runtime actor.
+
+No Settler resolves clinical gates.
+
+The repository engineering layer may inspect, edit, validate, summarize, and record repository work. It never becomes HealthOS law, HealthOS runtime automation, or clinical effectuation.
+
+## Steward responsibilities
+
+Steward responsibilities:
+- maintain derived repository memory
+- read official docs
+- select or frame next work
+- assign Settlements
+- choose appropriate Settler profile
+- enforce instructions and policies
+- request validation
+- review outputs
+- record handoff
+- detect drift
+
+Steward non-authorities:
+- no merge authority
+- no Core law authority
+- no clinical authority
+- no regulatory authority
+- no production-readiness authority
+
+Steward memory is derived. Official docs remain the source of truth.
+
+## Settler responsibilities
+
+Settler responsibilities:
+- operate within assigned Territory
+- follow territory invariants
+- perform bounded implementation, review, or documentation work
+- run required validation
+- report residual gaps
+- produce handoff
+- avoid out-of-scope edits
+
+Settler non-authorities:
+- no self-assignment outside Steward framing
+- no architecture constitutional changes
+- no silent file mutations outside scope
+- no false maturity claims
+- no clinical actions
+
+A Settler never treats specialization as permission to cross repository, runtime, or clinical boundaries.
+
+## Settlement lifecycle
+
+```text
+proposed
+  +-- assigned
+      +-- scoped
+          +-- executed
+              +-- validated
+                  +-- reviewed
+                      +-- recorded
+```
+
+`proposed` means a possible bounded work unit has been identified.
+
+`assigned` means Steward has selected one or more Settler profiles for the work.
+
+`scoped` means the objective, Territory, files in scope, invariants, forbidden moves, validation commands, done criteria, and handoff requirements are explicit.
+
+`executed` means the bounded work has been performed without widening scope silently.
+
+`validated` means required validation commands have been run or precise blockers have been recorded.
+
+`reviewed` means Steward or a human reviewer has checked the output against scope, invariants, maturity claims, and residual gaps.
+
+`recorded` means tracking docs, handoff notes, and any Settlement record are updated.
+
+Fail-closed rules:
+- if scope is unclear, the Settlement stops
+- if invariant conflict appears, the Settlement stops
+- if validation fails, the Settlement reports failure, not success
+
+## Territory model
+
+A Territory record contains:
+- id
+- name
+- canonical docs
+- files in scope
+- invariants
+- skills
+- tests
+- validation commands
+- forbidden moves
+- maturity
+- known gaps
+- owner profile
+
+Territories are repository domains. They are not clinical domains of authority.
+
+## Initial Settler profiles
+
+All initial Settler profiles are doctrine-only.
+
+| Profile | Mission and Territory | Primary docs | Primary files | Forbidden moves | Validation expectations | Maturity |
+|---|---|---|---|---|---|---|
+| Core Settler | Preserve Core law boundaries: consent, habilitation, finality, gate, provenance, storage law. | `HealthOS/Shared/docs/architecture/06-core-services.md`; `HealthOS/Shared/docs/execution/10-invariant-matrix.md`; `HealthOS/Shared/docs/execution/skills/core-law-skill.md`. | `HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/`; `HealthOS/Tier1-Mestral-Core/Schemas/contracts/`; `HealthOS/Shared/docs/architecture/`. | Move Core law into AACI/GOS/HealthOS/Tier4-Stages-Cast/AppDocs/tooling; make gate optional; claim production regulatory authority. | Swift governance tests for code changes; `make validate-docs` for doctrine. | doctrine-only |
+| Storage Settler | Preserve file-backed storage, lawfulContext, direct identifiers, reidentification boundaries, backup/export interaction. | `05-data-layers.md`; `07-storage-and-sql.md`; `21-object-integrity-strategy.md`; `storage-data-layer-skill.md`. | `StorageContracts.swift`; `ReidentificationGovernance.swift`; `HealthOS/Tier1-Mestral-Core/SQL/migrations/001_init.sql`. | Raw direct identifiers in operational payloads; optional lawfulContext; silent integrity repair; app-owned storage law. | Storage-focused Swift tests; docs and contract drift checks. | doctrine-only |
+| GOS Settler | Maintain GOS authoring, compiler, lifecycle, runtime binding, app consumption, non-sovereign boundaries. | `29-governed-operational-spec.md` through `34-gos-review-and-activation-policy.md`; `gos-skill.md`. | `HealthOS/Tier2-GOS-Runtimes/GOS/specs/`; `HealthOS/Tier1-Mestral-Core/Schemas/governed-operational-spec*.json`; `HealthOS/Constructor/ts/packages/healthos-gos-tooling/`; `GovernedOperationalSpec.swift`. | Make GOS sovereign; expose raw spec as app law; activate without review/audit; create scenario fiction as evidence. | GOS tooling tests; schema validation; Swift GOS tests; docs validation. | doctrine-only |
+| AACI Settler | Preserve AACI as Core-mediated runtime for draft-only behavior, provider routing, retrieval/context, non-authorizing automation. | `09-aaci.md`; `28-first-slice-executable-path.md`; `20-runtime-operational-policy.md`; `aaci-skill.md`. | `HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSAACI/`; `HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSSessionRuntime/SessionRunner.swift`. | Finalize clinical acts; bypass consent/habilitation/gate; fake transcription/provider/semantic claims; widen subagent access by convenience. | AACI and first-slice Swift tests; CLI/Scribe smoke when runtime behavior changes. | doctrine-only |
+| Boundary/Stage Settler | Keep Scribe, Veridia, CloudClinic, shared envelopes, safe refs, and Stage non-authority aligned with mediated contracts. | `11-scribe.md`; `12-veridia.md`; `13-cloudclinic.md`; `19-interface-doctrine.md`; `43-cross-app-coordination-shared-surfaces.md`; Stage/Boundary skills. | `HealthOS/Tier4-Stages-Cast/Scribe/Sources/Scribe/`; Stage-facing Core contracts; shared Stage schemas. | Stage-owned Core law; raw CPF/reidentification leaks; navigation refs granting data access; final UI or production claims. | Boundary Swift tests; Scribe smoke for Scribe UI changes; docs validation. | doctrine-only |
+| Regulatory Settler | Preserve retention, signature, emergency access, audit, interoperability, and no-false-compliance boundaries. | `39-regulatory-interoperability-signature-emergency-governance.md`; `10-invariant-matrix.md`; `regulatory-interoperability-skill.md`. | `RegulatoryGovernance.swift`; regulatory schemas; SQL metadata where relevant. | Fake qualified signature claims; production RNDS/TISS/FHIR claims; regulatory authority by tooling; simulated legal-valid evidence. | Regulatory governance tests; docs validation. | doctrine-only |
+| Operations Settler | Preserve network, fabric, backup/restore, observability, incidents, and operator boundaries. | `04-networking.md`; `14-operations-runbook.md`; `15-mesh-provider.md`; `26-operator-observability-contract.md`; operations skills. | `HealthOS/Support/ops/`; backup governance contracts; runbook docs; validation scripts where relevant. | Public data-plane exposure by default; transport as authorization; backup existence as restore proof; incident tooling as clinical authority. | Policy/document consistency checks; backup/restore tests; validation harness checks when scripts change. | doctrine-only |
+| Xcode Settler | Maintain Steward, Steward for Xcode, `healthos-forge-mcp`, deterministic CLI, Xcode/Apple Intelligence integration posture, engineering tooling, and Xcode-facing automation-maintenance surfaces. | `45-healthos-xcode-agent.md`; `46-apple-sovereignty-architecture.md`; `17-healthos-xcode-agent-migration-plan.md`; `project-steward-skill.md`. | `HealthOS/Constructor/ts/agent-infra/healthos-steward/`; `HealthOS/Constructor/ts/agent-infra/healthos-forge-mcp/`; `HealthOS/Constructor/Steward/`; local Codex automation definitions outside the repo; `.claude/settings.json` only when scoped; Xcode workspace metadata only when scoped. | Claim Xcode Intelligence integration before verification; make `healthos-forge-mcp` clinical; revive custom runtime as default; grant merge authority; let external executors auto-edit automation surfaces without PR review. | Steward package checks for code changes; deterministic CLI smoke; forge-mcp smoke when MCP changes; `make validate-docs`; automation definition review when scoped. | doctrine-only |
+| Documentation Settler | Preserve README, agent docs, execution docs, maturity map, gap register, handoff, and documentation drift discipline. | `README.md`; `AGENTS.md`; `CLAUDE.md`; `GEMINI.md`; `HealthOS/Shared/docs/execution/`; `documentation-drift-skill.md`. | Entry docs; architecture docs; execution trackers; TODOs; skills; handoff docs. | Stale tracking; false maturity claims; scaffold-as-separate-product language; promotional prose; hidden validation failures. | `make validate-docs`; `git diff --check`; impacted docs consistency checks. | doctrine-only |
+| Validation Settler | Preserve Makefile, validation harness, test commands, contract drift checks, CI posture, and no-masked-failure behavior. | `10-invariant-matrix.md`; `HealthOS/Shared/docs/execution/README.md`; `testing/SKILL.md`; validation harness docs. | `Makefile`; `scripts/`; test targets; CI configuration when present. | Masked failures; weakened drift checks; production-hardening claims from local-only validation; parallel commands that create build locks. | Smallest meaningful validation first; required repository harness; exact failure classification. | doctrine-only |
+
+## healthos-forge-mcp boundary
+
+`healthos-forge-mcp` serves Steward and Settlers.
+
+It exposes repository-maintenance operations only.
+
+It does not expose clinical automation.
+
+It does not execute HealthOS runtime acts.
+
+It does not bypass Core/GOS/app boundaries.
+
+Runtime MCP servers are separate future architecture.
+
+`healthos-forge-mcp` may help read docs, scan ST status, retrieve handoff context, inspect Territory/Settler/Settlement records, validate Settlement criteria, generate PromptSpec material, and build derived memory. It never becomes a HealthOS clinical automation server, AACI tool server, GOS runtime server, or Core law server.
+
+## Non-claims
+
+This document does not implement Settlers.
+
+This document does not implement multiagent orchestration.
+
+This document does not grant `healthos-forge-mcp` authority beyond the implemented repository-maintenance seam.
+
+This document does not create clinical agents.
+
+This document does not grant autonomy.
+
+This document does not grant merge authority.
+
+This document does not make repository memory canonical.
+
+This document does not claim production readiness.
+
+## Maturity
+
+Steward / Settler model is maturity level doctrine-only.
+
+Individual profiles are doctrine-only.
+
+Future implementation may add scaffolded contracts for Settler profiles, MCP tools, and Settlement records.
+
+No Settler is production-hardened.

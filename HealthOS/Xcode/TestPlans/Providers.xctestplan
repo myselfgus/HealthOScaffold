@@ -1,0 +1,33 @@
+{
+  "configurations" : [
+    {
+      "id" : "A0C58DF6-0A7C-4098-A78D-E7670D7793F6",
+      "name" : "Default",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "codeCoverage" : false
+  },
+  "testTargets" : [
+    {
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "HealthOSRuntimeTests",
+        "name" : "HealthOSRuntimeTests"
+      }
+    },
+    {
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "HealthOSTests",
+        "name" : "HealthOSTests"
+      }
+    }
+  ],
+  "version" : 1
+}

@@ -49,7 +49,7 @@ for stage in Scribe Veridia CloudClinic; do
       echo "[stage-package-check] $stage depends on forbidden Tier 1/2 product $product; use HealthOSBoundary and CustomSDK only"
       exit 1
     fi
-    if rg -n "^(@testable[[:space:]]+)?import[[:space:]]+$product$" "$source_dir"; then
+    if rg -n "^(@testable[[:space:]]+)?import[[:space:]]+$product\b" "$source_dir"; then
       echo "[stage-package-check] $stage imports forbidden HealthOS module $product; use HealthOSBoundary and CustomSDK only"
       exit 1
     fi

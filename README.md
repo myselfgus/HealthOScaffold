@@ -23,6 +23,21 @@ HealthOS is the full platform. **Tier 1 — Mestral Core is constitutional law. 
 
 ---
 
+## Requirements
+
+| Tool | Version | Purpose |
+| :--- | :--- | :--- |
+| Swift / SwiftPM | 6.2+ | Platform package (Tiers 1–3), Stage packages, `HealthOSCLI` |
+| macOS | 26+ | Required build and runtime platform; Liquid Glass surfaces require macOS 26+ |
+| Xcode | 26+ | Open `HealthOS.xcworkspace` for shared schemes, test plans, and Swift previews |
+| Node.js | LTS (20+) | TypeScript workspace (`HealthOS/Constructor/ts/`) |
+| pnpm | 9+ | Workspace package manager — required for `Constructor/ts` |
+| Python | 3.11+ | Support ML and governance scaffolds (`HealthOS/Support/python/`) — optional |
+
+> **External framework dependencies: none.** The Swift platform package is sovereignty-by-design. TypeScript tooling uses no proprietary cloud SDKs. Provider adapters (`HealthOSProviders`, `HealthOS/Support/ML/`) interact only with local Apple on-device models.
+
+---
+
 ## How to Read This Repository
 
 Use this README as an entry surface, not as a replacement for the canonical architecture and execution docs. The repository mixes tested operational paths, implemented seams, scaffolded contracts, placeholders, and future gaps; read every claim through that maturity lens.
@@ -512,13 +527,23 @@ This repository is in **controlled implementation / scaffold hardening**:
 
 Read this table as an onboarding summary. The authoritative maturity ladder is `doctrine-only` → `scaffolded contract` → `implemented seam` → `tested operational path` → `production-hardened`, maintained in `HealthOS/Shared/docs/execution/11-current-maturity-map.md`.
 
-**This repository is not:**
-- a production-ready product
-- a complete EHR
-- a final UI delivery of any Stage
-- a real regulatory-signature or interoperability integration
-- a real semantic retrieval stack with embeddings/vector index
-- a real external provider deployment (LM/STT/embedding remain scaffold/stub posture)
+### Known Limitations
+
+The following are **not present in this repository** and must not be inferred from scaffold behavior:
+
+| Area | Limitation |
+| :--- | :--- |
+| Production readiness | This is a scaffold/foundation phase. Not production-ready in any tier. |
+| EHR | Not a complete Electronic Health Record. |
+| UI delivery | No final native macOS app shell for any Stage (Scribe, Veridia, CloudClinic). |
+| Regulatory / signature | Fail-closed validators exist; no real endpoint, signature provider, or interoperability integration. |
+| Semantic retrieval | Governed contracts exist; no real embeddings adapter, vector index, or embedding provider. |
+| External providers | `HealthOSProviders` and `HealthOS/Support/ML/` remain scaffold/stub posture for LM, STT, and embedding. |
+| Async Runtime | Swift stub; TS reference implementation exists but no PostgreSQL-backed executor. |
+| MSR execution | ASL/VDLP/GEM contracts defined; pipeline execution incomplete end-to-end. |
+| Production fabric | Network/mesh is doctrine-only; no production sovereign fabric or ACL tooling. |
+| CloudClinic wiring | `APP-012` is BLOCKED — Custom definition incomplete; Boundary needs explicit service facade decision. |
+| CI/CD | Validation harness is local-only (Make + scripts); no GitHub Actions CI pipeline yet. |
 
 ---
 
@@ -584,6 +609,17 @@ cd HealthOS && swift run HealthOSCLI \
 
 `Veridia` has a smoke-testable Veridia session boundary. `CloudClinic` remains a scaffold placeholder executable for product-graph representation. Neither implements final UI, clinical authority, real provider/signature/interoperability behavior, or production readiness.
 
+### Environment Variables
+
+| Variable | Default | Purpose |
+| :--- | :--- | :--- |
+| `FORGE_MCP_PORT` | `3791` | Port for `healthos-forge-mcp` Streamable HTTP server |
+| `FORGE_MCP_URL` | _(unset)_ | Publicly reachable URL for remote Managed Agent connection; localhost is not sufficient |
+| `ANTHROPIC_API_KEY` | _(unset)_ | Required for `healthos-managed-agent` live create/update (ST-022/ST-023) |
+| `ANTHROPIC_AUTH_TOKEN` | _(unset)_ | Alternative auth token for Anthropic API (used in place of `ANTHROPIC_API_KEY`) |
+
+> No secrets are committed to this repository. Provider local configs with secrets must never be committed. If you encounter API keys or tokens in the codebase, move them to environment variables or a secret manager immediately.
+
 ---
 
 ## 🧩 Cross-Language Contract Discipline
@@ -636,6 +672,7 @@ flowchart LR
 | Use Steward CLI | `CLAUDE.md` Steward usage section | `HealthOS/Constructor/ts/agent-infra/healthos-steward/` |
 | Use healthos-forge-mcp | `HealthOS/Constructor/ts/agent-infra/healthos-forge-mcp/` | `HealthOS/Shared/docs/execution/22-steward-construction-operating-model.md` |
 | See open documentation tasks | `HealthOS/Shared/docs/execution/20-documental-todos-work-plan.md` | `HealthOS/Shared/docs/execution/prompts/` |
+| Select the next implementation task | `HealthOS/Shared/docs/execution/21-structural-ontology-and-product-readiness-plan.md` — canonical priority-ordered task list | `HealthOS/Shared/docs/execution/02-status-and-tracking.md`, relevant `todo/*.md` |
 | See current status and handoff | `HealthOS/Shared/docs/execution/02-status-and-tracking.md` | `HealthOS/Shared/docs/execution/12-next-agent-handoff.md` |
 
 ### Executive Visual Overview
@@ -664,8 +701,9 @@ flowchart TD
     A4[Repository Engineering\nSteward · Settlers · Territories]:::steward
     A5[Claude Code Automations\nupdate · digest · sync]:::steward
     A6[Native UI + Liquid Glass\n48-native-macos-ui · Shared/DesignSystem · Scribe Stage]:::ui
+    A7[Product Specification\nproduct/01-healthos-technical-product-specification.md\nTask selection: 21-structural-ontology-and-product-readiness-plan.md]:::exec
 
-    R --> A1 & A2 & A3 & A4 & A5 & A6
+    R --> A1 & A2 & A3 & A4 & A5 & A6 & A7
 
     A1 --> A11[Core law]
     A1 --> A12[GOS]
@@ -679,6 +717,8 @@ flowchart TD
     A4 --> A42[Settler doctrine]
     A6 --> A61[Component contracts]
     A6 --> A62[Semantic tokens + glass adoption path]
+    A7 --> A71[Technical product baseline]
+    A7 --> A72[Priority-ordered task selection]
 ```
 
 ---
@@ -820,32 +860,6 @@ cd HealthOS/Constructor/ts && npx --yes --workspace @healthos/steward healthos-s
 
 Ten `healthos-steward` CLI commands are implemented (ST-010 through ST-017). `dist/` is not committed — run `make ts-build` once before invoking.
 
-```mermaid
-%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#fdf2f8', 'primaryBorderColor': '#f9a8d4', 'primaryTextColor': '#831843', 'clusterBkg': '#ffffff', 'clusterBorder': '#e5e7eb', 'titleColor': '#0f172a', 'edgeLabelBackground': '#f8fafc', 'fontFamily': 'ui-sans-serif, system-ui, -apple-system'}}}%%
-flowchart TD
-    classDef steward   fill:#fdf2f8,stroke:#ec4899,stroke-width:2px,color:#831843
-    classDef settler   fill:#f5f3ff,stroke:#8b5cf6,stroke-width:2px,color:#4c1d95
-    classDef territory fill:#ecfeff,stroke:#06b6d4,stroke-width:2px,color:#164e63
-    classDef docs      fill:#ecfdf5,stroke:#22c55e,stroke-width:2px,color:#14532d
-    classDef boundary  fill:#f1f5f9,stroke:#94a3b8,stroke-width:2px,color:#334155
-
-    DOCS[Official docs\ncanonical truth]:::docs
-    STEW[Steward\ncoordinator]:::steward
-    SETT[Settler profiles\nspecialized instructions]:::settler
-    WORK[Settlements\nbounded work records]:::settler
-    TERR[Territories\nrepository domains]:::territory
-    MCP[healthos-forge-mcp\nrepository maintenance\nimplemented seam\nST-018 · 10 tools]:::boundary
-
-    DOCS --> STEW
-    DOCS --> TERR
-    STEW -->|frames| WORK
-    STEW -->|chooses| SETT
-    SETT -->|operates within| TERR
-    WORK -->|records scope and validation| DOCS
-    MCP -. deterministic repo operations .-> STEW
-    MCP -. deterministic repo operations .-> SETT
-```
-
 **Steward for Xcode** is the Xcode-integration posture: integrates with Xcode Intelligence as an Apple-controlled engineering runtime surface. See `HealthOS/Shared/docs/architecture/45-healthos-xcode-agent.md` for target architecture.
 
 ### 🏗️ Construction System Lifecycle
@@ -859,14 +873,16 @@ flowchart TD
     classDef docs      fill:#ecfdf5,stroke:#22c55e,stroke-width:2px,color:#14532d
     classDef mcp       fill:#fff7ed,stroke:#f59e0b,stroke-width:2px,color:#7c2d12
     classDef mem       fill:#f1f5f9,stroke:#94a3b8,stroke-width:2px,color:#334155
+    classDef agent     fill:#fce7f3,stroke:#f472b6,stroke-width:2px,color:#831843
 
     DOCS[Official docs\ncanonical truth]:::docs
-    STEW[Steward\n10 CLI commands]:::steward
+    STEW[Steward\n10 CLI commands · ST-010–ST-017]:::steward
     SETTLER[Settler profiles\n9 profiles · settlers/]:::settler
     TERR[Territory Registry\n15 territories · territories/]:::territory
     SETTLE[Settlements\nbounded work records]:::settler
-    MCP[healthos-forge-mcp\nimplemented seam · ST-018\n10 steward_* MCP tools]:::mcp
+    MCP[healthos-forge-mcp\nimplemented seam · ST-018\n10 steward_* MCP tools\nstdio + Streamable HTTP]:::mcp
     MEM[Derived Memory\nmemory/derived/\nnon-canonical snapshots]:::mem
+    MA[Managed Agent seam\nST-022 · Anthropic API\ndiscover · brief · validate · handoff\nhuman-triggered only]:::agent
 
     DOCS --> STEW
     DOCS --> TERR
@@ -876,8 +892,23 @@ flowchart TD
     SETTLE -->|records scope and validation| DOCS
     MCP -->|wraps| STEW
     STEW -->|build-memory writes| MEM
+    MA -. human-triggered lifecycle sessions .-> STEW
     MEM -. non-canonical do not cite .-> DOCS
 ```
+
+### Managed Agent Seam (ST-022/ST-023)
+
+`@healthos/managed-agent` provides Anthropic Managed Agents API integration for typed construction lifecycle sessions. It is a human-triggered engineering helper, not an autonomous executor or merge authority.
+
+```bash
+# Dry-run agent registration (no API call)
+cd HealthOS/Constructor/ts && npm run create-agent:dry-run --workspace @healthos/managed-agent
+
+# Live create/update (requires ANTHROPIC_API_KEY or ANTHROPIC_AUTH_TOKEN)
+cd HealthOS/Constructor/ts && npm run create-agent --workspace @healthos/managed-agent
+```
+
+Typed session workflows: `discover`, `brief`, `validate`, `handoff`. Writes `HealthOS/Constructor/Steward/managed-agent/agent.json` when live. See `HealthOS/Shared/docs/execution/22-steward-construction-operating-model.md`.
 
 Canonical truth resides in `HealthOS/Shared/docs/` and project manifests. Steward memory, Settler scaffolds, Settlement records, and Territory records are derived or instructional engineering surfaces — non-clinical, non-constitutional, and non-authorizing.
 
@@ -948,11 +979,15 @@ Read in order before coding:
 11. `HealthOS/Shared/docs/execution/14-final-gap-register.md`
 12. `HealthOS/Shared/docs/execution/15-scaffold-finalization-plan.md`
 13. `HealthOS/Shared/docs/execution/16-next-10-actions-plan.md`
-14. `HealthOS/Shared/docs/execution/22-steward-construction-operating-model.md` — construction system operating model
-15. `HealthOS/Shared/docs/execution/19-settler-model-task-tracker.md` — ST task sequence and status
-16. relevant `HealthOS/Shared/docs/execution/todo/*.md`
-17. matching `HealthOS/Shared/docs/execution/skills/*.md`
-18. if touching Swift/SwiftUI/Xcode: `HealthOS/Shared/docs/architecture/48-native-macos-ui-design-system-and-app-shells.md` and matching `HealthOS/Shared/docs/execution/skills/<name>/SKILL.md`
+14. `HealthOS/Shared/docs/execution/20-documental-todos-work-plan.md` — living plan for open documentation tasks
+15. `HealthOS/Shared/docs/execution/21-structural-ontology-and-product-readiness-plan.md` — **read before selecting any implementation task**; canonical priority-ordered task selection plan
+16. `HealthOS/Shared/docs/product/01-healthos-technical-product-specification.md` — **read before generating construction or product work units**; technical product specification baseline
+17. `HealthOS/Shared/docs/execution/22-steward-construction-operating-model.md` — construction system operating model
+18. `HealthOS/Shared/docs/execution/19-settler-model-task-tracker.md` — ST task sequence and status
+19. relevant `HealthOS/Shared/docs/execution/todo/*.md`
+20. relevant `HealthOS/Shared/docs/architecture/*.md`
+21. matching `HealthOS/Shared/docs/execution/skills/*.md`
+22. if touching Swift/SwiftUI/Xcode: `HealthOS/Shared/docs/architecture/48-native-macos-ui-design-system-and-app-shells.md` and matching `HealthOS/Shared/docs/execution/skills/<name>/SKILL.md`
 
 ---
 
@@ -1010,6 +1045,43 @@ Full detail: `HealthOS/Shared/docs/execution/11-current-maturity-map.md`.
 - **MSR pipeline:** scaffold — executors present, provenance metadata defined, provider integration pending
 - **Liquid Glass UI:** design baseline established; `HealthOS/Shared/DesignSystem/` implemented (DS-001)
 - **Construction system (Steward + Forge MCP):** implemented seam — 10 CLI commands + 10 MCP tools deterministic; no LLM, no merge authority, no clinical scope
+
+## Contributing
+
+This repository uses a **branch → PR → merge** workflow. Direct pushes to `main` are not permitted for document-changing or code work.
+
+```bash
+# 1. Sync with remote first
+git fetch origin --prune
+git checkout main && git pull --ff-only
+
+# 2. Create a task branch
+git checkout -b <task-type>/<short-description>
+
+# 3. Build and validate before committing
+make swift-build
+make swift-test
+make validate-all   # schemas, contracts, docs
+
+# 4. Commit atomically — docs + contracts + tests together when governing the same change
+git add <specific files>
+git commit -m "<tier/area>: <concise imperative description>"
+
+# 5. Open a PR to main
+gh pr create --title "<short title>" --body "<summary>"
+```
+
+**Task selection order** (from `01-agent-operating-protocol.md`):
+1. `READY` task in the current phase
+2. `BLOCKER` task
+3. Documentation/contract task that unblocks coding
+4. Validation for just-finished work
+
+After each work unit, update `HealthOS/Shared/docs/execution/02-status-and-tracking.md` and the corresponding `todo/*.md` file.
+
+Read `HealthOS/Shared/docs/execution/21-structural-ontology-and-product-readiness-plan.md` before selecting any implementation task. Read `HealthOS/Constructor/Steward/prompts/prompt-architecture-template.md` before generating any AI coding prompt.
+
+---
 
 ## Scaffold/Foundation Phase Closure References
 

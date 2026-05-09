@@ -1,8 +1,8 @@
 # HealthOS/
 
-Canonical operational root for the HealthOS platform scaffold. This directory holds the buildable Swift package and the physical tier layout for Core law, GOS/runtimes, Boundary, Stages, shared assets, external construction tooling, and provider support.
+Canonical operational root for the HealthOS platform scaffold. This directory holds the central Swift package for Core, GOS/runtimes, Boundary, CLI, structural tests, plus the physical tier layout for separate Stage packages, shared assets, external construction tooling, and provider support.
 
-Open `HealthOS.xcworkspace` or `HealthOS/Package.swift` in Xcode. From the terminal, use `cd HealthOS && swift build`.
+Open `HealthOS.xcworkspace` or `HealthOS/Package.swift` in Xcode for the platform package. Each Stage also has its own package under `Tier4-Stages-Cast/<Stage>/Package.swift`. From the terminal, use `cd HealthOS && swift build` for the platform and `cd HealthOS/Tier4-Stages-Cast/Scribe && swift build` for a Stage package.
 
 External dependencies: none. Sovereignty by design.
 
@@ -24,7 +24,7 @@ HealthOS/
 
 ## Package Structure
 
-Fifteen targets across Core, GOS/runtimes, Boundary, and Stage groups, plus the operator CLI.
+The central package contains Core, GOS/runtimes, Boundary, Custom SDK, operator CLI, structural tests, and shared governance suites. Tier 4 Stages are intentionally separate Swift packages that consume only `HealthOSBoundary` and `CustomSDK` from the platform package.
 
 ```mermaid
 %%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#F6F8FB', 'primaryBorderColor': '#D6DEE8', 'primaryTextColor': '#1D2733', 'clusterBkg': '#FFFFFF', 'clusterBorder': '#D6DEE8', 'lineColor': '#5B6B7C', 'edgeLabelBackground': '#F6F8FB', 'fontFamily': 'ui-rounded, -apple-system, BlinkMacSystemFont, sans-serif'}}}%%
@@ -49,23 +49,25 @@ graph TD
     SVR[HealthOSServiceRuntime\nservice operations session]:::runtime
     SRT[HealthOSSessionRuntime\norchestration · normalization · bridge]:::runtime
 
+    CUSTOM[CustomSDK\nStage Custom definitions · compliance]:::boundary
     AB[HealthOSBoundary\nfacades · safe refs · envelopes]:::boundary
 
     CLI[HealthOSCLI\noperator executable]:::cli
-    SCRIBE[HealthOSScribeStage\nSwiftUI · Liquid Glass · macOS 26+]:::app
-    VERIDIA[HealthOSVeridiaStage\npatient identity surface]:::app
-    CC[HealthOSCloudClinicStage\nservice operations surface]:::app
+    SCRIBE[Scribe Package\nTier4-Stages-Cast/Scribe]:::app
+    VERIDIA[Veridia Package\nTier4-Stages-Cast/Veridia]:::app
+    CC[CloudClinic Package\nTier4-Stages-Cast/CloudClinic]:::app
 
     CORE --> PROV & GOS & MSR & ASYNC & UAR & SVR & SRT
     PROV --> AACI & MSR
     GOS --> AACI
     CORE --> AACI
+    CORE --> CUSTOM
     AACI & MSR & ASYNC & UAR & SVR & SRT --> AB
-    GOS & CORE --> AB
+    GOS & CORE & CUSTOM --> AB
     CORE & SRT --> CLI
-    AB & SRT --> SCRIBE
-    AB & CORE --> VERIDIA
-    AB --> CC
+    AB & CUSTOM --> SCRIBE
+    AB & CUSTOM --> VERIDIA
+    AB & CUSTOM --> CC
 ```
 
 ---
@@ -101,9 +103,10 @@ Core law, governance invariants, entity model, storage contracts, consent/habili
 
 | Module | README | Maturity |
 | :--- | :--- | :--- |
-| `HealthOSBoundary` | [README](Tier3-Custom-Boundary/Sources/HealthOSBoundary/README.md) | Scaffold stub — facade pending Tier 2 stabilization |
+| `CustomSDK` | [README](Tier3-Custom-Boundary/Sources/CustomSDK/README.md) | Implemented scaffold SDK for Stage Custom definitions |
+| `HealthOSBoundary` | [README](Tier3-Custom-Boundary/Sources/HealthOSBoundary/README.md) | Transitional facade shim pending full Tier 2 facade stabilization |
 
-The only surface Stages are permitted to import. Stages must never import Core, SessionRuntime, or any Tier 2 module directly. Known deviations (Veridia to Core, Scribe to SessionRuntime) are marked TODO in `Package.swift` pending Boundary facade completion.
+The only platform surfaces Stages are permitted to import are `HealthOSBoundary` and `CustomSDK`. Stages must never import Core, SessionRuntime, or any Tier 2 module directly. `HealthOSBoundary` currently carries a transitional re-export shim so the separate Stage packages can compile while the final mediated facades are completed.
 
 ---
 
@@ -123,11 +126,11 @@ cd HealthOS && swift run HealthOSCLI \
 
 ### Tier 4 — Stages
 
-| Stage target | Scheme | Smoke command | Maturity |
+| Stage package | Scheme | Smoke command | Maturity |
 | :--- | :--- | :--- | :--- |
-| `HealthOSScribeStage` | `HealthOSScribeStage` | `swift run HealthOSScribeStage --smoke-test` | Minimal validation surface (SwiftUI, macOS 26+) |
-| `HealthOSVeridiaStage` | `HealthOSVeridiaStage` | `swift run HealthOSVeridiaStage --smoke-test` | Session boundary smoke — no final UI |
-| `HealthOSCloudClinicStage` | `HealthOSCloudClinicStage` | `swift run HealthOSCloudClinicStage --smoke-test` | Scaffold placeholder — no final UI |
+| `Tier4-Stages-Cast/Scribe/Package.swift` | `Scribe` | `cd HealthOS/Tier4-Stages-Cast/Scribe && swift run Scribe --smoke-test` | Minimal validation surface (SwiftUI, macOS 26+) |
+| `Tier4-Stages-Cast/Veridia/Package.swift` | `Veridia` | `cd HealthOS/Tier4-Stages-Cast/Veridia && swift run Veridia --smoke-test` | Session boundary smoke — no final UI |
+| `Tier4-Stages-Cast/CloudClinic/Package.swift` | `CloudClinic` | `cd HealthOS/Tier4-Stages-Cast/CloudClinic && swift run CloudClinic --smoke-test` | Scaffold placeholder — no final UI |
 
 Shared Xcode schemes live in `.swiftpm/xcode/xcshareddata/xcschemes/` and are committed. The workspace also exposes tier, provider, construction, support, profile, smoke, and all-up schemes plus test plans under `Xcode/TestPlans/`. Smoke schemes pre-configure launch arguments disabled by default; profile schemes use Release actions for Instruments on Core/runtime/provider/validation-gate flows.
 
@@ -145,6 +148,7 @@ Stage icon asset catalogs (`Resources/Assets.xcassets/AppIcon.appiconset/`) are 
 | `HealthOSCoreTests` | Core law unit tests | Scaffold stub |
 | `HealthOSRuntimeTests` | Tier 2 runtime integration tests | Scaffold stub |
 | `HealthOSBoundaryTests` | Tier 3 boundary contract tests | Scaffold stub |
+| `StagePackageStructureTests` | Tier 4 package separation, Custom files, and package roots | Structural guard |
 | `HealthOSConstructionSystemTests` | External Construction System, AGENTS/CLAUDE, prompt pack, and dot-directory visibility checks | Structural guard |
 | `HealthOSSupportToolingTests` | `Support` ops, Python, Create ML/Core ML/MLX tooling visibility and governance checks | Structural guard |
 

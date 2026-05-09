@@ -70,12 +70,21 @@ Confirm:
 
 ### 7. Smoke test Scribe app shell
 ```bash
-cd HealthOS
-swift run HealthOSScribeStage --smoke-test
+cd HealthOS/Tier4-Stages-Cast/Scribe
+swift run Scribe --smoke-test
 ```
 Confirm:
 - app shell still boots
 - no bridge regression
+
+### 8. Check Stage package separation
+```bash
+./scripts/check-stage-packages.sh
+```
+Confirm:
+- each Stage owns a `Package.swift`
+- each Stage carries `Custom.md`
+- Stage sources import only `HealthOSBoundary` and `CustomSDK` from the platform package
 
 ## Extra check
 

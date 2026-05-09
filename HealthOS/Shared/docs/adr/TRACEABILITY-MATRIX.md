@@ -28,17 +28,17 @@ Tier 3:
 
 Executáveis:
   HealthOSCLI             → Core, SessionRuntime
-  HealthOSScribeStage     → Boundary, Core, SessionRuntime
-  HealthOSVeridiaStage    → Boundary, Core
-  HealthOSCloudClinicStage→ Boundary
+  Scribe     → Boundary, Core, SessionRuntime
+  Veridia    → Boundary, Core
+  CloudClinic→ Boundary
 
 Structural / shared tests:
   HealthOSCoreTests, HealthOSRuntimeTests, HealthOSBoundaryTests,
-  HealthOSStageSmokeTests, HealthOSConstructionSystemTests,
+  StagePackageStructureTests, HealthOSConstructionSystemTests,
   HealthOSSupportToolingTests, HealthOSTests
 ```
 
-**Validação.** Não há violação de hierarquia em [HealthOS/Package.swift](../../../HealthOS/Package.swift): Core é base; Tier 2 depende de Core e dos providers/GOS necessários; Boundary agrega superfícies mediadas; Stage executables convergem para Boundary com TODOs explícitos para remover dependências diretas remanescentes de Core/SessionRuntime conforme as facades amadurecem.
+**Validação.** Não há violação de hierarquia em [HealthOS/Package.swift](../../../HealthOS/Package.swift): Core é base; Tier 2 depende de Core e dos providers/GOS necessários; `CustomSDK` e Boundary agregam a fronteira de consumo. Os produtos de Stage não pertencem ao package central; cada Stage vive em seu próprio `HealthOS/Tier4-Stages-Cast/<Stage>/Package.swift` e depende da plataforma apenas por `HealthOSBoundary` e `CustomSDK`.
 
 ---
 
@@ -74,7 +74,7 @@ Legenda: `●` = impactada diretamente · `○` = relacionada · ` ` = não impa
 | 0004 | [HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/ReidentificationGovernance.swift](../../../HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/ReidentificationGovernance.swift), [HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/StorageContracts.swift](../../../HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/StorageContracts.swift), [HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/Provenance.swift](../../../HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/Provenance.swift), [HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/SharedEnvelopeVocabulary.swift](../../../HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/SharedEnvelopeVocabulary.swift) |
 | 0005 | [HealthOS/Package.swift](../../../HealthOS/Package.swift), [HealthOS/Constructor/ts/package.json](../../../HealthOS/Constructor/ts/package.json), [HealthOS/Support/python/pyproject.toml](../../../HealthOS/Support/python/pyproject.toml), [Makefile](../../../Makefile) |
 | 0006 | [HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSProviders/ProviderProtocols.swift](../../../HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSProviders/ProviderProtocols.swift), [HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/StorageContracts.swift](../../../HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/StorageContracts.swift), [HealthOS/Constructor/ts/packages/](../../../HealthOS/Constructor/ts/packages/), [HealthOS/Tier1-Mestral-Core/Schemas/](../../../HealthOS/Tier1-Mestral-Core/Schemas/) |
-| 0007 | [HealthOS/Shared/Sources/HealthOSCLI/CLIEntrypoint.swift](../../../HealthOS/Shared/Sources/HealthOSCLI/CLIEntrypoint.swift), [HealthOS/Tier4-Stages-Cast/Scribe/Sources/HealthOSScribeStage/](../../../HealthOS/Tier4-Stages-Cast/Scribe/Sources/HealthOSScribeStage/), [HealthOS/Tier4-Stages-Cast/Veridia/Sources/HealthOSVeridiaStage/](../../../HealthOS/Tier4-Stages-Cast/Veridia/Sources/HealthOSVeridiaStage/), [HealthOS/Tier4-Stages-Cast/CloudClinic/Sources/HealthOSCloudClinicStage/](../../../HealthOS/Tier4-Stages-Cast/CloudClinic/Sources/HealthOSCloudClinicStage/), [HealthOS/Shared/docs/architecture/19-interface-doctrine.md](../architecture/19-interface-doctrine.md) |
+| 0007 | [HealthOS/Shared/Sources/HealthOSCLI/CLIEntrypoint.swift](../../../HealthOS/Shared/Sources/HealthOSCLI/CLIEntrypoint.swift), [HealthOS/Tier4-Stages-Cast/Scribe/Sources/Scribe/](../../../HealthOS/Tier4-Stages-Cast/Scribe/Sources/Scribe/), [HealthOS/Tier4-Stages-Cast/Veridia/Sources/Veridia/](../../../HealthOS/Tier4-Stages-Cast/Veridia/Sources/Veridia/), [HealthOS/Tier4-Stages-Cast/CloudClinic/Sources/CloudClinic/](../../../HealthOS/Tier4-Stages-Cast/CloudClinic/Sources/CloudClinic/), [HealthOS/Shared/docs/architecture/19-interface-doctrine.md](../architecture/19-interface-doctrine.md) |
 | 0008 | [HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/CoreLaw.swift](../../../HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/CoreLaw.swift), [HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/SharedEnvelopeVocabulary.swift](../../../HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/SharedEnvelopeVocabulary.swift), [HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSProviders/ProviderProtocols.swift](../../../HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSProviders/ProviderProtocols.swift) |
 | 0009 | [HealthOS/Package.swift](../../../HealthOS/Package.swift), [HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/StorageContracts.swift](../../../HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/StorageContracts.swift), [HealthOS/Shared/docs/architecture/15-mesh-provider.md](../architecture/15-mesh-provider.md), [scripts/bootstrap-local.sh](../../../scripts/bootstrap-local.sh) |
 | 0010 | [HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/CoreLaw.swift](../../../HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/CoreLaw.swift), [RegulatoryGovernance.swift](../../../HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/RegulatoryGovernance.swift), [Provenance.swift](../../../HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/Provenance.swift), [UserSovereigntyContracts.swift](../../../HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/UserSovereigntyContracts.swift) |
@@ -136,9 +136,9 @@ Outros testes auxiliares úteis: [AsyncRuntimeGovernanceTests.swift](../../../He
 | `HealthOSMSR` | lib | Core, Providers (resources: Prompts) | 0003, 0004, 0010, 0011 (proposto: 0016) | `MSRRuntimeTests` |
 | `HealthOSSessionRuntime` | lib | Core, AACI, Providers, MSR | 0001, 0003, 0010, 0011 | tests integrados |
 | `HealthOSCLI` | exec | Core, SessionRuntime | 0007, 0013 | `make smoke-cli` |
-| `HealthOSScribeStage` | exec | Boundary, Core, SessionRuntime | 0007, 0010, 0013 | `make smoke-scribe` |
-| `HealthOSVeridiaStage` | exec | Boundary, Core | 0007, 0010, 0013 | `make smoke-veridia` |
-| `HealthOSCloudClinicStage` | exec | Boundary | 0007, 0010, 0013 | `make smoke-cloudclinic` |
+| `Scribe` | exec | Boundary, Core, SessionRuntime | 0007, 0010, 0013 | `make smoke-scribe` |
+| `Veridia` | exec | Boundary, Core | 0007, 0010, 0013 | `make smoke-veridia` |
+| `CloudClinic` | exec | Boundary | 0007, 0010, 0013 | `make smoke-cloudclinic` |
 | `HealthOSBoundary` | lib | Core, GOS, AACI, MSR, Async, User-Agent, Service, Session | 0013 | `HealthOSBoundaryTests` |
 | `HealthOSConstructionSystemTests` | test | structural | 0012, 0013 | `HealthOS-Construction` scheme / `swift test` |
 | `HealthOSSupportToolingTests` | test | structural | 0005, 0006 | `HealthOS-Support` scheme / `swift test` |

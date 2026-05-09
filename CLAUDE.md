@@ -81,7 +81,7 @@ Always:
 
 Primary executable slice orchestration lives in:
 - `HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSSessionRuntime/SessionRunner.swift`
-- consumed by `HealthOSCLI` and the minimal `HealthOSScribeStage`
+- consumed by `HealthOSCLI` and the separate `Scribe` Stage package
 
 Reference ordering:
 habilitation validate → consent validate → session start → capture → transcript provenance → retrieval provenance → SOAP draft provenance → gate request → gate resolve → final artifact (only if approved) + provenance.
@@ -133,10 +133,10 @@ Recently confirmed direct smoke commands:
 ```bash
 cd HealthOS && swift run HealthOSCLI
 cd HealthOS && swift run HealthOSCLI --reject-gate
-cd HealthOS && swift run HealthOSScribeStage --smoke-test
-cd HealthOS && swift run HealthOSScribeStage --smoke-test-audio
-cd HealthOS && swift run HealthOSVeridiaStage --smoke-test
-cd HealthOS && swift run HealthOSCloudClinicStage --smoke-test
+cd HealthOS/Tier4-Stages-Cast/Scribe && swift run Scribe --smoke-test
+cd HealthOS/Tier4-Stages-Cast/Scribe && swift run Scribe --smoke-test-audio
+cd HealthOS/Tier4-Stages-Cast/Veridia && swift run Veridia --smoke-test
+cd HealthOS/Tier4-Stages-Cast/CloudClinic && swift run CloudClinic --smoke-test
 ```
 
 For GOS bundle lifecycle smoke, use the minimal operator-facing CLI path and keep reviewer/operator identity explicit:
@@ -152,7 +152,7 @@ Workflow notes from recent repository use:
 - `make validate-docs` checks documentation/reference consistency; it does not prove that claimed CLI commands or package source paths exist. Verify executable command claims with the package source and a smoke run, or add a short TODO instead of documenting them as delivered.
 - Open `HealthOS/Package.swift` in Xcode for committed shared schemes under `HealthOS/.swiftpm/xcode/xcshareddata/xcschemes/`; the schemes carry smoke-test launch arguments disabled by default and Release profile actions for Instruments.
 - Keep `HealthOS/Constructor/` and `HealthOS/Support/` explicitly visible in Xcode workspace navigation. They are outside the clinical/runtime hierarchy, but they contain required AI organization, Steward/Settler/Forge MCP, provider support, ops, Python, and ML tooling.
-- Shared schemes must cover Core, runtimes, Boundary, providers, Construction System, Support, Stage smokes, All, and profile-oriented Core/runtime/provider/validation-gate flows. Test plans live under `HealthOS/Xcode/TestPlans/` by layer.
+- Shared schemes must cover Core, runtimes, Boundary, providers, Construction System, Support, Stage package smokes, All, and profile-oriented Core/runtime/provider/validation-gate flows. Test plans live under `HealthOS/Xcode/TestPlans/` by layer.
 - Create ML, Core ML, and MLX work under `HealthOS/Support/ML/` is scaffold/governed tooling only. Do not run `swift HealthOS/Support/ML/transcript-normalizer/TrainTranscriptNormalizer.swift` against real patient data or document any produced `.mlmodel` as loadable until `ModelGovernance` approval and provenance are implemented.
 
 ## Cross-language contract discipline

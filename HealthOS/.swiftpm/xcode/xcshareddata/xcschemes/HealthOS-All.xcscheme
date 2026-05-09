@@ -7,15 +7,6 @@
          <BuildActionEntry buildForTesting = "YES" buildForRunning = "YES" buildForProfiling = "YES" buildForArchiving = "YES" buildForAnalyzing = "YES">
             <BuildableReference BuildableIdentifier = "primary" BlueprintIdentifier = "HealthOSCLI" BuildableName = "HealthOSCLI" BlueprintName = "HealthOSCLI" ReferencedContainer = "container:"></BuildableReference>
          </BuildActionEntry>
-         <BuildActionEntry buildForTesting = "YES" buildForRunning = "YES" buildForProfiling = "YES" buildForArchiving = "YES" buildForAnalyzing = "YES">
-            <BuildableReference BuildableIdentifier = "primary" BlueprintIdentifier = "HealthOSScribeStage" BuildableName = "HealthOSScribeStage" BlueprintName = "HealthOSScribeStage" ReferencedContainer = "container:"></BuildableReference>
-         </BuildActionEntry>
-         <BuildActionEntry buildForTesting = "YES" buildForRunning = "YES" buildForProfiling = "YES" buildForArchiving = "YES" buildForAnalyzing = "YES">
-            <BuildableReference BuildableIdentifier = "primary" BlueprintIdentifier = "HealthOSVeridiaStage" BuildableName = "HealthOSVeridiaStage" BlueprintName = "HealthOSVeridiaStage" ReferencedContainer = "container:"></BuildableReference>
-         </BuildActionEntry>
-         <BuildActionEntry buildForTesting = "YES" buildForRunning = "YES" buildForProfiling = "YES" buildForArchiving = "YES" buildForAnalyzing = "YES">
-            <BuildableReference BuildableIdentifier = "primary" BlueprintIdentifier = "HealthOSCloudClinicStage" BuildableName = "HealthOSCloudClinicStage" BlueprintName = "HealthOSCloudClinicStage" ReferencedContainer = "container:"></BuildableReference>
-         </BuildActionEntry>
          <BuildActionEntry buildForTesting = "YES" buildForRunning = "NO" buildForProfiling = "NO" buildForArchiving = "NO" buildForAnalyzing = "YES">
             <BuildableReference BuildableIdentifier = "primary" BlueprintIdentifier = "HealthOSCoreTests" BuildableName = "HealthOSCoreTests" BlueprintName = "HealthOSCoreTests" ReferencedContainer = "container:"></BuildableReference>
          </BuildActionEntry>
@@ -26,7 +17,7 @@
             <BuildableReference BuildableIdentifier = "primary" BlueprintIdentifier = "HealthOSBoundaryTests" BuildableName = "HealthOSBoundaryTests" BlueprintName = "HealthOSBoundaryTests" ReferencedContainer = "container:"></BuildableReference>
          </BuildActionEntry>
          <BuildActionEntry buildForTesting = "YES" buildForRunning = "NO" buildForProfiling = "NO" buildForArchiving = "NO" buildForAnalyzing = "YES">
-            <BuildableReference BuildableIdentifier = "primary" BlueprintIdentifier = "HealthOSStageSmokeTests" BuildableName = "HealthOSStageSmokeTests" BlueprintName = "HealthOSStageSmokeTests" ReferencedContainer = "container:"></BuildableReference>
+            <BuildableReference BuildableIdentifier = "primary" BlueprintIdentifier = "StagePackageStructureTests" BuildableName = "StagePackageStructureTests" BlueprintName = "StagePackageStructureTests" ReferencedContainer = "container:"></BuildableReference>
          </BuildActionEntry>
          <BuildActionEntry buildForTesting = "YES" buildForRunning = "NO" buildForProfiling = "NO" buildForArchiving = "NO" buildForAnalyzing = "YES">
             <BuildableReference BuildableIdentifier = "primary" BlueprintIdentifier = "HealthOSConstructionSystemTests" BuildableName = "HealthOSConstructionSystemTests" BlueprintName = "HealthOSConstructionSystemTests" ReferencedContainer = "container:"></BuildableReference>
@@ -54,7 +45,7 @@
             <BuildableReference BuildableIdentifier = "primary" BlueprintIdentifier = "HealthOSBoundaryTests" BuildableName = "HealthOSBoundaryTests" BlueprintName = "HealthOSBoundaryTests" ReferencedContainer = "container:"></BuildableReference>
          </TestableReference>
          <TestableReference skipped = "NO">
-            <BuildableReference BuildableIdentifier = "primary" BlueprintIdentifier = "HealthOSStageSmokeTests" BuildableName = "HealthOSStageSmokeTests" BlueprintName = "HealthOSStageSmokeTests" ReferencedContainer = "container:"></BuildableReference>
+            <BuildableReference BuildableIdentifier = "primary" BlueprintIdentifier = "StagePackageStructureTests" BuildableName = "StagePackageStructureTests" BlueprintName = "StagePackageStructureTests" ReferencedContainer = "container:"></BuildableReference>
          </TestableReference>
          <TestableReference skipped = "NO">
             <BuildableReference BuildableIdentifier = "primary" BlueprintIdentifier = "HealthOSConstructionSystemTests" BuildableName = "HealthOSConstructionSystemTests" BlueprintName = "HealthOSConstructionSystemTests" ReferencedContainer = "container:"></BuildableReference>

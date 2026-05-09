@@ -31,7 +31,7 @@ The CoreLaw-governed definition of a Stage: capabilities, limits, consumed surfa
 The engineering-tooling system for building HealthOS: Steward, Settlers, Territories, Settlements, and HealthOS Forge MCP. It is outside the HealthOS clinical/runtime hierarchy and has no clinical, constitutional, authorizing, runtime, Stage, or merge authority.
 
 ## Compatibility Terms
-Existing technical names such as `HealthOSBoundary`, `AppSurfaceEnvelope`, and `HealthOSScribeStage` remain package/API/module names until an explicit rename work unit exists. Their names do not change the canonical conceptual terms Boundary and Stage.
+Existing technical names such as `HealthOSBoundary`, `AppSurfaceEnvelope`, and `Scribe` remain package/API/module names until an explicit rename work unit exists. Their names do not change the canonical conceptual terms Boundary and Stage.
 
 See `HealthOS/Shared/docs/architecture/50-app-layer-boundary-and-reference-apps.md` for the canonical Boundary, Stage, Custom, and task-ordering doctrine.
 

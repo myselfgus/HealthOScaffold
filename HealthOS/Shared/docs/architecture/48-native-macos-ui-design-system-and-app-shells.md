@@ -11,9 +11,9 @@ It does not implement a final product UI. It does not move HealthOS law into Swi
 HealthOS native macOS surfaces are human/operator interfaces over mediated HealthOS contracts.
 
 The current repository state is:
-- Scribe has a minimal SwiftPM-backed macOS SwiftUI validation surface in `HealthOS/Tier4-Stages-Cast/Scribe/Sources/HealthOSScribeStage/`.
-- Veridia has app-safe patient identity contracts, screen contracts, and a smoke-testable executable session boundary in `HealthOS/Tier4-Stages-Cast/Veridia/Sources/HealthOSVeridiaStage/`.
-- CloudClinic has service-operations contracts, screen contracts, and a scaffold executable target in `HealthOS/Tier4-Stages-Cast/CloudClinic/Sources/HealthOSCloudClinicStage/`; its smoke-testable service session wiring is blocked until the upstream mediated surfaces and CloudClinic Custom are ready.
+- Scribe has a minimal macOS SwiftUI validation surface in the separate package `HealthOS/Tier4-Stages-Cast/Scribe/Package.swift`.
+- Veridia has app-safe patient identity contracts, screen contracts, and a smoke-testable executable session boundary in the separate package `HealthOS/Tier4-Stages-Cast/Veridia/Package.swift`.
+- CloudClinic has service-operations contracts, screen contracts, and a scaffold executable in the separate package `HealthOS/Tier4-Stages-Cast/CloudClinic/Package.swift`; its service session wiring remains bounded by upstream mediated surfaces and CloudClinic Custom readiness.
 - A HealthOS control panel for macOS is a valid future operator surface, but no app shell or executable target exists yet.
 - Future Stages may be added; Scribe/Veridia/CloudClinic remain initial Stage examples, not a closed set.
 
@@ -23,23 +23,30 @@ New Stage shell/wiring work must follow `HealthOS/Shared/docs/architecture/50-ap
 
 ## SwiftPM, Xcode, and platform posture
 
-The canonical Apple build graph remains `HealthOS/Package.swift`.
+The canonical Apple platform build graph remains `HealthOS/Package.swift` for Tiers 1-3, `CustomSDK`, Boundary, CLI, and shared structural tests. Tier 4 app shells are separate Stage packages under `HealthOS/Tier4-Stages-Cast/<Stage>/Package.swift`.
 
 HealthOS native app work targets macOS 26+ unless a later architecture decision explicitly documents another target. The package manifest uses PackageDescription 6.2+ and `.macOS(.v26)` so new SwiftUI work can use the current macOS design system and Liquid Glass APIs without treating older deployment targets as the product baseline.
 
-Current products:
+Current platform products:
 - `HealthOSCore` library
 - `HealthOSAACI` library
 - `HealthOSProviders` library
 - `HealthOSSessionRuntime` library
+- `CustomSDK` library
+- `HealthOSBoundary` library
 - `HealthOSCLI` executable
-- `HealthOSScribeStage` executable
 
-Xcode may open the repository through `HealthOS.xcworkspace`, but SwiftPM remains the source of package/product truth for current macOS validation. New app shells should be introduced as explicit SwiftPM executable targets unless a later, documented Xcode-project requirement exists.
+Current Stage package products:
+- `Scribe` executable in `Tier4-Stages-Cast/Scribe/`
+- `Veridia` executable in `Tier4-Stages-Cast/Veridia/`
+- `CloudClinic` executable in `Tier4-Stages-Cast/CloudClinic/`
+
+Xcode may open the repository through `HealthOS.xcworkspace`, but SwiftPM remains the source of package/product truth for current macOS validation. New app shells should be introduced as separate Stage SwiftPM packages unless a later, documented Xcode-project requirement exists.
 
 For SwiftPM GUI app work:
-- build with `cd HealthOS && swift build`;
-- run command-line tools with `swift run <product>`;
+- build the platform with `cd HealthOS && swift build`;
+- build a Stage with `cd HealthOS/Tier4-Stages-Cast/<Stage> && swift build`;
+- run command-line tools with `swift run <product>` from the owning package root;
 - keep interactive SwiftUI/AppKit app launch behavior honest, and use app-bundle staging only when that workflow is intentionally introduced;
 - do not claim packaging, signing, notarization, or production distribution until those surfaces are built and verified.
 
@@ -180,7 +187,7 @@ Keep business/governance behavior in Core/runtime targets. App targets consume i
 
 ## Existing Scribe surface audit
 
-The current `HealthOSScribeStage` surface is a minimal validation app, not the final macOS 26 design.
+The current `Scribe` surface is a minimal validation app, not the final macOS 26 design.
 
 Current observations:
 - the SwiftPM executable target exists and consumes `ScribeFirstSliceFacade`;

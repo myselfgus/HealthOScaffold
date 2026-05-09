@@ -15,9 +15,9 @@
   ],
   "secondaryPaths": [
     "HealthOS/Shared/Sources/HealthOSCLI",
-    "HealthOS/Tier4-Stages-Cast/Scribe/Sources/HealthOSScribeStage",
-    "HealthOS/Tier4-Stages-Cast/Veridia/Sources/HealthOSVeridiaStage",
-    "HealthOS/Tier4-Stages-Cast/CloudClinic/Sources/HealthOSCloudClinicStage",
+    "HealthOS/Tier4-Stages-Cast/Scribe/Sources/Scribe",
+    "HealthOS/Tier4-Stages-Cast/Veridia/Sources/Veridia",
+    "HealthOS/Tier4-Stages-Cast/CloudClinic/Sources/CloudClinic",
     "HealthOS/Tier2-GOS-Runtimes/Tests",
     "HealthOS/Shared/Tests",
     "HealthOS/Shared/docs/execution/todo/runtimes-and-aaci.md"

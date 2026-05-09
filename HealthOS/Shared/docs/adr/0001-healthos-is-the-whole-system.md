@@ -14,9 +14,9 @@ modules_impacted:
   - HealthOSMSR
   - HealthOSSessionRuntime
   - HealthOSCLI
-  - HealthOSScribeStage
-  - HealthOSVeridiaStage
-  - HealthOSCloudClinicStage
+  - Scribe
+  - Veridia
+  - CloudClinic
 related_adrs:
   supersedes: []
   superseded_by: []
@@ -77,7 +77,7 @@ Hierarquia constitucional canônica (refletida em [HealthOS/Package.swift](../..
 | Governed Operational Spec (GOS) | `HealthOSCore/GovernedOperationalSpec.swift`, `HealthOS/Tier1-Mestral-Core/Schemas/governed-operational-spec*.schema.json` | Camada de spec subordinada (ADR-0011). |
 | Runtimes | `HealthOSAACI`, `HealthOSMSR`, `HealthOSSessionRuntime`, `HealthOSProviders` | Execução sob lei do Core e guidance de GOS. |
 | Boundary | `HealthOSBoundary`, mediated facades/envelopes | Fronteira HealthOS-owned para consumo seguro por Stages. |
-| Stage / Interfaces | `HealthOSScribeStage`, `HealthOSVeridiaStage`, `HealthOSCloudClinicStage`, `HealthOSCLI` | UX/CLI consumindo saídas mediadas (ADR-0007, ADR-0013). |
+| Stage / Interfaces | `Scribe`, `Veridia`, `CloudClinic`, `HealthOSCLI` | UX/CLI consumindo saídas mediadas (ADR-0007, ADR-0013). |
 | Artefatos / Efeitos | Arquivos persistidos, registros de gate, provenance | Saídas governadas com proveniência (ADR-0003). |
 
 - **Escopo.** Decisão constitucional sobre identidade e topologia lógica do sistema. Não decide stack (ADR-0005), topologia operacional (ADR-0009) nem nome de repositório (ADR-0012).
@@ -115,7 +115,7 @@ Hierarquia constitucional canônica (refletida em [HealthOS/Package.swift](../..
 
 ## Detalhes de Implementação
 
-- **Fronteiras entre módulos.** Direção única: Core ← Providers ← (AACI, MSR) ← SessionRuntime ← Apps/CLI. `HealthOSVeridiaStage` e `HealthOSCloudClinicStage` dependem apenas de `HealthOSCore`.
+- **Fronteiras entre módulos.** Direção única: Core ← Providers ← (AACI, MSR) ← SessionRuntime ← Apps/CLI. `Veridia` e `CloudClinic` dependem apenas de `HealthOSCore`.
 - **Conformidade com Package.swift.** Topologia em [HealthOS/Package.swift](../../../HealthOS/Package.swift) reflete a hierarquia. Qualquer adição que invertesse a direção (ex.: Core dependendo de Providers) seria violação direta desta ADR.
 - **Concurrency.** A camada de execução (AACI/MSR/SessionRuntime) usa `actor` Swift para isolamento (ex.: `public actor AACIOrchestrator` em [HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSAACI/AACI.swift:5](../../../HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSAACI/AACI.swift:5); `public actor SessionRunner` em [HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSSessionRuntime/SessionRunner.swift:6](../../../HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSSessionRuntime/SessionRunner.swift:6)). Core expõe contratos `Sendable` (ex.: `CoreLawfulContext`).
 - **Segurança/Privacidade.** A identidade "HealthOS" é a âncora do controlador para fins de LGPD; downstream apps são processadores delegados sob essa identidade.

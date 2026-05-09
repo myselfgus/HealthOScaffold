@@ -1140,7 +1140,7 @@ Title format: `ci: wire validate-all gates into GitHub Actions (GAP-010)`
     - `cd HealthOS && swift build && swift test`
     - `cd HealthOS/Constructor/ts && npm install && npm run build && npm test --if-present`
     - `cd python && python -m compileall .`
-    - `cd HealthOS && swift run HealthOSCLI && swift run HealthOSScribeStage --smoke-test`
+    - `cd HealthOS && swift run HealthOSCLI && swift run Scribe --smoke-test`
   - Reconcile entry docs (`README.md`, `AGENTS.md`, `CLAUDE.md`) and
     execution docs (`02-`, `06-`, `10-`, `11-`, `12-`, `13-`, `14-`,
     `15-`) so maturity claims agree.

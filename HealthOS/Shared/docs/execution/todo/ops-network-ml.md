@@ -372,11 +372,11 @@ Branch: `feat/str-004-session-runtime-rename`
 Priority: **P2** — after P1 complete or in parallel
 Plan: `HealthOS/Shared/docs/execution/21-structural-ontology-and-product-readiness-plan.md` → STR-005
 Definition of done:
-- `HealthOS/Tier4-Stages-Cast/Veridia/Sources/HealthOSVeridiaStage/VeridiaEntrypoint.swift` created (minimal `@main` with `--smoke-test` flag)
-- `HealthOS/Tier4-Stages-Cast/CloudClinic/Sources/HealthOSCloudClinicStage/CloudClinicEntrypoint.swift` created (same pattern)
+- `HealthOS/Tier4-Stages-Cast/Veridia/Sources/Veridia/VeridiaEntrypoint.swift` created (minimal `@main` with `--smoke-test` flag)
+- `HealthOS/Tier4-Stages-Cast/CloudClinic/Sources/CloudClinic/CloudClinicEntrypoint.swift` created (same pattern)
 - `Package.swift`: both added as `.executableTarget` products
-- `swift run HealthOSVeridiaStage --smoke-test` exits 0
-- `swift run HealthOSCloudClinicStage --smoke-test` exits 0
+- `swift run Veridia --smoke-test` exits 0
+- `swift run CloudClinic --smoke-test` exits 0
 - `swift build && swift test` PASS; `make validate-all` PASS
 Branch: `feat/str-005-veridia-cloudclinic-targets`
 

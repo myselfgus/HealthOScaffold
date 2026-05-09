@@ -10,19 +10,22 @@ swift-build:
 swift-test:
 	cd HealthOS && swift test
 
+stage-package-check:
+	bash ./scripts/check-stage-packages.sh
+
 smoke-cli:
 	cd HealthOS && swift run HealthOSCLI
 
 smoke-scribe:
-	cd HealthOS && swift run HealthOSScribeStage --smoke-test
+	cd HealthOS/Tier4-Stages-Cast/Scribe && swift run Scribe --smoke-test
 
 smoke-veridia:
-	cd HealthOS && swift run HealthOSVeridiaStage --smoke-test
+	cd HealthOS/Tier4-Stages-Cast/Veridia && swift run Veridia --smoke-test
 
 smoke-cloudclinic:
-	cd HealthOS && swift run HealthOSCloudClinicStage --smoke-test
+	cd HealthOS/Tier4-Stages-Cast/CloudClinic && swift run CloudClinic --smoke-test
 
-swift-smoke: smoke-cli smoke-scribe smoke-veridia smoke-cloudclinic
+swift-smoke: smoke-cli stage-package-check smoke-scribe smoke-veridia smoke-cloudclinic
 
 ts-build:
 	cd HealthOS/Constructor/ts && npm install && npm run build

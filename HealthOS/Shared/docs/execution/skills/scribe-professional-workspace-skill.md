@@ -10,7 +10,7 @@ Scribe workspace/session contracts, first-slice Boundary, draft-gate-finalizatio
 Scribe consumes mediated state only; gate and finalization remain Core-controlled.
 
 ## Main files
-`HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/ScribeProfessionalWorkspaceContracts.swift`, `ScribeFirstSliceBridge.swift`, `HealthOS/Tier4-Stages-Cast/Scribe/Sources/HealthOSScribeStage/`.
+`HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/ScribeProfessionalWorkspaceContracts.swift`, `ScribeFirstSliceBridge.swift`, `HealthOS/Tier4-Stages-Cast/Scribe/Sources/Scribe/`.
 
 ## Expected tests
 `cd HealthOS && swift test --filter ScribeProfessionalWorkspaceContractsTests`; smoke test when app-facing change occurs.

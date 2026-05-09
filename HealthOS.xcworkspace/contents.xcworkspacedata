@@ -17,6 +17,15 @@
       location = "group:HealthOS/Tier4-Stages-Cast">
    </FileRef>
    <FileRef
+      location = "group:HealthOS/Tier4-Stages-Cast/Scribe/Package.swift">
+   </FileRef>
+   <FileRef
+      location = "group:HealthOS/Tier4-Stages-Cast/Veridia/Package.swift">
+   </FileRef>
+   <FileRef
+      location = "group:HealthOS/Tier4-Stages-Cast/CloudClinic/Package.swift">
+   </FileRef>
+   <FileRef
       location = "group:HealthOS/Xcode">
    </FileRef>
    <FileRef

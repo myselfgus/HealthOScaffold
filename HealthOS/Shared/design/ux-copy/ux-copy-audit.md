@@ -70,7 +70,7 @@
 
 ---
 
-## HealthOSScribeStage
+## Scribe
 
 ### SCR-01
 - **Local:** `ScribeFirstSliceView.swift` — título da janela
@@ -242,7 +242,7 @@
 
 ---
 
-## HealthOSVeridiaStage
+## Veridia
 
 ### VER-01
 - **Local:** `VeridiaEntrypoint.swift` — modo interativo não disponível
@@ -267,7 +267,7 @@
 
 ---
 
-## HealthOSCloudClinicStage
+## CloudClinic
 
 ### CC-01
 - **Local:** `CloudClinicEntrypoint.swift` — modo interativo não disponível

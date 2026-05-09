@@ -5,16 +5,16 @@
 ### SWIFT-ONTOLOGY-SECOND-PASS Boundary and Stage technical rename
 Outcome:
 - renamed the canonical Swift Boundary module from `HealthOSAppBoundary` to `HealthOSBoundary`
-- renamed initial Stage executable products/targets from `HealthOSScribeApp`, `HealthOSVeridiaApp`, and `HealthOSCloudClinicApp` to `HealthOSScribeStage`, `HealthOSVeridiaStage`, and `HealthOSCloudClinicStage`
+- renamed initial Stage executable products/targets from `HealthOSScribeApp`, `HealthOSVeridiaApp`, and `HealthOSCloudClinicApp` to `Scribe`, `Veridia`, and `CloudClinic`
 - updated SwiftPM, imports, tests, Xcode shared schemes, Makefile smoke commands, module READMEs, app/docs surfaces, Steward prompt text, and Settler/Territory metadata
 - kept Stage wiring honest: Scribe and Veridia direct Tier 1/2 imports remain marked TODOs pending complete Boundary facades; CloudClinic remains Boundary-only
 Files touched:
 - `HealthOS/Package.swift`
 - `HealthOS/Tier3-Custom-Boundary/Sources/HealthOSBoundary/`
 - `HealthOS/Tier3-Custom-Boundary/Tests/HealthOSBoundaryTests/`
-- `HealthOS/Tier4-Stages-Cast/Scribe/Sources/HealthOSScribeStage/`
-- `HealthOS/Tier4-Stages-Cast/Veridia/Sources/HealthOSVeridiaStage/`
-- `HealthOS/Tier4-Stages-Cast/CloudClinic/Sources/HealthOSCloudClinicStage/`
+- `HealthOS/Tier4-Stages-Cast/Scribe/Sources/Scribe/`
+- `HealthOS/Tier4-Stages-Cast/Veridia/Sources/Veridia/`
+- `HealthOS/Tier4-Stages-Cast/CloudClinic/Sources/CloudClinic/`
 - `HealthOS/.swiftpm/xcode/xcshareddata/xcschemes/`
 - `Makefile`
 - `HealthOS/Constructor/Steward/`
@@ -32,12 +32,12 @@ Validation:
 ### APP-011 Veridia: smoke-testable executable path
 Outcome:
 - wired `UserSovereigntyContracts.swift` into a minimal `VeridiaSessionFacade` / `VeridiaSessionAdapter` so Veridia has an executable governed session boundary
-- updated `HealthOSVeridiaStage --smoke-test` to verify `veridia.session.start` and `veridia.session.end`
+- updated `Veridia --smoke-test` to verify `veridia.session.start` and `veridia.session.end`
 - added boundary smoke tests for lawful-context denial, unknown/double end, and provenance/audit references
 Files touched:
 - `HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/VeridiaSessionContracts.swift`
 - `HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/VeridiaSessionAdapter.swift`
-- `HealthOS/Tier4-Stages-Cast/Veridia/Sources/HealthOSVeridiaStage/VeridiaEntrypoint.swift`
+- `HealthOS/Tier4-Stages-Cast/Veridia/Sources/Veridia/VeridiaEntrypoint.swift`
 - `HealthOS/Shared/Tests/HealthOSTests/VeridiaSessionFacadeTests.swift`
 Validation:
 - 268 Swift tests passed
@@ -75,14 +75,14 @@ Files touched:
 
 ### STR-005 Add placeholder Swift executable targets for Veridia and CloudClinic
 Outcome:
-- added `HealthOSVeridiaStage` and `HealthOSCloudClinicStage` as minimal Swift executable scaffold targets so the HealthOS product graph no longer represents only Scribe as an app/interface surface
+- added `Veridia` and `CloudClinic` as minimal Swift executable scaffold targets so the HealthOS product graph no longer represents only Scribe as an app/interface surface
 - added honest `--smoke-test` paths for both placeholders: scaffold-only, no final UI, no clinical authority, and no production-readiness claim
 - added `make smoke-veridia` and `make smoke-cloudclinic` while preserving existing CLI/Scribe smoke targets
 - unblocked APP-011 and APP-012 as next Stage wiring tasks without implementing either session path at that time; ADR-0013 later blocked APP-012 pending Core/GOS/runtime/Boundary/Custom readiness
 Files touched:
 - `HealthOS/Package.swift`
-- `HealthOS/Tier4-Stages-Cast/Veridia/Sources/HealthOSVeridiaStage/VeridiaEntrypoint.swift`
-- `HealthOS/Tier4-Stages-Cast/CloudClinic/Sources/HealthOSCloudClinicStage/CloudClinicEntrypoint.swift`
+- `HealthOS/Tier4-Stages-Cast/Veridia/Sources/Veridia/VeridiaEntrypoint.swift`
+- `HealthOS/Tier4-Stages-Cast/CloudClinic/Sources/CloudClinic/CloudClinicEntrypoint.swift`
 - `Makefile`
 - `README.md`
 - `AGENTS.md`
@@ -148,12 +148,12 @@ Outcome:
 - expanded `ScribeSessionBridgeState.gosRuntimeState` from coarse active/inactive status into an app-safe audit surface with active workflow title, bundle/spec identity, bound actors/families, reasoning boundaries, and SOAP/referral/prescription mediation markers
 - updated CLI and minimal SwiftUI Scribe output so the executable slice shows where AACI consumed GOS (`gos.use.compose.soap`, `gos.use.derive.referral`, `gos.use.derive.prescription`) while keeping app law ownership out of Scribe
 - preserved raw-spec boundary: no compiled GOS spec JSON or runtime-binding JSON is exposed to the app surface, and GOS remains `legalAuthorizing=false`, gate-required, and draft-only for referral/prescription
-- validation: `swift build`, `swift run HealthOSCLI`, `swift run HealthOSCLI --reject-gate`, `swift run HealthOSScribeStage --smoke-test`, and `swift run HealthOSScribeStage --smoke-test-audio` passed; follow-up `swift test` passed after TEST-001 cleanup
+- validation: `swift build`, `swift run HealthOSCLI`, `swift run HealthOSCLI --reject-gate`, `swift run Scribe --smoke-test`, and `swift run Scribe --smoke-test-audio` passed; follow-up `swift test` passed after TEST-001 cleanup
 Files touched:
 - `HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/ScribeFirstSliceBridge.swift`
 - `HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSSessionRuntime/ScribeSessionAdapter.swift`
-- `HealthOS/Tier4-Stages-Cast/Scribe/Sources/HealthOSScribeStage/Models/ScribeFirstSliceViewModel.swift`
-- `HealthOS/Tier4-Stages-Cast/Scribe/Sources/HealthOSScribeStage/Views/ScribeFirstSliceView.swift`
+- `HealthOS/Tier4-Stages-Cast/Scribe/Sources/Scribe/Models/ScribeFirstSliceViewModel.swift`
+- `HealthOS/Tier4-Stages-Cast/Scribe/Sources/Scribe/Views/ScribeFirstSliceView.swift`
 - `HealthOS/Shared/Sources/HealthOSCLI/CLIEntrypoint.swift`
 - `HealthOS/Shared/Tests/HealthOSTests/GOSRuntimeAdoptionTests.swift`
 - `HealthOS/Shared/docs/architecture/22-runtime-state-surfaces.md`
@@ -249,7 +249,7 @@ Outcome:
 Files touched:
 - `HealthOS/Package.swift`
 - `HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSSessionRuntime/`
-- `HealthOS/Tier4-Stages-Cast/Scribe/Sources/HealthOSScribeStage/`
+- `HealthOS/Tier4-Stages-Cast/Scribe/Sources/Scribe/`
 - `HealthOS/Shared/Sources/HealthOSCLI/CLIEntrypoint.swift`
 - `HealthOS/Shared/docs/architecture/11-scribe.md`
 - `HealthOS/Shared/docs/architecture/23-scribe-screen-contracts.md`
@@ -261,7 +261,7 @@ Outcome:
 - the UI exposes explicit transcription and degraded-state surfaces instead of assuming capture always yields transcript text
 - the app still consumes bridge state from `ScribeFirstSliceFacade` rather than taking ownership of capture/transcription law
 Files touched:
-- `HealthOS/Tier4-Stages-Cast/Scribe/Sources/HealthOSScribeStage/`
+- `HealthOS/Tier4-Stages-Cast/Scribe/Sources/Scribe/`
 - `HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/FirstSliceContracts.swift`
 - `HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/ScribeFirstSliceBridge.swift`
 - `HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSSessionRuntime/ScribeSessionAdapter.swift`
@@ -278,8 +278,8 @@ Files touched:
 - `HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/ScribeFirstSliceBridge.swift`
 - `HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/SharedEnvelopeVocabulary.swift`
 - `HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSSessionRuntime/ScribeSessionAdapter.swift`
-- `HealthOS/Tier4-Stages-Cast/Scribe/Sources/HealthOSScribeStage/Models/ScribeFirstSliceViewModel.swift`
-- `HealthOS/Tier4-Stages-Cast/Scribe/Sources/HealthOSScribeStage/Views/ScribeFirstSliceView.swift`
+- `HealthOS/Tier4-Stages-Cast/Scribe/Sources/Scribe/Models/ScribeFirstSliceViewModel.swift`
+- `HealthOS/Tier4-Stages-Cast/Scribe/Sources/Scribe/Views/ScribeFirstSliceView.swift`
 - `HealthOS/Shared/Sources/HealthOSCLI/CLIEntrypoint.swift`
 - `HealthOS/Shared/docs/architecture/11-scribe.md`
 - `HealthOS/Shared/docs/architecture/23-scribe-screen-contracts.md`
@@ -300,8 +300,8 @@ Files touched:
 - `HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSSessionRuntime/SessionRunner.swift`
 - `HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSSessionRuntime/ScribeSessionAdapter.swift`
 - `HealthOS/Shared/Sources/HealthOSCLI/CLIEntrypoint.swift`
-- `HealthOS/Tier4-Stages-Cast/Scribe/Sources/HealthOSScribeStage/Models/ScribeFirstSliceViewModel.swift`
-- `HealthOS/Tier4-Stages-Cast/Scribe/Sources/HealthOSScribeStage/Views/ScribeFirstSliceView.swift`
+- `HealthOS/Tier4-Stages-Cast/Scribe/Sources/Scribe/Models/ScribeFirstSliceViewModel.swift`
+- `HealthOS/Tier4-Stages-Cast/Scribe/Sources/Scribe/Views/ScribeFirstSliceView.swift`
 - `HealthOS/Shared/docs/architecture/06-core-services.md`
 - `HealthOS/Shared/docs/architecture/11-scribe.md`
 - `HealthOS/Shared/docs/architecture/23-scribe-screen-contracts.md`
@@ -316,8 +316,8 @@ Files touched:
 - `HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/ScribeFirstSliceBridge.swift`
 - `HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSSessionRuntime/ScribeSessionAdapter.swift`
 - `HealthOS/Shared/Sources/HealthOSCLI/CLIEntrypoint.swift`
-- `HealthOS/Tier4-Stages-Cast/Scribe/Sources/HealthOSScribeStage/Models/ScribeFirstSliceViewModel.swift`
-- `HealthOS/Tier4-Stages-Cast/Scribe/Sources/HealthOSScribeStage/Views/ScribeFirstSliceView.swift`
+- `HealthOS/Tier4-Stages-Cast/Scribe/Sources/Scribe/Models/ScribeFirstSliceViewModel.swift`
+- `HealthOS/Tier4-Stages-Cast/Scribe/Sources/Scribe/Views/ScribeFirstSliceView.swift`
 - `HealthOS/Shared/docs/architecture/11-scribe.md`
 - `HealthOS/Shared/docs/architecture/23-scribe-screen-contracts.md`
 - `HealthOS/Shared/docs/execution/02-status-and-tracking.md`
@@ -439,7 +439,7 @@ Unblock criterion:
 - `swift run HealthOSCLI`
 - `swift run HealthOSCLI --reject-gate`
 - `swift run HealthOSCLI --audio-file /System/Library/Sounds/Glass.aiff`
-- `swift run HealthOSScribeStage --smoke-test`
-- `swift run HealthOSScribeStage --smoke-test-audio`
-- `swift run HealthOSVeridiaStage --smoke-test`
-- `swift run HealthOSCloudClinicStage --smoke-test`
+- `swift run Scribe --smoke-test`
+- `swift run Scribe --smoke-test-audio`
+- `swift run Veridia --smoke-test`
+- `swift run CloudClinic --smoke-test`

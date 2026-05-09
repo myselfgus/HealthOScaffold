@@ -13,9 +13,9 @@ modules_impacted:
   - HealthOSAACI
   - HealthOSMSR
   - HealthOSSessionRuntime
-  - HealthOSScribeStage
-  - HealthOSVeridiaStage
-  - HealthOSCloudClinicStage
+  - Scribe
+  - Veridia
+  - CloudClinic
 related_adrs:
   supersedes: []
   superseded_by: []

@@ -54,7 +54,7 @@ It is intentionally not about scenario-specific implementations.
 - [x] evidence-hook completeness validation added at minimal level
 - [x] bundle CLI smoke coverage now verifies manifest/spec/compiler-report/source-provenance emission for canonical lifecycle artifacts
 - [x] local validation checklist documented
-- [x] local workspace validation run executed (`bootstrap`, TS build/validate/bundle, Swift build, HealthOSCLI smoke, HealthOSScribeStage smoke)
+- [x] local workspace validation run executed (`bootstrap`, TS build/validate/bundle, Swift build, HealthOSCLI smoke, Scribe smoke)
 - [x] local lifecycle smoke now also confirms `--gos-review-bundle` and `--gos-promote-bundle` with persisted review/audit artifacts
 
 ## 4. Runtime binding

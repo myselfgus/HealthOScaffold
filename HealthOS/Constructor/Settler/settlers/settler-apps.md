@@ -42,9 +42,9 @@ The Settler must read these documents before acting in this territory:
 
 Primary paths this Settler may read and propose writes to:
 
-- `HealthOS/Tier4-Stages-Cast/Scribe/Sources/HealthOSScribeStage/` — Scribe Stage Swift source
-- `HealthOS/Tier4-Stages-Cast/Veridia/Sources/HealthOSVeridiaStage/` — Veridia Stage Swift source
-- `HealthOS/Tier4-Stages-Cast/CloudClinic/Sources/HealthOSCloudClinicStage/` — CloudClinic Stage Swift source
+- `HealthOS/Tier4-Stages-Cast/Scribe/Sources/Scribe/` — Scribe Stage Swift source
+- `HealthOS/Tier4-Stages-Cast/Veridia/Sources/Veridia/` — Veridia Stage Swift source
+- `HealthOS/Tier4-Stages-Cast/CloudClinic/Sources/CloudClinic/` — CloudClinic Stage Swift source
 - `HealthOS/Tier1-Mestral-Core/Schemas/` — Stage-facing schema contracts and shared envelopes
 - `HealthOS/Shared/docs/execution/todo/apps-and-interfaces.md` — Stages domain TODO tracker (path retained for compatibility)
 
@@ -95,17 +95,17 @@ make validate-all
 
 For Scribe UI or session flow changes:
 ```bash
-cd HealthOS && swift run HealthOSScribeStage --smoke-test
+cd HealthOS && swift run Scribe --smoke-test
 ```
 
 For Veridia changes:
 ```bash
-cd HealthOS && swift run HealthOSVeridiaStage --smoke-test
+cd HealthOS && swift run Veridia --smoke-test
 ```
 
 For CloudClinic changes:
 ```bash
-cd HealthOS && swift run HealthOSCloudClinicStage --smoke-test
+cd HealthOS && swift run CloudClinic --smoke-test
 ```
 
 For documentation-only changes:

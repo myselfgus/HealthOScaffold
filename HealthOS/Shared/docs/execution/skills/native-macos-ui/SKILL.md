@@ -51,7 +51,7 @@ For documentation-only scope changes:
 For SwiftUI/app target changes:
 - `cd HealthOS && swift build`
 - `cd HealthOS && swift test`
-- relevant smoke path, usually `cd HealthOS && swift run HealthOSScribeStage --smoke-test` for Scribe-facing behavior
+- relevant smoke path, usually `cd HealthOS/Tier4-Stages-Cast/Scribe && swift run Scribe --smoke-test` for Scribe-facing behavior
 
 ## Definition of done
 

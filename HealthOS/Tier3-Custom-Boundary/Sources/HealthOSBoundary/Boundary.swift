@@ -6,14 +6,15 @@
 //
 // SCAFFOLD: expose facades and envelopes once Tier 2 surfaces stabilise.
 import Foundation
-import HealthOSCore
+@_exported import CustomSDK
+@_exported import HealthOSCore
+@_exported import HealthOSSessionRuntime
 import HealthOSGOS
 import HealthOSAACI
 import HealthOSMSR
 import HealthOSAsyncRuntime
 import HealthOSUserAgentRuntime
 import HealthOSServiceRuntime
-import HealthOSSessionRuntime
 
 public enum Boundary {
     // Placeholder — Tier 3 mediated surface pending facade implementation.

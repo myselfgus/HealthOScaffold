@@ -17,7 +17,7 @@ graph TD
     CORE[HealthOSCore\nServiceOperationsContracts.swift]:::core
     SR[HealthOSServiceRuntime\nThis module]:::runtime
     BOUND[HealthOSBoundary\nBoundary compatibility module]:::boundary
-    CC[HealthOSCloudClinicStage\nService operations Stage]:::stage
+    CC[CloudClinic\nService operations Stage]:::stage
 
     CORE --> SR
     SR --> BOUND
@@ -42,7 +42,7 @@ graph TD
 
 **Scaffold stub.** `ServiceRuntime.swift` declares the module namespace only. The service-operations session surface, habilitation enforcement path, and audit trail are not yet implemented.
 
-`HealthOSCloudClinicStage` (technical executable for the service operations Stage) is the primary Stage consumer of this runtime via `HealthOSBoundary`. CloudClinic Stage wiring to this surface is blocked until the mediated session surface is implemented and stable.
+`CloudClinic` (technical executable for the service operations Stage) is the primary Stage consumer of this runtime via `HealthOSBoundary`. CloudClinic Stage wiring to this surface is blocked until the mediated session surface is implemented and stable.
 
 Type vocabulary cross-reference: `HealthOSCore/ServiceOperationsContracts.swift`
 

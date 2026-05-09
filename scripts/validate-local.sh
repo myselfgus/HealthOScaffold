@@ -33,6 +33,7 @@ run_step "validate-schemas" bash ./scripts/validate-schemas.sh
 run_step "validate-contracts" bash ./scripts/check-contract-drift.sh
 run_step "swift-build" make swift-build
 run_step "swift-test" make swift-test
+run_step "stage-package-check" make stage-package-check
 if [[ -d HealthOS/Constructor/ts/node_modules ]]; then
   run_step "ts-build" bash -lc "cd HealthOS/Constructor/ts && npm run build"
   run_step "ts-test" bash -lc "cd HealthOS/Constructor/ts && npm test --if-present --workspaces"
@@ -46,6 +47,8 @@ fi
 run_step "python-check" make python-check
 run_step "smoke-cli" make smoke-cli
 run_step "smoke-scribe" make smoke-scribe
+run_step "smoke-veridia" make smoke-veridia
+run_step "smoke-cloudclinic" make smoke-cloudclinic
 
 {
   echo "HealthOS local validation summary"

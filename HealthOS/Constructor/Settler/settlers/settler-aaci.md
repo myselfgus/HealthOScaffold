@@ -49,9 +49,9 @@ Primary paths this Settler may read and propose writes to:
 Forbidden paths (must not propose writes here):
 
 - `HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/` — Core law (read-only; changes require Core Settler)
-- `HealthOS/Tier4-Stages-Cast/Scribe/Sources/HealthOSScribeStage/`
-- `HealthOS/Tier4-Stages-Cast/Veridia/Sources/HealthOSVeridiaStage/`
-- `HealthOS/Tier4-Stages-Cast/CloudClinic/Sources/HealthOSCloudClinicStage/`
+- `HealthOS/Tier4-Stages-Cast/Scribe/Sources/Scribe/`
+- `HealthOS/Tier4-Stages-Cast/Veridia/Sources/Veridia/`
+- `HealthOS/Tier4-Stages-Cast/CloudClinic/Sources/CloudClinic/`
 - `HealthOS/Constructor/ts/agent-infra/`
 
 ---

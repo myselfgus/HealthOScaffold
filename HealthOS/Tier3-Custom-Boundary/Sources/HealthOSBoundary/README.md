@@ -1,8 +1,8 @@
 # HealthOSBoundary
 
-Boundary module — the intended import surface for Stage executables as this tier matures.
+Boundary module — the intended import surface for separate Stage packages as this tier matures.
 
-`HealthOSBoundary` is the canonical SwiftPM module for **Boundary**. It is the Tier 3 gateway between Core/GOS/Runtimes and Stage implementations. No Stage should import `HealthOSCore`, `HealthOSAACI`, `HealthOSSessionRuntime`, or any other Tier 1–2 module directly once the Boundary module is complete. All Stage-facing surfaces — session facades, mediated state, safe refs, command/result envelopes, and degraded-state views — are exposed through this module as the facade matures.
+`HealthOSBoundary` is the canonical SwiftPM module for **Boundary**. It is the Tier 3 gateway between Core/GOS/Runtimes and Stage implementations. No Stage package should import `HealthOSCore`, `HealthOSAACI`, `HealthOSSessionRuntime`, or any other Tier 1–2 module directly. Stage packages may depend on the platform package only through `HealthOSBoundary` and `CustomSDK`. All Stage-facing surfaces — session facades, mediated state, safe refs, command/result envelopes, and degraded-state views — are exposed through this module as the facade matures.
 
 ## Architecture Position
 
@@ -16,16 +16,19 @@ graph TD
 
     CORE[HealthOSCore]:::core
     RT["Tier 2 Runtimes\nAACI · GOS · MSR · SessionRuntime\nAsyncRuntime · UserAgentRuntime · ServiceRuntime"]:::runtime
+    CUSTOM[CustomSDK\nStage Custom definitions]:::boundary
     BOUND[HealthOSBoundary\ntechnical module — Tier 3 Boundary]:::boundary
-    SCRIBE[HealthOSScribeStage]:::app
-    VERIDIA[HealthOSVeridiaStage]:::app
-    CC[HealthOSCloudClinicStage]:::app
+    SCRIBE[Scribe Package]:::app
+    VERIDIA[Veridia Package]:::app
+    CC[CloudClinic Package]:::app
 
     CORE --> RT
+    CORE --> CUSTOM
     RT --> BOUND
-    BOUND --> SCRIBE
-    BOUND --> VERIDIA
-    BOUND --> CC
+    CUSTOM --> BOUND
+    BOUND & CUSTOM --> SCRIBE
+    BOUND & CUSTOM --> VERIDIA
+    BOUND & CUSTOM --> CC
 ```
 
 ## Responsibilities
@@ -35,28 +38,25 @@ graph TD
 - Surface degraded-state representations so Stages can render gracefully when Tier 2 runtimes are unavailable
 - Enforce the Boundary contract: no raw direct identifiers, no GOS spec JSON, no provider secrets, no storage paths reach Stage code
 - Remain the single dependency point; adding a new Tier 2 surface to Stages always goes through this module first
+- Pair with `CustomSDK`, which defines the Core-law-governed SDK vocabulary each Stage must satisfy before launch
 
 ## File Map
 
 | File | Domain |
 | :--- | :--- |
-| `Boundary.swift` | Placeholder enum — facade implementation pending Tier 2 surface stabilization |
+| `Boundary.swift` | Boundary namespace plus transitional re-export shim while mediated facades are completed |
 
 ## Current Maturity
 
-**Stub / scaffold.** `Boundary.swift` imports all upstream Tier 2 modules and declares the namespace, but no facades or envelopes are implemented. Facade implementation is blocked on Tier 2 surface stabilization.
+**Transitional facade shim.** `Boundary.swift` imports upstream Tier 2 modules and re-exports selected platform modules so the separated Stage packages can compile while the final mediated facades are implemented. The package boundary is now correct: `Scribe`, `Veridia`, and `CloudClinic` are separate Swift packages and do not declare direct dependencies on Core or Tier 2 modules.
 
-Known deviations (marked as TODO in `Package.swift`):
-- `HealthOSVeridiaStage` retains a direct dependency on `HealthOSCore` pending Boundary completion.
-- `HealthOSScribeStage` retains direct dependencies on `HealthOSCore` and `HealthOSSessionRuntime` pending Boundary completion.
-
-These deviations are tracked and must be resolved before Stage executables are considered Boundary-compliant.
+The remaining gap is semantic, not package-topological: replace transitional re-exports with explicit app-safe facades, envelopes, safe refs, mediated state, degraded state, and command/result types.
 
 Architecture reference: `HealthOS/Shared/docs/execution/21-structural-ontology-and-product-readiness-plan.md`
 
 ## Key Invariants
 
-- Stage executables must import `HealthOSBoundary` only once the facade is complete — never any Tier 1–2 module directly.
+- Stage packages must import `HealthOSBoundary` and `CustomSDK`; they must never import any Tier 1–2 module directly.
 - Raw direct identifiers (CPF, name, DOB in unmasked form) must never appear in any type exported by this module.
 - Degraded-state views must be accurate; they must not claim availability that Tier 2 has not confirmed.
 - Facade implementations must not bypass Core law checks (consent, habilitation, gate, finality, provenance).

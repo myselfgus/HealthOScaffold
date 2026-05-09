@@ -3,7 +3,7 @@
 Patient health identity Stage for HealthOS. Veridia gives patients governed access to their identity, consent state, data custody, and export controls via `HealthOSBoundary`. It never defines Core law or holds clinical authority.
 
 **Architecture:** `HealthOS/Shared/docs/architecture/12-veridia.md`
-**Executable surface:** [`HealthOS/Tier4-Stages-Cast/Veridia/Sources/HealthOSVeridiaStage/`](../../Veridia/Sources/HealthOSVeridiaStage/)
+**Executable surface:** [`HealthOS/Tier4-Stages-Cast/Veridia/Sources/Veridia/`](../../Veridia/Sources/Veridia/)
 **Design surface:** [`HealthOS/Shared/DesignSystem/ui_kits/veridia/`](../../../Shared/DesignSystem/ui_kits/veridia/)
 **Runtime:** `HealthOSUserAgentRuntime` (Tier 2) via `HealthOSBoundary`
 
@@ -41,6 +41,6 @@ flowchart LR
 
 ## Maturity
 
-Session boundary is smoke-testable (`HealthOSVeridiaStage --smoke-test`).
+Session boundary is smoke-testable (`Veridia --smoke-test`).
 No final UI shell is implemented. All screens are contract-first — `VeridiaSessionContracts.swift` and `UserSovereigntyContracts.swift` define the mediated surface.
-`HealthOSVeridiaStage` currently retains a direct `HealthOSCore` dependency pending `HealthOSBoundary` facade completion (marked TODO in `HealthOS/Package.swift`).
+`Veridia` currently retains a direct `HealthOSCore` dependency pending `HealthOSBoundary` facade completion (marked TODO in `HealthOS/Package.swift`).

@@ -32,7 +32,7 @@ make validate-all
 cd HealthOS && swift build && swift test
 cd HealthOS/Constructor/ts && npm install && npm run build && npm test --if-present
 cd python && python -m compileall .
-cd HealthOS && swift run HealthOSCLI && swift run HealthOSScribeStage --smoke-test
+cd HealthOS && swift run HealthOSCLI && swift run Scribe --smoke-test
 ```
 
 ## Documents to review before tag/release prep

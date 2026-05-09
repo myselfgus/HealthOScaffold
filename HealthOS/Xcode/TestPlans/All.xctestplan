@@ -40,8 +40,8 @@
       "parallelizable" : true,
       "target" : {
         "containerPath" : "container:",
-        "identifier" : "HealthOSStageSmokeTests",
-        "name" : "HealthOSStageSmokeTests"
+        "identifier" : "StagePackageStructureTests",
+        "name" : "StagePackageStructureTests"
       }
     },
     {

@@ -12,9 +12,9 @@ modules_impacted:
   - HealthOSAACI
   - HealthOSMSR
   - HealthOSSessionRuntime
-  - HealthOSScribeStage
-  - HealthOSVeridiaStage
-  - HealthOSCloudClinicStage
+  - Scribe
+  - Veridia
+  - CloudClinic
   - HealthOSCLI
 related_adrs:
   supersedes: []

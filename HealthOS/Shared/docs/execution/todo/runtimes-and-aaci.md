@@ -49,7 +49,7 @@ Files touched:
 - `HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSAACI/AACI.swift`
 - `HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSSessionRuntime/SessionRunner.swift`
 - `HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSSessionRuntime/ScribeSessionAdapter.swift`
-- `HealthOS/Tier4-Stages-Cast/Scribe/Sources/HealthOSScribeStage/Views/ScribeFirstSliceView.swift`
+- `HealthOS/Tier4-Stages-Cast/Scribe/Sources/Scribe/Views/ScribeFirstSliceView.swift`
 - `HealthOS/Shared/Tests/HealthOSTests/MentalSpaceRuntimeTests.swift`
 - `HealthOS/Constructor/ts/packages/contracts/src/index.ts`
 - `HealthOS/Tier1-Mestral-Core/Schemas/contracts/async-job.schema.json`

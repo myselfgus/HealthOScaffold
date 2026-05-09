@@ -8,9 +8,9 @@
 ### Escopo
 Auditoria completa de strings visíveis ao usuário em todos os alvos:
 - HealthOSCLI (9 itens)
-- HealthOSScribeStage (24 itens)
-- HealthOSVeridiaStage (3 itens)
-- HealthOSCloudClinicStage (2 itens)
+- Scribe (24 itens)
+- Veridia (3 itens)
+- CloudClinic (2 itens)
 - HealthOSCore/SessionRuntime — superfície de mensagens (2 itens)
 - HealthOSMSR/Prompts — 6 revisões de prompts de IA
 
@@ -24,8 +24,8 @@ Total de itens identificados: **40 + 6 revisões de prompts**
 
 Estes itens causam confusão imediata, expõem jargão técnico ao usuário final ou representam risco de segurança/privacidade.
 
-- **[SCR-01 a SCR-16]** — HealthOSScribeStage: todos os rótulos, botões, seções e empty states em inglês ou com jargão
-  - Ver: [ux-copy-proposals/HealthOSScribeStage.md](ux-copy-proposals/HealthOSScribeStage.md) — Fluxos 1 a 5
+- **[SCR-01 a SCR-16]** — Scribe: todos os rótulos, botões, seções e empty states em inglês ou com jargão
+  - Ver: [ux-copy-proposals/Scribe.md](ux-copy-proposals/Scribe.md) — Fluxos 1 a 5
   - Esforço: Médio (substituição de strings, sem refactor de lógica)
 
 - **[CLI-01, CLI-02, CLI-03, CLI-05]** — HealthOSCLI: mensagens de sucesso/erro sem orientação, captura demo sem aviso
@@ -33,8 +33,8 @@ Estes itens causam confusão imediata, expõem jargão técnico ao usuário fina
   - Esforço: Baixo
 
 - **[VER-01, CC-01]** — VeridiaApp e CloudClinicApp: modo não interativo com jargão de scaffold
-  - Ver: [ux-copy-proposals/HealthOSVeridiaStage.md](ux-copy-proposals/HealthOSVeridiaStage.md) — Fluxo 1
-  - Ver: [ux-copy-proposals/HealthOSCloudClinicStage.md](ux-copy-proposals/HealthOSCloudClinicStage.md) — Fluxo 1
+  - Ver: [ux-copy-proposals/Veridia.md](ux-copy-proposals/Veridia.md) — Fluxo 1
+  - Ver: [ux-copy-proposals/CloudClinic.md](ux-copy-proposals/CloudClinic.md) — Fluxo 1
   - Esforço: Baixo
 
 - **[Prompt-5, Prompt-6]** — Prompts MSR: `key_insights` sem limite de escopo e ausência de instrução de privacidade
@@ -47,8 +47,8 @@ Estes itens causam confusão imediata, expõem jargão técnico ao usuário fina
 
 Estes itens degradam a experiência mas não bloqueiam uso ou criam risco imediato.
 
-- **[SCR-17 a SCR-24]** — HealthOSScribeStage: empty states sem orientação, acentuação incorreta, mensagens de erro não orientadas
-  - Ver: [ux-copy-proposals/HealthOSScribeStage.md](ux-copy-proposals/HealthOSScribeStage.md) — Fluxos 4 e 5
+- **[SCR-17 a SCR-24]** — Scribe: empty states sem orientação, acentuação incorreta, mensagens de erro não orientadas
+  - Ver: [ux-copy-proposals/Scribe.md](ux-copy-proposals/Scribe.md) — Fluxos 4 e 5
   - Esforço: Baixo
 
 - **[CLI-04, CLI-06, CLI-07]** — HealthOSCLI: saídas GOS sem separador, tags HTML-like na saída
@@ -64,7 +64,7 @@ Estes itens degradam a experiência mas não bloqueiam uso ou criam risco imedia
   - Esforço: Baixo
 
 - **Mapa IssueCode → string localizada** — ScribeApp: issues exibem `rawValue` de código ao clínico
-  - Ver: [ux-copy-proposals/HealthOSScribeStage.md](ux-copy-proposals/HealthOSScribeStage.md) — Problema 5c
+  - Ver: [ux-copy-proposals/Scribe.md](ux-copy-proposals/Scribe.md) — Problema 5c
   - Esforço: Médio (criar mapa de tradução)
 
 ---
@@ -78,7 +78,7 @@ Estes itens melhoram consistência e preparam para i18n/acessibilidade.
   - Esforço: Baixo
 
 - **[VER-03, CC-02]** — Smoke tests: saídas técnicas com jargão de QA
-  - Ver: [ux-copy-proposals/HealthOSVeridiaStage.md](ux-copy-proposals/HealthOSVeridiaStage.md) — Fluxo 4
+  - Ver: [ux-copy-proposals/Veridia.md](ux-copy-proposals/Veridia.md) — Fluxo 4
   - Esforço: Baixo
 
 - **[Prompt-3]** — VDLP: disclaimers de frameworks diagnósticos
@@ -94,7 +94,7 @@ Estes itens melhoram consistência e preparam para i18n/acessibilidade.
   - Esforço: Médio
 
 - **Labels de estado mapeados** — ScribeApp: enums de estado exibidos diretamente na UI
-  - Ver: [ux-copy-proposals/HealthOSScribeStage.md](ux-copy-proposals/HealthOSScribeStage.md) — Labels de estado
+  - Ver: [ux-copy-proposals/Scribe.md](ux-copy-proposals/Scribe.md) — Labels de estado
   - Esforço: Baixo
 
 ---

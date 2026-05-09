@@ -6,7 +6,8 @@ Custom is the Core-law-governed definition of a Stage. It is not a separate Heal
 
 Current contents:
 
+- `Sources/CustomSDK/` - Stage Custom SDK vocabulary and scaffold compliance checks.
 - `Sources/HealthOSBoundary/` - Boundary Swift target.
 - `Tests/HealthOSBoundaryTests/` - Boundary test target.
 
-Stages should consume mediated Boundary surfaces. Known direct dependencies from current scaffold targets are documented in `HealthOS/Package.swift` as TODOs, not as permanent architecture.
+Stages consume mediated Boundary surfaces through separate Stage packages. The allowed platform imports for a Stage package are `HealthOSBoundary` and `CustomSDK`; direct Stage dependencies on Core or Tier 2 runtimes are no longer allowed.

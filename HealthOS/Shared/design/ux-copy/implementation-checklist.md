@@ -12,9 +12,9 @@
 - [ ] Verificar se há strings em `SessionRunner.swift`, `ScribeSessionDemoBootstrap.swift` ou outros arquivos de runtime que chegam à UI/CLI
 
 ### 1.2 Criação de arquivo de localização (apps GUI)
-- [ ] Criar `Localizable.xcstrings` (ou `Localizable.strings`) para HealthOSScribeStage
-- [ ] Criar `Localizable.xcstrings` para HealthOSVeridiaStage (preparatório — UI ainda não implementada)
-- [ ] Criar `Localizable.xcstrings` para HealthOSCloudClinicStage (preparatório)
+- [ ] Criar `Localizable.xcstrings` (ou `Localizable.strings`) para Scribe
+- [ ] Criar `Localizable.xcstrings` para Veridia (preparatório — UI ainda não implementada)
+- [ ] Criar `Localizable.xcstrings` para CloudClinic (preparatório)
 - [ ] Nomear chaves de string no padrão `snake_case` por domínio funcional:
   - Ex.: `session.start.button`, `session.error.no_facade`, `capture.empty_state`
 - [ ] Nunca concatenar strings dinâmicas — usar `String(format:)` ou interpolação com `NSLocalizedString`
@@ -36,7 +36,7 @@
 - [ ] Adicionar aviso visível quando captura padrão (hardcoded) for usada
 - [ ] Implementar parsing de `--help` com layout padronizado (ver `HealthOSCLI.md`)
 
-### 2.2 HealthOSScribeStage — UI (SwiftUI)
+### 2.2 Scribe — UI (SwiftUI)
 - [ ] Alterar `WindowGroup("Scribe First Slice")` → `WindowGroup("Scribe — Sessão Clínica")`
 - [ ] Substituir todos `GroupBox` com títulos em inglês → pt-BR (5 ocorrências)
 - [ ] Substituir todos os `Button` em inglês → pt-BR (8 ocorrências)
@@ -45,7 +45,7 @@
 - [ ] Substituir `LabeledContent` com keys em inglês → pt-BR (10+ ocorrências)
 - [ ] Corrigir acentuação em todas as strings em português (7+ ocorrências identificadas)
 
-### 2.3 HealthOSScribeStage — ViewModel (mensagens de erro/estado)
+### 2.3 Scribe — ViewModel (mensagens de erro/estado)
 - [ ] Substituir `"Scribe bridge is unavailable..."` → mensagem localizada
 - [ ] Substituir `"Scribe demo bootstrap failed..."` → mensagem localizada
 - [ ] Substituir `"bootstrap pending"` → `"aguardando inicialização"`
@@ -54,7 +54,7 @@
 - [ ] Substituir `"Nao foi possivel selecionar o arquivo de audio local: ..."` → mensagem traduzida e orientadora
 - [ ] Criar mapa `IssueCode → String localizada` e `FailureKind → String localizada`
 
-### 2.4 HealthOSVeridiaStage e HealthOSCloudClinicStage
+### 2.4 Veridia e CloudClinic
 - [ ] Substituir mensagem de modo não interativo → pt-BR estruturado
 - [ ] Substituir mensagens de smoke test → pt-BR
 
@@ -62,7 +62,7 @@
 
 ## Fase 3 — Testes de UI e CLI
 
-### 3.1 Testes de UI (HealthOSScribeStage)
+### 3.1 Testes de UI (Scribe)
 - [ ] Verificar que nenhum `rawValue` de enum aparece diretamente em `Text()` components voltados ao usuário
 - [ ] Verificar que todos os `LabeledContent` usam strings legíveis (não `rawValue` de enums de arquitetura)
 - [ ] Executar VoiceOver (acessibilidade) nos 5 GroupBox principais — verificar que os rótulos são informativos fora de contexto visual
@@ -78,9 +78,9 @@
 - [ ] Verificar que erros vão para `stderr` e saídas normais vão para `stdout`
 
 ### 3.3 Smoke tests
-- [ ] `swift run HealthOSScribeStage --smoke-test` → verificar saídas em pt-BR onde aplicável
-- [ ] `swift run HealthOSVeridiaStage --smoke-test` → verificar mensagens de sucesso/falha localizadas
-- [ ] `swift run HealthOSCloudClinicStage --smoke-test` → verificar mensagem de sucesso localizada
+- [ ] `swift run Scribe --smoke-test` → verificar saídas em pt-BR onde aplicável
+- [ ] `swift run Veridia --smoke-test` → verificar mensagens de sucesso/falha localizadas
+- [ ] `swift run CloudClinic --smoke-test` → verificar mensagem de sucesso localizada
 
 ---
 

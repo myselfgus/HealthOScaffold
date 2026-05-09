@@ -451,7 +451,7 @@ git mv swift/Sources/HealthOSFirstSliceSupport HealthOS/Tier2-GOS-Runtimes/Sourc
 - `HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSSessionRuntime/SessionRunner.swift` — rename file to `SessionRunner.swift` and update any internal references to "FirstSlice" in public API names (keep internal names if needed for now; public API only)
 - `HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSSessionRuntime/ScribeSessionAdapter.swift` — rename to `ScribeSessionAdapter.swift` and update public type names
 - `HealthOS/Shared/Sources/HealthOSCLI/CLIEntrypoint.swift` — update imports: `HealthOSFirstSliceSupport` → `HealthOSSessionRuntime`
-- `HealthOS/Tier4-Stages-Cast/Scribe/Sources/HealthOSScribeStage/` — update imports
+- `HealthOS/Tier4-Stages-Cast/Scribe/Sources/Scribe/` — update imports
 - `HealthOS/Shared/Tests/HealthOSTests/` — update imports and any references in test files
 - `HealthOS/Shared/docs/execution/02-status-and-tracking.md` — completion entry
 - `HealthOS/Shared/docs/execution/21-structural-ontology-and-product-readiness-plan.md` — mark STR-004 DONE
@@ -482,8 +482,8 @@ These tasks add missing product targets. They can be done after P1 or in paralle
 
 **Files to create:**
 ```
-HealthOS/Tier4-Stages-Cast/Veridia/Sources/HealthOSVeridiaStage/VeridiaEntrypoint.swift
-HealthOS/Tier4-Stages-Cast/CloudClinic/Sources/HealthOSCloudClinicStage/CloudClinicEntrypoint.swift
+HealthOS/Tier4-Stages-Cast/Veridia/Sources/Veridia/VeridiaEntrypoint.swift
+HealthOS/Tier4-Stages-Cast/CloudClinic/Sources/CloudClinic/CloudClinicEntrypoint.swift
 ```
 
 **`VeridiaEntrypoint.swift` minimum:**
@@ -514,32 +514,32 @@ struct VeridiaEntrypoint {
 **`HealthOS/Package.swift` additions:**
 ```swift
 .executableTarget(
-    name: "HealthOSVeridiaStage",
+    name: "Veridia",
     dependencies: ["HealthOSCore"]
 ),
 .executableTarget(
-    name: "HealthOSCloudClinicStage",
+    name: "CloudClinic",
     dependencies: ["HealthOSCore"]
 ),
 ```
 
 Also add to products:
 ```swift
-.executable(name: "HealthOSVeridiaStage", targets: ["HealthOSVeridiaStage"]),
-.executable(name: "HealthOSCloudClinicStage", targets: ["HealthOSCloudClinicStage"]),
+.executable(name: "Veridia", targets: ["Veridia"]),
+.executable(name: "CloudClinic", targets: ["CloudClinic"]),
 ```
 
 **Files to touch:**
 - `HealthOS/Package.swift`
-- `HealthOS/Tier4-Stages-Cast/Veridia/Sources/HealthOSVeridiaStage/VeridiaEntrypoint.swift` (new)
-- `HealthOS/Tier4-Stages-Cast/CloudClinic/Sources/HealthOSCloudClinicStage/CloudClinicEntrypoint.swift` (new)
+- `HealthOS/Tier4-Stages-Cast/Veridia/Sources/Veridia/VeridiaEntrypoint.swift` (new)
+- `HealthOS/Tier4-Stages-Cast/CloudClinic/Sources/CloudClinic/CloudClinicEntrypoint.swift` (new)
 - `HealthOS/Shared/docs/execution/02-status-and-tracking.md`
 - `HealthOS/Shared/docs/execution/21-structural-ontology-and-product-readiness-plan.md`
 
 **Definition of done:**
 - `swift build` PASS — CLI, Scribe, Veridia, CloudClinic, and test targets build
-- `swift run HealthOSVeridiaStage --smoke-test` exits 0 and prints scaffold message
-- `swift run HealthOSCloudClinicStage --smoke-test` exits 0 and prints scaffold message
+- `swift run Veridia --smoke-test` exits 0 and prints scaffold message
+- `swift run CloudClinic --smoke-test` exits 0 and prints scaffold message
 - `swift test` PASS — no regressions
 - `make validate-all` PASS
 
@@ -554,12 +554,12 @@ Also add to products:
 **Scope:** Wire `UserSovereigntyContracts.swift` contracts into a minimal `VeridiaSessionFacade` (equivalent pattern to `ScribeFirstSliceFacade`) so Veridia has an executable session boundary, not just a contract-only posture.
 
 **Definition of done:**
-- `HealthOSVeridiaStage` can run a governed user-agent session scaffold (seeded input, governed output, honest degraded state)
+- `Veridia` can run a governed user-agent session scaffold (seeded input, governed output, honest degraded state)
 - Provenance records at least `veridia.session.start` and `veridia.session.end`
 - `make swift-test` PASS with new Veridia boundary smoke test added
 - `make smoke-scribe` still PASS (no regression)
 
-**Completion note (2026-05-04):** APP-011 completed by adding `VeridiaSessionFacade` / `VeridiaSessionAdapter`, wiring `HealthOSVeridiaStage --smoke-test` through a governed Veridia session start/end boundary, and adding boundary tests in `VeridiaSessionFacadeTests`. Validation evidence recorded in `HealthOS/Shared/docs/execution/02-status-and-tracking.md`: Swift tests passed and `make smoke-veridia` verified `veridia.session.start` + `veridia.session.end`. This does not implement final Veridia UI, production readiness, real provider/signature/interoperability behavior, or clinical/regulatory authority.
+**Completion note (2026-05-04):** APP-011 completed by adding `VeridiaSessionFacade` / `VeridiaSessionAdapter`, wiring `Veridia --smoke-test` through a governed Veridia session start/end boundary, and adding boundary tests in `VeridiaSessionFacadeTests`. Validation evidence recorded in `HealthOS/Shared/docs/execution/02-status-and-tracking.md`: Swift tests passed and `make smoke-veridia` verified `veridia.session.start` + `veridia.session.end`. This does not implement final Veridia UI, production readiness, real provider/signature/interoperability behavior, or clinical/regulatory authority.
 
 ---
 
@@ -727,4 +727,4 @@ When a task is done:
 **Completion note (2026-04-30):** STR-004 completed by renaming the Swift module `HealthOSFirstSliceSupport` to `HealthOSSessionRuntime` with `git mv`, updating SwiftPM target/dependency wiring, CLI/Scribe/test imports, and architecture/execution documentation references. Primary public runtime types were renamed (`FirstSliceRunner` → `SessionRunner`, `ScribeFirstSliceAdapter` → `ScribeSessionAdapter`, demo bootstrap surfaces to session-runtime vocabulary). No Core/GOS/AACI/Mental Space/app clinical behavior changed; no Veridia/CloudClinic target additions were made in this work unit. Residual internal `FirstSlice*` contract names in `HealthOSCore` remain intentionally unchanged for STR-004 scope control.
 
 
-**Completion note (2026-04-30):** STR-005 completed by adding `HealthOSVeridiaStage` and `HealthOSCloudClinicStage` as minimal Swift executable scaffold targets with honest `--smoke-test` paths. Both targets compile and print scaffold-only, no-final-UI, no-clinical-authority smoke output. No Veridia or CloudClinic session wiring, final UI shell, Core law, GOS, AACI, Mental Space Runtime, provider, storage, or Steward/Settler behavior was implemented or changed. At STR-005 completion, both Stage wiring tasks appeared unblocked by target presence; ADR-0013 later clarified that target presence is not enough for non-provisional Stage wiring. APP-011 was completed as Boundary scaffold; APP-012 is now blocked pending Core/GOS/runtime/Boundary/Custom readiness.
+**Completion note (2026-04-30):** STR-005 completed by adding `Veridia` and `CloudClinic` as minimal Swift executable scaffold targets with honest `--smoke-test` paths. Both targets compile and print scaffold-only, no-final-UI, no-clinical-authority smoke output. No Veridia or CloudClinic session wiring, final UI shell, Core law, GOS, AACI, Mental Space Runtime, provider, storage, or Steward/Settler behavior was implemented or changed. At STR-005 completion, both Stage wiring tasks appeared unblocked by target presence; ADR-0013 later clarified that target presence is not enough for non-provisional Stage wiring. APP-011 was completed as Boundary scaffold; APP-012 is now blocked pending Core/GOS/runtime/Boundary/Custom readiness.

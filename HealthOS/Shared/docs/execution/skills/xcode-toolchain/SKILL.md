@@ -16,9 +16,9 @@ or any Stage executable. Required gating criterion before RC declaration.
 **HealthOS targets to profile:**
 - `HealthOSSessionRuntime` — session pipeline latency, transcript normalization throughput
 - `HealthOSCLI` — CLI command overhead, GOS bundle lifecycle timing
-- `HealthOSScribeStage` — main-thread rendering, audio capture memory
-- `HealthOSVeridiaStage` — identity session memory footprint
-- `HealthOSCloudClinicStage` — service-operations session startup time
+- `Scribe` — main-thread rendering, audio capture memory
+- `Veridia` — identity session memory footprint
+- `CloudClinic` — service-operations session startup time
 
 **Instruments templates to use:**
 - **Time Profiler** — CPU hotspots in session pipeline and MSR (ASL→VDLP→GEM)
@@ -42,9 +42,9 @@ stub/mock audio paths in Simulator runs.
 
 **Standard smoke invocations via Simulator:**
 ```bash
-cd HealthOS && swift run HealthOSScribeStage --smoke-test
-cd HealthOS && swift run HealthOSVeridiaStage --smoke-test
-cd HealthOS && swift run HealthOSCloudClinicStage --smoke-test
+cd HealthOS/Tier4-Stages-Cast/Scribe && swift run Scribe --smoke-test
+cd HealthOS/Tier4-Stages-Cast/Veridia && swift run Veridia --smoke-test
+cd HealthOS/Tier4-Stages-Cast/CloudClinic && swift run CloudClinic --smoke-test
 ```
 
 **Constraints:**
@@ -107,8 +107,8 @@ No Reality Composer Pro assets are committed to this repository.
 
 ## Icon Composer
 
-**When to use:** Creating or updating app icons for `HealthOSScribeStage`,
-`HealthOSVeridiaStage`, or `HealthOSCloudClinicStage`.
+**When to use:** Creating or updating app icons for `Scribe`,
+`Veridia`, or `CloudClinic`.
 
 **Notes:**
 - Icons are cosmetic; do not block any implementation task on icon completion

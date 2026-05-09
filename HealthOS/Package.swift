@@ -21,15 +21,14 @@ let package = Package(
         .library(name: "HealthOSSessionRuntime",   targets: ["HealthOSSessionRuntime"]),
 
         // ── Tier 3 — Custom Boundary ───────────────────────────────────────
+        .library(name: "CustomSDK",                targets: ["CustomSDK"]),
         .library(name: "HealthOSBoundary",         targets: ["HealthOSBoundary"]),
 
         // ── Operator CLI (not a Stage) ─────────────────────────────────────
         .executable(name: "HealthOSCLI",           targets: ["HealthOSCLI"]),
 
-        // ── Tier 4 — Stages Cast ───────────────────────────────────────────
-        .executable(name: "HealthOSScribeStage",      targets: ["HealthOSScribeStage"]),
-        .executable(name: "HealthOSVeridiaStage",     targets: ["HealthOSVeridiaStage"]),
-        .executable(name: "HealthOSCloudClinicStage", targets: ["HealthOSCloudClinicStage"]),
+        // Tier 4 Stages are intentionally not products of this platform package.
+        // Each Stage owns its package under Tier4-Stages-Cast/<Stage>/Package.swift.
     ],
     targets: [
 
@@ -74,9 +73,14 @@ let package = Package(
                 path: "Tier2-GOS-Runtimes/Sources/HealthOSSessionRuntime"),
 
         // ── Tier 3 — Custom Boundary ───────────────────────────────────────
+        .target(name: "CustomSDK",
+                dependencies: ["HealthOSCore"],
+                path: "Tier3-Custom-Boundary/Sources/CustomSDK",
+                exclude: ["README.md"]),
         // Stages must only import HealthOSBoundary, never Tier 2 modules directly.
         .target(name: "HealthOSBoundary",
                 dependencies: [
+                    "CustomSDK",
                     "HealthOSCore",
                     "HealthOSGOS",
                     "HealthOSAACI",
@@ -93,25 +97,6 @@ let package = Package(
         .executableTarget(name: "HealthOSCLI",
                           dependencies: ["HealthOSCore", "HealthOSSessionRuntime"],
                           path: "Shared/Sources/HealthOSCLI"),
-
-        // ── Tier 4 — Stages Cast ───────────────────────────────────────────
-        // HealthOSBoundary is the primary Stage surface.
-        // TODO: remove direct Tier 1/2 dependencies once the Scribe session facade is complete in Boundary.
-        .executableTarget(name: "HealthOSScribeStage",
-                          dependencies: ["HealthOSBoundary", "HealthOSCore", "HealthOSSessionRuntime"],
-                          path: "Tier4-Stages-Cast/Scribe/Sources/HealthOSScribeStage",
-                          exclude: ["README.md"],
-                          resources: [.process("Resources")]),
-        // HealthOSBoundary is the primary Stage surface.
-        // TODO: remove HealthOSCore once VeridiaSession types migrate into HealthOSBoundary.
-        .executableTarget(name: "HealthOSVeridiaStage",
-                          dependencies: ["HealthOSBoundary", "HealthOSCore"],
-                          path: "Tier4-Stages-Cast/Veridia/Sources/HealthOSVeridiaStage",
-                          resources: [.process("Resources")]),
-        .executableTarget(name: "HealthOSCloudClinicStage",
-                          dependencies: ["HealthOSBoundary"],
-                          path: "Tier4-Stages-Cast/CloudClinic/Sources/HealthOSCloudClinicStage",
-                          resources: [.process("Resources")]),
 
         // ── Tests ────────────────────────────────────────────────────────────
         .testTarget(name: "HealthOSCoreTests",
@@ -131,10 +116,10 @@ let package = Package(
                     ],
                     path: "Tier2-GOS-Runtimes/Tests/HealthOSRuntimeTests"),
         .testTarget(name: "HealthOSBoundaryTests",
-                    dependencies: ["HealthOSBoundary"],
+                    dependencies: ["HealthOSBoundary", "CustomSDK"],
                     path: "Tier3-Custom-Boundary/Tests/HealthOSBoundaryTests"),
-        .testTarget(name: "HealthOSStageSmokeTests",
-                    path: "Tier4-Stages-Cast/Tests/HealthOSStageSmokeTests"),
+        .testTarget(name: "StagePackageStructureTests",
+                    path: "Tier4-Stages-Cast/Tests/StagePackageStructureTests"),
         .testTarget(name: "HealthOSConstructionSystemTests",
                     path: "Constructor/Tests/HealthOSConstructionSystemTests"),
         .testTarget(name: "HealthOSSupportToolingTests",

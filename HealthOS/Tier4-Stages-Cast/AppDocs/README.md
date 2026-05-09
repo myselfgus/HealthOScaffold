@@ -27,9 +27,9 @@ graph LR
 
 | Stage | Surface | Maturity | Swift target |
 | :--- | :--- | :--- | :--- |
-| **Scribe** | Professional clinical workspace — session capture, transcript, SOAP draft, gate | Minimal validation surface (SwiftUI, macOS 26+) | `HealthOSScribeStage` |
-| **Veridia** | Patient health identity — identity management, consent, access trail, export | Session boundary smoke — no final UI | `HealthOSVeridiaStage` |
-| **CloudClinic** | Service operations — service setup, professional onboarding, ops dashboard | Scaffold placeholder — no final UI | `HealthOSCloudClinicStage` |
+| **Scribe** | Professional clinical workspace — session capture, transcript, SOAP draft, gate | Minimal validation surface (SwiftUI, macOS 26+) | `Scribe` |
+| **Veridia** | Patient health identity — identity management, consent, access trail, export | Session boundary smoke — no final UI | `Veridia` |
+| **CloudClinic** | Service operations — service setup, professional onboarding, ops dashboard | Scaffold placeholder — no final UI | `CloudClinic` |
 
 Executable surfaces: [`Scribe/Sources/`](../Scribe/Sources/), [`Veridia/Sources/`](../Veridia/Sources/), [`CloudClinic/Sources/`](../CloudClinic/Sources/)
 Design system: [`Shared/DesignSystem/`](../../Shared/DesignSystem/)

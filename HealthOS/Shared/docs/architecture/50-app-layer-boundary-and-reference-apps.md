@@ -32,12 +32,14 @@ HealthOS
         v
   Stage
     governed application consumers: Scribe, Veridia, CloudClinic,
-    future first-party/third-party/native/web/external consumers
+    future first-party/third-party/native/web/external consumers.
+    Each Stage owns its own package and must enter through Boundary.
 
 Custom (required for each Stage)
   CoreLaw-governed definition of capabilities, limits, consumed surfaces,
   actors, degradation behavior, validation, and prohibitions.
   Custom is applied through Boundary and is not a separate HealthOS tier.
+  Swift vocabulary lives in CustomSDK.
 
 Construction System (parallel, outside clinical/runtime hierarchy)
   Steward, Settlers, Territories, Settlements, HealthOS Forge MCP.
@@ -50,10 +52,26 @@ Stage work advances only after the mediated surface the Stage consumes is implem
 
 A contract-only surface can be useful evidence, but it is not enough for non-provisional Stage wiring. Building a Stage adapter around absent or unstable platform behavior creates false scaffold that will need to be rewritten.
 
+## Package Boundary
+
+The central platform package is `HealthOS/Package.swift`. It owns Core, GOS/Runtimes, `CustomSDK`, `HealthOSBoundary`, `HealthOSCLI`, and structural/shared test targets.
+
+Each Stage owns a separate Swift package:
+
+| Stage | Package root | Product |
+|---|---|---|
+| Scribe | `HealthOS/Tier4-Stages-Cast/Scribe/Package.swift` | `Scribe` |
+| Veridia | `HealthOS/Tier4-Stages-Cast/Veridia/Package.swift` | `Veridia` |
+| CloudClinic | `HealthOS/Tier4-Stages-Cast/CloudClinic/Package.swift` | `CloudClinic` |
+
+Stage package dependencies on HealthOS are limited to `HealthOSBoundary` and `CustomSDK`. Technical names such as `HealthOS*Stage` are reserved against reuse; Stage product names are the Stage names themselves.
+
 ## What Stages May Consume
 
 Stages may consume:
 
+- `CustomSDK` definitions that state Stage capabilities, prohibitions, degradation behavior, and validation requirements;
+- the Stage's `Custom.md` file as the human-readable governed definition;
 - command/result envelopes issued by Core or runtime-mediated facades;
 - app-safe views and summaries;
 - safe refs that do not grant access by themselves;

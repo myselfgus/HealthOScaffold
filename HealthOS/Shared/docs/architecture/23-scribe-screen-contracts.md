@@ -146,7 +146,7 @@ In the current executable spine, `requestDraftRefresh` intentionally returns deg
 
 ## Minimal SwiftUI first-slice implementation
 
-The current macOS validation surface in `HealthOSScribeStage` maps these contracts directly:
+The current macOS validation surface in `Scribe` maps these contracts directly:
 - session start section -> `startProfessionalSession(StartProfessionalSessionCommand)`
 - patient selection controls -> `selectPatient(SelectPatientCommand)`
 - capture-mode picker plus seeded-text editor or local-audio file chooser -> `submitSessionCapture(SubmitSessionCaptureCommand)`

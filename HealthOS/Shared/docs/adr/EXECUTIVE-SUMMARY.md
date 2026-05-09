@@ -52,9 +52,9 @@ HealthOSSessionRuntime ────┘
 
 Apps:
   HealthOSCLI            → Core, SessionRuntime
-  HealthOSScribeStage      → Core, SessionRuntime
-  HealthOSVeridiaStage     → Core
-  HealthOSCloudClinicStage → Core
+  Scribe      → Core, SessionRuntime
+  Veridia     → Core
+  CloudClinic → Core
 ```
 
 **Verificações:**

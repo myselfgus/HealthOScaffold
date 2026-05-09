@@ -21,9 +21,9 @@
     "HealthOS/Shared/docs/execution/todo/core-laws.md"
   ],
   "forbiddenPaths": [
-    "HealthOS/Tier4-Stages-Cast/Scribe/Sources/HealthOSScribeStage",
-    "HealthOS/Tier4-Stages-Cast/Veridia/Sources/HealthOSVeridiaStage",
-    "HealthOS/Tier4-Stages-Cast/CloudClinic/Sources/HealthOSCloudClinicStage",
+    "HealthOS/Tier4-Stages-Cast/Scribe/Sources/Scribe",
+    "HealthOS/Tier4-Stages-Cast/Veridia/Sources/Veridia",
+    "HealthOS/Tier4-Stages-Cast/CloudClinic/Sources/CloudClinic",
     "HealthOS/Constructor/ts/agent-infra"
   ],
   "invariants": [

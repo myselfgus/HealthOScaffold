@@ -13,9 +13,9 @@ modules_impacted:
   - HealthOSMSR
   - HealthOSSessionRuntime
   - HealthOSCLI
-  - HealthOSScribeStage
-  - HealthOSVeridiaStage
-  - HealthOSCloudClinicStage
+  - Scribe
+  - Veridia
+  - CloudClinic
 related_adrs:
   supersedes: []
   superseded_by: []
@@ -24,13 +24,13 @@ code_references:
   - path: HealthOS/Shared/Sources/HealthOSCLI/CLIEntrypoint.swift
     type: impl
     note: CLI é superfície canônica de operador.
-  - path: HealthOS/Tier4-Stages-Cast/Scribe/Sources/HealthOSScribeStage
+  - path: HealthOS/Tier4-Stages-Cast/Scribe/Sources/Scribe
     type: impl
     note: Scribe — app focado em ditado/escriba; UX de profissional, não da plataforma.
-  - path: HealthOS/Tier4-Stages-Cast/Veridia/Sources/HealthOSVeridiaStage
+  - path: HealthOS/Tier4-Stages-Cast/Veridia/Sources/Veridia
     type: impl
     note: Veridia — app verificador/visualizador; UX de profissional/auditor.
-  - path: HealthOS/Tier4-Stages-Cast/CloudClinic/Sources/HealthOSCloudClinicStage
+  - path: HealthOS/Tier4-Stages-Cast/CloudClinic/Sources/CloudClinic
     type: impl
     note: CloudClinic — app de cenário cloud/clinic; UX de cuidado.
   - path: HealthOS/Shared/docs/architecture/19-interface-doctrine.md
@@ -74,9 +74,9 @@ Suas superfícies canônicas de operador são:
 - workflows de coding/ops assistidos por agente (Steward etc.)
 
 UX de usuário-final pertence a HealthOS/Tier4-Stages-Cast/AppDocs/interfaces construídos sobre HealthOS, como:
-- **Scribe** ([HealthOS/Tier4-Stages-Cast/Scribe/Sources/HealthOSScribeStage](../../../HealthOS/Tier4-Stages-Cast/Scribe/Sources/HealthOSScribeStage))
-- **Veridia** ([HealthOS/Tier4-Stages-Cast/Veridia/Sources/HealthOSVeridiaStage](../../../HealthOS/Tier4-Stages-Cast/Veridia/Sources/HealthOSVeridiaStage))
-- **CloudClinic** ([HealthOS/Tier4-Stages-Cast/CloudClinic/Sources/HealthOSCloudClinicStage](../../../HealthOS/Tier4-Stages-Cast/CloudClinic/Sources/HealthOSCloudClinicStage))
+- **Scribe** ([HealthOS/Tier4-Stages-Cast/Scribe/Sources/Scribe](../../../HealthOS/Tier4-Stages-Cast/Scribe/Sources/Scribe))
+- **Veridia** ([HealthOS/Tier4-Stages-Cast/Veridia/Sources/Veridia](../../../HealthOS/Tier4-Stages-Cast/Veridia/Sources/Veridia))
+- **CloudClinic** ([HealthOS/Tier4-Stages-Cast/CloudClinic/Sources/CloudClinic](../../../HealthOS/Tier4-Stages-Cast/CloudClinic/Sources/CloudClinic))
 - HealthOS/Tier4-Stages-Cast/AppDocs/interfaces futuros
 
 - **Escopo.** Decisão sobre onde UX clínica/UX-paciente vive. Não proíbe ferramentas administrativas/dashboards técnicos.
@@ -117,8 +117,8 @@ Esta ADR **não** proíbe ferramentas administrativas internas ou dashboards té
 
 ## Detalhes de Implementação
 
-- **Fronteiras entre módulos.** `HealthOSCore`, `HealthOSProviders`, `HealthOSAACI`, `HealthOSMSR`, `HealthOSSessionRuntime` não importam frameworks de UX (SwiftUI, AppKit). Apps fazem isso (ver [HealthOS/Tier4-Stages-Cast/Scribe/Sources/HealthOSScribeStage/Views/](../../../HealthOS/Tier4-Stages-Cast/Scribe/Sources/HealthOSScribeStage/Views/)). CLI usa apenas APIs de terminal.
-- **Conformidade com Package.swift.** `HealthOSCLI`/`HealthOSScribeStage`/`HealthOSVeridiaStage`/`HealthOSCloudClinicStage` são executáveis; libs core/runtime não.
+- **Fronteiras entre módulos.** `HealthOSCore`, `HealthOSProviders`, `HealthOSAACI`, `HealthOSMSR`, `HealthOSSessionRuntime` não importam frameworks de UX (SwiftUI, AppKit). Apps fazem isso (ver [HealthOS/Tier4-Stages-Cast/Scribe/Sources/Scribe/Views/](../../../HealthOS/Tier4-Stages-Cast/Scribe/Sources/Scribe/Views/)). CLI usa apenas APIs de terminal.
+- **Conformidade com Package.swift.** `HealthOSCLI`/`Scribe`/`Veridia`/`CloudClinic` são executáveis; libs core/runtime não.
 - **Concurrency.** N/A para esta decisão.
 - **Segurança/Privacidade.** Surfaces de operador não exibem PHI direta; apps seguem ADR-0004.
 - **Observabilidade.** Cada superfície identifica-se em telemetria.

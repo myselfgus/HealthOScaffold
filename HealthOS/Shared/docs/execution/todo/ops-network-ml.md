@@ -1,0 +1,452 @@
+# TODO — Ops, network, providers, ML
+
+## COMPLETED
+
+### XCODE-TIER-ROOT-BIG-BANG HealthOS root physical tier migration
+Outcome:
+- created `HealthOS/` as the canonical operational root with physical tier directories for Tier 1 Core/Mestral, Tier 2 GOS/Runtimes, Tier 3 Custom/Boundary, Tier 4 Stages/Cast, external `Constructor`, `Support`, `Shared`, and `Xcode`
+- moved the SwiftPM package to `HealthOS/Package.swift` and kept public `HealthOS*` product/target names with explicit target paths
+- moved active docs, schemas, SQL, TypeScript construction tooling, Python/ML support, runtime-data, design assets, Stage docs, and Construction System state under the new root
+- added Stage `Custom.md` placeholders, tier README files, Xcode test plans, package/workspace shared schemes, and an Xcode prompt pack that keeps agentic coding engineering-only
+- kept `HealthOS/Constructor/` and `HealthOS/Support/` visible in Xcode navigation as non-tier roots, with structural Swift tests covering both roots
+- added provider, construction, support, validation-gate, and profile-oriented Xcode test plans/schemes in addition to the tier/all/smoke schemes
+- added `os.Logger`/`OSSignposter` coverage for Session Runtime, MSR, providers, Core validation, and validation gates without changing runtime behavior
+- documented Create ML, Core ML, and MLX under `Support` as governed tooling only, blocked by ModelGovernance/provenance and no-real-patient-data rules
+- updated Makefile/scripts and TypeScript path resolution for the new root
+- kept the change structural: no runtime behavior, schema/SQL semantics, Core law, provider policy, clinical authority, or production-readiness claim changed
+Files touched:
+- `HealthOS/Package.swift`
+- `HealthOS/Tier1-Mestral-Core/`
+- `HealthOS/Tier2-GOS-Runtimes/`
+- `HealthOS/Tier3-Custom-Boundary/`
+- `HealthOS/Tier4-Stages-Cast/`
+- `HealthOS/Constructor/`
+- `HealthOS/Support/`
+- `HealthOS/Shared/`
+- `HealthOS/Xcode/`
+- `HealthOS/Xcode/Visible-Construction-Support.md`
+- `HealthOS.xcworkspace/`
+- `Makefile`
+- `scripts/*`
+- `README.md`
+- `AGENTS.md`
+- `CLAUDE.md`
+Validation:
+- `cd HealthOS && swift package dump-package` PASS
+- `cd HealthOS && swift build` PASS
+- `cd HealthOS && swift test` PASS with 274 XCTest tests
+- `cd HealthOS && xcodebuild -scheme HealthOS-Tier1-Mestral-Core -destination platform=macOS test` PASS
+- `cd HealthOS && xcodebuild -scheme HealthOS-Tier2-GOS-Runtimes -destination platform=macOS test` PASS
+- `cd HealthOS && xcodebuild -scheme HealthOS-Tier3-Custom-Boundary -destination platform=macOS test` PASS
+- `cd HealthOS && xcodebuild -scheme HealthOS-Tier4-Stages-Cast -destination platform=macOS test` PASS
+- `cd HealthOS && xcodebuild -scheme HealthOS-Providers -destination platform=macOS test` PASS
+- `cd HealthOS && xcodebuild -scheme HealthOS-Construction -destination platform=macOS test` PASS
+- `cd HealthOS && xcodebuild -scheme HealthOS-Support -destination platform=macOS test` PASS
+- `cd HealthOS && xcodebuild -scheme HealthOS-All -destination platform=macOS test` PASS
+- `cd HealthOS && xcodebuild -scheme HealthOS-Profile-Core -destination platform=macOS build` PASS
+- `cd HealthOS && xcodebuild -scheme HealthOS-Profile-Runtimes -destination platform=macOS build` PASS
+- `cd HealthOS && xcodebuild -scheme HealthOS-Profile-Providers -destination platform=macOS build` PASS
+- `cd HealthOS && xcodebuild -scheme HealthOS-Profile-Validation-Gates -destination platform=macOS build` PASS
+- `xcodebuild -list -workspace HealthOS.xcworkspace` PASS
+- `make validate-docs` PASS
+- `make validate-schemas` PASS
+- `make validate-contracts` PASS
+- `make ts-build` PASS
+- `make ts-test` PASS
+- `make validate-all` PASS
+- `make smoke-cli` PASS
+- `make smoke-scribe` PASS
+- `make smoke-veridia` PASS
+- `make smoke-cloudclinic` PASS
+- `git diff --check` PASS
+
+### CS-HARDENING Construction System truth and validation
+Outcome:
+- aligned Construction System docs and records with the implemented deterministic Steward CLI, prompt generation, validation/report drafting, derived memory, and healthos-forge-mcp stdio/HTTP repository-maintenance seams
+- kept ST-020 blocked as written and reframed the acceptable next output as CloudClinic Boundary/Custom readiness, not APP-012 Stage implementation
+- added Settlement ID roundtrip resolution for filename IDs and canonical IDs
+- added `validate-construction-system` to check Construction System invariants deterministically
+- marked generated prompts and derived memory as non-canonical regenerable artifacts
+Files touched:
+- `HealthOS/Shared/docs/execution/02-status-and-tracking.md`
+- `HealthOS/Shared/docs/execution/12-next-agent-handoff.md`
+- `HealthOS/Shared/docs/execution/19-settler-model-task-tracker.md`
+- `HealthOS/Shared/docs/execution/22-steward-construction-operating-model.md`
+- `HealthOS/Constructor/Settler/`
+- `HealthOS/Constructor/Steward/`
+- `HealthOS/Constructor/ts/agent-infra/healthos-steward/`
+- `HealthOS/Constructor/ts/agent-infra/healthos-forge-mcp/`
+- `Makefile`
+
+### ST-001a README and repository roots for Settler/Territory scaffolds
+Outcome:
+- README now names Steward, Settlers, Settlements, and Territories as repository engineering concepts outside the HealthOS clinical/runtime hierarchy
+- diagrams and repository maps include `HealthOS/Constructor/Steward/`, `HealthOS/Constructor/Settler/`, and `HealthOS/Constructor/Territory/` as engineering surfaces
+- `HealthOS/Constructor/Settler/` and `HealthOS/Constructor/Territory/` exist as documentation-only roots for future profile, Settlement, and Territory records
+- tracker 19 records the scaffolded roots and keeps executable Settlers, Settlement schema, Territory records, Territory loader, and `healthos-mcp` as future work
+Files touched:
+- `README.md`
+- `HealthOS/Constructor/Settler/*`
+- `HealthOS/Constructor/Territory/*`
+- `HealthOS/Shared/docs/architecture/47-steward-settler-engineering-model.md`
+- `HealthOS/Shared/docs/execution/19-settler-model-task-tracker.md`
+- `HealthOS/Shared/docs/execution/02-status-and-tracking.md`
+- `HealthOS/Shared/docs/execution/12-next-agent-handoff.md`
+- `HealthOS/Shared/docs/execution/todo/ops-network-ml.md`
+
+### OPS-003 Define incident-response command set for first operator tools
+Outcome:
+- added incident-response command vocabulary for runtime failure, queue saturation, backup concern, and integrity incident handling
+- mapped incident classes to event kinds and canonical operator action vocabulary without claiming an implemented operator console
+Files touched:
+- `HealthOS/Shared/docs/architecture/14-operations-runbook.md`
+- `HealthOS/Shared/docs/architecture/26-operator-observability-contract.md`
+- `HealthOS/Shared/docs/execution/02-status-and-tracking.md`
+- `HealthOS/Shared/docs/execution/todo/ops-network-ml.md`
+
+### OPS-004 Clarify online-only mesh doctrine and sovereign fabric projection
+Outcome:
+- networking/mesh doctrine now states online-only access posture and rejects offline-mode drift
+- topology vocabulary now distinguishes single-node bootstrap minimum from sovereign fabric production projection
+Files touched:
+- `HealthOS/Shared/docs/architecture/04-networking.md`
+- `HealthOS/Shared/docs/architecture/15-mesh-provider.md`
+- `HealthOS/Shared/docs/adr/0009-single-node-bootstrap-and-sovereign-fabric-topology.md`
+
+### OPS-001 Define single-node runbook
+Outcome:
+- operations runbook strengthened with bootstrap, daily/weekly checks, incident categories, and operator visibility surfaces
+Files touched:
+- `HealthOS/Shared/docs/architecture/14-operations-runbook.md`
+
+### NET-001 Define MeshProvider abstraction and access policy
+Outcome:
+- MeshProvider contract strengthened with identity, ACL, health, and failure posture expectations
+Files touched:
+- `HealthOS/Shared/docs/architecture/15-mesh-provider.md`
+- `HealthOS/Support/ops/network/*`
+
+### OPS-002 Define operator dashboards/minimum observability contract
+Outcome:
+- minimum operator visibility indicators and alert classes defined
+Files touched:
+- `HealthOS/Shared/docs/architecture/26-operator-observability-contract.md`
+- `HealthOS/Shared/docs/architecture/14-operations-runbook.md`
+
+### ML-001 Define provider benchmark and selection policy
+Outcome:
+- provider routing baseline, benchmark dimensions, task-class policy outcomes, and benchmark harness artifacts documented
+Files touched:
+- `HealthOS/Shared/docs/architecture/16-providers-and-ml.md`
+
+### ML-002 Define fine-tuning governance
+Outcome:
+- dataset governance, adapter promotion path, rollback rule, and offline-only specialization posture documented
+Files touched:
+- `HealthOS/Shared/docs/architecture/16-providers-and-ml.md`
+- `HealthOS/Support/python/README.md`
+- `HealthOS/Support/python/healthos_ml/*`
+
+### ML-003 Define benchmark threshold policy by task class
+Outcome:
+- explicit threshold guidance added by task class for provider selection decisions
+Files touched:
+- `HealthOS/Shared/docs/architecture/27-provider-threshold-policy.md`
+- `HealthOS/Shared/docs/architecture/16-providers-and-ml.md`
+
+### ML-004 Harden provider governance contracts and routing safety scaffolds
+Outcome:
+- provider capability profile contract added with typed validation gates at provider registration
+- provider routing evolved to typed policy outcomes/denial reasons with local-vs-remote + data-layer aware checks
+- remote fallback guard now fails closed for sensitive layers without explicit policy
+- model registry and fine-tuning governance scaffolds are now executable/testable contracts (without claiming production catalogs/trainers)
+- speech path now preserves honest degraded/unavailable behavior for stub STT and keeps seeded-text provenance distinct
+Files touched:
+- `HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSProviders/ProviderProtocols.swift`
+- `HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSProviders/StubProviders.swift`
+- `HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSProviders/ModelGovernance.swift`
+- `HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSAACI/AACI.swift`
+- `HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/FirstSliceContracts.swift`
+- `HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSSessionRuntime/SessionRunner.swift`
+- `HealthOS/Shared/Tests/HealthOSTests/ProviderGovernanceTests.swift`
+- `HealthOS/Shared/docs/architecture/16-providers-and-ml.md`
+- `HealthOS/Shared/docs/execution/02-status-and-tracking.md`
+- `HealthOS/Shared/docs/execution/06-scaffold-coverage-matrix.md`
+- `HealthOS/Shared/docs/execution/10-invariant-matrix.md`
+
+### OPS-005 Establish governed backup/restore/retention/export/DR contracts
+Outcome:
+- backup/restore/retention/export/disaster-recovery governance contracts added in Swift Core with fail-closed validation for lawfulContext, sensitive-layer policy, integrity hashes, conflict handling, lifecycle safety, and final-document lineage
+- observability taxonomy extended with backup/restore/export/retention/DR event kinds without leaking direct identifiers
+- executable XCTest suite added for mandatory negative/positive governance checks and AACI/GOS control-plane boundary denials
+Files touched:
+- `HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/BackupGovernance.swift`
+- `HealthOS/Shared/Tests/HealthOSTests/BackupGovernanceTests.swift`
+- `HealthOS/Tier1-Mestral-Core/Schemas/contracts/backup-restore-retention-export-dr-governance.schema.json`
+- `HealthOS/Constructor/ts/packages/contracts/src/index.ts`
+- `HealthOS/Shared/docs/execution/02-status-and-tracking.md`
+- `HealthOS/Shared/docs/execution/06-scaffold-coverage-matrix.md`
+- `HealthOS/Shared/docs/execution/10-invariant-matrix.md`
+
+
+### OPS-006 Harden regulatory/interoperability/signature/emergency governance scaffold
+Outcome:
+- new Core contracts/validators added for regulatory audit pathways, emergency/break-glass access, retention-vs-visibility governance, digital-signature scaffold, interoperability package scaffold, and legal/probative lineage guards
+- regulatory observability taxonomy expanded with explicit non-sensitive event kinds (`regulatory.audit.*`, `emergency_access.*`, `retention.visibility_decision`, `signature.*`, `interoperability.*`)
+- SQL scaffold metadata tables added for regulatory audit requests, emergency access requests, digital signature requests, and interoperability packages (placeholder-only delivery posture)
+- executable Swift XCTest suite added for mandatory negative/positive boundary checks (`RegulatoryGovernanceTests`)
+Files touched:
+- `HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/RegulatoryGovernance.swift`
+- `HealthOS/Shared/Tests/HealthOSTests/RegulatoryGovernanceTests.swift`
+- `HealthOS/Tier1-Mestral-Core/Schemas/contracts/regulatory-interoperability-signature-emergency-governance.schema.json`
+- `HealthOS/Constructor/ts/packages/contracts/src/index.ts`
+- `HealthOS/Tier1-Mestral-Core/SQL/migrations/001_init.sql`
+- `HealthOS/Shared/docs/execution/02-status-and-tracking.md`
+- `HealthOS/Shared/docs/execution/06-scaffold-coverage-matrix.md`
+- `HealthOS/Shared/docs/execution/10-invariant-matrix.md`
+
+### ML-006 Project Steward agent runtime conceptual correction and provider hardening closure
+Outcome:
+- separated deterministic Steward Core commands from provider-backed Agent Runtime commands
+- restricted primary internal LLM providers to openai/anthropic/xai/disabled and removed codex/claude internal-provider posture from examples
+- reinforced explicit network gating (`--allow-network`) and explicit provider requirement for agentic commands
+Files touched:
+- `HealthOS/Constructor/ts/agent-infra/healthos-steward/*`
+- `HealthOS/Constructor/Steward/providers/*`
+- `HealthOS/Shared/docs/architecture/44-project-steward-agent.md`
+- `HealthOS/Shared/docs/execution/skills/project-steward-skill.md`
+- `HealthOS/Shared/docs/execution/02-status-and-tracking.md`
+
+### ML-007 Complete Steward provider hardening validation closure
+Outcome:
+- restored deterministic `healthos-steward next-task` command (non-deprecated) for offline/core task scaffolding
+- hardened provider adapters with consistent dry-run-disabled behavior, HTTP error classification, and shared output extraction for OpenAI/Anthropic/xAI
+- PR review posting now writes the real provider output only when invocation succeeds; no placeholder comment is posted on failure
+- provider unit tests now mock `fetch` for OpenAI/Anthropic/xAI real invocation paths without live network
+Files touched:
+- `HealthOS/Constructor/ts/agent-infra/healthos-steward/src/steward.ts`
+- `HealthOS/Constructor/ts/agent-infra/healthos-steward/src/providers/xai.ts`
+- `HealthOS/Constructor/ts/agent-infra/healthos-steward/test/cli.test.mjs`
+- `HealthOS/Constructor/ts/agent-infra/healthos-steward/test/providers.test.mjs`
+- `HealthOS/Shared/docs/architecture/44-project-steward-agent.md`
+- `HealthOS/Shared/docs/execution/skills/project-steward-skill.md`
+- `HealthOS/Shared/docs/execution/02-status-and-tracking.md`
+
+### ML-012 Hard reset `@healthos/steward` and recreate the package baseline from scratch
+Outcome:
+- deleted the prior package implementation (`src`, `test`, `dist`) instead of carrying forward compatibility or `legacy` layers inside the package
+- rebuilt `HealthOS/Constructor/ts/agent-infra/healthos-steward/` from zero with a new minimal baseline around runtime requests, sessions, session persistence, and CLI surface identity
+- created `HealthOS/Constructor/Steward/memory/sessions/` as the first runtime-owned state location for the new steward
+- rewrote the initiative tracker so future work continues from the clean reset rather than from the removed provider-centric runtime
+Files touched:
+- `HealthOS/Constructor/ts/agent-infra/healthos-steward/src/*`
+- `HealthOS/Constructor/ts/agent-infra/healthos-steward/test/runtime.test.mjs`
+- `HealthOS/Constructor/ts/agent-infra/healthos-steward/package.json`
+- `HealthOS/Constructor/ts/agent-infra/healthos-steward/README.md`
+- `HealthOS/Shared/docs/execution/18-healthos-xcode-agent-task-tracker.md`
+- `HealthOS/Shared/docs/execution/02-status-and-tracking.md`
+- `HealthOS/Shared/docs/execution/todo/ops-network-ml.md`
+
+### ML-011 Create Xcode Agent initiative tracker and land first runtime-core code
+Outcome:
+- dedicated initiative tracker added at `HealthOS/Shared/docs/execution/18-healthos-xcode-agent-task-tracker.md` with streams, active queue, open decisions, and per-work-unit continuity rules
+- first runtime-centric TypeScript files landed under `HealthOS/Constructor/ts/agent-infra/healthos-steward/src/agent/` defining session, surface, tool, backend, policy, and runtime contracts
+- package root now exports the first agent runtime API surface, keeping the implementation additive and compatible with the current steward scaffold
+- minimal runtime helpers landed for session creation, policy evaluation, and non-provider-centric request handling
+- initial test scaffold added for future package build/test validation
+Files touched:
+- `HealthOS/Shared/docs/execution/18-healthos-xcode-agent-task-tracker.md`
+- `HealthOS/Constructor/ts/agent-infra/healthos-steward/src/agent/*`
+- `HealthOS/Constructor/ts/agent-infra/healthos-steward/src/index.ts`
+- `HealthOS/Constructor/ts/agent-infra/healthos-steward/test/agent-runtime.test.mjs`
+- `HealthOS/Shared/docs/execution/02-status-and-tracking.md`
+- `HealthOS/Shared/docs/execution/todo/ops-network-ml.md`
+
+### ML-010 Define target architecture for HealthOS Xcode Agent and migration path
+Outcome:
+- target architecture documented for evolving Project Steward into a repository-aware engineering agent centered on runtime, sessions, tools, and conversation surfaces instead of provider invocation
+- explicit migration plan added for runtime extraction, model-backend reframing, CLI conversation mode, Xcode-native conversation surface, and optional frontend surface
+- current steward docs and handoff entrypoints updated so future work does not accidentally keep reinforcing the old provider-centric abstraction
+Files touched:
+- `HealthOS/Shared/docs/architecture/44-project-steward-agent.md`
+- `HealthOS/Shared/docs/architecture/45-healthos-xcode-agent.md`
+- `HealthOS/Shared/docs/execution/12-next-agent-handoff.md`
+- `HealthOS/Shared/docs/execution/17-healthos-xcode-agent-migration-plan.md`
+- `HealthOS/Constructor/Steward/README.md`
+- `HealthOS/Shared/docs/execution/02-status-and-tracking.md`
+- `HealthOS/Shared/docs/execution/todo/ops-network-ml.md`
+
+### ML-009 De-alias steward agent commands and restore provider config precedence
+Outcome:
+- `providers.json` is now part of the real config resolution chain instead of being skipped when no local override exists
+- disabled/unsupported non-invokable provider kinds no longer masquerade as a runnable local `echo` fallback
+- `agent handoff`, `agent generate-codex-prompt`, and `agent sync-memory` now run distinct prompt/template paths instead of silently delegating to `plan-next`
+- deterministic Codex prompt surfaces now read `codex-next-task.md` rather than the generic model next-task prompt
+- coverage added for config precedence, fail-closed disabled provider behavior, and command de-aliasing in dry-run mode
+Files touched:
+- `HealthOS/Constructor/ts/agent-infra/healthos-steward/src/providers/router.ts`
+- `HealthOS/Constructor/ts/agent-infra/healthos-steward/src/steward.ts`
+- `HealthOS/Constructor/ts/agent-infra/healthos-steward/test/cli.test.mjs`
+- `HealthOS/Constructor/ts/agent-infra/healthos-steward/test/providers.test.mjs`
+- `HealthOS/Shared/docs/execution/02-status-and-tracking.md`
+- `HealthOS/Shared/docs/execution/todo/ops-network-ml.md`
+
+### ML-008 Steward provider error taxonomy and review comment formatting
+Outcome:
+- expanded `StewardLLMFailure['errorKind']` union with operator-actionable HTTP categories (`auth`, `notFound`, `serverError`, `rateLimited`, `badRequest`), pre-response transport categories (`networkUnavailable`, `timeout`), and payload categories (`parseError`, `payloadEmpty`); kept the existing union members backward-compatible
+- replaced fragile `error.message` substring matching with `error.name`-based classification (`TimeoutError`/`AbortError` for timeout; `instanceof TypeError` for pre-response fetch failure)
+- added mode-aware response extractors: OpenAI Responses walks `output[].content[]` filtered by `type === 'output_text'` (with `output_text` shortcut still preferred); Anthropic Messages walks `content[]` filtered by `type === 'text'` so tool_use/tool_result blocks no longer leak into review text; chatCompletions handles both string and array `message.content`
+- 200 OK responses with no extractable assistant text now surface as `errorKind: 'payloadEmpty'` and `status: 'providerError'` instead of pretending to be a successful empty completion
+- HTTP error responses now extract the provider-supplied human-readable message (`error.message` for OpenAI/xAI shape; nested `error.message` for Anthropic shape) and surface it as `errorMessage`
+- added `formatStewardReviewComment` that produces a deterministic PR review body with HTML marker (`<!-- healthos-steward review -->`), provider/model/timestamp/policy-version header, and an explicit non-authority footer; refuses empty body so no placeholder comment is ever posted
+- `agent review-pr --post-comment` now wraps provider output through `formatStewardReviewComment` and reads policy versions from `HealthOS/Constructor/Steward/policies/*.yaml` at post time
+- `StewardAgentRuntime` now memoizes the provider router instead of recreating it per invocation
+- `node:test` coverage increased from 12 to 33 cases without live network, asserting every new errorKind branch and the formatter contract
+Files touched:
+- `HealthOS/Constructor/ts/agent-infra/healthos-steward/src/providers/types.ts`
+- `HealthOS/Constructor/ts/agent-infra/healthos-steward/src/providers/utils.ts`
+- `HealthOS/Constructor/ts/agent-infra/healthos-steward/src/providers/openai.ts`
+- `HealthOS/Constructor/ts/agent-infra/healthos-steward/src/providers/anthropic.ts`
+- `HealthOS/Constructor/ts/agent-infra/healthos-steward/src/providers/xai.ts`
+- `HealthOS/Constructor/ts/agent-infra/healthos-steward/src/steward.ts`
+- `HealthOS/Constructor/ts/agent-infra/healthos-steward/test/providers.test.mjs`
+- `HealthOS/Shared/docs/architecture/44-project-steward-agent.md`
+- `HealthOS/Shared/docs/execution/02-status-and-tracking.md`
+- `HealthOS/Shared/docs/execution/16-next-10-actions-plan.md`
+- `HealthOS/Shared/docs/execution/todo/ops-network-ml.md`
+- `HealthOS/Constructor/Steward/memory/project-state.json`
+
+## COMPLETED (WS-1)
+
+### WS-1 Instructions and skills consolidation (Steward for Xcode — Phase B)
+Outcome:
+- CLAUDE.md and AGENTS.md updated: canonical Steward naming, Steward for Xcode posture, healthos-mcp boundary doctrine, deterministic baseline commands, stale StewardCore/StewardAgentRuntime references removed
+- README.md Steward section updated to canonical naming and Steward for Xcode posture
+- HealthOS/Shared/docs/execution/skills/project-steward-skill.md rewritten: canonical naming table, updated scope/reads/invariants/validation, healthos-mcp two-family boundary doctrine
+- HealthOS/Shared/docs/architecture/45-healthos-xcode-agent.md: MCP two-family boundary note added to MCP section
+- HealthOS/Shared/docs/execution/17-healthos-xcode-agent-migration-plan.md: WS-2 boundary constraint added
+- Follow-up (2026-04-29): Codex external executor posture added for Steward-scoped Xcode-facing repository maintenance, with local automation registered at `$CODEX_HOME/automations/steward-xcode-facing-maintenance/`; this is PR-based maintenance only and does not create a new Steward authority category.
+Files touched:
+- `CLAUDE.md`
+- `AGENTS.md`
+- `README.md`
+- `HealthOS/Shared/docs/execution/skills/project-steward-skill.md`
+- `HealthOS/Shared/docs/architecture/45-healthos-xcode-agent.md`
+- `HealthOS/Shared/docs/execution/17-healthos-xcode-agent-migration-plan.md`
+- `HealthOS/Shared/docs/execution/02-status-and-tracking.md`
+- `HealthOS/Shared/docs/execution/todo/ops-network-ml.md`
+
+### STR-002 Archive `Skill macOS/` to `HealthOS/Shared/docs/reference/mental-space-legacy/`
+Priority: **P1** — do after RT-MSR-003 is DONE
+Plan: `HealthOS/Shared/docs/execution/21-structural-ontology-and-product-readiness-plan.md` → STR-002
+Definition of done:
+- `git mv "Skill macOS" HealthOS/Shared/docs/reference/mental-space-legacy` preserves full history
+- `HealthOS/Shared/docs/reference/mental-space-legacy/README.md` created, marks scripts as archived reference
+- `HealthOS/Shared/docs/architecture/49-mental-space-runtime.md` updated: `Skill macOS/` → `HealthOS/Shared/docs/reference/mental-space-legacy/`
+- `make validate-docs && make validate-all` PASS
+Branch: `feat/str-002-archive-skill-macos`
+
+### STR-003 Separate AGENT packages from PRODUCT in `HealthOS/Constructor/ts/packages/` (DONE 2026-04-29)
+Priority: **P1** — independent, can run parallel to STR-002
+Plan: `HealthOS/Shared/docs/execution/21-structural-ontology-and-product-readiness-plan.md` → STR-003
+Definition of done:
+- `HealthOS/Constructor/ts/agent-infra/` created; `healthos-steward` and `mcp-local` moved there via `git mv`
+- npm workspace (`HealthOS/Constructor/ts/package.json`) includes both `"packages/*"` and `"agent-infra/*"`
+- `CLAUDE.md`, `README.md`, `HealthOS/Shared/docs/architecture/45-healthos-xcode-agent.md`, `HealthOS/Shared/docs/execution/17-healthos-xcode-agent-migration-plan.md` path references updated
+- `make ts-build && make validate-docs && make validate-all` PASS
+Completion note: moved `healthos-steward` and `mcp-local` into `HealthOS/Constructor/ts/agent-infra/` with `git mv`, resolved steward TS build input blocker with minimal `src/` entrypoints, and updated affected path references/documentation without changing HealthOS clinical/runtime behavior.
+Branch: `feat/str-003-ts-agent-infra-dir`
+
+### STR-004 Rename `HealthOSFirstSliceSupport` → `HealthOSSessionRuntime`
+Priority: **P1** — independent, can run parallel to STR-002 and STR-003
+Plan: `HealthOS/Shared/docs/execution/21-structural-ontology-and-product-readiness-plan.md` → STR-004
+Definition of done:
+- `swift/Sources/HealthOSFirstSliceSupport/` renamed to `HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSSessionRuntime/`
+- `Package.swift` updated; all imports updated in CLI, ScribeApp, and test targets
+- Primary public types renamed (at minimum: `FirstSliceRunner` → `SessionRunner`, `ScribeFirstSliceAdapter` → `ScribeSessionAdapter`)
+- `swift build` PASS; `swift test` PASS (all existing tests pass, no regression); `make validate-all` PASS
+- `grep -r "HealthOSFirstSliceSupport" swift/` → no results
+Branch: `feat/str-004-session-runtime-rename`
+
+### STR-005 Add placeholder Swift executable targets for Veridia and CloudClinic
+Priority: **P2** — after P1 complete or in parallel
+Plan: `HealthOS/Shared/docs/execution/21-structural-ontology-and-product-readiness-plan.md` → STR-005
+Definition of done:
+- `HealthOS/Tier4-Stages-Cast/Veridia/Sources/HealthOSVeridiaStage/VeridiaEntrypoint.swift` created (minimal `@main` with `--smoke-test` flag)
+- `HealthOS/Tier4-Stages-Cast/CloudClinic/Sources/HealthOSCloudClinicStage/CloudClinicEntrypoint.swift` created (same pattern)
+- `Package.swift`: both added as `.executableTarget` products
+- `swift run HealthOSVeridiaStage --smoke-test` exits 0
+- `swift run HealthOSCloudClinicStage --smoke-test` exits 0
+- `swift build && swift test` PASS; `make validate-all` PASS
+Branch: `feat/str-005-veridia-cloudclinic-targets`
+
+### CI-001 Wire `make validate-all` into GitHub Actions
+Priority: **P4** — after P0–P2 complete
+Status: READY as Tier 1 platform/repository validation foundation after ADR-0013
+Plan: `HealthOS/Shared/docs/execution/21-structural-ontology-and-product-readiness-plan.md` → CI-001
+Definition of done:
+- `.github/workflows/validate.yml` runs `make validate-all` on push/PR to main
+- `.github/workflows/swift-test.yml` runs `make swift-test` on macOS runner with Swift 6.2
+- PRs with failing validation cannot be merged (branch protection)
+- No secrets or clinical data in CI logs
+Branch: `feat/ci-001-github-actions-validate`
+
+### WS-2 Local MCP server (healthos-mcp)
+Priority: Medium
+Docs: `HealthOS/Shared/docs/execution/17-healthos-xcode-agent-migration-plan.md` (WS-2), `HealthOS/Shared/docs/architecture/45-healthos-xcode-agent.md`
+Objective:
+- build a local MCP server exposing typed HealthOS repository operations to Xcode Intelligence or compatible MCP client
+Files:
+- new package (location TBD, likely under `HealthOS/Constructor/ts/packages/`)
+Dependencies:
+- Phase A (ARCH-001) complete; WS-1 recommended first
+Definition of done:
+- Xcode Intelligence or compatible MCP client can invoke typed HealthOS repository operations
+- typed errors, dry-run support, fail-closed posture present
+- no secrets in logs, no clinical payloads in operations
+- operations do not move HealthOS Core law into tooling
+
+### WS-3 Deterministic CLI consolidation
+Priority: Medium
+Docs: `HealthOS/Shared/docs/execution/17-healthos-xcode-agent-migration-plan.md` (WS-3), `HealthOS/Shared/docs/architecture/45-healthos-xcode-agent.md`
+Objective:
+- preserve the current hard-reset baseline (`status`, `runtime`, `session`) while expanding it deliberately into deterministic CI-safe repository operations
+- remove provider orchestration as the primary architectural path
+Files:
+- `HealthOS/Constructor/ts/agent-infra/healthos-steward/src/*`
+- `HealthOS/Constructor/ts/agent-infra/healthos-steward/package.json`
+- `HealthOS/Constructor/ts/agent-infra/healthos-steward/README.md`
+- `README.md`
+- `HealthOS/Constructor/Steward/README.md`
+- `HealthOS/Shared/docs/execution/12-next-agent-handoff.md`
+- `HealthOS/Shared/docs/execution/15-scaffold-finalization-plan.md`
+Dependencies:
+- Phase A (ARCH-001) complete
+Definition of done:
+- CLI runs deterministic operations without LLM dependency
+- CLI works in CI/GitHub Actions
+- docs distinguish current delivered baseline from planned deterministic operations
+- deterministic repository-maintenance commands beyond `status`/`runtime`/`session` are added only when implemented and validated
+- provider-centric orchestration is no longer the primary entry point
+- `make validate-docs` and `make ts-build` pass
+
+## TESTS / VALIDATION
+
+- no public data service exposure by default
+- restore path is documented
+- ML pipeline remains offline boundary, not accidental production runtime
+
+### ML-005 Extend Project Steward with model-agnostic provider orchestration (OpenAI/Anthropic/xAI + local-command)
+Outcome:
+- optional provider adapter layer added under `HealthOS/Constructor/ts/agent-infra/healthos-steward/src/providers/*`
+- provider config schema/example added under `HealthOS/Constructor/Steward/providers/`
+- dry-run safe routing + invocation logs (hash-based) implemented
+- CLI expanded with `providers`, `ask`, `delegate`, and provider-aware `review-pr`/`prompt` flows
+- provider tests and CLI tests added without real network/API usage
+Files touched:
+- `HealthOS/Constructor/ts/agent-infra/healthos-steward/*`
+- `HealthOS/Constructor/Steward/providers/*`
+- `HealthOS/Constructor/Steward/prompts/*`
+- `HealthOS/Shared/docs/architecture/44-project-steward-agent.md`
+- `HealthOS/Shared/docs/execution/skills/project-steward-skill.md`
+- `HealthOS/Shared/docs/execution/02-status-and-tracking.md`

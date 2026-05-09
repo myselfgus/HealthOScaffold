@@ -1,0 +1,72 @@
+{
+  "id": "operations-and-observability",
+  "name": "Operations and Observability",
+  "summary": "Operations runbook, private networking, mesh posture, backup/restore visibility, incident posture, and operator observability contracts.",
+  "maturity": "scaffolded contract",
+  "canonicalDocs": [
+    "HealthOS/Shared/docs/architecture/04-networking.md",
+    "HealthOS/Shared/docs/architecture/14-operations-runbook.md",
+    "HealthOS/Shared/docs/architecture/15-mesh-provider.md",
+    "HealthOS/Shared/docs/architecture/26-operator-observability-contract.md",
+    "HealthOS/Shared/docs/execution/skills/ops-mesh-skill.md",
+    "HealthOS/Shared/docs/execution/skills/network-fabric-skill.md",
+    "HealthOS/Shared/docs/execution/skills/backup-restore-retention-export-skill.md"
+  ],
+  "primaryPaths": [
+    "ops",
+    "scripts"
+  ],
+  "secondaryPaths": [
+    "HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/BackupGovernance.swift",
+    "HealthOS/Tier1-Mestral-Core/Schemas/contracts/backup-restore-retention-export-dr-governance.schema.json",
+    "HealthOS/Shared/docs/execution/todo/ops-network-ml.md",
+    "HealthOS/Shared/docs/execution/14-final-gap-register.md"
+  ],
+  "forbiddenPaths": [
+    "HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore",
+    "HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSAACI",
+    "HealthOS/Tier4-Stages-Cast/Scribe/Sources/HealthOSScribeStage",
+    "HealthOS/Constructor/ts/agent-infra"
+  ],
+  "invariants": [
+    "Operational tooling and observability do not create clinical, Core, or regulatory authority.",
+    "Transport, mesh, and backup posture are not authorization.",
+    "Incidents and degradation must be visible and recorded, not silently hidden.",
+    "Observability payloads must avoid direct identifiers and secrets."
+  ],
+  "allowedWork": [
+    "Maintain runbooks, incident vocabulary, network posture, backup/restore docs, and observability contracts.",
+    "Add validation scripts only when scoped and documented.",
+    "Clarify operational degradation and residual gaps.",
+    "Keep local-first and private-network assumptions explicit."
+  ],
+  "forbiddenWork": [
+    "Add hidden remote dependencies.",
+    "Allow silent operational degradation.",
+    "Treat incident tooling as clinical authority.",
+    "Claim backup, restore, network, or fabric production hardening without evidence."
+  ],
+  "validationCommands": [
+    "make validate-docs",
+    "git diff --check",
+    "make validate-contracts",
+    "make validate-all"
+  ],
+  "knownGaps": [
+    "Production operations automation and restore-drill evidence remain future work.",
+    "Operational fabric hardening remains outside scaffold claims."
+  ],
+  "defaultSettlerIds": [
+    "operations-settler"
+  ],
+  "relatedTerritoryIds": [
+    "storage-and-data",
+    "validation-and-ci",
+    "regulatory-and-interoperability",
+    "providers"
+  ],
+  "notes": [
+    "The `ops` path may be absent or minimal in some snapshots; verify before edits.",
+    "Territory metadata does not operate infrastructure."
+  ]
+}

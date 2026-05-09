@@ -2,8 +2,8 @@
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-DATA_ROOT="${ROOT_DIR}/runtime-data/Users/Shared/HealthOS"
-SOURCE_ROOT="${ROOT_DIR}/bootstrap/gos/system/gos"
+DATA_ROOT="${ROOT_DIR}/HealthOS/Shared/runtime-data/Users/Shared/HealthOS"
+SOURCE_ROOT="${ROOT_DIR}/HealthOS/Tier2-GOS-Runtimes/Bootstrap/gos/system/gos"
 TARGET_ROOT="${DATA_ROOT}/system/gos"
 
 mkdir -p "${TARGET_ROOT}/registry"

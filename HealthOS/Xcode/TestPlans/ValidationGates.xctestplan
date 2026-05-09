@@ -1,0 +1,33 @@
+{
+  "configurations" : [
+    {
+      "id" : "5C18E756-5978-4CA3-9883-FAC820BD748A",
+      "name" : "Default",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "codeCoverage" : false
+  },
+  "testTargets" : [
+    {
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "HealthOSCoreTests",
+        "name" : "HealthOSCoreTests"
+      }
+    },
+    {
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "HealthOSTests",
+        "name" : "HealthOSTests"
+      }
+    }
+  ],
+  "version" : 1
+}

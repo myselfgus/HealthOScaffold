@@ -3,7 +3,7 @@
     "healthos-forge": {
       "command": "node",
       "args": [
-        "/Users/healthOS/HealthOScaffold/ts/agent-infra/healthos-forge-mcp/dist/server.js"
+        "/Users/healthOS/HealthOScaffold/HealthOS/Constructor/ts/agent-infra/healthos-forge-mcp/dist/server.js"
       ]
     }
   }

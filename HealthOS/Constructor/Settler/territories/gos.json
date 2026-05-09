@@ -1,0 +1,78 @@
+{
+  "id": "gos",
+  "name": "GOS",
+  "summary": "Governed Operational Spec authoring, TypeScript tooling, lifecycle policy, Swift runtime consumption, and app-safe mediation under Core law.",
+  "maturity": "tested operational path",
+  "canonicalDocs": [
+    "HealthOS/Shared/docs/architecture/29-governed-operational-spec.md",
+    "HealthOS/Shared/docs/architecture/30-gos-authoring-and-compiler.md",
+    "HealthOS/Shared/docs/architecture/31-gos-runtime-binding.md",
+    "HealthOS/Shared/docs/architecture/32-gos-bundles-and-lifecycle.md",
+    "HealthOS/Shared/docs/architecture/33-gos-app-consumption-patterns.md",
+    "HealthOS/Shared/docs/architecture/34-gos-review-and-activation-policy.md"
+  ],
+  "primaryPaths": [
+    "HealthOS/Constructor/ts/packages/healthos-gos-tooling",
+    "HealthOS/Tier1-Mestral-Core/Schemas/governed-operational-spec.schema.json",
+    "HealthOS/Tier1-Mestral-Core/Schemas/governed-operational-spec-authoring.schema.json",
+    "HealthOS/Tier1-Mestral-Core/Schemas/governed-operational-spec-bundle-manifest.schema.json",
+    "HealthOS/Tier1-Mestral-Core/Schemas/governed-operational-spec-lifecycle-audit.schema.json",
+    "HealthOS/Tier1-Mestral-Core/Schemas/governed-operational-spec-review-record.schema.json"
+  ],
+  "secondaryPaths": [
+    "HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore",
+    "HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSAACI",
+    "HealthOS/Shared/docs/execution/skills/gos-skill.md",
+    "HealthOS/Shared/docs/execution/todo/gos-and-compilers.md"
+  ],
+  "forbiddenPaths": [
+    "HealthOS/Tier4-Stages-Cast/Scribe/Sources/HealthOSScribeStage",
+    "HealthOS/Tier4-Stages-Cast/Veridia/Sources/HealthOSVeridiaStage",
+    "HealthOS/Tier4-Stages-Cast/CloudClinic/Sources/HealthOSCloudClinicStage",
+    "HealthOS/Constructor/ts/agent-infra"
+  ],
+  "invariants": [
+    "GOS is subordinate to Core law and provides operational mediation only.",
+    "GOS has a bipartite shape: TypeScript tooling plus Swift runtime consumption.",
+    "Runtime consumers should use resolved/app-safe GOS views, not raw compiled spec JSON.",
+    "Bundle activation requires review, activation policy, provenance, and lifecycle audit."
+  ],
+  "allowedWork": [
+    "Maintain GOS authoring, compiler, bundle, lifecycle, and review records.",
+    "Maintain Swift GOS runtime consumption boundaries in Core/AACI where present.",
+    "Preserve app-safe GOS summaries for Scribe/Veridia/CloudClinic.",
+    "Update GOS schemas, TS tooling, Swift contracts, and docs together when contracts change."
+  ],
+  "forbiddenWork": [
+    "Make GOS sovereign over Core.",
+    "Bypass activation or review policy.",
+    "Expose raw compiled spec JSON as app law.",
+    "Use GOS as clinical, regulatory, or finalizing authority."
+  ],
+  "validationCommands": [
+    "make ts-build",
+    "make swift-build",
+    "make swift-test",
+    "make validate-schemas",
+    "make validate-contracts",
+    "make validate-all"
+  ],
+  "knownGaps": [
+    "Production GOS governance and operator lifecycle hardening remain future work.",
+    "GOS app consumption must remain minimal and honest until app surfaces mature."
+  ],
+  "defaultSettlerIds": [
+    "gos-settler"
+  ],
+  "relatedTerritoryIds": [
+    "core",
+    "aaci",
+    "apps",
+    "type-script-runtimes",
+    "validation-and-ci"
+  ],
+  "notes": [
+    "Use HealthOS Forge MCP only for future construction tooling; it is distinct from GOS runtime behavior.",
+    "Territory records do not activate bundles or authorize GOS use."
+  ]
+}

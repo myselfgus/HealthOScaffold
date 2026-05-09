@@ -1,0 +1,25 @@
+{
+  "configurations" : [
+    {
+      "id" : "D224BC56-6B2A-4B76-83E0-785ECF5AE2B5",
+      "name" : "Default",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "codeCoverage" : false
+  },
+  "testTargets" : [
+    {
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "HealthOSStageSmokeTests",
+        "name" : "HealthOSStageSmokeTests"
+      }
+    }
+  ],
+  "version" : 1
+}

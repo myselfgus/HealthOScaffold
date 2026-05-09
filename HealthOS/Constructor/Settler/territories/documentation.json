@@ -1,0 +1,71 @@
+{
+  "id": "documentation",
+  "name": "Documentation",
+  "summary": "Repository entry docs, architecture docs, execution docs, glossary, status, handoff, maturity maps, gap registers, and documentation drift discipline.",
+  "maturity": "scaffolded contract",
+  "canonicalDocs": [
+    "README.md",
+    "AGENTS.md",
+    "CLAUDE.md",
+    "HealthOS/Shared/docs/architecture/17-glossary.md",
+    "HealthOS/Shared/docs/execution/02-status-and-tracking.md",
+    "HealthOS/Shared/docs/execution/12-next-agent-handoff.md"
+  ],
+  "primaryPaths": [
+    "README.md",
+    "AGENTS.md",
+    "CLAUDE.md",
+    "docs"
+  ],
+  "secondaryPaths": [
+    "Settler",
+    "Steward",
+    "HealthOS/Shared/docs/execution/skills/documentation-drift-skill.md",
+    "HealthOS/Shared/docs/execution/todo"
+  ],
+  "forbiddenPaths": [
+    "swift/Sources",
+    "HealthOS/Constructor/ts/packages",
+    "HealthOS/Constructor/ts/agent-infra",
+    "schemas",
+    "sql"
+  ],
+  "invariants": [
+    "HealthOS is the system; HealthOScaffold is the historical construction repository/foundation phase.",
+    "Official docs remain canonical over derived memory and construction records.",
+    "Docs must not invent capability, production readiness, provider behavior, CLI behavior, or clinical authority.",
+    "Current nomenclature must remain consistent: Session Runtime, MSR, HealthOS Forge MCP, healthos-forge-mcp."
+  ],
+  "allowedWork": [
+    "Update architecture, execution, tracker, handoff, README, and agent instruction docs.",
+    "Correct stale terminology and maturity claims.",
+    "Record validation evidence and residual gaps honestly.",
+    "Maintain documentation-only construction metadata when scoped."
+  ],
+  "forbiddenWork": [
+    "Invent capability or demo narratives.",
+    "Leave stale references or inconsistent nomenclature.",
+    "Propagate UTF-8 corruption.",
+    "Claim docs prove executable behavior without source or smoke evidence."
+  ],
+  "validationCommands": [
+    "make validate-docs",
+    "git diff --check"
+  ],
+  "knownGaps": [
+    "Derived memory can lag official docs and must not be treated as canonical.",
+    "Older prompt and planning docs may contain historical task IDs that require careful context before edits."
+  ],
+  "defaultSettlerIds": [
+    "documentation-settler"
+  ],
+  "relatedTerritoryIds": [
+    "construction-system",
+    "validation-and-ci",
+    "core"
+  ],
+  "notes": [
+    "Documentation-only changes still require tracking updates when they complete a work unit.",
+    "Territory records are metadata and do not replace this documentation territory."
+  ]
+}

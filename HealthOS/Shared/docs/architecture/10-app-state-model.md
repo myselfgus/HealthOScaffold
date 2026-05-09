@@ -1,0 +1,113 @@
+# App state model
+
+Shared state vocabulary should cover:
+- session state
+- draft state
+- gate state
+- consent state
+- audit visibility state
+- queue/pending-work state
+
+## Principle
+Apps consume core/runtime contracts. They do not invent separate law models.
+
+Compliance is architecturalized in HealthOS seams; apps render and request through contracts rather than reimplementing governance logic.
+
+The state model is Stage-agnostic. Initial Stages use it as examples; future Stages may consume the same mediated Boundary after their Custom is complete.
+
+## Cross-app shared state groups
+- AuthenticationContext
+- ServiceContext
+- SessionContext
+- PatientContext
+- DraftReviewState
+- GateReviewState
+- ConsentManagementState
+- AuditTrailState
+- QueueState
+- RuntimeHealthState
+- DegradedModeState
+
+## Canonical state vocabularies
+
+### SessionContext
+- idle
+- opening
+- active
+- degraded
+- paused
+- closing
+- closed
+- failed
+
+### DraftReviewState
+- empty
+- loading
+- ready
+- awaiting_gate
+- approved
+- rejected
+- superseded
+- failed
+
+### GateReviewState
+- none
+- pending
+- reviewing
+- approved
+- rejected
+- cancelled
+- failed
+
+### ConsentManagementState
+- loading
+- active
+- restricted
+- expired
+- revoked
+- updating
+- failed
+
+### AuditTrailState
+- loading
+- ready
+- filtered
+- redacted
+- export_pending
+- failed
+
+### QueueState
+- empty
+- loading
+- ready
+- saturated
+- deferred
+- failed
+
+### RuntimeHealthState
+- unknown
+- healthy
+- degraded
+- paused
+- failed
+
+### DegradedModeState
+- none
+- transcription_degraded
+- retrieval_degraded
+- provider_fallback
+- partial_results
+
+## Rule for apps
+An app may show degraded states, but it may not reinterpret them as legal/governance success.
+For example, a degraded retrieval does not imply access was authorized; it only indicates an operational state.
+App wiring must not treat absent or unstable platform/runtime state as if it were implemented.
+
+## Runtime-state surfaces doctrine
+Detailed doctrine for how runtime truth appears in apps lives in:
+- `HealthOS/Shared/docs/architecture/22-runtime-state-surfaces.md`
+
+## Role-specific emphasis
+- Scribe emphasizes SessionContext, DraftReviewState, GateReviewState, RuntimeHealthState
+- Veridia emphasizes ConsentManagementState, AuditTrailState, RuntimeHealthState
+- CloudClinic emphasizes QueueState, GateReviewState, AuditTrailState, RuntimeHealthState

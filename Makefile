@@ -5,33 +5,33 @@ tree:
 	find . -maxdepth 4 -type f | sort
 
 swift-build:
-	cd swift && swift build
+	cd HealthOS && swift build
 
 swift-test:
-	cd swift && swift test
+	cd HealthOS && swift test
 
 smoke-cli:
-	cd swift && swift run HealthOSCLI
+	cd HealthOS && swift run HealthOSCLI
 
 smoke-scribe:
-	cd swift && swift run HealthOSScribeStage --smoke-test
+	cd HealthOS && swift run HealthOSScribeStage --smoke-test
 
 smoke-veridia:
-	cd swift && swift run HealthOSVeridiaStage --smoke-test
+	cd HealthOS && swift run HealthOSVeridiaStage --smoke-test
 
 smoke-cloudclinic:
-	cd swift && swift run HealthOSCloudClinicStage --smoke-test
+	cd HealthOS && swift run HealthOSCloudClinicStage --smoke-test
 
 swift-smoke: smoke-cli smoke-scribe smoke-veridia smoke-cloudclinic
 
 ts-build:
-	cd ts && npm install && npm run build
+	cd HealthOS/Constructor/ts && npm install && npm run build
 
 ts-test:
-	cd ts && npm test --if-present --workspaces
+	cd HealthOS/Constructor/ts && npm test --if-present --workspaces
 
 python-check:
-	cd python && python -m compileall .
+	cd HealthOS/Support/python && python -m compileall .
 
 python-compile: python-check
 
@@ -45,10 +45,10 @@ validate-contracts:
 	bash ./scripts/check-contract-drift.sh
 
 validate-construction-system:
-	cd ts && npm run build --workspace @healthos/steward && node agent-infra/healthos-steward/dist/cli.js validate-construction-system
+	cd HealthOS/Constructor/ts && npm run build --workspace @healthos/steward && node agent-infra/healthos-steward/dist/cli.js validate-construction-system
 
 validate-all:
 	bash ./scripts/validate-local.sh
 
 sql-print:
-	cat sql/migrations/001_init.sql
+	cat HealthOS/Tier1-Mestral-Core/SQL/migrations/001_init.sql

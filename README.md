@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="docs/assets/healthos-logo.png" width="320" alt="HealthOS">
+  <img src="HealthOS/Shared/docs/assets/healthos-logo.png" width="320" alt="HealthOS">
 </p>
 
 <p align="center">
@@ -29,10 +29,10 @@ Use this README as an entry surface, not as a replacement for the canonical arch
 
 | Reader question | Current answer | Canonical follow-up |
 | :--- | :--- | :--- |
-| What is HealthOS? | The whole governed, app-agnostic platform for health operations, not one app or an EHR skin. | `docs/architecture/01-overview.md` |
-| What proves executable behavior today? | The Swift first-slice path through habilitation, consent, capture, retrieval, SOAP draft, gate, final SOAP, and provenance. | `docs/architecture/28-first-slice-executable-path.md` |
-| What is still scaffolded or placeholder? | Provider deployment, semantic retrieval, final app shells, regulatory/signature/interoperability effectuation, and production ops. | `docs/execution/11-current-maturity-map.md` |
-| Where does construction tooling sit? | Steward, Settlers, Settlements, Territories, and `healthos-forge-mcp` are repository engineering surfaces outside the clinical/runtime hierarchy. | `docs/execution/22-steward-construction-operating-model.md` |
+| What is HealthOS? | The whole governed, app-agnostic platform for health operations, not one app or an EHR skin. | `HealthOS/Shared/docs/architecture/01-overview.md` |
+| What proves executable behavior today? | The Swift first-slice path through habilitation, consent, capture, retrieval, SOAP draft, gate, final SOAP, and provenance. | `HealthOS/Shared/docs/architecture/28-first-slice-executable-path.md` |
+| What is still scaffolded or placeholder? | Provider deployment, semantic retrieval, final app shells, regulatory/signature/interoperability effectuation, and production ops. | `HealthOS/Shared/docs/execution/11-current-maturity-map.md` |
+| Where does construction tooling sit? | Steward, Settlers, Settlements, Territories, and `healthos-forge-mcp` are repository engineering surfaces outside the clinical/runtime hierarchy. | `HealthOS/Shared/docs/execution/22-steward-construction-operating-model.md` |
 
 ```mermaid
 %%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#F6F8FB', 'primaryBorderColor': '#D6DEE8', 'primaryTextColor': '#1D2733', 'clusterBkg': '#FFFFFF', 'clusterBorder': '#D6DEE8', 'lineColor': '#5B6B7C', 'edgeLabelBackground': '#F6F8FB', 'fontFamily': 'ui-rounded, -apple-system, BlinkMacSystemFont, sans-serif'}}}%%
@@ -92,7 +92,7 @@ flowchart LR
 
 HealthOS is a governance-first platform. Every clinical act flows through a strictly layered, consent- and provenance-governed fabric. Stages consume only mediated surfaces through Boundary — they never become law engines.
 
-Stage work advances only after the mediated surface the Stage consumes is implemented and stable, not merely contracted, and after the relevant Custom is complete. See `docs/architecture/50-app-layer-boundary-and-reference-apps.md` for the Boundary, Stage, Custom, and task-ordering doctrine.
+Stage work advances only after the mediated surface the Stage consumes is implemented and stable, not merely contracted, and after the relevant Custom is complete. See `HealthOS/Shared/docs/architecture/50-app-layer-boundary-and-reference-apps.md` for the Boundary, Stage, Custom, and task-ordering doctrine.
 
 Steward, Settlers, Settlements, Territories, and `healthos-forge-mcp` are repository engineering concepts **outside** this clinical/runtime hierarchy. They inspect, edit, validate, and record repository work. They do not become HealthOS law, runtime automation, or clinical effectuation.
 
@@ -257,7 +257,7 @@ flowchart LR
 
 ## 📦 Swift Package Graph
 
-All fifteen targets build from `swift/Package.swift` (Swift tools 6.2, platform `.macOS(.v26)`). External dependencies: none — sovereignty by design.
+All fifteen targets build from `HealthOS/Package.swift` (Swift tools 6.2, platform `.macOS(.v26)`). External dependencies: none — sovereignty by design.
 
 ```mermaid
 %%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#f8f4ff', 'primaryBorderColor': '#c4b5fd', 'primaryTextColor': '#3b0764', 'clusterBkg': '#fdfbff', 'clusterBorder': '#e9d5ff', 'titleColor': '#0f172a', 'edgeLabelBackground': '#fdf8ff', 'fontFamily': 'ui-sans-serif, system-ui, -apple-system'}}}%%
@@ -317,7 +317,7 @@ graph LR
 | `HealthOSGOS` | 2 | Library | GOS runtime — operational mediation subordinate to Core law; canonical home for GOS lifecycle (migration from AACI in progress) |
 | `HealthOSAACI` | 2 | Library | AACI runtime, GOS binding consumption, session capture, draft composition |
 | `HealthOSMSR` | 2 | Library | Mental Space Runtime pipeline — ASL, VDLP, GEM executors, provenance metadata |
-| `HealthOSAsyncRuntime` | 2 | Library | Durable job queue and async task lifecycle — scaffold stub; TS reference implementation in `ts/packages/runtime-async/` |
+| `HealthOSAsyncRuntime` | 2 | Library | Durable job queue and async task lifecycle — scaffold stub; TS reference implementation in `HealthOS/Constructor/ts/packages/runtime-async/` |
 | `HealthOSUserAgentRuntime` | 2 | Library | Patient/user-side session lifecycle and sovereignty enforcement — scaffold stub |
 | `HealthOSServiceRuntime` | 2 | Library | Professional/service-operations session lifecycle — scaffold stub |
 | `HealthOSSessionRuntime` | 2 | Library | Session orchestration (`SessionRunner`), transcript normalization executor, Scribe bridge adapter |
@@ -331,14 +331,14 @@ graph LR
 
 ## 🪟 Native Interface Layer — Liquid Glass Design System
 
-HealthOS native macOS surfaces target macOS 26+ and adopt **Liquid Glass as the design baseline** per `docs/architecture/48-native-macos-ui-design-system-and-app-shells.md`.
+HealthOS native macOS surfaces target macOS 26+ and adopt **Liquid Glass as the design baseline** per `HealthOS/Shared/docs/architecture/48-native-macos-ui-design-system-and-app-shells.md`.
 
 Standard SwiftUI/AppKit controls and navigation surfaces (sidebars, toolbars, sheets, `NavigationSplitView`) inherit system Liquid Glass behavior automatically. Custom `glassEffect`, `GlassEffectContainer`, and glass button styles are reserved for app-specific HealthOS surfaces not covered by standard controls.
 
 **Current scaffold state:** `HealthOSScribeStage` uses `GroupBox` + `.thinMaterial` with standard SwiftUI controls. `HealthOSDesignSystem` is the implemented design system baseline (DS-001, 2026-05-05). Full Liquid Glass adoption is in progress as the macOS 26+ native app shell matures.
 
 <p align="center">
-  <img src="docs/assets/liquidglass_intro.gif" width="100%" alt="Demonstração do Liquid Glass UI — HealthOS Scribe First Slice">
+  <img src="HealthOS/Shared/docs/assets/liquidglass_intro.gif" width="100%" alt="Demonstração do Liquid Glass UI — HealthOS Scribe First Slice">
 </p>
 
 ### UI Component Stack
@@ -467,7 +467,7 @@ This repository is in **controlled implementation / scaffold hardening**:
 | **Liquid Glass UI** | 🎯 macOS 26+ Baseline | HealthOSDesignSystem baseline (DS-001); glass adoption in progress |
 | **Construction System** | ✅ Implemented Seam | 10 CLI commands (healthos-steward) + 10 MCP tools (healthos-forge-mcp) |
 
-Read this table as an onboarding summary. The authoritative maturity ladder is `doctrine-only` → `scaffolded contract` → `implemented seam` → `tested operational path` → `production-hardened`, maintained in `docs/execution/11-current-maturity-map.md`.
+Read this table as an onboarding summary. The authoritative maturity ladder is `doctrine-only` → `scaffolded contract` → `implemented seam` → `tested operational path` → `production-hardened`, maintained in `HealthOS/Shared/docs/execution/11-current-maturity-map.md`.
 
 **This repository is not:**
 - a production-ready product
@@ -501,7 +501,7 @@ make validate-docs
 make validate-all
 ```
 
-**Xcode:** open `HealthOS.xcworkspace` from repository root — resolves `swift/Package.swift`.
+**Xcode:** open `HealthOS.xcworkspace` from repository root — resolves `HealthOS/Package.swift`, visible `Constructor` / `Support` roots, shared schemes, profile schemes, and layer test plans.
 
 **Smoke paths:**
 
@@ -515,24 +515,24 @@ make smoke-cloudclinic
 **Direct smoke commands:**
 
 ```bash
-cd swift && swift run HealthOSCLI
-cd swift && swift run HealthOSCLI --reject-gate
-cd swift && swift run HealthOSScribeStage --smoke-test
-cd swift && swift run HealthOSScribeStage --smoke-test-audio
-cd swift && swift run HealthOSVeridiaStage --smoke-test
-cd swift && swift run HealthOSCloudClinicStage --smoke-test
+cd HealthOS && swift run HealthOSCLI
+cd HealthOS && swift run HealthOSCLI --reject-gate
+cd HealthOS && swift run HealthOSScribeStage --smoke-test
+cd HealthOS && swift run HealthOSScribeStage --smoke-test-audio
+cd HealthOS && swift run HealthOSVeridiaStage --smoke-test
+cd HealthOS && swift run HealthOSCloudClinicStage --smoke-test
 ```
 
 **GOS bundle lifecycle:**
 
 ```bash
-cd swift && swift run HealthOSCLI \
+cd HealthOS && swift run HealthOSCLI \
   --gos-review-bundle <bundle-id> \
   --gos-spec-id <spec-id> \
   --reviewer-id <id> \
   --review-rationale "<reason>"
 
-cd swift && swift run HealthOSCLI \
+cd HealthOS && swift run HealthOSCLI \
   --gos-promote-bundle <bundle-id> \
   --gos-spec-id <spec-id> \
   --activator-id <id> \
@@ -557,10 +557,10 @@ flowchart LR
     classDef sql    fill:#fce7f3,stroke:#ec4899,stroke-width:2px,color:#831843
 
     C[Canonical doctrine\narchitecture + execution docs]:::source
-    J[schemas/\nJSON Schema]:::schema
+    J[HealthOS/Tier1-Mestral-Core/Schemas/\nJSON Schema]:::schema
     SW[swift/\nCore contracts + services + tests]:::swift
-    TS[ts/\ncontracts + runtimes + tooling]:::ts
-    SQL[sql/migrations/\nmetadata shape]:::sql
+    TS[HealthOS/Constructor/ts/\ncontracts + runtimes + tooling]:::ts
+    SQL[HealthOS/Tier1-Mestral-Core/SQL/migrations/\nmetadata shape]:::sql
 
     C --> J & SW & TS & SQL
     J <--> SW
@@ -576,26 +576,26 @@ flowchart LR
 
 | If you want to… | Start here | Then go to |
 | :--- | :--- | :--- |
-| Understand what HealthOS is | `docs/architecture/01-overview.md` | `19-interface-doctrine.md`, `46-apple-sovereignty-architecture.md` |
-| Understand the consolidated technical product definition | `docs/product/01-healthos-technical-product-specification.md` | `docs/product/README.md`, `docs/architecture/` and `docs/execution/` sources referenced by the spec |
-| Understand the executable slice | `docs/architecture/28-first-slice-executable-path.md` | `swift/Sources/HealthOSSessionRuntime/SessionRunner.swift`, `swift/Sources/HealthOSCore/FirstSliceContracts.swift` |
-| Understand GOS | `docs/architecture/29-governed-operational-spec.md` | `30-gos-authoring-and-compiler.md` → `33-gos-app-consumption-patterns.md` |
-| Understand MSR | `docs/architecture/49-mental-space-runtime.md` | `swift/Sources/HealthOSMSR/`, `swift/Sources/HealthOSCore/MSRRuntime.swift` |
-| Understand native UI + Liquid Glass | `docs/architecture/48-native-macos-ui-design-system-and-app-shells.md` | `swift/Sources/HealthOSScribeStage/` |
-| Understand Apple sovereignty | `docs/architecture/46-apple-sovereignty-architecture.md` | `swift/Sources/HealthOSProviders/AppleFoundationModelsAdapter.swift` |
-| Understand apps and boundaries | `docs/architecture/11-scribe.md` | `12-veridia.md`, `13-cloudclinic.md`, `43-cross-app-coordination-shared-surfaces.md` |
-| Understand maturity and gaps | `docs/execution/11-current-maturity-map.md` | `13-scaffold-release-candidate-criteria.md`, `14-final-gap-register.md` |
-| Start coding safely | `docs/execution/README.md` | `01-agent-operating-protocol.md`, `02-status-and-tracking.md`, relevant `todo/*.md` |
-| Understand Steward for Xcode | `docs/architecture/45-healthos-xcode-agent.md` | `docs/execution/17-healthos-xcode-agent-migration-plan.md` |
-| Understand the construction system | `docs/execution/22-steward-construction-operating-model.md` | `docs/execution/19-settler-model-task-tracker.md`, `.healthos-settler/territories/` |
-| Use Steward CLI | `CLAUDE.md` Steward usage section | `ts/agent-infra/healthos-steward/` |
-| Use healthos-forge-mcp | `ts/agent-infra/healthos-forge-mcp/` | `docs/execution/22-steward-construction-operating-model.md` |
-| See open documentation tasks | `docs/execution/20-documental-todos-work-plan.md` | `docs/execution/prompts/` |
-| See current status and handoff | `docs/execution/02-status-and-tracking.md` | `docs/execution/12-next-agent-handoff.md` |
+| Understand what HealthOS is | `HealthOS/Shared/docs/architecture/01-overview.md` | `19-interface-doctrine.md`, `46-apple-sovereignty-architecture.md` |
+| Understand the consolidated technical product definition | `HealthOS/Shared/docs/product/01-healthos-technical-product-specification.md` | `HealthOS/Shared/docs/product/README.md`, `HealthOS/Shared/docs/architecture/` and `HealthOS/Shared/docs/execution/` sources referenced by the spec |
+| Understand the executable slice | `HealthOS/Shared/docs/architecture/28-first-slice-executable-path.md` | `HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSSessionRuntime/SessionRunner.swift`, `HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/FirstSliceContracts.swift` |
+| Understand GOS | `HealthOS/Shared/docs/architecture/29-governed-operational-spec.md` | `30-gos-authoring-and-compiler.md` → `33-gos-app-consumption-patterns.md` |
+| Understand MSR | `HealthOS/Shared/docs/architecture/49-mental-space-runtime.md` | `HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSMSR/`, `HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/MSRRuntime.swift` |
+| Understand native UI + Liquid Glass | `HealthOS/Shared/docs/architecture/48-native-macos-ui-design-system-and-app-shells.md` | `HealthOS/Tier4-Stages-Cast/Scribe/Sources/HealthOSScribeStage/` |
+| Understand Apple sovereignty | `HealthOS/Shared/docs/architecture/46-apple-sovereignty-architecture.md` | `HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSProviders/AppleFoundationModelsAdapter.swift` |
+| Understand apps and boundaries | `HealthOS/Shared/docs/architecture/11-scribe.md` | `12-veridia.md`, `13-cloudclinic.md`, `43-cross-app-coordination-shared-surfaces.md` |
+| Understand maturity and gaps | `HealthOS/Shared/docs/execution/11-current-maturity-map.md` | `13-scaffold-release-candidate-criteria.md`, `14-final-gap-register.md` |
+| Start coding safely | `HealthOS/Shared/docs/execution/README.md` | `01-agent-operating-protocol.md`, `02-status-and-tracking.md`, relevant `todo/*.md` |
+| Understand Steward for Xcode | `HealthOS/Shared/docs/architecture/45-healthos-xcode-agent.md` | `HealthOS/Shared/docs/execution/17-healthos-xcode-agent-migration-plan.md` |
+| Understand the construction system | `HealthOS/Shared/docs/execution/22-steward-construction-operating-model.md` | `HealthOS/Shared/docs/execution/19-settler-model-task-tracker.md`, `HealthOS/Constructor/Settler/territories/` |
+| Use Steward CLI | `CLAUDE.md` Steward usage section | `HealthOS/Constructor/ts/agent-infra/healthos-steward/` |
+| Use healthos-forge-mcp | `HealthOS/Constructor/ts/agent-infra/healthos-forge-mcp/` | `HealthOS/Shared/docs/execution/22-steward-construction-operating-model.md` |
+| See open documentation tasks | `HealthOS/Shared/docs/execution/20-documental-todos-work-plan.md` | `HealthOS/Shared/docs/execution/prompts/` |
+| See current status and handoff | `HealthOS/Shared/docs/execution/02-status-and-tracking.md` | `HealthOS/Shared/docs/execution/12-next-agent-handoff.md` |
 
 ### Executive Visual Overview
 
-`DOC-README-VISUAL-PRESENTATION-001` produced an editable visual overview deck as an external work-unit deliverable because this checkout does not yet contain a clear versioned `docs/assets/presentations/` pattern. When a repository asset policy exists, the intended durable path is `docs/assets/presentations/healthos-visual-overview.pptx`.
+`DOC-README-VISUAL-PRESENTATION-001` produced an editable visual overview deck as an external work-unit deliverable because this checkout does not yet contain a clear versioned `HealthOS/Shared/docs/assets/presentations/` pattern. When a repository asset policy exists, the intended durable path is `HealthOS/Shared/docs/assets/presentations/healthos-visual-overview.pptx`.
 
 The deck narrative is: HealthOS is a governed platform; Core law stays sovereign; GOS mediates operational structure; runtimes and apps consume mediated contracts; construction tooling stays outside the clinical/runtime hierarchy; maturity and residual gaps remain explicit.
 
@@ -651,14 +651,14 @@ graph LR
     classDef data  fill:#EEF7F8,stroke:#0E7C86,stroke-width:2px,color:#164E63
     classDef agent fill:#F5F2F7,stroke:#7B5E8E,stroke-width:2px,color:#3A2946
 
-    D[docs/architecture\nCanonical doctrine]:::docs
-    E[docs/execution\nProtocol · status · TODO · handoff]:::exec
+    D[HealthOS/Shared/docs/architecture\nCanonical doctrine]:::docs
+    E[HealthOS/Shared/docs/execution\nProtocol · status · TODO · handoff]:::exec
     S[schemas + sql\nContract and metadata shape]:::data
     W[swift/\nCore · AACI · MSR · apps · tests]:::code
-    T[ts/\ncontracts · runtimes · tooling · steward]:::code
+    T[HealthOS/Constructor/ts/\ncontracts · runtimes · tooling · steward]:::code
     DS[HealthOSDesignSystem\npresentation tokens · UI kits · assets]:::code
-    P[python/\nOffline ML governance scaffolds]:::code
-    EG[.healthos-steward\n.healthos-settler]:::agent
+    P[HealthOS/Support/python/\nOffline ML governance scaffolds]:::code
+    EG[HealthOS/Constructor\nSteward + Settler state]:::agent
     CA[Codex automations\nGuidance · status · dependency · skill map]:::agent
 
     D -->|defines boundaries for| W
@@ -682,15 +682,15 @@ graph LR
 
 | Surface | Primary docs | Primary code |
 | :--- | :--- | :--- |
-| Core law | `docs/architecture/06-core-services.md`, `05-data-layers.md`, `07-storage-and-sql.md` | `swift/Sources/HealthOSCore/` |
-| AACI + first slice | `docs/architecture/09-aaci.md`, `28-first-slice-executable-path.md` | `swift/Sources/HealthOSAACI/`, `swift/Sources/HealthOSSessionRuntime/` |
-| MSR | `docs/architecture/49-mental-space-runtime.md` | `swift/Sources/HealthOSMSR/` |
-| GOS | `29-governed-operational-spec.md` → `34-gos-review-and-activation-policy.md` | `ts/packages/healthos-gos-tooling/`, `swift/Sources/HealthOSCore/` |
-| Boundary | `docs/architecture/50-app-layer-boundary-and-reference-apps.md`, `19-interface-doctrine.md` | mediated facades/envelopes in `swift/Sources/HealthOSCore/` and runtime adapters |
-| Native UI + Liquid Glass | `docs/architecture/48-native-macos-ui-design-system-and-app-shells.md` | `swift/Sources/HealthOSScribeStage/` |
-| Stages | `11-scribe.md`, `12-veridia.md`, `13-cloudclinic.md`, `43-cross-app-coordination-shared-surfaces.md` | `swift/Sources/HealthOSScribeStage/`, `HealthOSVeridiaStage/`, `HealthOSCloudClinicStage/` |
-| Providers / ML | `docs/architecture/16-providers-and-ml.md`, `27-provider-threshold-policy.md` | `swift/Sources/HealthOSProviders/` |
-| Steward | `45-healthos-xcode-agent.md`, `47-steward-settler-engineering-model.md` | `ts/agent-infra/healthos-steward/`, `.healthos-steward/` |
+| Core law | `HealthOS/Shared/docs/architecture/06-core-services.md`, `05-data-layers.md`, `07-storage-and-sql.md` | `HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/` |
+| AACI + first slice | `HealthOS/Shared/docs/architecture/09-aaci.md`, `28-first-slice-executable-path.md` | `HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSAACI/`, `HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSSessionRuntime/` |
+| MSR | `HealthOS/Shared/docs/architecture/49-mental-space-runtime.md` | `HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSMSR/` |
+| GOS | `29-governed-operational-spec.md` → `34-gos-review-and-activation-policy.md` | `HealthOS/Constructor/ts/packages/healthos-gos-tooling/`, `HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/` |
+| Boundary | `HealthOS/Shared/docs/architecture/50-app-layer-boundary-and-reference-apps.md`, `19-interface-doctrine.md` | mediated facades/envelopes in `HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/` and runtime adapters |
+| Native UI + Liquid Glass | `HealthOS/Shared/docs/architecture/48-native-macos-ui-design-system-and-app-shells.md` | `HealthOS/Tier4-Stages-Cast/Scribe/Sources/HealthOSScribeStage/` |
+| Stages | `11-scribe.md`, `12-veridia.md`, `13-cloudclinic.md`, `43-cross-app-coordination-shared-surfaces.md` | `HealthOS/Tier4-Stages-Cast/Scribe/Sources/HealthOSScribeStage/`, `HealthOSVeridiaStage/`, `HealthOSCloudClinicStage/` |
+| Providers / ML | `HealthOS/Shared/docs/architecture/16-providers-and-ml.md`, `27-provider-threshold-policy.md` | `HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSProviders/` |
+| Steward | `45-healthos-xcode-agent.md`, `47-steward-settler-engineering-model.md` | `HealthOS/Constructor/ts/agent-infra/healthos-steward/`, `HealthOS/Constructor/Steward/` |
 
 ---
 
@@ -698,41 +698,41 @@ graph LR
 
 | Module / Folder | README | Focus |
 | :--- | :--- | :--- |
-| `swift/Sources/HealthOSCore/` | [README](swift/Sources/HealthOSCore/README.md) | Core law contracts, governance types, storage, GOS, MSR runtime types, entity model |
-| `swift/Sources/HealthOSGOS/` | [README](swift/Sources/HealthOSGOS/README.md) | GOS runtime stub — canonical home for GOS lifecycle; migration from HealthOSAACI in progress |
-| `swift/Sources/HealthOSAACI/` | [README](swift/Sources/HealthOSAACI/README.md) | AACI runtime — session capture, GOS binding consumption, draft composition |
-| `swift/Sources/HealthOSMSR/` | [README](swift/Sources/HealthOSMSR/README.md) | Mental Space Runtime pipeline — ASL · VDLP · GEM executors, provenance metadata |
-| `swift/Sources/HealthOSProviders/` | [README](swift/Sources/HealthOSProviders/README.md) | Provider protocol contracts, Apple FoundationModels adapter, stub providers |
-| `swift/Sources/HealthOSAsyncRuntime/` | [README](swift/Sources/HealthOSAsyncRuntime/README.md) | Async Runtime stub — job queue and lifecycle; TS reference implementation |
-| `swift/Sources/HealthOSUserAgentRuntime/` | [README](swift/Sources/HealthOSUserAgentRuntime/README.md) | User-Agent Runtime stub — patient session lifecycle and sovereignty enforcement |
-| `swift/Sources/HealthOSServiceRuntime/` | [README](swift/Sources/HealthOSServiceRuntime/README.md) | Service Runtime stub — professional/service-operations session lifecycle |
-| `swift/Sources/HealthOSSessionRuntime/` | — | Session orchestration, normalization executor, Scribe bridge adapter |
-| `swift/Sources/HealthOSBoundary/` | [README](swift/Sources/HealthOSBoundary/README.md) | Boundary compatibility module — Tier 3 facade; Stage executables should consume mediated surfaces through it as it matures |
-| `swift/Sources/HealthOSScribeStage/` | [README](swift/Sources/HealthOSScribeStage/README.md) | Scribe validation surface, SwiftUI architecture, Liquid Glass adoption path |
-| `docs/architecture/` | [index](docs/architecture/) | 50+ canonical architecture doctrine documents |
-| `docs/execution/` | [README](docs/execution/README.md) | Execution protocol, status tracking, TODO tracker, maturity/handoff |
-| `ts/` | [README](ts/README.md) | TypeScript workspace: contracts, GOS tooling, async runtime, Steward CLI |
-| `ml/` | [README](ml/README.md) | Create ML training scaffolds — transcript normalization; gated by ModelGovernance |
-| `.healthos-steward/` | [README](.healthos-steward/README.md) | Steward derived state, session memory, automation logs |
-| `ts/agent-infra/healthos-forge-mcp/` | — | Forge MCP stdio server — 10 deterministic repository-maintenance tools |
+| `HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/` | [README](HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/README.md) | Core law contracts, governance types, storage, GOS, MSR runtime types, entity model |
+| `HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSGOS/` | [README](HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSGOS/README.md) | GOS runtime stub — canonical home for GOS lifecycle; migration from HealthOSAACI in progress |
+| `HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSAACI/` | [README](HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSAACI/README.md) | AACI runtime — session capture, GOS binding consumption, draft composition |
+| `HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSMSR/` | [README](HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSMSR/README.md) | Mental Space Runtime pipeline — ASL · VDLP · GEM executors, provenance metadata |
+| `HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSProviders/` | [README](HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSProviders/README.md) | Provider protocol contracts, Apple FoundationModels adapter, stub providers |
+| `HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSAsyncRuntime/` | [README](HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSAsyncRuntime/README.md) | Async Runtime stub — job queue and lifecycle; TS reference implementation |
+| `HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSUserAgentRuntime/` | [README](HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSUserAgentRuntime/README.md) | User-Agent Runtime stub — patient session lifecycle and sovereignty enforcement |
+| `HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSServiceRuntime/` | [README](HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSServiceRuntime/README.md) | Service Runtime stub — professional/service-operations session lifecycle |
+| `HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSSessionRuntime/` | — | Session orchestration, normalization executor, Scribe bridge adapter |
+| `HealthOS/Tier3-Custom-Boundary/Sources/HealthOSBoundary/` | [README](HealthOS/Tier3-Custom-Boundary/Sources/HealthOSBoundary/README.md) | Boundary compatibility module — Tier 3 facade; Stage executables should consume mediated surfaces through it as it matures |
+| `HealthOS/Tier4-Stages-Cast/Scribe/Sources/HealthOSScribeStage/` | [README](HealthOS/Tier4-Stages-Cast/Scribe/Sources/HealthOSScribeStage/README.md) | Scribe validation surface, SwiftUI architecture, Liquid Glass adoption path |
+| `HealthOS/Shared/docs/architecture/` | [index](HealthOS/Shared/docs/architecture/) | 50+ canonical architecture doctrine documents |
+| `HealthOS/Shared/docs/execution/` | [README](HealthOS/Shared/docs/execution/README.md) | Execution protocol, status tracking, TODO tracker, maturity/handoff |
+| `HealthOS/Constructor/ts/` | [README](HealthOS/Constructor/ts/README.md) | TypeScript workspace: contracts, GOS tooling, async runtime, Steward CLI |
+| `HealthOS/Support/ML/` | [README](HealthOS/Support/ML/README.md) | Create ML/Core ML/MLX scaffolds — transcript normalization; gated by ModelGovernance |
+| `HealthOS/Constructor/Steward/` | [README](HealthOS/Constructor/Steward/README.md) | Steward derived state, session memory, automation logs |
+| `HealthOS/Constructor/ts/agent-infra/healthos-forge-mcp/` | — | Forge MCP stdio server — 10 deterministic repository-maintenance tools |
 
 ---
 
 ## 🗂️ Repository Map (current)
 
-- `docs/architecture/` — canonical architecture and doctrine docs (GOS, app-boundary, regulatory, cross-app, native UI)
-- `docs/execution/` — governed execution protocol, status tracking, coverage, invariants, TODOs, maturity/handoff
-- `schemas/` — JSON Schema entity contracts and GOS schemas
-- `swift/` — Core (T1) · Providers, GOS, AACI, MSR, AsyncRuntime, UserAgentRuntime, ServiceRuntime, SessionRuntime (T2) · Boundary (T3 technical compatibility module) · CLI · Scribe/Veridia/CloudClinic Stage executables (T4) · test suites
-- `ts/` — workspace packages (`contracts`, `runtime-async`, `runtime-user-agent`, `healthos-gos-tooling`, `healthos-steward`, `healthos-forge-mcp`)
-- `ml/` — Create ML training scaffolds for on-device models (transcript normalizer stub; gated by ModelGovernance)
-- `python/` — offline ML governance scaffolds only
-- `sql/migrations/001_init.sql` — canonical metadata schema scaffold
-- `ops/` and `scripts/` — local operational scaffolding, bootstrap, network and backup notes
-- `apps/` — interface boundary scaffolds/documentation
-- `.healthos-steward/` — derived Steward state, policies, prompts, session memory
-- `.healthos-steward/memory/automations/` — automation run logs and daily TODO digests
-- `.healthos-settler/` — Settler profiles (`.healthos-settler/settlers/`) and Territory Registry (`.healthos-settler/territories/`)
+- `HealthOS/Shared/docs/architecture/` — canonical architecture and doctrine docs (GOS, app-boundary, regulatory, cross-app, native UI)
+- `HealthOS/Shared/docs/execution/` — governed execution protocol, status tracking, coverage, invariants, TODOs, maturity/handoff
+- `HealthOS/Tier1-Mestral-Core/Schemas/` — JSON Schema entity contracts and GOS schemas
+- `HealthOS/Package.swift` — canonical SwiftPM graph for Core (T1), Providers/GOS/AACI/MSR/Runtimes (T2), Boundary (T3), Stage executables (T4), CLI, Support/Construction structural tests, and shared test suites
+- `HealthOS/Constructor/ts/` — workspace packages (`contracts`, `runtime-async`, `runtime-user-agent`, `healthos-gos-tooling`, `healthos-steward`, `healthos-forge-mcp`)
+- `HealthOS/Support/ML/` — Create ML/Core ML/MLX scaffolds for governed local model tooling (transcript normalizer stub; gated by ModelGovernance)
+- `HealthOS/Support/python/` — offline ML governance scaffolds only
+- `HealthOS/Tier1-Mestral-Core/SQL/migrations/001_init.sql` — canonical metadata schema scaffold
+- `HealthOS/Support/ops/` and `scripts/` — local operational scaffolding, bootstrap, network and backup notes
+- `HealthOS/Tier4-Stages-Cast/AppDocs/` — interface boundary scaffolds/documentation
+- `HealthOS/Constructor/Steward/` — derived Steward state, policies, prompts, session memory
+- `HealthOS/Constructor/Steward/memory/automations/` — automation run logs and daily TODO digests
+- `HealthOS/Constructor/Settler/` — Settler profiles (`HealthOS/Constructor/Settler/settlers/`) and Territory Registry (`HealthOS/Constructor/Settler/territories/`)
 - `.claude/settings.json` — Claude Code settings/MCP configuration; no repository-local scheduled-task registry
 
 ---
@@ -741,28 +741,28 @@ graph LR
 
 Steward is the canonical engineering agent for this repository. `healthos-steward` is the CLI, package, and repository-local state root.
 
-- CLI and package: `ts/agent-infra/healthos-steward/`
-- Repository-local derived state root: `.healthos-steward/`
-- Current persisted runtime state: `.healthos-steward/memory/sessions/`
+- CLI and package: `HealthOS/Constructor/ts/agent-infra/healthos-steward/`
+- Repository-local derived state root: `HealthOS/Constructor/Steward/`
+- Current persisted runtime state: `HealthOS/Constructor/Steward/memory/sessions/`
 
-Settlers are specialized engineering agent profiles. Settlements are bounded engineering work units. Territories are documented repository domains. Canonical model: `docs/architecture/47-steward-settler-engineering-model.md`.
+Settlers are specialized engineering agent profiles. Settlements are bounded engineering work units. Territories are documented repository domains. Canonical model: `HealthOS/Shared/docs/architecture/47-steward-settler-engineering-model.md`.
 
 ```bash
 make ts-build
-cd ts && npx --yes --workspace @healthos/steward healthos-steward status
-cd ts && npx --yes --workspace @healthos/steward healthos-steward runtime
-cd ts && npx --yes --workspace @healthos/steward healthos-steward session
-cd ts && npx --yes --workspace @healthos/steward healthos-steward list territories
-cd ts && npx --yes --workspace @healthos/steward healthos-steward list settlers
-cd ts && npx --yes --workspace @healthos/steward healthos-steward list settlements
-cd ts && npx --yes --workspace @healthos/steward healthos-steward inspect territory <id>
-cd ts && npx --yes --workspace @healthos/steward healthos-steward inspect settler <id>
-cd ts && npx --yes --workspace @healthos/steward healthos-steward inspect settlement <id>
-cd ts && npx --yes --workspace @healthos/steward healthos-steward next
-cd ts && npx --yes --workspace @healthos/steward healthos-steward generate-prompt <settlement-id>
-cd ts && npx --yes --workspace @healthos/steward healthos-steward validate-settlement <settlement-id>
-cd ts && npx --yes --workspace @healthos/steward healthos-steward pr-draft <settlement-id>
-cd ts && npx --yes --workspace @healthos/steward healthos-steward build-memory
+cd HealthOS/Constructor/ts && npx --yes --workspace @healthos/steward healthos-steward status
+cd HealthOS/Constructor/ts && npx --yes --workspace @healthos/steward healthos-steward runtime
+cd HealthOS/Constructor/ts && npx --yes --workspace @healthos/steward healthos-steward session
+cd HealthOS/Constructor/ts && npx --yes --workspace @healthos/steward healthos-steward list territories
+cd HealthOS/Constructor/ts && npx --yes --workspace @healthos/steward healthos-steward list settlers
+cd HealthOS/Constructor/ts && npx --yes --workspace @healthos/steward healthos-steward list settlements
+cd HealthOS/Constructor/ts && npx --yes --workspace @healthos/steward healthos-steward inspect territory <id>
+cd HealthOS/Constructor/ts && npx --yes --workspace @healthos/steward healthos-steward inspect settler <id>
+cd HealthOS/Constructor/ts && npx --yes --workspace @healthos/steward healthos-steward inspect settlement <id>
+cd HealthOS/Constructor/ts && npx --yes --workspace @healthos/steward healthos-steward next
+cd HealthOS/Constructor/ts && npx --yes --workspace @healthos/steward healthos-steward generate-prompt <settlement-id>
+cd HealthOS/Constructor/ts && npx --yes --workspace @healthos/steward healthos-steward validate-settlement <settlement-id>
+cd HealthOS/Constructor/ts && npx --yes --workspace @healthos/steward healthos-steward pr-draft <settlement-id>
+cd HealthOS/Constructor/ts && npx --yes --workspace @healthos/steward healthos-steward build-memory
 ```
 
 Ten `healthos-steward` CLI commands are implemented (ST-010 through ST-017). `dist/` is not committed — run `make ts-build` once before invoking.
@@ -793,7 +793,7 @@ flowchart TD
     MCP -. deterministic repo operations .-> SETT
 ```
 
-**Steward for Xcode** is the Xcode-integration posture: integrates with Xcode Intelligence as an Apple-controlled engineering runtime surface. See `docs/architecture/45-healthos-xcode-agent.md` for target architecture.
+**Steward for Xcode** is the Xcode-integration posture: integrates with Xcode Intelligence as an Apple-controlled engineering runtime surface. See `HealthOS/Shared/docs/architecture/45-healthos-xcode-agent.md` for target architecture.
 
 ### 🏗️ Construction System Lifecycle
 
@@ -826,7 +826,7 @@ flowchart TD
     MEM -. non-canonical do not cite .-> DOCS
 ```
 
-Canonical truth resides in `docs/` and project manifests. Steward memory, Settler scaffolds, Settlement records, and Territory records are derived or instructional engineering surfaces — non-clinical, non-constitutional, and non-authorizing.
+Canonical truth resides in `HealthOS/Shared/docs/` and project manifests. Steward memory, Settler scaffolds, Settlement records, and Territory records are derived or instructional engineering surfaces — non-clinical, non-constitutional, and non-authorizing.
 
 ---
 
@@ -841,7 +841,7 @@ Scheduled repository maintenance is owned by grouped Codex automations outside t
 | `HealthOScaffold Dependency and SDK Drift` | Weekly, Thursday 11:00 | worktree, read-only | Reports manifest, lockfile, SDK, and toolchain drift |
 | `HealthOScaffold Retrospective Skill Map` | Every two weeks, Friday 10:00 | worktree, read-only | Suggests concrete skills to deepen from PR/review/commit evidence |
 
-No `.claude/automations/` directory or `.claude/scheduled_tasks.json` file is kept for retired jobs. Historical derived logs may remain under `.healthos-steward/memory/automations/`, but they are not scheduler definitions.
+No `.claude/automations/` directory or `.claude/scheduled_tasks.json` file is kept for retired jobs. Historical derived logs may remain under `HealthOS/Constructor/Steward/memory/automations/`, but they are not scheduler definitions.
 
 ```mermaid
 %%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#f0fdf4', 'primaryBorderColor': '#86efac', 'primaryTextColor': '#14532d', 'clusterBkg': '#fafafa', 'clusterBorder': '#e2e8f0', 'titleColor': '#0f172a', 'edgeLabelBackground': '#f8fafc', 'fontFamily': 'ui-sans-serif, system-ui, -apple-system'}}}%%
@@ -858,7 +858,7 @@ flowchart LR
     WRITE[report evidence\nor propose minimal patch]:::write
     COMMIT[branch + PR only\nwhen docs change]:::git
     RESTORE[no direct main push]:::git
-    MEM[.healthos-steward/memory/\nautomations/]:::mem
+    MEM[HealthOS/Constructor/Steward/memory/\nautomations/]:::mem
 
     CRON --> STASH --> READ --> WRITE --> COMMIT --> RESTORE
     READ -. historical derived logs .-> MEM
@@ -866,9 +866,9 @@ flowchart LR
 
 ### Documental Work Plan
 
-`docs/execution/20-documental-todos-work-plan.md` is the living plan for open documentation tasks. It is no longer edited by a scheduled Claude cron job; update it only through an explicit, scoped work unit with validation and PR handoff.
+`HealthOS/Shared/docs/execution/20-documental-todos-work-plan.md` is the living plan for open documentation tasks. It is no longer edited by a scheduled Claude cron job; update it only through an explicit, scoped work unit with validation and PR handoff.
 
-Phase execution prompts in `docs/execution/prompts/`:
+Phase execution prompts in `HealthOS/Shared/docs/execution/prompts/`:
 
 | Prompt file | Phase | Tasks |
 | :--- | :--- | :--- |
@@ -883,23 +883,23 @@ Phase execution prompts in `docs/execution/prompts/`:
 Read in order before coding:
 
 1. `README.md` (this file)
-2. `docs/execution/README.md`
-3. `docs/execution/00-master-plan.md`
-4. `docs/execution/01-agent-operating-protocol.md`
-5. `docs/execution/02-status-and-tracking.md`
-6. `docs/execution/06-scaffold-coverage-matrix.md`
-7. `docs/execution/10-invariant-matrix.md`
-8. `docs/execution/11-current-maturity-map.md`
-9. `docs/execution/12-next-agent-handoff.md`
-10. `docs/execution/13-scaffold-release-candidate-criteria.md`
-11. `docs/execution/14-final-gap-register.md`
-12. `docs/execution/15-scaffold-finalization-plan.md`
-13. `docs/execution/16-next-10-actions-plan.md`
-14. `docs/execution/22-steward-construction-operating-model.md` — construction system operating model
-15. `docs/execution/19-settler-model-task-tracker.md` — ST task sequence and status
-16. relevant `docs/execution/todo/*.md`
-17. matching `docs/execution/skills/*.md`
-18. if touching Swift/SwiftUI/Xcode: `docs/architecture/48-native-macos-ui-design-system-and-app-shells.md` and matching `docs/execution/skills/<name>/SKILL.md`
+2. `HealthOS/Shared/docs/execution/README.md`
+3. `HealthOS/Shared/docs/execution/00-master-plan.md`
+4. `HealthOS/Shared/docs/execution/01-agent-operating-protocol.md`
+5. `HealthOS/Shared/docs/execution/02-status-and-tracking.md`
+6. `HealthOS/Shared/docs/execution/06-scaffold-coverage-matrix.md`
+7. `HealthOS/Shared/docs/execution/10-invariant-matrix.md`
+8. `HealthOS/Shared/docs/execution/11-current-maturity-map.md`
+9. `HealthOS/Shared/docs/execution/12-next-agent-handoff.md`
+10. `HealthOS/Shared/docs/execution/13-scaffold-release-candidate-criteria.md`
+11. `HealthOS/Shared/docs/execution/14-final-gap-register.md`
+12. `HealthOS/Shared/docs/execution/15-scaffold-finalization-plan.md`
+13. `HealthOS/Shared/docs/execution/16-next-10-actions-plan.md`
+14. `HealthOS/Shared/docs/execution/22-steward-construction-operating-model.md` — construction system operating model
+15. `HealthOS/Shared/docs/execution/19-settler-model-task-tracker.md` — ST task sequence and status
+16. relevant `HealthOS/Shared/docs/execution/todo/*.md`
+17. matching `HealthOS/Shared/docs/execution/skills/*.md`
+18. if touching Swift/SwiftUI/Xcode: `HealthOS/Shared/docs/architecture/48-native-macos-ui-design-system-and-app-shells.md` and matching `HealthOS/Shared/docs/execution/skills/<name>/SKILL.md`
 
 ---
 
@@ -939,7 +939,7 @@ Construction System
 
 ## Maturity Snapshot by Layer
 
-Full detail: `docs/execution/11-current-maturity-map.md`.
+Full detail: `HealthOS/Shared/docs/execution/11-current-maturity-map.md`.
 
 - **Core law + storage governance:** implemented seam / tested operational path (local scaffold)
 - **GOS authoring/compiler/lifecycle:** implemented seam / tested operational path (scaffold hardening)
@@ -950,7 +950,7 @@ Full detail: `docs/execution/11-current-maturity-map.md`.
 
 ## Scaffold/Foundation Phase Closure References
 
-- `docs/execution/13-scaffold-release-candidate-criteria.md`
-- `docs/execution/14-final-gap-register.md`
-- `docs/execution/15-scaffold-finalization-plan.md`
-- `docs/execution/16-next-10-actions-plan.md`
+- `HealthOS/Shared/docs/execution/13-scaffold-release-candidate-criteria.md`
+- `HealthOS/Shared/docs/execution/14-final-gap-register.md`
+- `HealthOS/Shared/docs/execution/15-scaffold-finalization-plan.md`
+- `HealthOS/Shared/docs/execution/16-next-10-actions-plan.md`

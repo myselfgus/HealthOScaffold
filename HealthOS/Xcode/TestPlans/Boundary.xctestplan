@@ -1,0 +1,25 @@
+{
+  "configurations" : [
+    {
+      "id" : "4161DF70-50AE-4D55-8EA6-CF2E97774768",
+      "name" : "Default",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "codeCoverage" : false
+  },
+  "testTargets" : [
+    {
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "HealthOSBoundaryTests",
+        "name" : "HealthOSBoundaryTests"
+      }
+    }
+  ],
+  "version" : 1
+}

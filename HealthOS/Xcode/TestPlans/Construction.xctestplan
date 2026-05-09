@@ -1,0 +1,25 @@
+{
+  "configurations" : [
+    {
+      "id" : "4E8D2581-82EF-4E77-A8F0-A03AD3BCED91",
+      "name" : "Default",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "codeCoverage" : false
+  },
+  "testTargets" : [
+    {
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "HealthOSConstructionSystemTests",
+        "name" : "HealthOSConstructionSystemTests"
+      }
+    }
+  ],
+  "version" : 1
+}

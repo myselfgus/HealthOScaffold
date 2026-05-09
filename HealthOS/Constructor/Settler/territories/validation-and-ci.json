@@ -1,0 +1,80 @@
+{
+  "id": "validation-and-ci",
+  "name": "Validation and CI",
+  "summary": "Makefile targets, validation scripts, smoke commands, contract drift checks, testing posture, and future CI wiring.",
+  "maturity": "implemented seam",
+  "canonicalDocs": [
+    "Makefile",
+    "HealthOS/Shared/docs/execution/README.md",
+    "HealthOS/Shared/docs/execution/01-agent-operating-protocol.md",
+    "HealthOS/Shared/docs/execution/09-local-validation-checklist.md",
+    "HealthOS/Shared/docs/execution/13-scaffold-release-candidate-criteria.md",
+    "HealthOS/Shared/docs/execution/03-definition-of-done.md"
+  ],
+  "primaryPaths": [
+    "Makefile",
+    "scripts",
+    "swift/Tests"
+  ],
+  "secondaryPaths": [
+    "HealthOS/Shared/docs/execution/10-invariant-matrix.md",
+    "HealthOS/Shared/docs/execution/todo",
+    "schemas",
+    "HealthOS/Constructor/ts/package.json",
+    "HealthOS/Package.swift"
+  ],
+  "forbiddenPaths": [
+    "swift/Sources",
+    "HealthOS/Constructor/ts/packages",
+    "HealthOS/Constructor/ts/agent-infra"
+  ],
+  "invariants": [
+    "Validation failures must not be masked or claimed as pass.",
+    "Claims of success require the command to have passed in the current work unit or an explicit residual gap.",
+    "SwiftPM validation should be serialized to avoid build-lock contention.",
+    "Validation does not itself imply production hardening."
+  ],
+  "allowedWork": [
+    "Maintain validation scripts, Makefile targets, smoke targets, and drift checks.",
+    "Add CI wiring when scoped by a validation/CI task.",
+    "Record exact failing commands and classify whether failures are caused by the current work.",
+    "Strengthen checks without weakening doctrine or runtime boundaries."
+  ],
+  "forbiddenWork": [
+    "Mask failures with broad `|| true` validation commands.",
+    "Claim pass without pass.",
+    "Delete or weaken drift checks to make unrelated work green.",
+    "Run concurrent Swift builds that contend on `.build` locks."
+  ],
+  "validationCommands": [
+    "make validate-docs",
+    "make validate-schemas",
+    "make validate-contracts",
+    "make ts-build",
+    "make swift-build",
+    "make swift-test",
+    "make smoke-cli",
+    "make smoke-scribe",
+    "make smoke-veridia",
+    "make smoke-cloudclinic",
+    "make validate-all"
+  ],
+  "knownGaps": [
+    "GitHub Actions CI wiring remains a separate READY product/repo task.",
+    "Some validation commands may be expensive and should still be reported honestly."
+  ],
+  "defaultSettlerIds": [
+    "validation-settler"
+  ],
+  "relatedTerritoryIds": [
+    "construction-system",
+    "documentation",
+    "core",
+    "apps",
+    "type-script-runtimes"
+  ],
+  "notes": [
+    "Use diagnostic grep exceptions only where no-match is acceptable and explicitly diagnostic.",
+    "Territory records do not replace actual command execution."
+  ]
+}

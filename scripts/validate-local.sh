@@ -4,7 +4,7 @@ set -euo pipefail
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT_DIR"
 
-SUMMARY_DIR="runtime-data/validation"
+SUMMARY_DIR="HealthOS/Shared/runtime-data/validation"
 SUMMARY_FILE="${SUMMARY_DIR}/latest-validation-summary.txt"
 mkdir -p "$SUMMARY_DIR"
 
@@ -33,15 +33,15 @@ run_step "validate-schemas" bash ./scripts/validate-schemas.sh
 run_step "validate-contracts" bash ./scripts/check-contract-drift.sh
 run_step "swift-build" make swift-build
 run_step "swift-test" make swift-test
-if [[ -d ts/node_modules ]]; then
-  run_step "ts-build" bash -lc "cd ts && npm run build"
-  run_step "ts-test" bash -lc "cd ts && npm test --if-present --workspaces"
+if [[ -d HealthOS/Constructor/ts/node_modules ]]; then
+  run_step "ts-build" bash -lc "cd HealthOS/Constructor/ts && npm run build"
+  run_step "ts-test" bash -lc "cd HealthOS/Constructor/ts && npm test --if-present --workspaces"
 else
   steps+=("FAIL | ts-build")
   steps+=("FAIL | ts-test")
   failures+=("ts-build")
   failures+=("ts-test")
-  echo "[validate-local] FAIL: ts dependencies missing (ts/node_modules). Run: cd ts && npm install" >&2
+  echo "[validate-local] FAIL: ts dependencies missing (HealthOS/Constructor/ts/node_modules). Run: cd HealthOS/Constructor/ts && npm install" >&2
 fi
 run_step "python-check" make python-check
 run_step "smoke-cli" make smoke-cli

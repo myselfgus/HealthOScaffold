@@ -1,0 +1,72 @@
+{
+  "id": "type-script-runtimes",
+  "name": "TypeScript Runtimes",
+  "summary": "TypeScript Async Runtime, User-Agent Runtime, and Service Runtime packages and their operational contracts.",
+  "maturity": "implemented seam",
+  "canonicalDocs": [
+    "README.md",
+    "HealthOS/Shared/docs/architecture/20-runtime-operational-policy.md",
+    "HealthOS/Shared/docs/architecture/41-service-operations-cloudclinic-core-contracts.md",
+    "HealthOS/Shared/docs/execution/todo/runtimes-and-aaci.md"
+  ],
+  "primaryPaths": [
+    "HealthOS/Constructor/ts/packages/runtime-async",
+    "HealthOS/Constructor/ts/packages/runtime-user-agent"
+  ],
+  "secondaryPaths": [
+    "HealthOS/Constructor/ts/packages/contracts",
+    "HealthOS/Tier1-Mestral-Core/Schemas/contracts/async-job.schema.json",
+    "HealthOS/Tier1-Mestral-Core/Schemas/contracts/user-agent-patient-identity-veridia.schema.json",
+    "HealthOS/Tier1-Mestral-Core/Schemas/contracts/service-operations-cloudclinic.schema.json",
+    "HealthOS/Shared/docs/execution/skills/async-runtime-skill.md",
+    "HealthOS/Shared/docs/execution/skills/user-agent-veridia-skill.md",
+    "HealthOS/Shared/docs/execution/skills/service-operations-cloudclinic-skill.md"
+  ],
+  "forbiddenPaths": [
+    "HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSSessionRuntime",
+    "HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore",
+    "HealthOS/Constructor/ts/agent-infra"
+  ],
+  "invariants": [
+    "TypeScript runtimes are distinct from Swift Session Runtime.",
+    "Async Runtime handles jobs, idempotency, retries, dead-lettering, and backpressure.",
+    "User-Agent Runtime preserves patient-governed boundaries and prohibited-capability enforcement.",
+    "Service Runtime remains Core-mediated and cannot become Core law."
+  ],
+  "allowedWork": [
+    "Maintain TypeScript runtime package contracts and build health.",
+    "Update TS contracts and schemas together when runtime contract shapes change.",
+    "Preserve lawfulContext and prohibited-capability guards.",
+    "Clarify runtime taxonomy without renaming Swift Session Runtime."
+  ],
+  "forbiddenWork": [
+    "Conflate TypeScript runtimes with Swift Session Runtime.",
+    "Make Service Runtime Core law.",
+    "Bypass lawfulContext, consent, habilitation, provenance, or gate requirements.",
+    "Move construction tooling into product runtime packages."
+  ],
+  "validationCommands": [
+    "make ts-build",
+    "make validate-contracts",
+    "make validate-schemas",
+    "make validate-all"
+  ],
+  "knownGaps": [
+    "SQL-backed async executor remains a future blocked task.",
+    "CloudClinic and Veridia executable product wiring remains separate from TS runtime metadata."
+  ],
+  "defaultSettlerIds": [
+    "async-runtime-settler",
+    "app-boundary-settler"
+  ],
+  "relatedTerritoryIds": [
+    "apps",
+    "storage-and-data",
+    "core",
+    "validation-and-ci"
+  ],
+  "notes": [
+    "The service-runtime package is represented through contracts and docs in this snapshot; primary listed TS package directories should be verified before package-specific edits.",
+    "Territory records do not implement runtime behavior."
+  ]
+}

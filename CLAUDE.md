@@ -251,6 +251,18 @@ cd HealthOS/Constructor/ts && npm run create-agent:force --workspace @healthos/m
 
 Live create/update requires `ANTHROPIC_API_KEY` or `ANTHROPIC_AUTH_TOKEN` and writes `HealthOS/Constructor/Steward/managed-agent/agent.json`. The typed session workflows are `discover`, `brief`, `validate`, and `handoff`; they are human-triggered construction lifecycle helpers, not a CLI, cron runner, autonomous executor, clinical/runtime surface, or merge authority.
 
+## JAE Apple substrate rules
+
+HealthOS is a Juridical Application Engine. Apple frameworks are substrate capabilities mediated by HealthOS, not direct Stage authority. See `HealthOS/Shared/docs/architecture/51-apple-substrate-capabilities-for-jae.md` before adding Apple-native storage, sync, inference, worker, archive, network, or CI substrate behavior.
+
+- Stages request capabilities through Custom/Boundary.
+- Stages must not directly import Tier 2 runtime modules.
+- SwiftData and CloudKit are projection/sync only, never canonical custody.
+- FoundationModels/Core ML/NaturalLanguage must go through `HealthOSProviders` / `ProviderRouter`.
+- XPC/ServiceManagement are isolated runtime infrastructure, not app-owned authority.
+- Network is governed mesh transport, not arbitrary propagation.
+- AppleArchive/CryptoKit create integrity/evidence, not legal finality.
+
 ## Repository Maintenance Automations
 
 No Claude Code scheduled tasks are configured for this repository. The retired `.claude/automations/` directory and `.claude/scheduled_tasks.json` registry are intentionally absent to avoid duplicate cron ownership.

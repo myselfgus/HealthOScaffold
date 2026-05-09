@@ -30,6 +30,19 @@ Post-scaffold gaps are work items for the next maturity phase of the same Health
 | GAP-009 | post-scaffold hardening | User/Service runtimes | Runtime-boundary adapter coverage improved through RT-008, but user/service runtime paths still need deeper adapter and persistence coverage beyond boundary negatives. | scaffolded contract / tested operational path (boundary) | medium | low | medium | Post-scaffold runtime adapter hardening | runtime adapter packages + Swift tests | dedicated adapter and persistence negative test expansion |
 | GAP-010 | optional enhancement | Repository governance | CI-distributed execution of validate-all gates is pending; current posture is local-only. | tested operational path (local) | low | low | medium | Post-scaffold hardening 04 | CI pipeline config + scripts | CI run evidence mirroring local harness |
 
+## Apple-native implementation track
+
+These notes document permitted Apple-native substrate directions for GAP-003 through GAP-010 without changing closure classification or maturity. `HealthOS/Shared/docs/architecture/51-apple-substrate-capabilities-for-jae.md` is the canonical architecture reference for this track.
+
+- **GAP-003:** SwiftData may serve governed projection/index workloads; canonical custody remains file-backed and every projection must preserve canonical refs, lawfulContext hash, provenance ref, storage layer, and schema/degraded posture. CloudKit may sync governed projections only after Core policy exists.
+- **GAP-004:** FoundationModels remains the primary Apple-native language-model provider seam behind `HealthOSProviders` / `ProviderRouter`; NaturalLanguage, Core ML, and Speech adapters must declare capability profiles, deny direct identifiers/reidentification mapping by default, and emit provider provenance.
+- **GAP-005:** Semantic retrieval starts with local NaturalLanguage preprocessing, bounded file-backed embedding index, governed Core ML embedding adapters, and evaluation harness evidence; no external vector DB is the first implementation and no semantic retrieval claim is allowed before evaluation.
+- **GAP-006:** Local in-process execution cells precede XPC worker transport; XPC precedes ServiceManagement lifecycle; every job requires lawfulContext, idempotency, peer identity validation where applicable, and failed/degraded provenance.
+- **GAP-007:** AppleArchive + CryptoKit may provide evidence archive, backup, export, integrity envelope, and restore dry-run substrate; manifests, archive hashes, verification before restore, and lawfulContext checks are mandatory.
+- **GAP-008:** CryptoKit internal signatures may harden artifact integrity and regulatory state-machine transitions, but they must not be named or treated as legal/qualified/regulatory signatures unless a real qualified provider integration exists.
+- **GAP-009:** Runtime-boundary adapters may expose Apple-backed app-safe projections or service results, but Stage packages consume them only through `CustomSDK` and `HealthOSBoundary`; direct Tier 2 imports and direct Apple authority framework calls remain blocked.
+- **GAP-010:** Xcode Cloud may run deterministic validation, but local CLI validation remains required; CI run evidence or artifacts must be recorded before maturity language changes.
+
 ## Closure interpretation
 
 - GAP-001 and GAP-002 are **resolved for scaffold/foundation phase RC tracking** after APP-008 and OPS-003 evidence was reconciled. They are no longer current strict-closure blockers.

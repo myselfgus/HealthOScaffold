@@ -5,10 +5,10 @@ let package = Package(
     name: "HealthOS",
     platforms: [.macOS(.v26)],
     products: [
-        // ── Tier 1 — Platform/Core ──────────────────────────────────────────
+        // ── Tier 1 — Mestral Core ───────────────────────────────────────────
         .library(name: "HealthOSCore",            targets: ["HealthOSCore"]),
 
-        // ── Tier 2 — Runtime/Mediation ─────────────────────────────────────
+        // ── Tier 2 — GOS / Runtimes ────────────────────────────────────────
         .library(name: "HealthOSProviders",        targets: ["HealthOSProviders"]),
         .library(name: "HealthOSGOS",              targets: ["HealthOSGOS"]),
         .library(name: "HealthOSAACI",             targets: ["HealthOSAACI"]),
@@ -18,25 +18,25 @@ let package = Package(
         .library(name: "HealthOSServiceRuntime",   targets: ["HealthOSServiceRuntime"]),
         .library(name: "HealthOSSessionRuntime",   targets: ["HealthOSSessionRuntime"]),
 
-        // ── Tier 3 — Boundary ──────────────────────────────────────────────
+        // ── Tier 3 — Custom Boundary ───────────────────────────────────────
         .library(name: "HealthOSBoundary",         targets: ["HealthOSBoundary"]),
 
         // ── Operator CLI (not a Stage) ─────────────────────────────────────
         .executable(name: "HealthOSCLI",           targets: ["HealthOSCLI"]),
 
-        // ── Tier 4 — Stages ────────────────────────────────────────────────
+        // ── Tier 4 — Stages Cast ───────────────────────────────────────────
         .executable(name: "HealthOSScribeStage",      targets: ["HealthOSScribeStage"]),
         .executable(name: "HealthOSVeridiaStage",     targets: ["HealthOSVeridiaStage"]),
         .executable(name: "HealthOSCloudClinicStage", targets: ["HealthOSCloudClinicStage"]),
     ],
     targets: [
 
-        // ── Tier 1 ──────────────────────────────────────────────────────────
+        // ── Tier 1 — Mestral Core ───────────────────────────────────────────
         .target(name: "HealthOSCore",
                 path: "Tier1-Mestral-Core/Sources/HealthOSCore",
                 exclude: ["README.md"]),
 
-        // ── Tier 2 ──────────────────────────────────────────────────────────
+        // ── Tier 2 — GOS / Runtimes ────────────────────────────────────────
         .target(name: "HealthOSProviders",
                 dependencies: ["HealthOSCore"],
                 path: "Tier2-GOS-Runtimes/Sources/HealthOSProviders",
@@ -71,7 +71,7 @@ let package = Package(
                 dependencies: ["HealthOSCore", "HealthOSAACI", "HealthOSProviders", "HealthOSMSR"],
                 path: "Tier2-GOS-Runtimes/Sources/HealthOSSessionRuntime"),
 
-        // ── Tier 3 ──────────────────────────────────────────────────────────
+        // ── Tier 3 — Custom Boundary ───────────────────────────────────────
         // Stages must only import HealthOSBoundary, never Tier 2 modules directly.
         .target(name: "HealthOSBoundary",
                 dependencies: [
@@ -92,7 +92,7 @@ let package = Package(
                           dependencies: ["HealthOSCore", "HealthOSSessionRuntime"],
                           path: "Shared/Sources/HealthOSCLI"),
 
-        // ── Tier 4 — Stages ─────────────────────────────────────────────────
+        // ── Tier 4 — Stages Cast ───────────────────────────────────────────
         // HealthOSBoundary is the primary Stage surface.
         // TODO: remove direct Tier 1/2 dependencies once the Scribe session facade is complete in Boundary.
         .executableTarget(name: "HealthOSScribeStage",

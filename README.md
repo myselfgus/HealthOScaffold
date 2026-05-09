@@ -19,7 +19,7 @@
 
 **This repository is not production-ready, not a complete EHR, and not a final UI delivery.** It establishes foundational architecture with executable first-slice orchestration, cross-language contracts (Swift / TypeScript / JSON Schema / SQL), and macOS 26+ native app surfaces targeting Liquid Glass as the design baseline.
 
-HealthOS is the full platform. **Core is constitutional law. GOS is subordinate operational mediation. Runtimes execute under Core/GOS. Boundary is the HealthOS-owned consumption frontier. Stages such as Scribe, Veridia, CloudClinic, and future governed application consumers consume mediated surfaces; they never define constitutional law or the HealthOS ontology. Construction System stays outside the clinical/runtime hierarchy.**
+HealthOS is the full platform. **Tier 1 — Mestral Core is constitutional law. Tier 2 — GOS / Runtimes executes and mediates under Core. Tier 3 — Custom Boundary is the HealthOS-owned consumption frontier and the governed Stage-definition boundary. Tier 4 — Stages Cast contains Scribe, Veridia, CloudClinic, and future governed application consumers as a separate Stage universe whose point of contact is Boundary. Constructor / Construction System stays outside the clinical/runtime hierarchy. Support is shared tooling and provider support, reachable from multiple layers but governed by Core.**
 
 ---
 
@@ -42,37 +42,53 @@ flowchart LR
     classDef interface fill:#F4F2F8,stroke:#3B4A6B,stroke-width:2px,color:#202A3A
     classDef design fill:#F6F8FB,stroke:#5B6B7C,stroke-width:2px,color:#2F3C4A
     classDef construction fill:#FAF7F4,stroke:#A1693A,stroke-width:2px,color:#553018
+    classDef support fill:#FFF7E8,stroke:#C28A2E,stroke-width:2px,color:#5F4217
     classDef boundary fill:#F2F4F7,stroke:#8793A1,stroke-width:2px,color:#334155
 
-    subgraph CLINICAL["HealthOS constitutional hierarchy"]
-        CORE[Core\nconsent · habilitation · storage law\ngate · finality · provenance · audit]:::core
-        GOS[GOS\nsubordinate operational mediation]:::runtime
-        RT[Runtimes\nSession Runtime · AACI · MSR\nAsync · User-Agent · Service]:::runtime
-        AIB[Boundary\nfacades · envelopes · safe refs\nmediated/degraded state]:::interface
-        APP[Stage\nScribe · Veridia · CloudClinic\nfuture governed consumers]:::interface
-        CUST[Custom\nCoreLaw-governed Stage definition\ncapabilities · limits · validation]:::interface
-        DS[Native design system\nmacOS 26+ presentation contract\nSF Pro · semantic tint · Liquid Glass]:::design
-        ART[Artifacts/effects\ndrafts · derived artifacts · gated final documents]:::core
-        CORE --> GOS --> RT --> AIB --> APP
-        CUST -. defines and limits .-> APP
-        CORE -. governs .-> CUST
+    subgraph PLATFORM["HealthOS platform"]
+        subgraph CLINICAL["Clinical/runtime environment: Tiers 1-3"]
+            CORE[Tier 1 — Mestral Core\nHealthOS/Tier1-Mestral-Core\nconsent · habilitation · storage law\ngate · finality · provenance · audit]:::core
+            GOS[Tier 2 — GOS / Runtimes\nGOS · Session Runtime · AACI · MSR\nAsync · User-Agent · Service · Providers]:::runtime
+            AIB[Tier 3 — Custom Boundary\nHealthOS/Tier3-Custom-Boundary\nfacades · envelopes · safe refs\nCustom · mediated/degraded state]:::interface
+            ART[Artifacts/effects\ndrafts · derived artifacts · gated final documents]:::core
+            CORE --> GOS --> AIB
+            CORE -. governs Custom and Boundary policy .-> AIB
+            AIB --> ART
+        end
+
+        subgraph STAGES["Stage universe: Tier 4 — Stages Cast"]
+            APP[HealthOS/Tier4-Stages-Cast\nScribe · Veridia · CloudClinic\nfuture governed consumers]:::interface
+            DS[HealthOS/Shared/DesignSystem\nmacOS 26+ presentation contract\nSF Pro · semantic tint · Liquid Glass]:::design
+        end
+
+        SUPPORT[HealthOS/Support\nproviders support · ops · python · ML tooling\nCreate ML · Core ML · MLX]:::support
+
+        AIB -->|only mediated Stage contact| APP
         APP --> DS
-        APP --> ART
+        CORE -. governs Support policy .-> SUPPORT
+        SUPPORT -. used by Core · runtimes · Stages · Constructor .-> CORE
+        SUPPORT -. provider/tooling support .-> GOS
+        SUPPORT -. governed assets and tooling .-> APP
     end
 
-    subgraph BUILD["Repository construction layer"]
-        STEW[Steward\ncoordination]:::construction
+    subgraph BUILD["Constructor / Construction System: external repository-maintenance layer"]
+        CONROOT[HealthOS/Constructor\nvisible construction root]:::construction
+        STEW[Steward\ncoordination · derived memory]:::construction
         SETT[Settlers\nspecialized engineering profiles]:::construction
         TERR[Territories\nrepository domains]:::construction
         WORK[Settlements\nbounded work units]:::construction
-        MCP[healthos-forge-mcp\nrepo-maintenance tools]:::construction
+        MCP[healthos-forge-mcp\nrepo-maintenance MCP tools]:::construction
+        CONROOT --> STEW
+        CONROOT --> SETT
+        CONROOT --> TERR
         STEW --> SETT
         SETT --> TERR
         STEW --> WORK
         MCP -. deterministic repository operations .-> STEW
     end
 
-    BUILD -. outside clinical/runtime hierarchy .-> CLINICAL
+    BUILD -. outside clinical/runtime hierarchy .-> PLATFORM
+    SUPPORT -. available to Constructor tooling under Core governance .-> CONROOT
     DS -. presentation only, never law .-> APP
 ```
 
@@ -92,9 +108,13 @@ flowchart LR
 
 HealthOS is a governance-first platform. Every clinical act flows through a strictly layered, consent- and provenance-governed fabric. Stages consume only mediated surfaces through Boundary — they never become law engines.
 
+The clinical/runtime environment is composed by Tiers 1-3 plus the Stage universe that consumes it. Tier 4 Stages are still HealthOS clinical/application surfaces, but they are intentionally displayed and governed as a separate consumer universe: their contact point is Tier 3 Custom Boundary, not direct Core/GOS/runtime ownership.
+
 Stage work advances only after the mediated surface the Stage consumes is implemented and stable, not merely contracted, and after the relevant Custom is complete. See `HealthOS/Shared/docs/architecture/50-app-layer-boundary-and-reference-apps.md` for the Boundary, Stage, Custom, and task-ordering doctrine.
 
-Steward, Settlers, Settlements, Territories, and `healthos-forge-mcp` are repository engineering concepts **outside** this clinical/runtime hierarchy. They inspect, edit, validate, and record repository work. They do not become HealthOS law, runtime automation, or clinical effectuation.
+`HealthOS/Support/` contains shared provider support, ops, Python, and governed ML tooling. It may support Core, runtimes, Stages, and Constructor workflows, but its usage remains governed by Core law and ModelGovernance.
+
+`HealthOS/Constructor/` is the visible Construction System root. Steward, Settlers, Settlements, Territories, and `healthos-forge-mcp` are repository engineering concepts **outside** this clinical/runtime hierarchy. They inspect, edit, validate, and record repository work. They do not become HealthOS law, runtime automation, or clinical effectuation.
 
 ```mermaid
 %%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#F6F8FB', 'primaryBorderColor': '#D6DEE8', 'primaryTextColor': '#1D2733', 'clusterBkg': '#FFFFFF', 'clusterBorder': '#D6DEE8', 'titleColor': '#1D2733', 'lineColor': '#5B6B7C', 'edgeLabelBackground': '#F6F8FB', 'fontFamily': 'ui-rounded, -apple-system, BlinkMacSystemFont, sans-serif'}}}%%
@@ -109,7 +129,7 @@ graph TD
     classDef core     fill:#EAF7F2,stroke:#2E8C6A,stroke-width:2px,color:#174234
     classDef substrate fill:#F2F4F7,stroke:#8793A1,stroke-width:2px,color:#334155
 
-    subgraph STAGE_L["  Stage  "]
+    subgraph STAGE_L["  Tier 4 — Stages Cast: separate Stage universe  "]
         SC[Scribe\nSwiftUI - macOS 26+]
         SO[Veridia\nPatient Health Identity]
         CC[CloudClinic\nService Operations]
@@ -119,31 +139,31 @@ graph TD
         DS[HealthOS/Shared/DesignSystem\nSF Pro · semantic state colors\nstandard controls first · Liquid Glass when needed]
     end
 
-    subgraph GOS_L["  GOS — Governed Operational Spec  "]
+    subgraph GOS_L["  Tier 2 — GOS / Runtimes: Governed Operational Spec  "]
         GOS[Compiler - Validator - Bundler\nTypeScript tooling + Swift runtime consumption\nBundle lifecycle - AACI binding]
     end
 
-    subgraph BOUND_L["  Boundary — HealthOS-Owned Consumption Frontier  "]
-        BND[Facades - Envelopes - Safe refs\nMediated state - Degraded state\nCommands - Results - Consumable surfaces]
+    subgraph BOUND_L["  Tier 3 — Custom Boundary: HealthOS-Owned Consumption Frontier  "]
+        BND[Facades - Envelopes - Safe refs\nCustom definitions - Mediated state - Degraded state\nCommands - Results - Consumable surfaces]
     end
 
-    subgraph SRT_L["  Session Runtime — Swift  "]
+    subgraph SRT_L["  Tier 2 — GOS / Runtimes: Session Runtime — Swift  "]
         SR[SessionRunner\nFirst-slice orchestrator - Swift actor\nHabilitation - Consent - Capture - Gate]
     end
 
-    subgraph SWIFT_L["  Swift Runtimes  "]
+    subgraph SWIFT_L["  Tier 2 — GOS / Runtimes: Swift Runtimes  "]
         AACI[AACI\nCapture - Transcription\nDraft composition - GOS binding]
         MSR[MSR\nASL - VDLP - GEM\nSemantic enrichment - Provenance]
         PROV[Providers\nFoundationModels - ProviderRouter\nStubs - Capability profiles]
     end
 
-    subgraph TS_L["  TypeScript Runtimes  "]
+    subgraph TS_L["  Constructor/ts reference implementations for Tier 2 runtimes  "]
         ASYNC[Async Runtime\nJobs - Idempotency\nRetry - Dead-lettering]
         UA[User-Agent Runtime\nPatient-governed queries\nProhibited-capability enforcement]
         SVC[Service Runtime\nCloudClinic envelope adapter\nLegalAuthorizing guard]
     end
 
-    subgraph CORE_L["  Core Law  "]
+    subgraph CORE_L["  Tier 1 — Mestral Core: Core Law  "]
         ID[Identity\nHabilitation]
         CO[Consent\nFinalidade]
         PR[Provenance\nAudit]
@@ -271,32 +291,40 @@ graph LR
     classDef app      fill:#fdf4ff,stroke:#c084fc,stroke-width:2px,color:#581c87
     classDef cli      fill:#f1f5f9,stroke:#94a3b8,stroke-width:2px,color:#334155
 
-    subgraph T1["Tier 1 — Core"]
-        CORE[HealthOSCore\nlaw · governance · contracts]:::core
+    subgraph T1["Tier 1 — Mestral Core\nHealthOS/Tier1-Mestral-Core"]
+        CORE[HealthOSCore\nlaw · governance · contracts\npath: Sources/HealthOSCore]:::core
     end
 
-    subgraph T2["Tier 2 — Runtime / Mediation"]
-        PROV[HealthOSProviders\nFoundationModels · stubs]:::provider
-        GOS[HealthOSGOS\nGOS runtime · operational mediation]:::gos
-        AACI[HealthOSAACI\nsession · GOS bindings]:::runtime
-        MSR[HealthOSMSR\nASL · VDLP · GEM]:::msr
-        ASYNC[HealthOSAsyncRuntime\njob queue · lifecycle]:::runtime
-        UAR[HealthOSUserAgentRuntime\npatient session · sovereignty]:::runtime
-        SVR[HealthOSServiceRuntime\nservice operations session]:::runtime
-        SRT[HealthOSSessionRuntime\norchestration · normalization]:::runtime
+    subgraph T2["Tier 2 — GOS / Runtimes\nHealthOS/Tier2-GOS-Runtimes"]
+        PROV[HealthOSProviders\nproviders · FoundationModels · stubs\npath: Sources/HealthOSProviders]:::provider
+        GOS[HealthOSGOS\nGOS runtime · operational mediation\npath: Sources/HealthOSGOS]:::gos
+        AACI[HealthOSAACI\nsession · GOS bindings\npath: Sources/HealthOSAACI]:::runtime
+        MSR[HealthOSMSR\nASL · VDLP · GEM\npath: Sources/HealthOSMSR]:::msr
+        ASYNC[HealthOSAsyncRuntime\njob queue · lifecycle\npath: Sources/HealthOSAsyncRuntime]:::runtime
+        UAR[HealthOSUserAgentRuntime\npatient session · sovereignty\npath: Sources/HealthOSUserAgentRuntime]:::runtime
+        SVR[HealthOSServiceRuntime\nservice operations session\npath: Sources/HealthOSServiceRuntime]:::runtime
+        SRT[HealthOSSessionRuntime\norchestration · normalization\npath: Sources/HealthOSSessionRuntime]:::runtime
     end
 
-    subgraph T3["Tier 3 — Boundary"]
-        AB[HealthOSBoundary\nfacades · safe refs · envelopes]:::boundary
+    subgraph T3["Tier 3 — Custom Boundary\nHealthOS/Tier3-Custom-Boundary"]
+        AB[HealthOSBoundary\nfacades · safe refs · envelopes\nCustom-mediated state\npath: Sources/HealthOSBoundary]:::boundary
     end
 
-    subgraph T4["Tier 4 — Stage"]
-        SCRIBE[HealthOSScribeStage\nSwiftUI · Liquid Glass]:::app
-        VERIDIA[HealthOSVeridiaStage\npatient identity]:::app
-        CC[HealthOSCloudClinicStage\nservice operations]:::app
+    subgraph T4["Tier 4 — Stages Cast\nHealthOS/Tier4-Stages-Cast"]
+        SCRIBE[HealthOSScribeStage\nScribe Stage\npath: Scribe/Sources/HealthOSScribeStage]:::app
+        VERIDIA[HealthOSVeridiaStage\nVeridia Stage\npath: Veridia/Sources/HealthOSVeridiaStage]:::app
+        CC[HealthOSCloudClinicStage\nCloudClinic Stage\npath: CloudClinic/Sources/HealthOSCloudClinicStage]:::app
     end
 
-    CLI[HealthOSCLI\noperator executable]:::cli
+    subgraph SHARED["Shared operator executable\nHealthOS/Shared"]
+        CLI[HealthOSCLI\noperator executable\npath: Sources/HealthOSCLI]:::cli
+    end
+
+    subgraph EXTTEST["Visible external structural suites"]
+        CST[HealthOSConstructionSystemTests\npath: Constructor/Tests/HealthOSConstructionSystemTests]:::cli
+        SUPT[HealthOSSupportToolingTests\npath: Support/Tests/HealthOSSupportToolingTests]:::cli
+        SHT[HealthOSTests\npath: Shared/Tests/HealthOSTests]:::cli
+    end
 
     CORE --> PROV & GOS & MSR & ASYNC & UAR & SVR & SRT
     PROV --> AACI & MSR
@@ -308,24 +336,27 @@ graph LR
     AB & SRT --> SCRIBE
     AB & CORE --> VERIDIA
     AB --> CC
+    CST -. keeps Constructor visible, external, and testable .-> CORE
+    SUPT -. keeps Support visible and Core-governed .-> CORE
+    SHT -. shared governance regression suite .-> CORE
 ```
 
 | Target | Tier | Kind | Description |
 | :--- | :--- | :--- | :--- |
-| `HealthOSCore` | 1 | Library | Core law, governance types, storage contracts, GOS types, MSR runtime types, entity model |
-| `HealthOSProviders` | 2 | Library | Provider protocol contracts, `AppleFoundationProvider` (FoundationModels), stub providers, model governance |
-| `HealthOSGOS` | 2 | Library | GOS runtime — operational mediation subordinate to Core law; canonical home for GOS lifecycle (migration from AACI in progress) |
-| `HealthOSAACI` | 2 | Library | AACI runtime, GOS binding consumption, session capture, draft composition |
-| `HealthOSMSR` | 2 | Library | Mental Space Runtime pipeline — ASL, VDLP, GEM executors, provenance metadata |
-| `HealthOSAsyncRuntime` | 2 | Library | Durable job queue and async task lifecycle — scaffold stub; TS reference implementation in `HealthOS/Constructor/ts/packages/runtime-async/` |
-| `HealthOSUserAgentRuntime` | 2 | Library | Patient/user-side session lifecycle and sovereignty enforcement — scaffold stub |
-| `HealthOSServiceRuntime` | 2 | Library | Professional/service-operations session lifecycle — scaffold stub |
-| `HealthOSSessionRuntime` | 2 | Library | Session orchestration (`SessionRunner`), transcript normalization executor, Scribe bridge adapter |
-| `HealthOSBoundary` | 3 | Library | Boundary compatibility module — the technical import surface Stage executables should converge on; scaffold stub pending Tier 2 facade stabilization |
+| `HealthOSCore` | Tier 1 — Mestral Core | Library | Core law, governance types, storage contracts, GOS types, MSR runtime types, entity model |
+| `HealthOSProviders` | Tier 2 — GOS / Runtimes | Library | Provider protocol contracts, `AppleFoundationProvider` (FoundationModels), stub providers, model governance |
+| `HealthOSGOS` | Tier 2 — GOS / Runtimes | Library | GOS runtime — operational mediation subordinate to Core law; canonical home for GOS lifecycle (migration from AACI in progress) |
+| `HealthOSAACI` | Tier 2 — GOS / Runtimes | Library | AACI runtime, GOS binding consumption, session capture, draft composition |
+| `HealthOSMSR` | Tier 2 — GOS / Runtimes | Library | Mental Space Runtime pipeline — ASL, VDLP, GEM executors, provenance metadata |
+| `HealthOSAsyncRuntime` | Tier 2 — GOS / Runtimes | Library | Durable job queue and async task lifecycle — scaffold stub; TS reference implementation in `HealthOS/Constructor/ts/packages/runtime-async/` |
+| `HealthOSUserAgentRuntime` | Tier 2 — GOS / Runtimes | Library | Patient/user-side session lifecycle and sovereignty enforcement — scaffold stub |
+| `HealthOSServiceRuntime` | Tier 2 — GOS / Runtimes | Library | Professional/service-operations session lifecycle — scaffold stub |
+| `HealthOSSessionRuntime` | Tier 2 — GOS / Runtimes | Library | Session orchestration (`SessionRunner`), transcript normalization executor, Scribe bridge adapter |
+| `HealthOSBoundary` | Tier 3 — Custom Boundary | Library | Boundary compatibility module — the technical import surface Stage executables should converge on; scaffold stub pending Tier 2 facade stabilization |
 | `HealthOSCLI` | — | Executable | Operator command-line interface for session and GOS lifecycle |
-| `HealthOSScribeStage` | 4 | Executable | Scribe professional workspace Stage validation surface (SwiftUI, macOS 26+) |
-| `HealthOSVeridiaStage` | 4 | Executable | Veridia patient identity Stage boundary — smoke-testable, no final UI |
-| `HealthOSCloudClinicStage` | 4 | Executable | CloudClinic service operations Stage — scaffold placeholder, no final UI |
+| `HealthOSScribeStage` | Tier 4 — Stages Cast | Executable | Scribe professional workspace Stage validation surface (SwiftUI, macOS 26+) |
+| `HealthOSVeridiaStage` | Tier 4 — Stages Cast | Executable | Veridia patient identity Stage boundary — smoke-testable, no final UI |
+| `HealthOSCloudClinicStage` | Tier 4 — Stages Cast | Executable | CloudClinic service operations Stage — scaffold placeholder, no final UI |
 
 ---
 
@@ -914,23 +945,30 @@ Read in order before coding:
 
 ```text
 HealthOS
-  Core
+  Tier 1 — Mestral Core
     consent, habilitation, storage law,
     provenance, gate, finality, audit
-  GOS
-    subordinate operational mediation, never constitutional authority
-  Runtimes
+  Tier 2 — GOS / Runtimes
+    GOS subordinate operational mediation, never constitutional authority.
     Session Runtime, AACI, MSR, Async Runtime,
-    User-Agent Runtime, Service Runtime
-  Boundary
+    User-Agent Runtime, Service Runtime, Providers.
+  Tier 3 — Custom Boundary
+    HealthOS-owned consumption frontier:
     facades, envelopes, safe refs, mediated state,
-    degraded state, commands/results, consumable surfaces
-  Stage
-    Scribe, Veridia, CloudClinic, future governed consumers
+    degraded state, commands/results, consumable surfaces.
+    Custom is the Core-law-governed Stage definition:
+    capabilities, limits, consumed surfaces, actors,
+    degradation behavior, validation, prohibitions.
+  Tier 4 — Stages Cast
+    Separate governed Stage universe:
+    Scribe, Veridia, CloudClinic, future governed consumers.
+    Stages are in the clinical/application environment, but their
+    point of contact with the rest of HealthOS is Tier 3 Boundary.
 
-Custom
-  CoreLaw-governed Stage definition applied through Boundary.
-  Custom is required for Stage work but is not a separate HealthOS tier.
+HealthOS/Support
+  Shared provider support, ops, Python, Create ML/Core ML/MLX tooling.
+  Reachable from Core, runtimes, Stages, and Constructor workflows;
+  governed by Core law and ModelGovernance.
 
 Material substrate
   host, storage, private network/mesh, backups,
@@ -939,7 +977,8 @@ Material substrate
 Artifacts / effects
   drafts, gate records, final artifacts, provenance/audit traces
 
-Construction System
+Constructor / Construction System
+  HealthOS/Constructor:
   Steward, Settlers, Territories, Settlements, HealthOS Forge MCP.
   Outside the HealthOS clinical/runtime hierarchy.
 ```

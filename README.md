@@ -602,7 +602,7 @@ graph LR
 
 ## 📦 Swift Package Graph
 
-The public platform Swift products build from `HealthOS/Package.swift` (Swift tools 6.2, platform `.macOS(.v26)`). This central package owns Tiers 1-3, `CustomSDK`, `HealthOSCLI`, and structural test targets for Construction System, Support, Stage package separation, and shared governance suites. Tier 4 Stages are separate Swift packages under `HealthOS/Tier4-Stages-Cast/<Stage>/Package.swift`; they consume the platform only through `HealthOSBoundary` and `CustomSDK`. External dependencies: none — sovereignty by design.
+The public platform Swift products build from `HealthOS/Package.swift` (Swift tools 6.2, platform `.macOS(.v26)`). This central package owns Tiers 1-3, `CustomSDK`, `HealthOSCLI`, and structural test targets for Construction System, Support, Stage package separation, and shared governance suites. Tier 4 Stages are separate Swift packages under `HealthOS/Tier4-Stages-Cast/<Stage>/Package.swift`; they consume the platform only through `HealthOSBoundary` and `CustomSDK`.
 
 ```mermaid
 %%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#F8FAFC', 'primaryBorderColor': '#CBD5E1', 'primaryTextColor': '#0F172A', 'clusterBkg': '#FAFBFC', 'clusterBorder': '#CBD5E1', 'titleColor': '#0F172A', 'edgeLabelBackground': '#FFFFFF', 'fontFamily': 'ui-rounded, -apple-system, BlinkMacSystemFont, sans-serif'}}}%%
@@ -989,7 +989,7 @@ flowchart LR
     end
 
     SW[HealthOS/Package.swift\nPlatform Swift · Core · runtimes · Boundary\nGovernedAIAgentContracts · CustomSDK]:::swift
-    STAGEPKG[Stage packages\nTier4-Stages-Cast/<Stage>/Package.swift\nScribe · Veridia · CloudClinic]:::swift
+    STAGEPKG[Stage packages\nScribe · Veridia · CloudClinic\nper-Stage Package.swift in Tier4-Stages-Cast]:::swift
     TS[HealthOS/Constructor/ts/\n@healthos/contracts · runtimes · tooling\nagent type mirrors]:::ts
     SQL[SQL/migrations/\nmetadata shape]:::sql
 
@@ -1049,7 +1049,7 @@ flowchart TD
     A2[Execution\nREADME · protocol · status · maturity · gaps]:::exec
     A3[Code Surfaces\nHealthOS tiers · Constructor/ts · schemas · SQL]:::code
     A4[Repository Engineering\nSteward · Settlers · Territories]:::steward
-    A5[Claude Code Automations\nupdate · digest · sync]:::steward
+    A5[Codex Automations\nguidance · digest · dependency · skill map]:::steward
     A6[Native UI + Liquid Glass\n48-native-macos-ui · Shared/DesignSystem · Scribe Stage]:::ui
     A7[Product Specification\nproduct/01-healthos-technical-product-specification.md\nTask selection: 21-structural-ontology-and-product-readiness-plan.md]:::exec
     A8[AI Agents + Apple Substrate\n52-governed-ai-agent-society\n51-apple-substrate-for-jae]:::agent

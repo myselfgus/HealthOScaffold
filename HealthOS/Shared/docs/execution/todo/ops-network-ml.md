@@ -2,6 +2,29 @@
 
 ## COMPLETED
 
+### DOC-JAE-APPLE-SUBSTRATE Apple substrate capability doctrine
+Outcome:
+- added `HealthOS/Shared/docs/architecture/51-apple-substrate-capabilities-for-jae.md` as the canonical doctrine for Apple-native substrate capabilities in the HealthOS JAE
+- recorded permitted implementation tracks for SwiftData/CloudKit projections, FoundationModels/Core ML/NaturalLanguage providers, local semantic retrieval foundations, XPC/ServiceManagement execution cells, AppleArchive/CryptoKit evidence archives, internal integrity signatures, runtime-boundary Stage adapters, and Xcode Cloud validation
+- updated GAP-003 through GAP-010 notes without changing maturity or closure classification
+- aligned AGENTS, CLAUDE, README, and the skills index with the JAE Apple substrate rules
+- strengthened Stage package/source tests and the `stage-package-check` script to block direct Tier 1/2 HealthOS dependencies and direct Apple authority framework imports from Stages
+Files touched:
+- `README.md`
+- `AGENTS.md`
+- `CLAUDE.md`
+- `HealthOS/Shared/docs/architecture/51-apple-substrate-capabilities-for-jae.md`
+- `HealthOS/Shared/docs/execution/14-final-gap-register.md`
+- `HealthOS/Shared/docs/execution/02-status-and-tracking.md`
+- `HealthOS/Shared/docs/execution/skills/README.md`
+- `HealthOS/Tier4-Stages-Cast/Tests/StagePackageStructureTests/StagePackageStructureTests.swift`
+- `scripts/check-stage-packages.sh`
+Validation:
+- `make stage-package-check` PASS
+- `make validate-docs` PASS
+- `git diff --check` PASS
+- `cd HealthOS && swift test --filter StagePackageStructureTests` did not complete in the Linux container because the package imports Apple-only `OSLog`; rerun on macOS 26+
+
 ### XCODE-TIER-ROOT-BIG-BANG HealthOS root physical tier migration
 Outcome:
 - created `HealthOS/` as the canonical operational root with physical tier directories for Tier 1 Core/Mestral, Tier 2 GOS/Runtimes, Tier 3 Custom/Boundary, Tier 4 Stages/Cast, external `Constructor`, `Support`, `Shared`, and `Xcode`

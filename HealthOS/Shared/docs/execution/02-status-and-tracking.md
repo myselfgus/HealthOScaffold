@@ -6,6 +6,25 @@ Current phase: Controlled implementation — first vertical slice started
 
 ## Completed recently
 
+## DOC-JAE-APPLE-SUBSTRATE — Apple substrate JAE doctrine and Stage import guard (2026-05-09)
+
+- Objective: document how Apple-native frameworks enter HealthOS as governed JAE substrate capabilities and add an executable Stage package/source guard against direct Tier 2 or Apple authority imports.
+- Classification: Tier 3 — Boundary / Custom doctrine and tests, Tier 4 — Stage package structural guard, Tier 2 — provider/runtime doctrine, Tier 1 — storage/evidence doctrine, plus External — CI/construction guidance. No runtime Apple integration, provider maturity upgrade, canonical storage change, regulatory/legal claim, production-readiness claim, Xcode Intelligence claim, or Apple Private Cloud Compute claim changed.
+- Architecture:
+  - Added `HealthOS/Shared/docs/architecture/51-apple-substrate-capabilities-for-jae.md` to define SwiftData, CloudKit, FoundationModels, Core ML, Create ML, NaturalLanguage, RegexBuilder, CryptoKit, AppleArchive, XPC, ServiceManagement, Network, ThreadNetwork, Virtualization/vmnet, FSKit, and Xcode Cloud as HealthOS-governed substrate capabilities.
+  - Preserved the exposure model: Stage request -> Custom -> Boundary -> Core Law -> runtime adapter -> Apple substrate -> provenance/audit -> Boundary-mediated result.
+  - Kept non-claims explicit: no SwiftData/CloudKit canonical custody, no Stage-owned provider authority, no real semantic retrieval, no distributed mesh/workers, no regulatory/legal signature integration, and no production readiness.
+- Gap tracking:
+  - Added Apple-native implementation-track notes for GAP-003 through GAP-010 without changing gap classification or maturity.
+  - README, AGENTS, CLAUDE, and the skills index now point agents to the JAE Apple substrate rules.
+- Tests:
+  - Strengthened `StagePackageStructureTests` and `scripts/check-stage-packages.sh` so Stage packages must depend on `HealthOSBoundary` and `CustomSDK`, must not depend on Tier 1/2 HealthOS products, must not import Tier 2 or Apple authority frameworks directly, and must document any future SwiftData import as projection/cache-only.
+- Validation status:
+  - `make stage-package-check` PASS.
+  - `make validate-docs` PASS.
+  - `git diff --check` PASS.
+  - `cd HealthOS && swift test --filter StagePackageStructureTests` not run to completion in this Linux container because the package imports Apple-only `OSLog`; rerun on the documented macOS 26+ toolchain.
+
 ## STAGE-PACKAGE-CUSTOM-SDK — Stage package split and Custom SDK guard (2026-05-09)
 
 - Objective: resolve the post-tier-root contradiction where Tier 4 Stages were documented as separate governed consumers but still lived as executable products in the central `HealthOS/Package.swift`.

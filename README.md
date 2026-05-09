@@ -961,7 +961,14 @@ cd HealthOS && swift run HealthOSCLI \
 
 ## 🧩 Cross-Language Contract Discipline
 
-HealthOS is not "just a Swift app" or "just a TypeScript workspace". The same doctrine flows through schemas, Swift, TypeScript, SQL, and execution docs. **When ontology or contracts change, align all four surfaces in the same work unit.**
+HealthOS is not "just a Swift app" or "just a TypeScript workspace". The same doctrine flows through schemas, Swift, TypeScript, SQL, and execution docs. **When ontology or contracts change, align all affected language surfaces in the same work unit.**
+
+There are two alignment triggers:
+
+| Trigger | Surfaces that must align |
+| :--- | :--- |
+| Entity model / GOS / storage contract change | JSON Schema · Swift (`HealthOSCore`) · TypeScript (`@healthos/contracts`) · SQL (when storage-relevant) |
+| Agent Society contract change | JSON Schema (`governed-ai-agent-society.schema.json`) · Swift (`GovernedAIAgentContracts.swift`) · TypeScript (`@healthos/contracts` agent types) |
 
 ```mermaid
 %%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#f8fbff', 'primaryBorderColor': '#cadcf0', 'primaryTextColor': '#17324d', 'clusterBkg': '#ffffff', 'clusterBorder': '#dbeafe', 'titleColor': '#0f172a', 'edgeLabelBackground': '#f8fbff', 'fontFamily': 'ui-rounded, -apple-system, BlinkMacSystemFont, sans-serif'}}}%%
@@ -971,17 +978,26 @@ flowchart LR
     classDef swift  fill:#ede9fe,stroke:#8b5cf6,stroke-width:2px,color:#4c1d95
     classDef ts     fill:#fff7ed,stroke:#f59e0b,stroke-width:2px,color:#7c2d12
     classDef sql    fill:#fce7f3,stroke:#ec4899,stroke-width:2px,color:#831843
+    classDef agent  fill:#fef9c3,stroke:#b45309,stroke-width:2px,color:#78350f
 
     C[Canonical doctrine\narchitecture + execution docs]:::source
-    J[HealthOS/Tier1-Mestral-Core/Schemas/\nJSON Schema]:::schema
-    SW[HealthOS/Package.swift\nPlatform Swift products + tests\nCore · runtimes · Boundary · CustomSDK]:::swift
-    STAGEPKG[HealthOS/Tier4-Stages-Cast/<Stage>/Package.swift\nSeparate Stage packages\nScribe · Veridia · CloudClinic]:::swift
-    TS[HealthOS/Constructor/ts/\ncontracts + runtimes + tooling]:::ts
-    SQL[HealthOS/Tier1-Mestral-Core/SQL/migrations/\nmetadata shape]:::sql
 
-    C --> J & SW & STAGEPKG & TS & SQL
+    subgraph SCHEMAS["  JSON Schemas · Tier1-Mestral-Core/Schemas/  "]
+        direction TB
+        J[entity · GOS · storage contracts]:::schema
+        JA[governed-ai-agent-society.schema.json\nagent-descriptor.schema.json\nAgentMandate · AgentNegotiationEnvelope]:::agent
+    end
+
+    SW[HealthOS/Package.swift\nPlatform Swift · Core · runtimes · Boundary\nGovernedAIAgentContracts · CustomSDK]:::swift
+    STAGEPKG[Stage packages\nTier4-Stages-Cast/<Stage>/Package.swift\nScribe · Veridia · CloudClinic]:::swift
+    TS[HealthOS/Constructor/ts/\n@healthos/contracts · runtimes · tooling\nagent type mirrors]:::ts
+    SQL[SQL/migrations/\nmetadata shape]:::sql
+
+    C --> SCHEMAS & SW & STAGEPKG & TS & SQL
     J <--> SW
     J <--> TS
+    JA <--> SW
+    JA <--> TS
     SW <--> TS
     SW --> STAGEPKG
     SQL -. when relevant .-> SW

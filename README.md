@@ -456,6 +456,119 @@ flowchart TD
 
 **Canonical references:** `HealthOS/Shared/docs/architecture/52-governed-ai-agent-society.md` · `HealthOS/Shared/docs/adr/0014-governed-ai-agent-society.md` · `GovernedAIAgentContracts.swift` · `UserAgentRuntime.swift` · `AgentProtocolBoundary.swift`
 
+### Apple Substrate — Governed Capabilities
+
+Apple-native frameworks are **substrate capabilities mediated by HealthOS**, not direct clinical authority. A Stage may never call Apple APIs for clinical or health-operational work without passing through the full mediation chain: Custom capability declaration → Boundary command envelope → Core Law validation → Tier 2 runtime adapter → Apple substrate → governed result envelope → provenance/audit event → Boundary-mediated Stage result.
+
+Core Law remains the constitutional authority for consent, habilitation, lawfulContext, storage-layer semantics, provenance, audit, gate, and finality. Apple APIs compute, store projections, package evidence, isolate workers, or transport governed envelopes — they cannot authorize a clinical act or create legal finality.
+
+**Mediation chain:**
+
+```mermaid
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#F8FAFC', 'primaryBorderColor': '#CBD5E1', 'primaryTextColor': '#0F172A', 'edgeLabelBackground': '#FFFFFF', 'fontFamily': 'ui-rounded, -apple-system, BlinkMacSystemFont, sans-serif'}}}%%
+flowchart LR
+    classDef stage    fill:#FCE7F3,stroke:#9D174D,stroke-width:1.5px,color:#831843
+    classDef boundary fill:#F3E8FF,stroke:#7C3AED,stroke-width:2px,color:#3B0764
+    classDef core     fill:#DCFCE7,stroke:#15803D,stroke-width:2.5px,color:#14532D
+    classDef runtime  fill:#DBEAFE,stroke:#1D4ED8,stroke-width:1.5px,color:#1E3A8A
+    classDef apple    fill:#F1F5F9,stroke:#475569,stroke-width:2px,color:#1E293B
+    classDef prov     fill:#FEF9C3,stroke:#B45309,stroke-width:1.5px,color:#78350F
+    classDef deny     fill:#FEE2E2,stroke:#DC2626,stroke-width:2px,color:#7F1D1D
+
+    STAGE["Stage\nScribe · Veridia · CloudClinic"]:::stage
+    CUSTOM["Custom capability\ndeclaration"]:::boundary
+    BND["HealthOSBoundary\ncommand envelope\napp-safe ingestion"]:::boundary
+    CORE["Core Law\nconsent · habilitation · lawfulContext\nfinality posture · storage layer · gate"]:::core
+    RT["Tier 2 runtime adapter\nHealthOSProviders · runtimes"]:::runtime
+    APPLE["Apple substrate\nFoundationModels · Core ML · SwiftData\nCryptoKit · AppleArchive · XPC · Network"]:::apple
+    PROV["Provenance · Audit\ndecision · provider identity · model version · outcome"]:::prov
+    RESULT["Boundary-mediated\ngoverned result\nor degraded / denied"]:::boundary
+    DENY["Core Law deny\nfail-closed"]:::deny
+
+    STAGE -->|"Custom capability request"| CUSTOM
+    CUSTOM -->|"command envelope"| BND
+    BND -->|"validates"| CORE
+    CORE -->|"policy allows"| RT
+    CORE -->|"policy denies"| DENY
+    RT -->|"invokes"| APPLE
+    APPLE -->|"raw result"| RT
+    RT -->|"governed result + degraded status"| PROV
+    PROV --> RESULT
+    RESULT -->|"mediated result only"| STAGE
+    DENY -.->|"denied envelope"| STAGE
+```
+
+**Apple capability landscape — role and HealthOS tier:**
+
+```mermaid
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#F8FAFC', 'primaryBorderColor': '#CBD5E1', 'primaryTextColor': '#0F172A', 'clusterBkg': '#FAFBFC', 'clusterBorder': '#E2E8F0', 'lineColor': '#6B7C93', 'edgeLabelBackground': '#FFFFFF', 'fontFamily': 'ui-rounded, -apple-system, BlinkMacSystemFont, sans-serif'}}}%%
+graph LR
+    classDef apple    fill:#F1F5F9,stroke:#64748B,stroke-width:1.5px,color:#1E293B
+    classDef t1       fill:#DCFCE7,stroke:#15803D,stroke-width:2px,color:#14532D
+    classDef t2       fill:#DBEAFE,stroke:#1D4ED8,stroke-width:1.5px,color:#1E3A8A
+    classDef t3       fill:#F3E8FF,stroke:#7C3AED,stroke-width:1.5px,color:#3B0764
+    classDef support  fill:#FFF7ED,stroke:#C2410C,stroke-width:1px,color:#9A3412
+    classDef rule     fill:#FEE2E2,stroke:#DC2626,stroke-width:1px,color:#7F1D1D
+
+    subgraph INFER["  Inference / ML  "]
+        FM["FoundationModels\nlocal language model\nApple-native on-device"]:::apple
+        CML["Core ML\nlocal model runtime\nafter ModelGovernance"]:::apple
+        NL["NaturalLanguage\npreprocessing · NER\nfail-closed identifiers"]:::apple
+        CRML["Create ML\noffline model tooling\nSupport only — never runtime"]:::apple
+    end
+
+    subgraph STORAGE["  Storage / Sync  "]
+        SD["SwiftData\nprojection / cache / index\nnot canonical custody"]:::apple
+        CK["CloudKit\nsynced projection only\nnot canonical custody"]:::apple
+    end
+
+    subgraph SECURITY["  Security / Integrity  "]
+        CKIT["CryptoKit\nhash · sign · encrypt\nnot legal finality"]:::apple
+        AA["AppleArchive\nevidence packaging\nnot legal finality"]:::apple
+    end
+
+    subgraph ISOLATION["  Process / Transport  "]
+        XPC["XPC\nlocal worker isolation\nlawfulContext required"]:::apple
+        SM["ServiceManagement\nhelper lifecycle\noperator policy gated"]:::apple
+        NET["Network\ngoverned mesh transport\nno raw health-data propagation"]:::apple
+        XCC["Xcode Cloud\ndeterministic CI only\nnot runtime authority"]:::apple
+    end
+
+    PROV_RT["HealthOSProviders\nTier 2 · ProviderRouter\nAppleFoundationModelsAdapter"]:::t2
+    RUNTIMES["Tier 2 runtimes\nAACI · MSR · UserAgent\nAsync · Service · Session"]:::t2
+    BOUND_T3["HealthOSBoundary\nTier 3 · mediated surfaces\nCustomSDK"]:::t3
+    CORE_T1["Core Law · Tier 1\nconsent · gate · provenance\nCryptoKit · AppleArchive governed here"]:::t1
+    SUP["HealthOS/Support\nCreate ML scaffolds\nModelGovernance gated"]:::support
+
+    FM & CML & NL -->|"provider adapter"| PROV_RT
+    CRML -. "governed tooling only" .-> SUP
+    SUP -. "model governance approval" .-> PROV_RT
+    SD & CK -->|"projection adapter"| BOUND_T3
+    CKIT & AA -->|"integrity / evidence"| CORE_T1
+    XPC & SM & NET -->|"runtime infrastructure"| RUNTIMES
+    XCC -. "CI evidence → Core" .-> CORE_T1
+
+    PROV_RT --> BOUND_T3
+    RUNTIMES --> BOUND_T3
+    CORE_T1 --> BOUND_T3
+
+    BLOCKED["Stage direct access\nto Apple clinical APIs\nBLOCKED by import guards\nand test harness"]:::rule
+    INFER & STORAGE & SECURITY & ISOLATION -. "Stage shortcut denied" .-> BLOCKED
+```
+
+**Key invariants (from `51-apple-substrate-capabilities-for-jae.md`):**
+
+| Apple framework | HealthOS constraint |
+| :--- | :--- |
+| FoundationModels / Core ML / NaturalLanguage | Must go through `HealthOSProviders` / `ProviderRouter`; direct Stage import blocked; real inference never claimed from stubs |
+| SwiftData / CloudKit | Projection and sync only; canonical custody is file-backed; direct identifiers fail-closed |
+| CryptoKit / AppleArchive | Integrity and evidence primitives; not legal or qualified signature; secrets never logged |
+| XPC / ServiceManagement | Requires `lawfulContext`; crash yields degraded event; idempotency enforced |
+| Network | Governed mesh transport; raw health-data propagation blocked; degraded/offline state explicit |
+| Xcode Cloud | CI evidence recording only; not runtime authority; not merge authority |
+
+**Canonical reference:** `HealthOS/Shared/docs/architecture/51-apple-substrate-capabilities-for-jae.md`
+
 ---
 
 ## 📦 Swift Package Graph
@@ -859,6 +972,7 @@ flowchart LR
 | Understand MSR | `HealthOS/Shared/docs/architecture/49-mental-space-runtime.md` | `HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSMSR/`, `HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/MSRRuntime.swift` |
 | Understand native UI + Liquid Glass | `HealthOS/Shared/docs/architecture/48-native-macos-ui-design-system-and-app-shells.md` | `HealthOS/Tier4-Stages-Cast/Scribe/Sources/Scribe/` |
 | Understand governed AI agents and patient sovereignty | `HealthOS/Shared/docs/architecture/52-governed-ai-agent-society.md` | `HealthOS/Shared/docs/adr/0014-governed-ai-agent-society.md`, `GovernedAIAgentContracts.swift`, `UserAgentRuntime.swift` |
+| Understand Apple substrate capabilities and mediation rules | `HealthOS/Shared/docs/architecture/51-apple-substrate-capabilities-for-jae.md` | `HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSProviders/`, `HealthOS/Support/ML/` |
 | Understand Apple sovereignty | `HealthOS/Shared/docs/architecture/46-apple-sovereignty-architecture.md` | `HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSProviders/AppleFoundationModelsAdapter.swift` |
 | Understand apps and boundaries | `HealthOS/Shared/docs/architecture/11-scribe.md` | `12-veridia.md`, `13-cloudclinic.md`, `43-cross-app-coordination-shared-surfaces.md` |
 | Understand maturity and gaps | `HealthOS/Shared/docs/execution/11-current-maturity-map.md` | `13-scaffold-release-candidate-criteria.md`, `14-final-gap-register.md` |
@@ -970,7 +1084,7 @@ graph LR
 | GOS | `29-governed-operational-spec.md` → `34-gos-review-and-activation-policy.md` | `HealthOS/Constructor/ts/packages/healthos-gos-tooling/`, `HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/` |
 | Boundary | `HealthOS/Shared/docs/architecture/50-app-layer-boundary-and-reference-apps.md`, `19-interface-doctrine.md` | mediated facades/envelopes in `HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/` and runtime adapters |
 | Native UI + Liquid Glass | `HealthOS/Shared/docs/architecture/48-native-macos-ui-design-system-and-app-shells.md` | `HealthOS/Tier4-Stages-Cast/Scribe/Sources/Scribe/` |
-| Apple substrate capabilities | `HealthOS/Shared/docs/architecture/51-apple-substrate-capabilities-for-jae.md`, `46-apple-sovereignty-architecture.md` | Apple-native capabilities only through Core/Boundary/provider/runtime mediation; no Stage-owned authority |
+| Apple substrate capabilities | `HealthOS/Shared/docs/architecture/51-apple-substrate-capabilities-for-jae.md`, `46-apple-sovereignty-architecture.md` | Apple-native capabilities only through Core/Boundary/provider/runtime mediation; no Stage-owned authority; import guards enforced in `StagePackageStructureTests.swift` |
 | Stages | `11-scribe.md`, `12-veridia.md`, `13-cloudclinic.md`, `43-cross-app-coordination-shared-surfaces.md` | `HealthOS/Tier4-Stages-Cast/Scribe/Sources/Scribe/`, `HealthOS/Tier4-Stages-Cast/Veridia/Sources/Veridia/`, `HealthOS/Tier4-Stages-Cast/CloudClinic/Sources/CloudClinic/` |
 | Providers / ML | `HealthOS/Shared/docs/architecture/16-providers-and-ml.md`, `27-provider-threshold-policy.md` | Runtime adapters: `HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSProviders/`; governed support tooling: `HealthOS/Support/ML/`, `HealthOS/Support/python/` |
 | Steward | `45-healthos-xcode-agent.md`, `47-steward-settler-engineering-model.md` | `HealthOS/Constructor/ts/agent-infra/healthos-steward/`, `HealthOS/Constructor/Steward/` |

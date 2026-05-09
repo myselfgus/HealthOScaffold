@@ -56,7 +56,7 @@ for stage in Scribe Veridia CloudClinic; do
   done
 
   for module in "${forbidden_apple_authority_imports[@]}"; do
-    if rg -n "^(@testable[[:space:]]+)?import[[:space:]]+$module$" "$source_dir"; then
+    if rg -n "^(@testable[[:space:]]+)?import[[:space:]]+$module\b" "$source_dir"; then
       echo "[stage-package-check] $stage imports Apple authority framework $module directly; request substrate capability through Custom/Boundary"
       exit 1
     fi

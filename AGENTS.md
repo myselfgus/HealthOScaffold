@@ -160,6 +160,18 @@ When ontology/contracts change, align in the same work unit:
 - do not leave tracking stale after code/doc updates
 
 
+## JAE Apple substrate rules
+
+HealthOS is a Juridical Application Engine. Apple frameworks are substrate capabilities mediated by HealthOS, not direct Stage authority. See `HealthOS/Shared/docs/architecture/51-apple-substrate-capabilities-for-jae.md` before adding Apple-native storage, sync, inference, worker, archive, network, or CI substrate behavior.
+
+- Stages request capabilities through Custom/Boundary.
+- Stages must not directly import Tier 2 runtime modules.
+- SwiftData and CloudKit are projection/sync only, never canonical custody.
+- FoundationModels/Core ML/NaturalLanguage must go through `HealthOSProviders` / `ProviderRouter`.
+- XPC/ServiceManagement are isolated runtime infrastructure, not app-owned authority.
+- Network is governed mesh transport, not arbitrary propagation.
+- AppleArchive/CryptoKit create integrity/evidence, not legal finality.
+
 ## Steward usage (engineering continuity)
 
 Steward is the canonical engineering agent for this repository. `healthos-steward` is the CLI, package, and repository-local state root.

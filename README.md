@@ -141,6 +141,7 @@ The clinical/runtime environment is composed by Tiers 1-3 plus the Stage univers
 Stage work advances only after the mediated surface the Stage consumes is implemented and stable, not merely contracted, and after the relevant Custom is complete. See `HealthOS/Shared/docs/architecture/50-app-layer-boundary-and-reference-apps.md` for the Boundary, Stage, Custom, and task-ordering doctrine.
 
 `HealthOSProviders` remains the Swift runtime provider-adapter target under Tier 2. `HealthOS/Support/` contains shared provider-support tooling, ops, Python, and governed ML scaffolds; it may support Core, runtimes, Stages, and Constructor workflows, but its usage remains governed by Core law and ModelGovernance.
+Apple-native frameworks are HealthOS-governed substrate capabilities, not direct Stage authority or Core Law. See `HealthOS/Shared/docs/architecture/51-apple-substrate-capabilities-for-jae.md` for SwiftData, CloudKit, FoundationModels, Core ML, NaturalLanguage, RegexBuilder, CryptoKit, AppleArchive, XPC, ServiceManagement, Network, Virtualization, FSKit, and Xcode Cloud posture.
 
 `HealthOS/Constructor/` is the visible Construction System root. Steward, Settlers, Settlements, Territories, and `healthos-forge-mcp` are repository engineering concepts **outside** this clinical/runtime hierarchy. They inspect, edit, validate, and record repository work. They do not become HealthOS law, runtime automation, or clinical effectuation.
 
@@ -793,6 +794,7 @@ graph LR
 | GOS | `29-governed-operational-spec.md` → `34-gos-review-and-activation-policy.md` | `HealthOS/Constructor/ts/packages/healthos-gos-tooling/`, `HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/` |
 | Boundary | `HealthOS/Shared/docs/architecture/50-app-layer-boundary-and-reference-apps.md`, `19-interface-doctrine.md` | mediated facades/envelopes in `HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/` and runtime adapters |
 | Native UI + Liquid Glass | `HealthOS/Shared/docs/architecture/48-native-macos-ui-design-system-and-app-shells.md` | `HealthOS/Tier4-Stages-Cast/Scribe/Sources/Scribe/` |
+| Apple substrate capabilities | `HealthOS/Shared/docs/architecture/51-apple-substrate-capabilities-for-jae.md`, `46-apple-sovereignty-architecture.md` | Apple-native capabilities only through Core/Boundary/provider/runtime mediation; no Stage-owned authority |
 | Stages | `11-scribe.md`, `12-veridia.md`, `13-cloudclinic.md`, `43-cross-app-coordination-shared-surfaces.md` | `HealthOS/Tier4-Stages-Cast/Scribe/Sources/Scribe/`, `HealthOS/Tier4-Stages-Cast/Veridia/Sources/Veridia/`, `HealthOS/Tier4-Stages-Cast/CloudClinic/Sources/CloudClinic/` |
 | Providers / ML | `HealthOS/Shared/docs/architecture/16-providers-and-ml.md`, `27-provider-threshold-policy.md` | Runtime adapters: `HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSProviders/`; governed support tooling: `HealthOS/Support/ML/`, `HealthOS/Support/python/` |
 | Steward | `45-healthos-xcode-agent.md`, `47-steward-settler-engineering-model.md` | `HealthOS/Constructor/ts/agent-infra/healthos-steward/`, `HealthOS/Constructor/Steward/` |

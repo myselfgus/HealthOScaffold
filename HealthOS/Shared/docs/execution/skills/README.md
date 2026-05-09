@@ -12,6 +12,18 @@ Before editing a domain:
 3. read architecture docs for the domain
 4. open the matching skill below
 
+## JAE Apple substrate rules
+
+HealthOS is a Juridical Application Engine. Apple frameworks are substrate capabilities mediated by HealthOS, not direct Stage authority. Read `HealthOS/Shared/docs/architecture/51-apple-substrate-capabilities-for-jae.md` before Apple-native substrate work.
+
+- Stages request capabilities through Custom/Boundary.
+- Stages must not directly import Tier 2 runtime modules.
+- SwiftData and CloudKit are projection/sync only, never canonical custody.
+- FoundationModels/Core ML/NaturalLanguage must go through `HealthOSProviders` / `ProviderRouter`.
+- XPC/ServiceManagement are isolated runtime infrastructure, not app-owned authority.
+- Network is governed mesh transport, not arbitrary propagation.
+- AppleArchive/CryptoKit create integrity/evidence, not legal finality.
+
 ## HealthOS domain skills (current)
 
 Read when working on governance, runtimes, contracts, or cross-layer concerns:

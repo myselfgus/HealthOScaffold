@@ -2,6 +2,21 @@
 
 ## COMPLETED
 
+### DOC-JAE-APPLE-SUBSTRATE Stage import guard
+Outcome:
+- strengthened `StagePackageStructureTests` and `scripts/check-stage-packages.sh` to ensure Scribe, Veridia, and CloudClinic depend on HealthOS through `HealthOSBoundary` and `CustomSDK`, not direct Tier 1/2 products
+- added source import scanning that blocks direct Tier 2 module imports and direct Apple authority framework imports for Stage clinical execution
+- added a SwiftData guard requiring future Stage SwiftData usage to be documented as projection/cache-only, never canonical custody
+Files touched:
+- `HealthOS/Tier4-Stages-Cast/Tests/StagePackageStructureTests/StagePackageStructureTests.swift`
+- `scripts/check-stage-packages.sh`
+- `HealthOS/Shared/docs/architecture/51-apple-substrate-capabilities-for-jae.md`
+Validation:
+- `make stage-package-check` PASS
+- `make validate-docs` PASS
+- `git diff --check` PASS
+- `cd HealthOS && swift test --filter StagePackageStructureTests` did not complete in the Linux container because the package imports Apple-only `OSLog`; rerun on macOS 26+
+
 ### SWIFT-ONTOLOGY-SECOND-PASS Boundary and Stage technical rename
 Outcome:
 - renamed the canonical Swift Boundary module from `HealthOSAppBoundary` to `HealthOSBoundary`

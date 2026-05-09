@@ -1,9 +1,16 @@
 import Foundation
 
 public enum RuntimeKind: String, Codable, Sendable {
+    case core
+    case gos
     case aaci
     case async
+    case msr
+    case provider
+    case service
+    case session
     case userAgent = "user-agent"
+    case boundary
 }
 
 public enum SessionKind: String, Codable, Sendable {

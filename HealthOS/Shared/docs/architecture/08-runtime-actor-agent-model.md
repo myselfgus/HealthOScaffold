@@ -3,6 +3,7 @@
 ## Proposed relation
 - actor = concurrency/state/isolation primitive
 - agent = actor with semantic role, permissions, boundary, and domain responsibility
+- governed AI agent = persistent agent identity with `AgentID`, represented principal, mandate, governed memory, tool grants, provider policy, delegation policy, and protocol posture. The LLM/model/provider is a selectable execution engine, not the agent identity.
 
 ## Why the distinction exists
 Actors solve execution concerns.
@@ -57,6 +58,19 @@ Each agent must additionally expose:
 - emitted output kinds
 - governance requirements before sensitive operations
 
+For AI-orchestrated agents, the contract must also expose:
+- `AgentID`
+- represented principal via safe ref
+- `AgentMandate`
+- `DelegationPolicy`
+- `AgentMemoryScope`
+- `AgentToolGrant`
+- `AgentProviderRoutingPolicy`
+- audit/provenance refs
+- protocol posture (`healthos-aacp`, A2A, ACP adapter where applicable)
+
+See [52-governed-ai-agent-society.md](52-governed-ai-agent-society.md) and [ADR-0014](../adr/0014-governed-ai-agent-society.md).
+
 ## Mailbox model
 - messages are explicit contracts
 - every message has from, to, kind, payload, correlation
@@ -89,6 +103,23 @@ Each agent must state:
 - AACI runtime
 - async runtime
 - user-agent runtime
+- session runtime
+- MSR runtime
+- service runtime
+- provider/model routing surface
+
+The user-agent runtime now contains the first `PersonalAgentRuntime` seam for patient, professional, and generic user personal AI agents. It remains subordinate to Core law and does not grant clinical/regulatory authority.
+
+## Governed AI agent society
+
+HealthOS recognizes the following initial governed AI agent families:
+- personal AI agents: patient, professional, and generic user;
+- Core governance agents: consent, habilitation, gate/finality, custody/access, audit/provenance;
+- runtime agents: Session, AACI, MSR, Async Job, Service Runtime, User-Agent Runtime;
+- provider/model agents: Provider Router and Model Governance;
+- Boundary/protocol agents: Agent Protocol Boundary and App Surface Boundary.
+
+All agent-agent negotiation uses mediated envelopes. Envelopes fail closed on raw direct identifiers, reidentification maps, raw storage, key material, internal memory exposure, legal-authorizing claims, and autonomous clinical/regulatory effects.
 
 ## Single-node inter-runtime transport
 Initial single-node transport is:

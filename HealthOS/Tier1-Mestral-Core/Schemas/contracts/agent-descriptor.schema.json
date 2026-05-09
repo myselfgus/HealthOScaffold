@@ -5,7 +5,7 @@
   "required": ["actorId", "runtimeKind", "semanticRole", "permissions", "boundaryDescription", "boundary", "allowedInputKinds", "emittedOutputKinds"],
   "properties": {
     "actorId": {"type": "string"},
-    "runtimeKind": {"type": "string", "enum": ["aaci", "async", "user-agent"]},
+    "runtimeKind": {"type": "string", "enum": ["core", "gos", "aaci", "async", "msr", "provider", "service", "session", "user-agent", "boundary"]},
     "semanticRole": {"type": "string"},
     "permissions": {"type": "array", "items": {"type": "string"}},
     "boundaryDescription": {"type": "string"},

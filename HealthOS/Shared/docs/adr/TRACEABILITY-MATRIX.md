@@ -1,6 +1,6 @@
 # Matriz de Rastreabilidade — ADRs ↔ Módulos ↔ Código ↔ Testes ↔ Pipelines
 
-Data da revisão: 2026-05-06
+Data da revisão: 2026-05-09
 Fonte de verdade da topologia: [HealthOS/Package.swift](../../../HealthOS/Package.swift).
 
 > Esta matriz é viva. Atualizar quando: (a) uma ADR for adicionada ou supersedida; (b) um caminho de código referenciado por uma ADR mover/renomear; (c) um teste relacionado for adicionado/removido.
@@ -19,7 +19,7 @@ Tier 2:
   HealthOSAACI            → Core, GOS, Providers
   HealthOSMSR             → Core, Providers (resources: Prompts/)
   HealthOSAsyncRuntime    → Core
-  HealthOSUserAgentRuntime→ Core
+  HealthOSUserAgentRuntime→ Core, Providers
   HealthOSServiceRuntime  → Core
   HealthOSSessionRuntime  → Core, AACI, Providers, MSR
 
@@ -61,6 +61,7 @@ Legenda: `●` = impactada diretamente · `○` = relacionada · ` ` = não impa
 | 0011 | GOS subordinada ao Core | ● | ○ | ● | ● | ● | ○ | ○ | ○ | ○ |
 | 0012 | HealthOScaffold = HealthOS | ○ | ○ | ○ | ○ | ○ | ○ | ○ | ○ | ○ |
 | 0013 | Platform/App/Construction boundary | ● | ● | ● | ● | ● | ● | ● | ● | ● |
+| 0014 | Governed AI Agent Society | ● | ● | ○ | ○ | ○ | ○ | ○ | ○ | ○ |
 
 ---
 
@@ -81,6 +82,7 @@ Legenda: `●` = impactada diretamente · `○` = relacionada · ` ` = não impa
 | 0011 | [HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/GovernedOperationalSpec.swift](../../../HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/GovernedOperationalSpec.swift), [GOSFileBackedRegistry.swift](../../../HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/GOSFileBackedRegistry.swift), [HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSAACI/GOSBindings.swift](../../../HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSAACI/GOSBindings.swift), [GOSRuntimeActivation.swift](../../../HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSAACI/GOSRuntimeActivation.swift), [GOSRuntimeContext.swift](../../../HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSAACI/GOSRuntimeContext.swift), [GOSRuntimeResolution.swift](../../../HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSAACI/GOSRuntimeResolution.swift), [HealthOS/Tier1-Mestral-Core/Schemas/governed-operational-spec.schema.json](../../../HealthOS/Tier1-Mestral-Core/Schemas/governed-operational-spec.schema.json), [HealthOS/Constructor/ts/packages/healthos-gos-tooling/](../../../HealthOS/Constructor/ts/packages/healthos-gos-tooling/) |
 | 0012 | [README.md](../../../README.md), [HealthOS/Package.swift](../../../HealthOS/Package.swift), [AGENTS.md](../../../AGENTS.md) |
 | 0013 | [HealthOS/Shared/docs/architecture/50-app-layer-boundary-and-reference-apps.md](../architecture/50-app-layer-boundary-and-reference-apps.md), [HealthOS/Shared/docs/execution/21-structural-ontology-and-product-readiness-plan.md](../execution/21-structural-ontology-and-product-readiness-plan.md), [AGENTS.md](../../../AGENTS.md), [HealthOS/Constructor/Steward/prompts/prompt-architecture-template.md](../../../HealthOS/Constructor/Steward/prompts/prompt-architecture-template.md) |
+| 0014 | [HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/GovernedAIAgentContracts.swift](../../../HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/GovernedAIAgentContracts.swift), [HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSUserAgentRuntime/UserAgentRuntime.swift](../../../HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSUserAgentRuntime/UserAgentRuntime.swift), [HealthOS/Tier3-Custom-Boundary/Sources/HealthOSBoundary/AgentProtocolBoundary.swift](../../../HealthOS/Tier3-Custom-Boundary/Sources/HealthOSBoundary/AgentProtocolBoundary.swift), [HealthOS/Shared/docs/architecture/52-governed-ai-agent-society.md](../architecture/52-governed-ai-agent-society.md) |
 
 ---
 
@@ -101,6 +103,7 @@ Legenda: `●` = impactada diretamente · `○` = relacionada · ` ` = não impa
 | 0011 | [GOSRuntimeAdoptionTests.swift](../../../HealthOS/Shared/Tests/HealthOSTests/GOSRuntimeAdoptionTests.swift) | TS compiler tests em `HealthOS/Constructor/ts/packages/healthos-gos-tooling/` |
 | 0012 | (auditoria de docs) | revisão de PR |
 | 0013 | (auditoria de HealthOS/Shared/docs/governança) | tier mapping, language diagnostics, Core semantic leak diagnostic |
+| 0014 | [UserSovereigntyGovernanceTests.swift](../../../HealthOS/Shared/Tests/HealthOSTests/UserSovereigntyGovernanceTests.swift), [ProviderGovernanceTests.swift](../../../HealthOS/Shared/Tests/HealthOSTests/ProviderGovernanceTests.swift) | `GovernedAIAgentTests`, `PersonalAgentRuntimeTests`, `AgentNegotiationBoundaryTests` |
 
 Outros testes auxiliares úteis: [AsyncRuntimeGovernanceTests.swift](../../../HealthOS/Shared/Tests/HealthOSTests/AsyncRuntimeGovernanceTests.swift), [BackupGovernanceTests.swift](../../../HealthOS/Shared/Tests/HealthOSTests/BackupGovernanceTests.swift), [MSRRuntimeTests.swift](../../../HealthOS/Shared/Tests/HealthOSTests/MSRRuntimeTests.swift) — relacionados a gaps propostos (ver [GAPS-AND-CONFLICTS.md](GAPS-AND-CONFLICTS.md)).
 
@@ -123,6 +126,7 @@ Outros testes auxiliares úteis: [AsyncRuntimeGovernanceTests.swift](../../../He
 | 0011 | [HealthOS/Tier1-Mestral-Core/Schemas/governed-operational-spec.schema.json](../../../HealthOS/Tier1-Mestral-Core/Schemas/governed-operational-spec.schema.json), [HealthOS/Tier1-Mestral-Core/Schemas/governed-operational-spec-authoring.schema.json](../../../HealthOS/Tier1-Mestral-Core/Schemas/governed-operational-spec-authoring.schema.json), [HealthOS/Tier1-Mestral-Core/Schemas/governed-operational-spec-bundle-manifest.schema.json](../../../HealthOS/Tier1-Mestral-Core/Schemas/governed-operational-spec-bundle-manifest.schema.json), [HealthOS/Tier1-Mestral-Core/Schemas/governed-operational-spec-lifecycle-audit.schema.json](../../../HealthOS/Tier1-Mestral-Core/Schemas/governed-operational-spec-lifecycle-audit.schema.json), [HealthOS/Tier1-Mestral-Core/Schemas/governed-operational-spec-review-record.schema.json](../../../HealthOS/Tier1-Mestral-Core/Schemas/governed-operational-spec-review-record.schema.json) |
 | 0012 | `make validate-docs` |
 | 0013 | `make validate-docs`, `make validate-contracts`, language and Core leak diagnostics |
+| 0014 | [HealthOS/Tier1-Mestral-Core/Schemas/contracts/governed-ai-agent-society.schema.json](../../../HealthOS/Tier1-Mestral-Core/Schemas/contracts/governed-ai-agent-society.schema.json), `make validate-schemas`, `make validate-contracts`, `make swift-test`, `make ts-test` |
 
 ---
 
@@ -131,15 +135,16 @@ Outros testes auxiliares úteis: [AsyncRuntimeGovernanceTests.swift](../../../He
 | Target | Tipo | Depende de | ADRs primárias | Smoke / test |
 |--------|------|------------|----------------|--------------|
 | `HealthOSCore` | lib | — | 0001, 0003, 0004, 0008, 0010, 0011 | `swift test` |
-| `HealthOSProviders` | lib | Core | 0004, 0005, 0006, 0008 | `ProviderGovernanceTests` |
+| `HealthOSProviders` | lib | Core | 0004, 0005, 0006, 0008, 0014 | `ProviderGovernanceTests` |
 | `HealthOSAACI` | lib | Core, Providers | 0001, 0003, 0010, 0011 | `GOSRuntimeAdoptionTests` |
 | `HealthOSMSR` | lib | Core, Providers (resources: Prompts) | 0003, 0004, 0010, 0011 (proposto: 0016) | `MSRRuntimeTests` |
 | `HealthOSSessionRuntime` | lib | Core, AACI, Providers, MSR | 0001, 0003, 0010, 0011 | tests integrados |
+| `HealthOSUserAgentRuntime` | lib | Core, Providers | 0001, 0003, 0004, 0010, 0014 | `PersonalAgentRuntimeTests` |
 | `HealthOSCLI` | exec | Core, SessionRuntime | 0007, 0013 | `make smoke-cli` |
 | `Scribe` | exec | Boundary, Core, SessionRuntime | 0007, 0010, 0013 | `make smoke-scribe` |
 | `Veridia` | exec | Boundary, Core | 0007, 0010, 0013 | `make smoke-veridia` |
 | `CloudClinic` | exec | Boundary | 0007, 0010, 0013 | `make smoke-cloudclinic` |
-| `HealthOSBoundary` | lib | Core, GOS, AACI, MSR, Async, User-Agent, Service, Session | 0013 | `HealthOSBoundaryTests` |
+| `HealthOSBoundary` | lib | Core, GOS, AACI, MSR, Async, User-Agent, Service, Session | 0013, 0014 | `HealthOSBoundaryTests` |
 | `HealthOSConstructionSystemTests` | test | structural | 0012, 0013 | `HealthOS-Construction` scheme / `swift test` |
 | `HealthOSSupportToolingTests` | test | structural | 0005, 0006 | `HealthOS-Support` scheme / `swift test` |
 | `HealthOSTests` | test | Core, AACI, Providers, MSR, SessionRuntime | (todos) | `make swift-test` |

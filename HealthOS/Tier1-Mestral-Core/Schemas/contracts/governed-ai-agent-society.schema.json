@@ -1,0 +1,278 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "healthos/contracts/governed-ai-agent-society",
+  "type": "object",
+  "required": ["descriptor", "negotiationEnvelope", "protocolProjection"],
+  "properties": {
+    "descriptor": {"$ref": "#/$defs/GovernedAIAgentDescriptor"},
+    "negotiationEnvelope": {"$ref": "#/$defs/AgentNegotiationEnvelope"},
+    "protocolProjection": {"$ref": "#/$defs/AgentProtocolProjection"}
+  },
+  "$defs": {
+    "StorageLayer": {
+      "type": "string",
+      "enum": ["direct-identifiers", "operational-content", "governance-metadata", "derived-artifacts", "reidentification-mapping"]
+    },
+    "RuntimeLifecycleState": {
+      "type": "string",
+      "enum": ["booting", "ready", "active", "paused", "terminating", "terminated", "failed"]
+    },
+    "GovernedAIAgentKind": {
+      "type": "string",
+      "enum": [
+        "patient-personal-agent",
+        "professional-personal-agent",
+        "user-personal-agent",
+        "consent-governance-agent",
+        "habilitation-governance-agent",
+        "gate-finality-agent",
+        "custody-access-agent",
+        "audit-provenance-agent",
+        "session-agent",
+        "aaci-agent",
+        "msr-agent",
+        "async-job-agent",
+        "service-runtime-agent",
+        "user-agent-runtime-agent",
+        "provider-router-agent",
+        "model-governance-agent",
+        "agent-protocol-boundary",
+        "app-surface-boundary-agent"
+      ]
+    },
+    "AgentPrincipalKind": {
+      "type": "string",
+      "enum": ["patient", "professional", "user", "service", "core-governance", "runtime", "provider-governance", "boundary"]
+    },
+    "AgentPrincipalRef": {
+      "type": "object",
+      "required": ["principalKind", "safeRef", "rawDirectIdentifierExposed"],
+      "properties": {
+        "principalKind": {"$ref": "#/$defs/AgentPrincipalKind"},
+        "safeRef": {"type": "string"},
+        "displayLabel": {"type": ["string", "null"]},
+        "rawDirectIdentifierExposed": {"type": "boolean"}
+      }
+    },
+    "AgentNegotiationIntent": {
+      "type": "string",
+      "enum": [
+        "educate",
+        "summarize-own-data",
+        "request-consent",
+        "respond-consent",
+        "request-access",
+        "grant-ephemeral-access",
+        "prepare-professional-context",
+        "schedule-coordination",
+        "provider-route",
+        "audit-record",
+        "emergency-access-request",
+        "diagnose",
+        "prescribe",
+        "issue-referral",
+        "finalize-record",
+        "sign-document",
+        "grant-professional-habilitation",
+        "alter-legal-retention"
+      ]
+    },
+    "AgentLawfulContextRequirements": {
+      "type": "object",
+      "required": ["requireServiceId", "requirePatientUserId", "requireProfessionalUserId", "requireHabilitationId", "requireFinalidade", "requireSessionId"],
+      "properties": {
+        "requireServiceId": {"type": "boolean"},
+        "requirePatientUserId": {"type": "boolean"},
+        "requireProfessionalUserId": {"type": "boolean"},
+        "requireHabilitationId": {"type": "boolean"},
+        "requireFinalidade": {"type": "boolean"},
+        "requireSessionId": {"type": "boolean"}
+      }
+    },
+    "AgentMandate": {
+      "type": "object",
+      "required": ["mandateId", "title", "principal", "allowedIntents", "allowedDataLayers", "deniedDataLayers", "lawfulContextRequirements", "legalAuthorizingAllowed"],
+      "properties": {
+        "mandateId": {"type": "string"},
+        "title": {"type": "string"},
+        "principal": {"$ref": "#/$defs/AgentPrincipalRef"},
+        "allowedIntents": {"type": "array", "items": {"$ref": "#/$defs/AgentNegotiationIntent"}},
+        "allowedDataLayers": {"type": "array", "items": {"$ref": "#/$defs/StorageLayer"}},
+        "deniedDataLayers": {"type": "array", "items": {"$ref": "#/$defs/StorageLayer"}},
+        "lawfulContextRequirements": {"$ref": "#/$defs/AgentLawfulContextRequirements"},
+        "legalAuthorizingAllowed": {"type": "boolean"},
+        "expiresAt": {"type": ["string", "null"]}
+      }
+    },
+    "AgentMemoryStoreKind": {
+      "type": "string",
+      "enum": ["preference-profile", "consent-history", "educational-state", "professional-context", "runtime-working-set", "audit-index"]
+    },
+    "AgentMemoryScope": {
+      "type": "object",
+      "required": ["scopeId", "ownerAgentId", "allowedStores", "allowedDataLayers", "retentionPolicyRef", "mayPersistDerivedPreference", "mayPersistRawPHI", "mayExposeInternalMemoryToProtocol"],
+      "properties": {
+        "scopeId": {"type": "string"},
+        "ownerAgentId": {"type": "string"},
+        "allowedStores": {"type": "array", "items": {"$ref": "#/$defs/AgentMemoryStoreKind"}},
+        "allowedDataLayers": {"type": "array", "items": {"$ref": "#/$defs/StorageLayer"}},
+        "retentionPolicyRef": {"type": "string"},
+        "mayPersistDerivedPreference": {"type": "boolean"},
+        "mayPersistRawPHI": {"type": "boolean"},
+        "mayExposeInternalMemoryToProtocol": {"type": "boolean"}
+      }
+    },
+    "AgentToolGrant": {
+      "type": "object",
+      "required": ["toolId", "grantedCapabilities", "allowedDataLayers", "requiresCoreValidation", "canExposeRawStorage", "canUseKeyMaterial", "legalAuthorizing"],
+      "properties": {
+        "toolId": {"type": "string"},
+        "grantedCapabilities": {"type": "array", "items": {"type": "string"}},
+        "allowedDataLayers": {"type": "array", "items": {"$ref": "#/$defs/StorageLayer"}},
+        "requiresCoreValidation": {"type": "boolean"},
+        "expiresAt": {"type": ["string", "null"]},
+        "canExposeRawStorage": {"type": "boolean"},
+        "canUseKeyMaterial": {"type": "boolean"},
+        "legalAuthorizing": {"type": "boolean"}
+      }
+    },
+    "AgentProviderKind": {
+      "type": "string",
+      "enum": ["local", "remote", "apple-native", "http-local", "training-offline"]
+    },
+    "AgentProviderRoutingPolicy": {
+      "type": "object",
+      "required": ["preferAppleSiliconLocal", "preferLocal", "allowedProviderKinds", "allowsExternalProvider", "allowsOperationalSensitiveExternal", "degradedSovereigntyWhenExternal", "allowedDataLayers", "deniedDataLayers", "modelProvenanceRequired"],
+      "properties": {
+        "preferAppleSiliconLocal": {"type": "boolean"},
+        "preferLocal": {"type": "boolean"},
+        "allowedProviderKinds": {"type": "array", "items": {"$ref": "#/$defs/AgentProviderKind"}},
+        "allowsExternalProvider": {"type": "boolean"},
+        "explicitExternalProviderPolicyRef": {"type": ["string", "null"]},
+        "allowsOperationalSensitiveExternal": {"type": "boolean"},
+        "degradedSovereigntyWhenExternal": {"type": "boolean"},
+        "allowedDataLayers": {"type": "array", "items": {"$ref": "#/$defs/StorageLayer"}},
+        "deniedDataLayers": {"type": "array", "items": {"$ref": "#/$defs/StorageLayer"}},
+        "modelProvenanceRequired": {"type": "boolean"}
+      }
+    },
+    "DelegationPolicy": {
+      "type": "object",
+      "required": ["allowsAsyncOfflineResponse", "allowDirectIdentifierFlowExplicit", "allowReidentificationFlowExplicit", "allowKeyMaterialExposure", "allowAutonomousClinicalOrRegulatoryFinality", "requiresHumanGateForFinality"],
+      "properties": {
+        "allowsAsyncOfflineResponse": {"type": "boolean"},
+        "allowDirectIdentifierFlowExplicit": {"type": "boolean"},
+        "allowReidentificationFlowExplicit": {"type": "boolean"},
+        "allowKeyMaterialExposure": {"type": "boolean"},
+        "allowAutonomousClinicalOrRegulatoryFinality": {"type": "boolean"},
+        "requiresHumanGateForFinality": {"type": "boolean"},
+        "maxOfflineResponseSeconds": {"type": ["integer", "null"]}
+      }
+    },
+    "EphemeralAccessGrantRef": {
+      "type": "object",
+      "required": ["grantId", "grantSafeRef", "authorizedDataLayers", "expiresAt", "exposesKeyMaterial"],
+      "properties": {
+        "grantId": {"type": "string"},
+        "grantSafeRef": {"type": "string"},
+        "authorizedDataLayers": {"type": "array", "items": {"$ref": "#/$defs/StorageLayer"}},
+        "expiresAt": {"type": "string"},
+        "exposesKeyMaterial": {"type": "boolean"},
+        "auditRef": {"type": ["string", "null"]}
+      }
+    },
+    "CustodyControlRef": {
+      "type": "object",
+      "required": ["custodyHandleRef", "custodyPolicyRef", "reidentificationRequiresCoreMediation", "mayExposeKeyMaterial"],
+      "properties": {
+        "custodyHandleRef": {"type": "string"},
+        "custodyPolicyRef": {"type": "string"},
+        "reidentificationRequiresCoreMediation": {"type": "boolean"},
+        "mayExposeKeyMaterial": {"type": "boolean"}
+      }
+    },
+    "AgentProtocolKind": {
+      "type": "string",
+      "enum": ["healthos-aacp", "a2a", "acp"]
+    },
+    "AgentBoundary": {
+      "type": "object",
+      "required": ["reads", "writes", "invokes", "governanceChecks", "forbiddenFinalizations"],
+      "properties": {
+        "reads": {"type": "array", "items": {"type": "string"}},
+        "writes": {"type": "array", "items": {"type": "string"}},
+        "invokes": {"type": "array", "items": {"type": "string"}},
+        "governanceChecks": {"type": "array", "items": {"type": "string"}},
+        "forbiddenFinalizations": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "AgentNegotiationEnvelope": {
+      "type": "object",
+      "required": ["envelopeId", "fromAgentId", "toAgentId", "intent", "lawfulContext", "requestedDataLayers", "safeSubjectRefs", "requestedToolIds", "providerPolicy", "delegationPolicy", "toolGrants", "protocolHints", "provenanceRefs", "auditRefs", "containsRawDirectIdentifier", "containsReidentificationMapping", "containsRawStoragePath", "containsKeyMaterial", "legalAuthorizing", "rawPayloadMarkers"],
+      "properties": {
+        "envelopeId": {"type": "string"},
+        "taskRef": {"type": ["string", "null"]},
+        "fromAgentId": {"type": "string"},
+        "toAgentId": {"type": "string"},
+        "intent": {"$ref": "#/$defs/AgentNegotiationIntent"},
+        "lawfulContext": {"type": "object", "additionalProperties": {"type": "string"}},
+        "requestedDataLayers": {"type": "array", "items": {"$ref": "#/$defs/StorageLayer"}},
+        "safeSubjectRefs": {"type": "array", "items": {"type": "string"}},
+        "requestedToolIds": {"type": "array", "items": {"type": "string"}},
+        "providerPolicy": {"$ref": "#/$defs/AgentProviderRoutingPolicy"},
+        "delegationPolicy": {"$ref": "#/$defs/DelegationPolicy"},
+        "memoryScope": {"anyOf": [{"$ref": "#/$defs/AgentMemoryScope"}, {"type": "null"}]},
+        "toolGrants": {"type": "array", "items": {"$ref": "#/$defs/AgentToolGrant"}},
+        "custodyControlRef": {"anyOf": [{"$ref": "#/$defs/CustodyControlRef"}, {"type": "null"}]},
+        "ephemeralGrantRef": {"anyOf": [{"$ref": "#/$defs/EphemeralAccessGrantRef"}, {"type": "null"}]},
+        "protocolHints": {"type": "array", "items": {"$ref": "#/$defs/AgentProtocolKind"}},
+        "provenanceRefs": {"type": "array", "items": {"type": "string"}},
+        "auditRefs": {"type": "array", "items": {"type": "string"}},
+        "containsRawDirectIdentifier": {"type": "boolean"},
+        "containsReidentificationMapping": {"type": "boolean"},
+        "containsRawStoragePath": {"type": "boolean"},
+        "containsKeyMaterial": {"type": "boolean"},
+        "legalAuthorizing": {"type": "boolean"},
+        "rawPayloadMarkers": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "GovernedAIAgentDescriptor": {
+      "type": "object",
+      "required": ["agentId", "kind", "representedPrincipal", "mandate", "memoryScope", "toolGrants", "providerPolicy", "delegationPolicy", "boundary", "protocolKinds", "lifecycleState"],
+      "properties": {
+        "agentId": {"type": "string"},
+        "kind": {"$ref": "#/$defs/GovernedAIAgentKind"},
+        "representedPrincipal": {"$ref": "#/$defs/AgentPrincipalRef"},
+        "mandate": {"$ref": "#/$defs/AgentMandate"},
+        "memoryScope": {"$ref": "#/$defs/AgentMemoryScope"},
+        "toolGrants": {"type": "array", "items": {"$ref": "#/$defs/AgentToolGrant"}},
+        "providerPolicy": {"$ref": "#/$defs/AgentProviderRoutingPolicy"},
+        "delegationPolicy": {"$ref": "#/$defs/DelegationPolicy"},
+        "boundary": {"$ref": "#/$defs/AgentBoundary"},
+        "protocolKinds": {"type": "array", "items": {"$ref": "#/$defs/AgentProtocolKind"}},
+        "lifecycleState": {"$ref": "#/$defs/RuntimeLifecycleState"}
+      }
+    },
+    "AgentProtocolProjection": {
+      "type": "object",
+      "required": ["protocolKind", "taskId", "fromAgentId", "toAgentId", "intent", "safeSubjectRefs", "artifactRefs", "streamAllowed", "legalAuthorizing", "exposesInternalMemory", "exposesToolImplementation", "exposesRawDirectIdentifiers", "exposesRawStorage", "exposesKeyMaterial"],
+      "properties": {
+        "protocolKind": {"$ref": "#/$defs/AgentProtocolKind"},
+        "taskId": {"type": "string"},
+        "fromAgentId": {"type": "string"},
+        "toAgentId": {"type": "string"},
+        "intent": {"$ref": "#/$defs/AgentNegotiationIntent"},
+        "safeSubjectRefs": {"type": "array", "items": {"type": "string"}},
+        "artifactRefs": {"type": "array", "items": {"type": "string"}},
+        "streamAllowed": {"type": "boolean"},
+        "degradedState": {"type": ["string", "null"]},
+        "legalAuthorizing": {"type": "boolean"},
+        "exposesInternalMemory": {"type": "boolean"},
+        "exposesToolImplementation": {"type": "boolean"},
+        "exposesRawDirectIdentifiers": {"type": "boolean"},
+        "exposesRawStorage": {"type": "boolean"},
+        "exposesKeyMaterial": {"type": "boolean"}
+      }
+    }
+  }
+}

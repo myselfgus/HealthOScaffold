@@ -70,6 +70,8 @@ Legend:
 ## 4. Runtime / actor / agent model
 - [x] actor/agent distinction documented and typed
 - [x] runtime set established (AACI, async, user-agent)
+- [x] governed AI agent society first slice established: personal patient/professional/user agents, Core governance agents, runtime agents, provider/model agents, and Boundary/protocol agents are typed and documented
+- [x] agent identity is separated from LLM/provider selection through `AgentID`, mandate, memory scope, tool grants, provider policy, delegation policy, and protocol posture
 - [x] message/mailbox concept exists
 - [x] lifecycle states formalized across docs, schema, Swift, and TypeScript
 - [x] permission/boundary model established at scaffold level
@@ -81,6 +83,8 @@ Legend:
 - [x] Mental Space Runtime now has staged contracts for transcription normalization, ASL, VDLP, and GEM with fail-closed dependency ordering and derived/gated artifact metadata
 - [x] first-slice transcription normalization now runs through a local-first provider boundary and persists normalized transcript output only as a `derived-artifacts` Mental Space artifact when a real local model is available
 - [~] ASL, VDLP, and GEM execution remain scaffolded contracts/job kinds in this wave; the existing prompt-engineered scripts still require future adapter wrapping before repo-native execution
+- [x] `PersonalAgentRuntime` supports patient and professional personal-agent lifecycle plus governed offline queue posture without moving Core law or Stage responsibility
+- [x] `AgentProtocolBoundary` provides a first AACP/A2A/ACP projection guard that denies legal-authorizing protocol surfaces and raw sensitive internals
 
 ## 5. GOS (Governed Operational Spec)
 - [x] GOS formally introduced as subordinate layer between HealthOS Core and runtimes

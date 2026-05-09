@@ -61,7 +61,7 @@ let package = Package(
                 path: "Tier2-GOS-Runtimes/Sources/HealthOSAsyncRuntime",
                 exclude: ["README.md"]),
         .target(name: "HealthOSUserAgentRuntime",
-                dependencies: ["HealthOSCore"],
+                dependencies: ["HealthOSCore", "HealthOSProviders"],
                 path: "Tier2-GOS-Runtimes/Sources/HealthOSUserAgentRuntime",
                 exclude: ["README.md"]),
         .target(name: "HealthOSServiceRuntime",

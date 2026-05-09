@@ -6,7 +6,7 @@
   "properties": {
     "runtimeKind": {
       "type": "string",
-      "enum": ["aaci", "async", "user-agent"]
+      "enum": ["core", "gos", "aaci", "async", "msr", "provider", "service", "session", "user-agent", "boundary"]
     },
     "state": {
       "type": "string",

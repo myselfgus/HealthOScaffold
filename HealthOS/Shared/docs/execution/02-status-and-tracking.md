@@ -6,6 +6,33 @@ Current phase: Controlled implementation — first vertical slice started
 
 ## Completed recently
 
+## GAI-001 — Governed AI Agent Society first slice (2026-05-09)
+
+- Objective: introduce a governed AI agent society across Tier 1-3: personal AI agents for patient/professional/user plus internal Core, runtime, provider/model, and Boundary/protocol agent families.
+- Classification: Tier 1 — Core contracts and policy validation; Tier 2 — User-Agent Runtime / provider-routing seam; Tier 3 — Boundary protocol projection. Explicitly not Tier 4 Stage work. Veridia/Scribe/CloudClinic roles were not moved, and Veridia was not made a key vault.
+- Architecture:
+  - ADR-0014 and `52-governed-ai-agent-society.md` define agent as persistent governed identity with `AgentID`, represented principal, mandate, memory scope, tool grants, provider policy, delegation policy, and protocol posture. LLM/model/provider remains selectable engine, not authority.
+  - Core contracts now include `AgentPrincipalRef`, `AgentMandate`, `DelegationPolicy`, `AgentMemoryScope`, `AgentToolGrant`, `AgentProviderRoutingPolicy`, `AgentNegotiationEnvelope`, `EphemeralAccessGrantRef`, `CustodyControlRef`, `GovernedAIAgentDescriptor`, `AgentProtocolProjection`, and fail-closed validators.
+  - `PersonalAgentRuntime` starts patient, professional, and generic user personal agents, validates Core policy, preserves informational-only responses, supports governed offline queue posture, and uses provider routing when configured.
+  - `AgentProtocolBoundary` projects HealthOS AACP/A2A/ACP adapter payloads without raw identifiers, reidentification maps, raw storage, key material, internal memory, tool implementations, or legal-authorizing claims.
+- Contracts:
+  - Swift, TypeScript, and JSON Schema now mirror the governed AI agent society vocabulary.
+  - Runtime kind vocabulary now includes Core, GOS, MSR, provider, service, session, user-agent, and Boundary surfaces.
+- Validation status:
+  - `git diff --check` PASS.
+  - `make validate-docs` PASS.
+  - `make validate-schemas` PASS.
+  - `make validate-contracts` PASS.
+  - `make ts-build` PASS.
+  - `make ts-test` PASS.
+  - `make swift-build` PASS after sandbox escalation for Swift/Clang cache access.
+  - `cd HealthOS && swift test` PASS with 293 XCTest tests.
+  - `cd HealthOS && swift test --filter GovernedAIAgentTests` PASS.
+  - `cd HealthOS && swift test --filter PersonalAgentRuntimeTests` PASS.
+  - `cd HealthOS && swift test --filter AgentNegotiationBoundaryTests` PASS.
+  - `make validate-all` PASS: bootstrap-local, validate-docs, validate-schemas, validate-contracts, swift-build, swift-test, stage-package-check, ts-build, ts-test, python-check, smoke-cli, smoke-scribe, smoke-veridia, and smoke-cloudclinic.
+  - Validation remains local scaffold validation only; it is not production validation or compliance certification.
+
 ## DOC-JAE-APPLE-SUBSTRATE — Apple substrate JAE doctrine and Stage import guard (2026-05-09)
 
 - Objective: document how Apple-native frameworks enter HealthOS as governed JAE substrate capabilities and add an executable Stage package/source guard against direct Tier 2 or Apple authority imports.

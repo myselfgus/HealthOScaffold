@@ -4,6 +4,25 @@ Repository identity note: HealthOScaffold is the HealthOS construction repositor
 
 ## COMPLETED
 
+### GAI-001 Establish Governed AI Agent Society first slice
+Outcome:
+- ADR-0014 and architecture doc 52 define agents as governed AI identities with `AgentID`, represented principal, mandate, governed memory, tool grants, provider routing, delegation policy, and protocol posture; LLM/model/provider remains selectable engine only.
+- Personal AI agents for patient, professional, and generic user are supported together in `PersonalAgentRuntime` v1 without moving Veridia/Scribe or changing Veridia's documented key role.
+- Core governance, runtime, provider/model, and Boundary/protocol agent families are cataloged and typed.
+- Negotiation envelopes fail closed on missing lawfulContext, raw direct identifiers, reidentification maps, raw storage, key material, internal memory exposure, legal-authorizing claims, autonomous clinical/regulatory effects, and remote provider routing without explicit policy.
+- HealthOS AACP/A2A/ACP projections are mediated through `AgentProtocolBoundary` and remain non-authorizing app-safe surfaces.
+Files touched:
+- `HealthOS/Shared/docs/adr/0014-governed-ai-agent-society.md`
+- `HealthOS/Shared/docs/architecture/52-governed-ai-agent-society.md`
+- `HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/GovernedAIAgentContracts.swift`
+- `HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSUserAgentRuntime/UserAgentRuntime.swift`
+- `HealthOS/Tier3-Custom-Boundary/Sources/HealthOSBoundary/AgentProtocolBoundary.swift`
+- `HealthOS/Constructor/ts/packages/contracts/src/index.ts`
+- `HealthOS/Tier1-Mestral-Core/Schemas/contracts/governed-ai-agent-society.schema.json`
+- `HealthOS/Tier1-Mestral-Core/Tests/HealthOSCoreTests/GovernedAIAgentTests.swift`
+- `HealthOS/Tier2-GOS-Runtimes/Tests/HealthOSRuntimeTests/PersonalAgentRuntimeTests.swift`
+- `HealthOS/Tier3-Custom-Boundary/Tests/HealthOSBoundaryTests/AgentNegotiationBoundaryTests.swift`
+
 ### STR-006 Formalize MSR naming and move transcript normalization to Session Runtime
 Outcome:
 - `MSR` is now the official runtime sigla for Mental Space Runtime in the Swift package graph and architecture docs

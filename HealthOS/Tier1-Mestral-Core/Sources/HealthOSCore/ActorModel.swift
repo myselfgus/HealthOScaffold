@@ -20,7 +20,7 @@ public enum RuntimeFailureKind: String, Codable, Sendable {
     case internalFailure = "internal_failure"
 }
 
-public struct AgentMessage: Codable, Sendable {
+public struct AgentMessage: Codable, Sendable, Equatable {
     public let from: String
     public let to: String
     public let kind: String
@@ -36,7 +36,7 @@ public struct AgentMessage: Codable, Sendable {
     }
 }
 
-public struct AgentBoundary: Codable, Sendable {
+public struct AgentBoundary: Codable, Sendable, Equatable {
     public let reads: [String]
     public let writes: [String]
     public let invokes: [String]

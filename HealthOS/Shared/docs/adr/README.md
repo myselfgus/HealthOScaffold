@@ -25,6 +25,7 @@ Todas as ADRs seguem o **template canônico** (ver `Template ADR Canônico` em [
 | [0011](0011-governed-operational-spec-is-subordinate-to-core.md) | Governed Operational Spec subordinada ao Core | Accepted | High | Core, AACI, MSR, SessionRuntime, Providers |
 | [0012](0012-healthoscaffold-is-healthos-construction-repository.md) | HealthOScaffold é o repositório de construção do HealthOS | Accepted | Low | Todos |
 | [0013](0013-healthos-platform-app-layer-construction-system-boundary.md) | HealthOS hierarchy, Stage/Custom, Boundary e Construction System permanecem separados | Accepted | High | Todos |
+| [0014](0014-governed-ai-agent-society.md) | Governed AI Agent Society no HealthOS | Accepted | High | Core, Providers, UserAgentRuntime, Boundary, TS contracts |
 
 ### Documentos auxiliares
 

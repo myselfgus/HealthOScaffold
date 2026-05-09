@@ -76,7 +76,7 @@ flowchart TB
 | pnpm | 9+ | Workspace package manager — required for `Constructor/ts` |
 | Python | 3.11+ | Support ML and governance scaffolds (`HealthOS/Support/python/`) — optional |
 
-> **External framework dependencies: none.** The Swift platform package is sovereignty-by-design. TypeScript tooling uses no proprietary cloud SDKs. Provider adapters (`HealthOSProviders`, `HealthOS/Support/ML/`) interact only with local Apple on-device models.
+> **External dependencies** are introduced deliberately and governed. Provider adapters (`HealthOSProviders`, `HealthOS/Support/ML/`) default to local Apple on-device models; external protocols (A2A, ACP, and future integrations) are mediated through `AgentProtocolBoundary` and require explicit policy.
 
 ---
 

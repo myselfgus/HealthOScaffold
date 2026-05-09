@@ -132,117 +132,79 @@ Stage work advances only after the mediated surface the Stage consumes is implem
 `HealthOS/Constructor/` is the visible Construction System root. Steward, Settlers, Settlements, Territories, and `healthos-forge-mcp` are repository engineering concepts **outside** this clinical/runtime hierarchy. They inspect, edit, validate, and record repository work. They do not become HealthOS law, runtime automation, or clinical effectuation.
 
 ```mermaid
-%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#F6F8FB', 'primaryBorderColor': '#D6DEE8', 'primaryTextColor': '#1D2733', 'clusterBkg': '#FFFFFF', 'clusterBorder': '#D6DEE8', 'titleColor': '#1D2733', 'lineColor': '#5B6B7C', 'edgeLabelBackground': '#F6F8FB', 'fontFamily': 'ui-rounded, -apple-system, BlinkMacSystemFont, sans-serif'}}}%%
-graph TD
-    classDef iface    fill:#F4F2F8,stroke:#3B4A6B,stroke-width:2px,color:#202A3A
-    classDef design   fill:#F6F8FB,stroke:#5B6B7C,stroke-width:2px,color:#2F3C4A
-    classDef gos      fill:#EEF7F8,stroke:#0E7C86,stroke-width:2px,color:#164E63
-    classDef session  fill:#EEF7F8,stroke:#0E7C86,stroke-width:2px,color:#164E63
-    classDef swift    fill:#F0F6F3,stroke:#3E8E6F,stroke-width:2px,color:#174234
-    classDef tsrt     fill:#FAF7F4,stroke:#A1693A,stroke-width:2px,color:#553018
-    classDef provider fill:#F5F2F7,stroke:#7B5E8E,stroke-width:2px,color:#3A2946
-    classDef core     fill:#EAF7F2,stroke:#2E8C6A,stroke-width:2px,color:#174234
-    classDef substrate fill:#F2F4F7,stroke:#8793A1,stroke-width:2px,color:#334155
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#F8FAFC', 'primaryBorderColor': '#CBD5E1', 'primaryTextColor': '#0F172A', 'clusterBkg': '#FAFBFC', 'clusterBorder': '#CBD5E1', 'titleColor': '#0F172A', 'lineColor': '#6B7C93', 'edgeLabelBackground': '#FFFFFF', 'fontFamily': 'ui-rounded, -apple-system, BlinkMacSystemFont, sans-serif'}}}%%
+graph TB
+    classDef core     fill:#DCFCE7,stroke:#15803D,stroke-width:2.5px,color:#14532D
+    classDef gos      fill:#DBEAFE,stroke:#1D4ED8,stroke-width:2px,color:#1E3A8A
+    classDef runtime  fill:#E0F2FE,stroke:#0284C7,stroke-width:1.5px,color:#0C4A6E
+    classDef provider fill:#FEF9C3,stroke:#B45309,stroke-width:1.5px,color:#78350F
+    classDef boundary fill:#F3E8FF,stroke:#7C3AED,stroke-width:2.5px,color:#3B0764
+    classDef stage    fill:#FCE7F3,stroke:#9D174D,stroke-width:2px,color:#831843
+    classDef design   fill:#F1F5F9,stroke:#94A3B8,stroke-width:1px,color:#475569
+    classDef support  fill:#FFF7ED,stroke:#C2410C,stroke-width:1px,color:#9A3412
+    classDef sub      fill:#F8FAFC,stroke:#CBD5E1,stroke-width:1px,color:#64748B
 
-    subgraph STAGE_L["  Tier 4 — Stages Cast: separate Stage universe  "]
-        SC[Scribe\nSwiftUI - macOS 26+]
-        SO[Veridia\nPatient Health Identity]
-        CC[CloudClinic\nService Operations]
+    subgraph T1["  Tier 1 — Mestral Core · Constitutional Law  "]
+        direction LR
+        ID["Identity · Habilitation"]:::core
+        CO["Consent · Finalidade"]:::core
+        PR["Provenance · Audit"]:::core
+        GA["Gate · Finalization"]:::core
     end
 
-    subgraph DS_L["  Native Design System — Presentation Contract  "]
-        DS[HealthOS/Shared/DesignSystem\nSF Pro · semantic state colors\nstandard controls first · Liquid Glass when needed]
+    subgraph T2A["  Tier 2 — GOS + Session Orchestration  "]
+        direction LR
+        GOS_N["HealthOSGOS\nBundle lifecycle · binding plan\nTypeScript tooling + Swift runtime"]:::gos
+        SR_N["HealthOSSessionRuntime\nFirst-slice orchestrator · normalization\nScribe bridge adapter"]:::gos
     end
 
-    subgraph GOS_L["  Tier 2 — GOS / Runtimes: Governed Operational Spec  "]
-        GOS[Compiler - Validator - Bundler\nTypeScript tooling + Swift runtime consumption\nBundle lifecycle - AACI binding]
+    subgraph T2B["  Tier 2 — Clinical Runtimes  "]
+        direction LR
+        AACI_N["HealthOSAACI\nCapture · transcription\nDraft composition · GOS binding"]:::runtime
+        MSR_N["HealthOSMSR · Mental Space Runtime\nASL · VDLP · GEM · provenance metadata"]:::runtime
+        PROV_N["HealthOSProviders\nAppleFoundationModels · ProviderRouter\nstubs · capability profiles"]:::provider
     end
 
-    subgraph BOUND_L["  Tier 3 — Custom Boundary: HealthOS-Owned Consumption Frontier  "]
-        BND[Facades - Envelopes - Safe refs\nCustom definitions - Mediated state - Degraded state\nCommands - Results - Consumable surfaces]
+    subgraph T2C["  Tier 2 — Scaffold Stubs (Swift + TS reference)  "]
+        direction LR
+        AS_N["HealthOSAsyncRuntime\nJob queue · idempotency\nDead-lettering"]:::runtime
+        UA_N["HealthOSUserAgentRuntime\nPatient-governed session\nProhibited-capability enforcement"]:::runtime
+        SV_N["HealthOSServiceRuntime\nService operations session\nLegalAuthorizing guard"]:::runtime
     end
 
-    subgraph SRT_L["  Tier 2 — GOS / Runtimes: Session Runtime — Swift  "]
-        SR[SessionRunner\nFirst-slice orchestrator - Swift actor\nHabilitation - Consent - Capture - Gate]
+    subgraph T3["  Tier 3 — Custom Boundary · HealthOS-Owned Consumption Frontier  "]
+        direction LR
+        CS_N["CustomSDK\nStage definitions · capabilities\nProhibitions · degradation policy · validation"]:::boundary
+        BN_N["HealthOSBoundary\nFacades · envelopes · safe refs\nMediated state · degraded state · consumable surfaces"]:::boundary
     end
 
-    subgraph SWIFT_L["  Tier 2 — GOS / Runtimes: Swift Runtimes  "]
-        AACI[AACI\nCapture - Transcription\nDraft composition - GOS binding]
-        MSR[MSR\nASL - VDLP - GEM\nSemantic enrichment - Provenance]
-        PROV[HealthOSProviders\nruntime provider adapters\nFoundationModels - ProviderRouter\nStubs - Capability profiles]
+    subgraph T4["  Tier 4 — Stages Cast · Separate Governed Consumer Universe  "]
+        direction LR
+        SC_N["Scribe\nProfessional workspace\nimplemented seam"]:::stage
+        VD_N["Veridia\nPatient health identity\nscaffolded contract"]:::stage
+        CC_N["CloudClinic\nService operations\nscaffold — Custom incomplete"]:::stage
     end
 
-    subgraph TS_L["  Constructor/ts reference implementations for Tier 2 runtimes  "]
-        ASYNC[Async Runtime\nJobs - Idempotency\nRetry - Dead-lettering]
-        UA[User-Agent Runtime\nPatient-governed queries\nProhibited-capability enforcement]
-        SVC[Service Runtime\nCloudClinic envelope adapter\nLegalAuthorizing guard]
-    end
+    DS_N["DesignSystem\nmacOS 26+ · SF Pro · Liquid Glass\npresentation contract — never law"]:::design
+    SP_N["HealthOS/Support\nops · python · ML scaffolds\nnot a runtime import target"]:::support
+    SB_N["Material Substrate\nAPFS · FileVault · Secure Enclave · private mesh"]:::sub
 
-    subgraph CORE_L["  Tier 1 — Mestral Core: Core Law  "]
-        ID[Identity\nHabilitation]
-        CO[Consent\nFinalidade]
-        PR[Provenance\nAudit]
-        GA[Gate\nFinalization]
-    end
-
-    subgraph SUB["  Material Substrate  "]
-        ST[Storage - File-backed\nAPFS + FileVault + Secure Enclave]
-        NE[Mesh - VPN - Network]
-    end
-
-    DS -. presentation guidance only .-> SC
-    DS -. presentation guidance only .-> SO
-    DS -. presentation guidance only .-> CC
-    BND -->|mediated surface| SC
-    BND -->|mediated surface| SO
-    BND -->|mediated surface| CC
-    GOS -->|runtime binding| SR
-    SR --> AACI
-    SR --> MSR
-    AACI --> PROV
-    MSR --> PROV
-    SR -->|lawful-context| ID
-    SR -->|lawful-context| CO
-    SR -->|lawful-context| PR
-    SR -->|lawful-context| GA
-    AACI -->|lawful-context| ID
-    AACI -->|lawful-context| GA
-    MSR -->|lawful-context| PR
-    ASYNC -->|lawful-context| CO
-    ASYNC -->|lawful-context| PR
-    UA -->|lawful-context| CO
-    UA -->|lawful-context| PR
-    SVC -->|lawful-context| ID
-    SVC -->|lawful-context| CO
-    ID --> ST
-    ID --> NE
-    CO --> ST
-    CO --> NE
-    PR --> ST
-    PR --> NE
-    GA --> ST
-    GA --> NE
-    ID --> BND
-    CO --> BND
-    PR --> BND
-    GA --> BND
-    SR --> BND
-    AACI --> BND
-    MSR --> BND
-    ASYNC --> BND
-    UA --> BND
-    SVC --> BND
-
-    class SC,SO,CC iface
-    class BND substrate
-    class DS design
-    class GOS gos
-    class SR session
-    class AACI,MSR swift
-    class PROV provider
-    class ASYNC,UA,SVC tsrt
-    class ID,CO,PR,GA core
-    class ST,NE substrate
+    T1 -->|"governs"| T2A
+    T1 -->|"governs"| T2B
+    T1 -->|"governs"| T2C
+    GOS_N -->|"runtime binding"| SR_N
+    SR_N --> AACI_N
+    SR_N --> MSR_N
+    AACI_N --> PROV_N
+    MSR_N --> PROV_N
+    T2A & T2B & T2C -->|"contracts and mediated state"| T3
+    T3 -->|"mediated surfaces only — no direct Tier 1/2 access"| T4
+    DS_N -.->|"presentation guidance"| T4
+    T1 -.->|"governs policy"| SP_N
+    SP_N -.->|"tooling support under ModelGovernance"| T2B
+    T1 --> SB_N
+    T2A --> SB_N
+    T2B --> SB_N
 ```
 
 ### First Slice — Executable Orchestration Path
@@ -295,56 +257,61 @@ flowchart LR
 The public platform Swift products build from `HealthOS/Package.swift` (Swift tools 6.2, platform `.macOS(.v26)`). This central package owns Tiers 1-3, `CustomSDK`, `HealthOSCLI`, and structural test targets for Construction System, Support, Stage package separation, and shared governance suites. Tier 4 Stages are separate Swift packages under `HealthOS/Tier4-Stages-Cast/<Stage>/Package.swift`; they consume the platform only through `HealthOSBoundary` and `CustomSDK`. External dependencies: none — sovereignty by design.
 
 ```mermaid
-%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#f8f4ff', 'primaryBorderColor': '#c4b5fd', 'primaryTextColor': '#3b0764', 'clusterBkg': '#fdfbff', 'clusterBorder': '#e9d5ff', 'titleColor': '#0f172a', 'edgeLabelBackground': '#fdf8ff', 'fontFamily': 'ui-sans-serif, system-ui, -apple-system'}}}%%
-graph LR
-    classDef core     fill:#dcfce7,stroke:#22c55e,stroke-width:2px,color:#14532d
-    classDef runtime  fill:#dbeafe,stroke:#60a5fa,stroke-width:2px,color:#1e3a8a
-    classDef gos      fill:#ecfeff,stroke:#06b6d4,stroke-width:2px,color:#164e63
-    classDef provider fill:#fef9c3,stroke:#f59e0b,stroke-width:2px,color:#78350f
-    classDef msr      fill:#ede9fe,stroke:#a78bfa,stroke-width:2px,color:#3b0764
-    classDef boundary fill:#fce7f3,stroke:#f472b6,stroke-width:2px,color:#831843
-    classDef app      fill:#fdf4ff,stroke:#c084fc,stroke-width:2px,color:#581c87
-    classDef cli      fill:#f1f5f9,stroke:#94a3b8,stroke-width:2px,color:#334155
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#F8FAFC', 'primaryBorderColor': '#CBD5E1', 'primaryTextColor': '#0F172A', 'clusterBkg': '#FAFBFC', 'clusterBorder': '#CBD5E1', 'titleColor': '#0F172A', 'edgeLabelBackground': '#FFFFFF', 'fontFamily': 'ui-rounded, -apple-system, BlinkMacSystemFont, sans-serif'}}}%%
+graph TB
+    classDef core     fill:#DCFCE7,stroke:#15803D,stroke-width:2px,color:#14532D
+    classDef gos      fill:#E0F2FE,stroke:#0284C7,stroke-width:1.5px,color:#0C4A6E
+    classDef runtime  fill:#DBEAFE,stroke:#1D4ED8,stroke-width:1.5px,color:#1E3A8A
+    classDef provider fill:#FEF9C3,stroke:#B45309,stroke-width:1.5px,color:#78350F
+    classDef msr      fill:#F3E8FF,stroke:#7C3AED,stroke-width:1.5px,color:#3B0764
+    classDef boundary fill:#FCE7F3,stroke:#9D174D,stroke-width:2px,color:#831843
+    classDef app      fill:#FDF4FF,stroke:#C026D3,stroke-width:1.5px,color:#701A75
+    classDef cli      fill:#F1F5F9,stroke:#475569,stroke-width:1px,color:#1E293B
+    classDef test     fill:#F8FAFC,stroke:#94A3B8,stroke-width:1px,color:#64748B
 
-    subgraph T1["Tier 1 — Mestral Core\nHealthOS/Tier1-Mestral-Core"]
-        CORE[HealthOSCore\nlaw · governance · contracts\npath: Sources/HealthOSCore]:::core
+    subgraph T1["  Tier 1 — Mestral Core · HealthOS/Tier1-Mestral-Core  "]
+        CORE["HealthOSCore\nCore law · governance types · storage contracts\nGOS types · MSR runtime types · entity model\nSources/HealthOSCore"]:::core
     end
 
-    subgraph T2["Tier 2 — GOS / Runtimes\nHealthOS/Tier2-GOS-Runtimes"]
-        PROV[HealthOSProviders\nruntime provider-adapter module\nFoundationModels · ProviderRouter · stubs\npath: Sources/HealthOSProviders]:::provider
-        GOS[HealthOSGOS\nGOS runtime · operational mediation\npath: Sources/HealthOSGOS]:::gos
-        AACI[HealthOSAACI\nsession · GOS bindings\npath: Sources/HealthOSAACI]:::runtime
-        MSR[HealthOSMSR\nASL · VDLP · GEM\npath: Sources/HealthOSMSR]:::msr
-        ASYNC[HealthOSAsyncRuntime\njob queue · lifecycle\npath: Sources/HealthOSAsyncRuntime]:::runtime
-        UAR[HealthOSUserAgentRuntime\npatient session · sovereignty\npath: Sources/HealthOSUserAgentRuntime]:::runtime
-        SVR[HealthOSServiceRuntime\nservice operations session\npath: Sources/HealthOSServiceRuntime]:::runtime
-        SRT[HealthOSSessionRuntime\norchestration · normalization\npath: Sources/HealthOSSessionRuntime]:::runtime
+    subgraph T2["  Tier 2 — GOS / Runtimes · HealthOS/Tier2-GOS-Runtimes  "]
+        direction LR
+        GOS["HealthOSGOS\nGOS runtime · operational mediation\nSources/HealthOSGOS"]:::gos
+        PROV["HealthOSProviders\nruntime provider-adapter module\nFoundationModels · ProviderRouter · stubs\nSources/HealthOSProviders"]:::provider
+        AACI["HealthOSAACI\nAACI runtime · GOS binding\ncapture · draft composition\nSources/HealthOSAACI"]:::runtime
+        MSR["HealthOSMSR\nMental Space Runtime\nASL · VDLP · GEM executors\nSources/HealthOSMSR"]:::msr
+        SRT["HealthOSSessionRuntime\norchestration · normalization\nScribe bridge adapter\nSources/HealthOSSessionRuntime"]:::gos
+        ASYNC["HealthOSAsyncRuntime\njob queue · idempotency\nSources/HealthOSAsyncRuntime"]:::runtime
+        UAR["HealthOSUserAgentRuntime\npatient session · sovereignty\nSources/HealthOSUserAgentRuntime"]:::runtime
+        SVR["HealthOSServiceRuntime\nservice operations session\nSources/HealthOSServiceRuntime"]:::runtime
     end
 
-    subgraph T3["Tier 3 — Custom Boundary\nHealthOS/Tier3-Custom-Boundary"]
-        CUSTOM[CustomSDK\nStage Custom definitions · compliance vocabulary\npath: Sources/CustomSDK]:::boundary
-        AB[HealthOSBoundary\nfacades · safe refs · envelopes\nCustom-mediated state\npath: Sources/HealthOSBoundary]:::boundary
+    subgraph T3["  Tier 3 — Custom Boundary · HealthOS/Tier3-Custom-Boundary  "]
+        direction LR
+        CUSTOM["CustomSDK\nStage-definition SDK · capabilities\nprohibitions · degradation policy · validation\nSources/CustomSDK"]:::boundary
+        AB["HealthOSBoundary\nfacades · safe refs · envelopes\nCustom-mediated Stage consumption\nSources/HealthOSBoundary"]:::boundary
     end
 
-    subgraph T4["Tier 4 — Stages Cast\nseparate Swift packages"]
-        SCRIBE[Scribe Package\nPackage.swift + Custom.md\npath: Scribe/Sources/Scribe]:::app
-        VERIDIA[Veridia Package\nPackage.swift + Custom.md\npath: Veridia/Sources/Veridia]:::app
-        CC[CloudClinic Package\nPackage.swift + Custom.md\npath: CloudClinic/Sources/CloudClinic]:::app
+    subgraph T4["  Tier 4 — Stages Cast · separate Swift packages  "]
+        direction LR
+        SCRIBE["Scribe Package\nTier4-Stages-Cast/Scribe/Package.swift\nSources/Scribe"]:::app
+        VERIDIA["Veridia Package\nTier4-Stages-Cast/Veridia/Package.swift\nSources/Veridia"]:::app
+        CC["CloudClinic Package\nTier4-Stages-Cast/CloudClinic/Package.swift\nSources/CloudClinic"]:::app
     end
 
-    subgraph SHARED["Shared operator executable\nHealthOS/Shared"]
-        CLI[HealthOSCLI\noperator executable\npath: Sources/HealthOSCLI]:::cli
+    subgraph SHARED["  Shared · HealthOS/Shared  "]
+        CLI["HealthOSCLI\noperator executable\nSources/HealthOSCLI"]:::cli
     end
 
-    subgraph EXTTEST["Visible external structural suites"]
-        CST[HealthOSConstructionSystemTests\npath: Constructor/Tests/HealthOSConstructionSystemTests]:::cli
-        SUPT[HealthOSSupportToolingTests\npath: Support/Tests/HealthOSSupportToolingTests]:::cli
-        SHT[HealthOSTests\npath: Shared/Tests/HealthOSTests]:::cli
+    subgraph EXTTEST["  Structural test targets  "]
+        direction LR
+        CST["HealthOSConstructionSystemTests"]:::test
+        SUPT["HealthOSSupportToolingTests"]:::test
+        SHT["HealthOSTests"]:::test
     end
 
-    SUPPORT[HealthOS/Support\nops · python · ML/provider-support tooling\nnot imported as HealthOSProviders]:::cli
+    SUPPORT["HealthOS/Support\nops · python · ML tooling\nnot imported as HealthOSProviders"]:::cli
 
-    CORE --> PROV & GOS & MSR & ASYNC & UAR & SVR & SRT
+    CORE --> GOS & PROV & MSR & ASYNC & UAR & SVR & SRT
     PROV --> AACI & MSR
     GOS --> AACI
     CORE --> AACI
@@ -355,9 +322,9 @@ graph LR
     AB & CUSTOM --> SCRIBE
     AB & CUSTOM --> VERIDIA
     AB & CUSTOM --> CC
-    CST -. keeps Constructor visible, external, and testable .-> CORE
-    SUPT -. keeps Support visible and Core-governed .-> CORE
-    SUPPORT -. supports provider experiments and tooling under ModelGovernance .-> PROV
+    CST -. keeps Constructor external and testable .-> CORE
+    SUPT -. keeps Support Core-governed .-> CORE
+    SUPPORT -. supports provider tooling under ModelGovernance .-> PROV
     SUPPORT -. validated by .-> SUPT
     SHT -. shared governance regression suite .-> CORE
 ```

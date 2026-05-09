@@ -1,7 +1,7 @@
 <p align="center">
   <img src="HealthOS/Shared/docs/assets/healthos-logo.png" width="320" alt="HealthOS">
 </p>
-<p>
+<p align="center">
   <img src="https://img.shields.io/badge/macOS-26%2B-000000?style=flat&logo=apple&logoColor=white" alt="macOS 26+">
   <img src="https://img.shields.io/badge/Node.js-LTS%2020%2B-339933?style=flat&logo=nodedotjs&logoColor=white" alt="Node.js LTS 20+">
   <img src="https://img.shields.io/badge/UI-Liquid%20Glass-8B5CF6?style=flat" alt="Liquid Glass">

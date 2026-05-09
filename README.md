@@ -59,6 +59,7 @@ Use this README as an entry surface, not as a replacement for the canonical arch
 | :--- | :--- | :--- |
 | What is HealthOS? | The whole governed, app-agnostic platform for health operations, not one app or an EHR skin. | `HealthOS/Shared/docs/architecture/01-overview.md` |
 | What proves executable behavior today? | The Swift first-slice path through habilitation, consent, capture, retrieval, SOAP draft, gate, final SOAP, and provenance. | `HealthOS/Shared/docs/architecture/28-first-slice-executable-path.md` |
+| How does HealthOS govern AI agents? | Core Governance Agents enforce constitutional law; Personal Agents (patient, professional) operate under mandate; Boundary projects envelopes to app-safe surfaces; no model is ever the agent's authority. | `HealthOS/Shared/docs/architecture/52-governed-ai-agent-society.md` |
 | What is still scaffolded or placeholder? | Provider deployment, semantic retrieval, final app shells, regulatory/signature/interoperability effectuation, and production ops. | `HealthOS/Shared/docs/execution/11-current-maturity-map.md` |
 | Where does construction tooling sit? | Steward, Settlers, Settlements, Territories, and `healthos-forge-mcp` are repository engineering surfaces outside the clinical/runtime hierarchy. | `HealthOS/Shared/docs/execution/22-steward-construction-operating-model.md` |
 
@@ -282,6 +283,178 @@ flowchart LR
     GV -->|approved| FIN
     GV -->|rejected| STOP
 ```
+
+### Governed AI Agent Society
+
+HealthOS implements a **Governed AI Agent Society** — a structured hierarchy of AI agents that operate strictly under Core Law. An agent is a governed entity with a stable `AgentID`, a declared `AgentMandate`, constrained memory scope, explicit tool grants, and a provider-routing policy. An AI model (Apple FoundationModels, Core ML, or a future approved provider) is only the execution engine for an inference step — the agent's authority and clinical permissions are determined by Core Law governance, never by the model itself.
+
+Core Governance Agents (Tier 1) enforce constitutional law: consent, habilitation, gate, finality, custody, and provenance. Runtime Agents (Tier 2) orchestrate operational mediation. Personal Agents represent patient and professional principals through the User-Agent Runtime (Tier 2). The Boundary (Tier 3) projects negotiation envelopes to app-safe protocol surfaces (`healthos-aacp`, `a2a`, `acp`). Stages (Tier 4) consume only projected envelopes — never raw agent state, internal memory, direct identifiers, or key material.
+
+```mermaid
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#F8FAFC', 'primaryBorderColor': '#CBD5E1', 'primaryTextColor': '#0F172A', 'clusterBkg': '#FAFBFC', 'clusterBorder': '#CBD5E1', 'lineColor': '#6B7C93', 'edgeLabelBackground': '#FFFFFF', 'fontFamily': 'ui-rounded, -apple-system, BlinkMacSystemFont, sans-serif'}}}%%
+graph TB
+    classDef law      fill:#DCFCE7,stroke:#15803D,stroke-width:3px,color:#14532D
+    classDef cgov     fill:#D1FAE5,stroke:#059669,stroke-width:2px,color:#064E3B
+    classDef runtime  fill:#DBEAFE,stroke:#1D4ED8,stroke-width:1.5px,color:#1E3A8A
+    classDef personal fill:#FEF9C3,stroke:#B45309,stroke-width:2.5px,color:#78350F
+    classDef boundary fill:#F3E8FF,stroke:#7C3AED,stroke-width:2px,color:#3B0764
+    classDef stage    fill:#FCE7F3,stroke:#9D174D,stroke-width:1.5px,color:#831843
+    classDef provider fill:#ECFDF5,stroke:#10B981,stroke-width:1.5px,color:#064E3B
+
+    CL["Core Law\nconsent · habilitation · gate · finality\nprovenance · audit · storage law"]:::law
+
+    subgraph CGOV_GRP["  Core Governance Agents — Tier 1 · Constitutional enforcement  "]
+        direction LR
+        CGA1["ConsentGovernanceAgent"]:::cgov
+        CGA2["HabilitationGovernanceAgent"]:::cgov
+        CGA3["GateFinalityAgent"]:::cgov
+        CGA4["CustodyAccessAgent"]:::cgov
+        CGA5["AuditProvenanceAgent"]:::cgov
+    end
+
+    subgraph RUNTIME_GRP["  Runtime Agents — Tier 2 · Operational mediation  "]
+        direction LR
+        RA1["SessionAgent"]:::runtime
+        RA2["AACIAgent"]:::runtime
+        RA3["MSRAgent"]:::runtime
+        RA4["AsyncJobAgent"]:::runtime
+        RA5["ProviderRouterAgent\nroutes to approved models only"]:::runtime
+    end
+
+    subgraph PERSONAL_GRP["  Personal Agents — Tier 2 · User-Agent Runtime · Principal representation  "]
+        direction LR
+        PA1["PatientPersonalAgent\njuridical-digital patient representative\neducate · consent · ephemeral access · sovereignty"]:::personal
+        PA2["ProfessionalPersonalAgent\nprofessional context agent\nrequest mediated access · track consent"]:::personal
+    end
+
+    APB["AgentProtocolBoundary — Tier 3\nproject(envelope:) → healthos-aacp · a2a · acp\nfail-closed · no raw IDs · no internal memory · no key material"]:::boundary
+
+    subgraph STAGES_GRP["  Stages — Tier 4 · Projected envelope consumption only  "]
+        direction LR
+        VD["Veridia\npatient-facing surface"]:::stage
+        SC["Scribe\nprofessional workspace"]:::stage
+    end
+
+    PROV["HealthOSProviders\nApple FoundationModels · Core ML\nlocal-first · external denied by default\nmodel is not agent identity or authority"]:::provider
+
+    CL -->|"governs"| CGOV_GRP
+    CL -->|"governs"| RUNTIME_GRP
+    CL -->|"governs"| PERSONAL_GRP
+    CGOV_GRP -->|"constitutional enforcement"| PERSONAL_GRP
+    CGOV_GRP -->|"constitutional enforcement"| RUNTIME_GRP
+    PERSONAL_GRP -->|"negotiation envelope\nGovernedAIAgentValidator"| APB
+    RUNTIME_GRP -->|"operational envelope"| APB
+    APB -->|"app-safe projected envelope only"| STAGES_GRP
+    RA5 --> PROV
+    PA1 & PA2 -.->|"provider routing\nwhen policy allows"| RA5
+```
+
+#### Patient Agent — Data Sovereignty and Health Education
+
+`PatientPersonalAgent` is the patient's juridical-digital representative inside HealthOS — an AI agent that advocates on behalf of the patient through governed, mandate-scoped interactions under Core Law. It can educate patients about their health data, surface own-data derived summaries, negotiate consent decisions asynchronously (including while offline), and grant time-bounded ephemeral access to professionals. Its memory never holds raw PHI; its envelopes never carry direct identifiers or reidentification maps; it cannot autonomously finalize any clinical act — a human gate is always required for finality.
+
+```mermaid
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#FFFBEB', 'primaryBorderColor': '#F59E0B', 'primaryTextColor': '#78350F', 'clusterBkg': '#FFFDF7', 'clusterBorder': '#FDE68A', 'lineColor': '#92400E', 'edgeLabelBackground': '#FFFBEB', 'fontFamily': 'ui-rounded, -apple-system, BlinkMacSystemFont, sans-serif'}}}%%
+flowchart LR
+    classDef patient  fill:#FEF9C3,stroke:#B45309,stroke-width:2.5px,color:#78350F
+    classDef allowed  fill:#DCFCE7,stroke:#15803D,stroke-width:2px,color:#14532D
+    classDef denied   fill:#FEE2E2,stroke:#DC2626,stroke-width:2px,color:#7F1D1D
+    classDef core     fill:#DBEAFE,stroke:#1D4ED8,stroke-width:2px,color:#1E3A8A
+    classDef boundary fill:#F3E8FF,stroke:#7C3AED,stroke-width:1.5px,color:#3B0764
+    classDef stage    fill:#FCE7F3,stroke:#9D174D,stroke-width:1.5px,color:#831843
+    classDef rule     fill:#F1F5F9,stroke:#94A3B8,stroke-width:1px,color:#334155
+
+    CORE["Core Law\nconsent · habilitation\ngate · provenance · audit"]:::core
+
+    PA["PatientPersonalAgent\nPatient juridical-digital representative\nApple FoundationModels local-first\nmemory: derived preferences only · no raw PHI"]:::patient
+
+    subgraph CAPS["  Permitted — AgentMandate  "]
+        direction TB
+        C1["educate\nhealth education and learning"]:::allowed
+        C2["summarizeOwnData\nown derived data — never raw PHI"]:::allowed
+        C3["requestConsent / respondConsent\nasync and offline consent decisions"]:::allowed
+        C4["grantEphemeralAccess\ntime-bounded access to professional"]:::allowed
+        C5["emergencyAccessRequest\nemergency scenario initiation"]:::allowed
+    end
+
+    subgraph DENY["  Denied — Core Law Invariants  "]
+        direction TB
+        D1["autonomous diagnosis\nprescription or referral"]:::denied
+        D2["record finalization or signature\nwithout human gate"]:::denied
+        D3["raw PHI in agent memory\nor internal memory exposed to protocol"]:::denied
+        D4["direct identifiers\nor reidentification maps in envelopes"]:::denied
+    end
+
+    subgraph SOV["  Data Sovereignty Invariants  "]
+        direction TB
+        S1["mayPersistRawPHI: false"]:::rule
+        S2["mayExposeInternalMemoryToProtocol: false"]:::rule
+        S3["allowDirectIdentifierFlowExplicit: false"]:::rule
+        S4["allowAutonomousClinicalOrRegulatoryFinality: false"]:::rule
+        S5["requiresHumanGateForFinality: true"]:::rule
+        S6["allowsAsyncOfflineResponse: true\nresponses queued with provenance"]:::rule
+    end
+
+    APB["AgentProtocolBoundary\nhealthos-aacp · a2a\nfail-closed app-safe projection"]:::boundary
+    VD["Veridia\npatient health identity Stage\nenvelope consumption only"]:::stage
+
+    CORE -->|"mandate and\nmemory scope"| PA
+    PA --> CAPS
+    PA -.->|"blocked by\nCore Law"| DENY
+    PA --> SOV
+    PA -->|"negotiation envelope"| APB
+    APB -->|"app-safe projection"| VD
+```
+
+#### Agent Negotiation Envelope — Governance Validation Pipeline
+
+Every Personal Agent interaction passes through `GovernedAIAgentValidator` before execution. The validator is fail-closed: any failed check produces a `GovernedAIAgentFailure`, and the interaction is withheld and logged. No partial execution occurs.
+
+```mermaid
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#F8FAFC', 'primaryBorderColor': '#CBD5E1', 'primaryTextColor': '#0F172A', 'edgeLabelBackground': '#FFFFFF', 'fontFamily': 'ui-rounded, -apple-system, BlinkMacSystemFont, sans-serif'}}}%%
+flowchart TD
+    classDef input fill:#FEF9C3,stroke:#B45309,stroke-width:2px,color:#78350F
+    classDef check fill:#DBEAFE,stroke:#1D4ED8,stroke-width:1.5px,color:#1E3A8A
+    classDef pass  fill:#DCFCE7,stroke:#15803D,stroke-width:2.5px,color:#14532D
+    classDef fail  fill:#FEE2E2,stroke:#DC2626,stroke-width:2.5px,color:#7F1D1D
+
+    ENV["AgentNegotiationEnvelope\nfrom PersonalAgent"]:::input
+
+    V1{"Valid AgentID\nand principal ref?"}:::check
+    V2{"Intent within\nmandate scope?"}:::check
+    V3{"No autonomous clinical\nor regulatory finality?"}:::check
+    V4{"Lawful context\npresent?"}:::check
+    V5{"Data layers within\nallowed set?"}:::check
+    V6{"No direct identifiers\nor reidentification maps?"}:::check
+    V7{"No raw storage paths\nor key material?"}:::check
+    V8{"No internal memory\nexposed to protocol?"}:::check
+    V9{"Provider policy\ncompliant?"}:::check
+
+    PASS["GovernedAIAgentValidator · PASS\nPersonalAgentRuntime.handle()"]:::pass
+    FAIL["GovernedAIAgentFailure\nfail-closed · logged · withheld"]:::fail
+
+    ENV --> V1
+    V1 -->|yes| V2
+    V1 -->|no| FAIL
+    V2 -->|yes| V3
+    V2 -->|no| FAIL
+    V3 -->|yes| V4
+    V3 -->|no| FAIL
+    V4 -->|yes| V5
+    V4 -->|no| FAIL
+    V5 -->|yes| V6
+    V5 -->|no| FAIL
+    V6 -->|yes| V7
+    V6 -->|no| FAIL
+    V7 -->|yes| V8
+    V7 -->|no| FAIL
+    V8 -->|yes| V9
+    V8 -->|no| FAIL
+    V9 -->|yes| PASS
+    V9 -->|no| FAIL
+```
+
+**Canonical references:** `HealthOS/Shared/docs/architecture/52-governed-ai-agent-society.md` · `HealthOS/Shared/docs/adr/0014-governed-ai-agent-society.md` · `GovernedAIAgentContracts.swift` · `UserAgentRuntime.swift` · `AgentProtocolBoundary.swift`
 
 ---
 
@@ -538,6 +711,7 @@ This repository is in **controlled implementation / scaffold hardening**:
 | Layer | Status | Focus |
 | :--- | :--- | :--- |
 | **Core Law** | ✅ Implemented Seam | Invariant-based governance, storage contracts |
+| **Governed AI Agent Society** | ✅ Implemented Seam | Core contracts (`GovernedAIAgentContracts`), `PersonalAgentRuntime`, `AgentProtocolBoundary` — first slice; no real provider, no productive PHI memory |
 | **GOS Layer** | ✅ Operational Path | Stabilization, bundle binding, compiler tooling |
 | **AACI First Slice** | 🚧 Scaffold Hardening | Boundary enforcement + GOS-mediated derived drafts |
 | **MSR Pipeline** | 🚧 Scaffold | ASL · VDLP · GEM stages, provenance metadata |
@@ -684,6 +858,7 @@ flowchart LR
 | Understand GOS | `HealthOS/Shared/docs/architecture/29-governed-operational-spec.md` | `30-gos-authoring-and-compiler.md` → `33-gos-app-consumption-patterns.md` |
 | Understand MSR | `HealthOS/Shared/docs/architecture/49-mental-space-runtime.md` | `HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSMSR/`, `HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/MSRRuntime.swift` |
 | Understand native UI + Liquid Glass | `HealthOS/Shared/docs/architecture/48-native-macos-ui-design-system-and-app-shells.md` | `HealthOS/Tier4-Stages-Cast/Scribe/Sources/Scribe/` |
+| Understand governed AI agents and patient sovereignty | `HealthOS/Shared/docs/architecture/52-governed-ai-agent-society.md` | `HealthOS/Shared/docs/adr/0014-governed-ai-agent-society.md`, `GovernedAIAgentContracts.swift`, `UserAgentRuntime.swift` |
 | Understand Apple sovereignty | `HealthOS/Shared/docs/architecture/46-apple-sovereignty-architecture.md` | `HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSProviders/AppleFoundationModelsAdapter.swift` |
 | Understand apps and boundaries | `HealthOS/Shared/docs/architecture/11-scribe.md` | `12-veridia.md`, `13-cloudclinic.md`, `43-cross-app-coordination-shared-surfaces.md` |
 | Understand maturity and gaps | `HealthOS/Shared/docs/execution/11-current-maturity-map.md` | `13-scaffold-release-candidate-criteria.md`, `14-final-gap-register.md` |
@@ -789,6 +964,7 @@ graph LR
 | Surface | Primary docs | Primary code |
 | :--- | :--- | :--- |
 | Core law | `HealthOS/Shared/docs/architecture/06-core-services.md`, `05-data-layers.md`, `07-storage-and-sql.md` | `HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/` |
+| Governed AI Agent Society | `HealthOS/Shared/docs/architecture/52-governed-ai-agent-society.md`, `HealthOS/Shared/docs/adr/0014-governed-ai-agent-society.md` | `GovernedAIAgentContracts.swift`, `UserAgentRuntime.swift`, `AgentProtocolBoundary.swift` |
 | AACI + first slice | `HealthOS/Shared/docs/architecture/09-aaci.md`, `28-first-slice-executable-path.md` | `HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSAACI/`, `HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSSessionRuntime/` |
 | MSR | `HealthOS/Shared/docs/architecture/49-mental-space-runtime.md` | `HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSMSR/` |
 | GOS | `29-governed-operational-spec.md` → `34-gos-review-and-activation-policy.md` | `HealthOS/Constructor/ts/packages/healthos-gos-tooling/`, `HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/` |
@@ -811,7 +987,9 @@ graph LR
 | `HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSMSR/` | [README](HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSMSR/README.md) | Mental Space Runtime pipeline — ASL · VDLP · GEM executors, provenance metadata |
 | `HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSProviders/` | [README](HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSProviders/README.md) | Runtime provider-adapter module: provider protocol contracts, Apple FoundationModels adapter, stub providers |
 | `HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSAsyncRuntime/` | [README](HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSAsyncRuntime/README.md) | Async Runtime stub — job queue and lifecycle; TS reference implementation |
-| `HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSUserAgentRuntime/` | [README](HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSUserAgentRuntime/README.md) | User-Agent Runtime stub — patient session lifecycle and sovereignty enforcement |
+| `HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSUserAgentRuntime/` | [README](HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSUserAgentRuntime/README.md) | User-Agent Runtime — `PersonalAgentRuntime` actor, `PatientPersonalAgent` / `ProfessionalPersonalAgent` session lifecycle, envelope validation, offline response queue |
+| `HealthOS/Tier1-Mestral-Core/Sources/HealthOSCore/GovernedAIAgentContracts.swift` | — | Core agent contracts: `GovernedAIAgentKind`, `AgentMandate`, `AgentMemoryScope`, `AgentToolGrant`, `DelegationPolicy`, `AgentNegotiationEnvelope`, `GovernedAIAgentValidator` |
+| `HealthOS/Tier3-Custom-Boundary/Sources/HealthOSBoundary/AgentProtocolBoundary.swift` | — | Boundary projection: `project(envelope:)` → healthos-aacp / a2a / acp; fail-closed app-safe projection guard |
 | `HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSServiceRuntime/` | [README](HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSServiceRuntime/README.md) | Service Runtime stub — professional/service-operations session lifecycle |
 | `HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSSessionRuntime/` | — | Session orchestration, normalization executor, Scribe bridge adapter |
 | `HealthOS/Tier3-Custom-Boundary/Sources/HealthOSBoundary/` | [README](HealthOS/Tier3-Custom-Boundary/Sources/HealthOSBoundary/README.md) | Boundary compatibility module — Tier 3 facade; Stage executables should consume mediated surfaces through it as it matures |
@@ -1062,6 +1240,7 @@ Constructor / Construction System
 Full detail: `HealthOS/Shared/docs/execution/11-current-maturity-map.md`.
 
 - **Core law + storage governance:** implemented seam / tested operational path (local scaffold)
+- **Governed AI Agent Society:** implemented seam — `GovernedAIAgentContracts`, `PersonalAgentRuntime`, `AgentProtocolBoundary` with tests; no real LLM provider, no productive PHI memory persistence
 - **GOS authoring/compiler/lifecycle:** implemented seam / tested operational path (scaffold hardening)
 - **AACI + first slice orchestration:** implemented seam / tested operational path (bounded scope)
 - **MSR pipeline:** scaffold — executors present, provenance metadata defined, provider integration pending

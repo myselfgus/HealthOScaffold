@@ -212,7 +212,7 @@ graph TB
     T3 -->|"mediated surfaces only — no direct Tier 1/2 access"| T4
     DS_N -.->|"presentation guidance"| T4
     T1 -.->|"governs"| SP_N
-    SP_N -.->|"tooling support under ModelGovernance"| T2B
+    SP_N -.->|"direct foundation · provider-support tooling under ModelGovernance"| PROV_N
     T1 --> SB_N
     T2A --> SB_N
     T2B --> SB_N

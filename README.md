@@ -1,25 +1,37 @@
 <p align="center">
   <img src="HealthOS/Shared/docs/assets/healthos-logo.png" width="320" alt="HealthOS">
 </p>
-
-<p align="center">
-  <img src="https://img.shields.io/badge/Swift-6.2-FA7343?style=flat&logo=swift&logoColor=white" alt="Swift 6.2">
-  <img src="https://img.shields.io/badge/Platform-Apple%20Silicon-333333?style=flat&logo=apple&logoColor=white" alt="Apple Silicon">
-  <img src="https://img.shields.io/badge/Build-SwiftPM%206.2-orange?style=flat" alt="SwiftPM 6.2">
-  <img src="https://img.shields.io/badge/UI-Liquid%20Glass%20%28macOS%2026%2B%29-8B5CF6?style=flat" alt="Liquid Glass">
+  <img src="https://img.shields.io/badge/macOS-26%2B-000000?style=flat&logo=apple&logoColor=white" alt="macOS 26+">
+  <img src="https://img.shields.io/badge/Node.js-LTS%2020%2B-339933?style=flat&logo=nodedotjs&logoColor=white" alt="Node.js LTS 20+">
+  <img src="https://img.shields.io/badge/UI-Liquid%20Glass-8B5CF6?style=flat" alt="Liquid Glass">
   <img src="https://img.shields.io/badge/AI-Apple%20FoundationModels-000000?style=flat&logo=apple&logoColor=white" alt="Apple FoundationModels">
+  <img src="https://img.shields.io/badge/Status-Scaffold%20%E2%80%94%20Foundation%20Phase-6B7280?style=flat" alt="Status: Scaffold — Foundation Phase">
 </p>
 
 # HealthOS
 
-> **Sovereign computational environment for health data and clinical operations.**  
-> Governance-first architecture — every clinical act mediated through strictly layered contract law.
+> **A juridical execution environment for health applications.**  
+> Third-party applications run *inside* HealthOS — governed, isolated, and legally abstracted by Core Law before any instruction may persist or propagate.
 
-**HealthOScaffold is the historical repository name for the scaffold/foundation phase of HealthOS.** All implemented architecture, contracts, runtimes, apps, tests, and documentation in this repository are HealthOS work. "Scaffold" describes maturity, not product identity.
+HealthOS is not an EHR skin, not a compliance API wrapper, and not a generic health-data cloud. It is a **Juridical Application Engine (JAE)** — a new infrastructure category: a Health Compliance Platform as a Service (HC-PaaS) in which companies host and run their own health applications under full juridical isolation and deterministic governance. HealthOS executes application code within Core Law constraints. Health compliance is not a post-development checklist layered on top — it is the ground on which every instruction executes.
 
-**This repository is not production-ready, not a complete EHR, and not a final UI delivery.** It establishes foundational architecture with executable first-slice orchestration, cross-language contracts (Swift / TypeScript / JSON Schema / SQL), and macOS 26+ native app surfaces targeting Liquid Glass as the design baseline.
+The platform does not compete with health applications; it becomes the substrate they run on.
 
-HealthOS is the full platform. **Tier 1 — Mestral Core is constitutional law. Tier 2 — GOS / Runtimes executes and mediates under Core, including the `HealthOSProviders` runtime-adapter module. Tier 3 — Custom Boundary is the HealthOS-owned consumption frontier and the governed Stage-definition boundary. Tier 4 — Stages Cast contains Scribe, Veridia, CloudClinic, and future governed application consumers as a separate Stage universe whose point of contact is Boundary. Constructor / Construction System stays outside the clinical/runtime hierarchy. Support is shared ops, Python, provider-support, and ML tooling, reachable from multiple layers but governed by Core.**
+**What the architecture provides to governed applications (Stages):**
+
+| Capability | How HealthOS delivers it |
+| :--- | :--- |
+| Juridical isolation | Deterministic separation between application logic and legal/compliance enforcement via Core Law |
+| Execution under Core Law | Consent, habilitation, finality, provenance, gate, and audit govern every clinical act |
+| Compliance abstraction | Stages define capabilities and prohibitions via Custom; HealthOS enforces them — no compliance code in the app |
+| Infrastructure and security abstraction | APFS, FileVault, Secure Enclave, and private mesh beneath every runtime |
+| Unified presentation contract | Design System (macOS 26+, Liquid Glass) available to all governed Stage applications if desired |
+
+---
+
+**Repository and maturity:** HealthOScaffold is the historical name for the scaffold/foundation phase. All architecture, contracts, runtimes, apps, tests, and documentation in this repository are HealthOS work. "Scaffold" describes maturity, not product identity. This repository is **not production-ready, not a complete EHR, and not a final UI delivery.** It establishes foundational architecture with executable first-slice orchestration, cross-language contracts (Swift / TypeScript / JSON Schema / SQL), and macOS 26+ native app surfaces targeting Liquid Glass as the design baseline.
+
+**Platform tier summary:** Tier 1 — Mestral Core is constitutional law. Tier 2 — GOS / Runtimes executes and mediates under Core, including the `HealthOSProviders` runtime-adapter module (with `HealthOS/Support` as its direct foundation). Tier 3 — Custom Boundary is the HealthOS-owned consumption frontier and governed Stage-definition boundary. Tier 4 — Stages Cast (Scribe, Veridia, CloudClinic) are governed application consumers whose sole contact point is Boundary. Constructor / Construction System stays outside the clinical/runtime hierarchy. Support is shared ops, Python, provider-support, and ML tooling, governed by Core.
 
 ---
 

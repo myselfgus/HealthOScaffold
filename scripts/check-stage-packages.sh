@@ -62,7 +62,7 @@ for stage in Scribe Veridia CloudClinic; do
     fi
   done
 
-  if rg -n '^(@testable[[:space:]]+)?import[[:space:]]+SwiftData$' "$source_dir"; then
+  if rg -n '^(@testable[[:space:]]+)?import[[:space:]]+SwiftData\b' "$source_dir"; then
     if ! rg -qi 'projection|cache' "$custom" "$source_dir/README.md" 2>/dev/null; then
       echo "[stage-package-check] $stage imports SwiftData but does not document projection/cache-only usage"
       exit 1

@@ -175,7 +175,7 @@ final class StagePackageStructureTests: XCTestCase {
     private func imports(_ module: String, in contents: String) -> Bool {
         contents.split(whereSeparator: \.isNewline).contains { rawLine in
             let line = rawLine.trimmingCharacters(in: .whitespaces)
-            return line == "import \(module)" || line == "@testable import \(module)"
+            return line.range(of: "^(@testable\\s+)?import\\s+\(module)\\b", options: .regularExpression) != nil
         }
     }
 }

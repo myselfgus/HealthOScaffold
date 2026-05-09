@@ -9,6 +9,8 @@ let package = Package(
         .library(name: "HealthOSCore",            targets: ["HealthOSCore"]),
 
         // ── Tier 2 — GOS / Runtimes ────────────────────────────────────────
+        // HealthOSProviders is the runtime provider-adapter module.
+        // HealthOS/Support holds governed ops/Python/ML tooling, not runtime imports.
         .library(name: "HealthOSProviders",        targets: ["HealthOSProviders"]),
         .library(name: "HealthOSGOS",              targets: ["HealthOSGOS"]),
         .library(name: "HealthOSAACI",             targets: ["HealthOSAACI"]),

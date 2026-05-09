@@ -1,6 +1,8 @@
 # Support
 
-`Support` contains provider support, local helper code, ML scaffolds, and operations support that are not the HealthOS clinical/runtime hierarchy.
+`Support` contains provider-support tooling, local helper code, ML scaffolds, and operations support that are not the HealthOS clinical/runtime hierarchy.
+
+`Support` is not the Swift runtime provider module. Runtime provider adapters, protocol contracts, and stubs remain in `HealthOS/Tier2-GOS-Runtimes/Sources/HealthOSProviders/` and are exposed as the `HealthOSProviders` target from `HealthOS/Package.swift`.
 
 Current contents:
 

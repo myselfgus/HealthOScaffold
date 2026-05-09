@@ -2,7 +2,9 @@
 
 Provider protocol contracts, Apple FoundationModels adapter, and stub providers for HealthOS.
 
-`HealthOSProviders` defines the sovereignty-aware provider boundary. All inference capability in HealthOS flows through the `LanguageModelProvider` protocol and the `ProviderCapabilityProfile` contract, which classifies each provider's sovereignty posture, allowed data layers, PHI access, and latency class. The module also implements the `AppleFoundationProvider` — the primary provider adapter wrapping Apple's on-device `FoundationModels` framework.
+`HealthOSProviders` is the Tier 2 Swift runtime provider-adapter module. It defines the sovereignty-aware provider boundary for runtime imports. All inference capability in HealthOS flows through the `LanguageModelProvider` protocol and the `ProviderCapabilityProfile` contract, which classifies each provider's sovereignty posture, allowed data layers, PHI access, and latency class. The module also implements the `AppleFoundationProvider` — the primary provider adapter wrapping Apple's on-device `FoundationModels` framework.
+
+`HealthOS/Support/` is separate: it contains governed provider-support tooling, ops, Python, and Create ML/Core ML/MLX scaffolds. Support may help provider work, but it is not imported as `HealthOSProviders` and does not become runtime authority.
 
 **Apple-first is a permanent architectural choice, not a deployment preference.** See `HealthOS/Shared/docs/architecture/46-apple-sovereignty-architecture.md`.
 

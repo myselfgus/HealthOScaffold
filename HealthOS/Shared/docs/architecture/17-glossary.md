@@ -75,6 +75,9 @@ Mental Space Runtime. Swift runtime peer to AACI under Session Runtime orchestra
 ## Providers
 Infrastructure layer (`HealthOSProviders`) for model adapters, routing, stubs, and capability profiles; not a law or runtime authority layer.
 
+## Support
+Visible support root (`HealthOS/Support`) for governed provider-support tooling, ops, Python, and Create ML/Core ML/MLX scaffolds. Support may assist provider work, but it is separate from the `HealthOSProviders` runtime import target and remains governed by Core law and ModelGovernance.
+
 ## Async Runtime
 TypeScript asynchronous substrate (`runtime-async`) for jobs, idempotency, retry, dead-lettering, and backpressure behavior.
 

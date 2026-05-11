@@ -61,6 +61,8 @@ flowchart TB
 
 **Repository and maturity:** HealthOScaffold is the historical name for the scaffold/foundation phase. All architecture, contracts, runtimes, apps, tests, and documentation in this repository are HealthOS work. "Scaffold" describes maturity, not product identity. This repository is **not production-ready, not a complete EHR, and not a final UI delivery.** It establishes foundational architecture with executable first-slice orchestration, cross-language contracts (Swift / TypeScript / JSON Schema / SQL), and macOS 26+ native app surfaces targeting Liquid Glass as the design baseline.
 
+**Public landing page:** A dependency-free external stakeholder landing page lives at `HealthOS/Public/landing/index.html`. It is a repository-backed presentation surface only; it does not change HealthOS maturity, runtime behavior, clinical authority, or production readiness.
+
 **Platform tier summary:** Tier 1 — Mestral Core is constitutional law. Tier 2 — GOS / Runtimes executes and mediates under Core, including the `HealthOSProviders` runtime-adapter module (with `HealthOS/Support` as its direct foundation). Tier 3 — Custom Boundary is the HealthOS-owned consumption frontier and governed Stage-definition boundary. Tier 4 — Stages Cast (Scribe, Veridia, CloudClinic) are governed application consumers whose sole contact point is Boundary. Constructor / Construction System stays outside the clinical/runtime hierarchy. Support is shared ops, Python, provider-support, and ML tooling, governed by Core.
 
 ---

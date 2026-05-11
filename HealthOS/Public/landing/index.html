@@ -1,0 +1,317 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>HealthOS — Juridical execution environment for health applications</title>
+    <meta
+      name="description"
+      content="HealthOS is a scaffold/foundation-stage juridical execution environment for governed health applications, with Core Law, runtimes, Boundary surfaces, and native macOS Stage scaffolds."
+    />
+    <meta name="robots" content="index,follow" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="HealthOS — Juridical execution environment for health applications" />
+    <meta
+      property="og:description"
+      content="A HealthOS public landing page for investors, partners, early adopters, press, and technical stakeholders — grounded in repository-verifiable capabilities only."
+    />
+    <meta property="og:image" content="../../Shared/docs/assets/healthos-logo.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="HealthOS — Juridical execution environment for health applications" />
+    <meta
+      name="twitter:description"
+      content="A scaffold/foundation-stage platform thesis for governed health applications: Core Law, mediated runtimes, app-safe Boundary surfaces, and native macOS Stage scaffolds."
+    />
+    <link rel="canonical" href="./" />
+    <link rel="icon" href="../../Shared/docs/assets/healthos-logo.png" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <header class="site-header" aria-label="Primary navigation">
+      <nav class="nav shell">
+        <a class="brand" href="#top" aria-label="HealthOS landing page home">
+          <img src="../../Shared/docs/assets/healthos-logo.png" alt="" />
+          <span>HealthOS</span>
+        </a>
+        <div class="nav-links" aria-label="Page sections">
+          <a href="#platform">Platform</a>
+          <a href="#capabilities">Capabilities</a>
+          <a href="#foundation">Foundation</a>
+          <a href="#faq">FAQ</a>
+        </div>
+        <a class="nav-cta" href="../../../README.md">View repository</a>
+      </nav>
+    </header>
+
+    <main id="main">
+      <section class="hero shell" id="top" aria-labelledby="hero-title">
+        <div class="hero-copy">
+          <p class="eyebrow">Scaffold/foundation-stage HealthOS project</p>
+          <h1 id="hero-title">A juridical execution layer for governed health applications.</h1>
+          <p class="hero-subtitle">
+            HealthOS is designed as a health-native platform where applications run under Core Law — consent,
+            habilitation, finality, provenance, gate, storage policy, and audit — before instructions persist or
+            propagate.
+          </p>
+          <div class="hero-actions" aria-label="Primary calls to action">
+            <a class="button button-primary" href="../../../README.md">Explore the repository</a>
+            <a class="button button-secondary" href="../../Shared/docs/architecture/01-overview.md">Read the architecture</a>
+          </div>
+          <p class="maturity-note">
+            Not production-ready. Not a complete EHR. This repository establishes foundational architecture,
+            contracts, executable scaffold paths, and native macOS Stage surfaces.
+          </p>
+        </div>
+
+        <div class="hero-panel" aria-label="HealthOS platform architecture summary">
+          <div class="panel-glow"></div>
+          <div class="terminal-card">
+            <div class="terminal-topline">
+              <span></span><span></span><span></span>
+              <strong>HealthOS execution order</strong>
+            </div>
+            <ol class="execution-list">
+              <li><span>01</span> Validate habilitation</li>
+              <li><span>02</span> Validate consent and purpose</li>
+              <li><span>03</span> Start governed session</li>
+              <li><span>04</span> Capture and normalize transcript</li>
+              <li><span>05</span> Attach provenance to draft work</li>
+              <li><span>06</span> Resolve human gate</li>
+              <li><span>07</span> Persist final artifact only if approved</li>
+            </ol>
+          </div>
+        </div>
+      </section>
+
+      <section class="credibility shell" aria-label="Repository-verifiable project facts">
+        <div>
+          <span>Stack</span>
+          <strong>Swift 6.2+, SwiftPM, TypeScript, JSON Schema, SQL</strong>
+        </div>
+        <div>
+          <span>Platform posture</span>
+          <strong>macOS 26+ foundation with native Stage scaffolds</strong>
+        </div>
+        <div>
+          <span>Architecture</span>
+          <strong>Core Law → GOS/Runtimes → Boundary → Stages</strong>
+        </div>
+        <div>
+          <span>Status</span>
+          <strong>Scaffold / foundation phase</strong>
+        </div>
+      </section>
+
+      <section class="section shell two-column" id="platform" aria-labelledby="problem-title">
+        <div>
+          <p class="eyebrow">The problem</p>
+          <h2 id="problem-title">Health software needs governance that is architectural, not decorative.</h2>
+        </div>
+        <div class="section-copy">
+          <p>
+            Health applications frequently need to coordinate identity, consent, professional habilitation,
+            clinical purpose, operational data, drafts, finality, and audit. Treating those duties as scattered
+            application logic creates brittle boundaries and unclear authority.
+          </p>
+          <p>
+            HealthOS approaches the problem as infrastructure: applications are governed consumers, while law-like
+            controls remain in Core and mediated runtime surfaces instead of being reimplemented inside every Stage.
+          </p>
+        </div>
+      </section>
+
+      <section class="section shell solution" aria-labelledby="solution-title">
+        <div class="section-heading centered">
+          <p class="eyebrow">The solution thesis</p>
+          <h2 id="solution-title">Separate application ambition from juridical authority.</h2>
+          <p>
+            HealthOS defines a platform hierarchy where Core provides constitutional law, runtimes execute mediated
+            work, Boundary exposes app-safe surfaces, and Stages consume those surfaces without becoming law engines.
+          </p>
+        </div>
+        <div class="architecture-grid" aria-label="HealthOS tier architecture">
+          <article>
+            <span>Tier 1</span>
+            <h3>Mestral Core</h3>
+            <p>Consent, habilitation, storage law, provenance, gate, finality, and audit as platform-level rules.</p>
+          </article>
+          <article>
+            <span>Tier 2</span>
+            <h3>GOS & Runtimes</h3>
+            <p>Session Runtime, AACI, MSR, Async, User-Agent, Service Runtime, and governed provider seams.</p>
+          </article>
+          <article>
+            <span>Tier 3</span>
+            <h3>Custom Boundary</h3>
+            <p>Facades, envelopes, safe references, mediated state, degraded state, and command/result contracts.</p>
+          </article>
+          <article>
+            <span>Tier 4</span>
+            <h3>Stages</h3>
+            <p>Scribe, Veridia, and CloudClinic as governed application consumers, not constitutional authorities.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section shell" id="capabilities" aria-labelledby="capabilities-title">
+        <div class="section-heading">
+          <p class="eyebrow">What exists in the repository</p>
+          <h2 id="capabilities-title">A credible foundation for a governed health platform.</h2>
+          <p>
+            The landing page intentionally limits claims to repository-backed capabilities and documented maturity.
+          </p>
+        </div>
+        <div class="capability-grid">
+          <article class="capability-card">
+            <h3>Core Law contracts</h3>
+            <p>Health-native entities and services for consent, habilitation, provenance, gate, storage, and audit posture.</p>
+          </article>
+          <article class="capability-card">
+            <h3>Executable first slice</h3>
+            <p>A scaffolded session path validates law-like prerequisites, captures input, builds drafts, requests a gate, and records provenance.</p>
+          </article>
+          <article class="capability-card">
+            <h3>Cross-language contract discipline</h3>
+            <p>Swift contracts align with JSON Schemas, TypeScript packages, and SQL migration shape for governed interoperability.</p>
+          </article>
+          <article class="capability-card">
+            <h3>App-safe Boundary</h3>
+            <p>Stages consume mediated facades, envelopes, safe refs, command/result surfaces, and degraded-state truth.</p>
+          </article>
+          <article class="capability-card">
+            <h3>Native Stage scaffolds</h3>
+            <p>Scribe, Veridia, and CloudClinic exist as governed Stage packages with smoke-testable scaffold paths and documented boundaries.</p>
+          </article>
+          <article class="capability-card">
+            <h3>Construction System</h3>
+            <p>Steward, Settler, territories, and Forge MCP support repository maintenance and validation without clinical or merge authority.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section shell strategic" aria-labelledby="strategic-title">
+        <div class="strategic-card">
+          <p class="eyebrow">Why it matters</p>
+          <h2 id="strategic-title">A platform-shaped answer to a platform-shaped problem.</h2>
+          <p>
+            The repository does not claim production deployment, market traction, or regulatory certification. Its value is
+            more foundational: a rigorous architecture for making governance the substrate of health software instead of
+            a checklist applied after product decisions have already been made.
+          </p>
+          <div class="strategic-points">
+            <div>
+              <strong>For investors</strong>
+              <span>A differentiated infrastructure thesis with explicit maturity boundaries and inspectable execution paths.</span>
+            </div>
+            <div>
+              <strong>For partners</strong>
+              <span>A modular contract model for governed applications, runtimes, and app-safe consumption surfaces.</span>
+            </div>
+            <div>
+              <strong>For technical stakeholders</strong>
+              <span>A repository-first foundation with tests, schemas, staged packages, and deterministic validation targets.</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section shell technical" id="foundation" aria-labelledby="foundation-title">
+        <div class="section-heading">
+          <p class="eyebrow">Technical foundation</p>
+          <h2 id="foundation-title">Built as a modular, inspectable platform scaffold.</h2>
+        </div>
+        <div class="technical-layout">
+          <div class="code-panel" aria-label="Repository validation commands">
+            <div class="terminal-topline">
+              <span></span><span></span><span></span>
+              <strong>validation baseline</strong>
+            </div>
+            <pre><code>make swift-build
+make swift-test
+make ts-build
+make ts-test
+make validate-docs
+make validate-schemas
+make validate-contracts
+make validate-all</code></pre>
+          </div>
+          <div class="technical-copy">
+            <h3>Evidence over assertion.</h3>
+            <p>
+              HealthOS keeps architecture, contracts, smoke paths, and validation commands in the repository. The public
+              story therefore emphasizes verifiable scaffolding: Swift modules, Stage packages, TypeScript construction
+              tooling, JSON Schema contracts, SQL shape, and documentation that records gaps instead of hiding them.
+            </p>
+            <ul>
+              <li>SwiftPM package graph for Core, runtimes, Boundary, CLI, support, and construction tests.</li>
+              <li>Separate Stage packages for Scribe, Veridia, and CloudClinic.</li>
+              <li>Documentation that explicitly forbids production-readiness and compliance overclaims.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="section shell faq" id="faq" aria-labelledby="faq-title">
+        <div class="section-heading centered">
+          <p class="eyebrow">FAQ</p>
+          <h2 id="faq-title">Clear answers for external stakeholders.</h2>
+        </div>
+        <div class="faq-grid">
+          <details open>
+            <summary>What is HealthOS?</summary>
+            <p>
+              HealthOS is a scaffold/foundation-stage juridical execution environment for health applications. Its thesis is
+              that governed health software should run under shared platform law instead of duplicating legal and operational
+              controls inside each app.
+            </p>
+          </details>
+          <details>
+            <summary>Who is it for?</summary>
+            <p>
+              The repository positions HealthOS for governed health applications and their operators: professional-facing,
+              patient-facing, service-operations, runtime, provider, and construction-system surfaces.
+            </p>
+          </details>
+          <details>
+            <summary>What is available today?</summary>
+            <p>
+              The repository includes Core contracts, runtimes, Boundary contracts, Stage scaffolds, a CLI first-slice path,
+              schemas, TypeScript construction tooling, SQL shape, docs, tests, and validation scripts.
+            </p>
+          </details>
+          <details>
+            <summary>Is it production-ready?</summary>
+            <p>
+              No. The repository explicitly describes the project as scaffold/foundation-stage work. It is not a production
+              system, not a complete EHR, and not a real regulatory/provider integration.
+            </p>
+          </details>
+          <details>
+            <summary>How can investors or partners engage?</summary>
+            <p>
+              Start with the repository and architecture docs, then request a technical walkthrough focused on the platform
+              thesis, executable first slice, contract model, Stage boundaries, and open gaps.
+            </p>
+          </details>
+        </div>
+      </section>
+
+      <section class="final-cta shell" aria-labelledby="final-cta-title">
+        <div>
+          <p class="eyebrow">Next step</p>
+          <h2 id="final-cta-title">Evaluate the foundation. Challenge the architecture. Inspect the claims.</h2>
+          <p>
+            HealthOS is presented here as an ambitious but honest foundation: strong enough to evaluate, early enough to
+            shape, and explicit about what is not yet proven.
+          </p>
+        </div>
+        <div class="hero-actions">
+          <a class="button button-primary" href="../../../README.md">View repository</a>
+          <a class="button button-secondary" href="../../Shared/docs/execution/02-status-and-tracking.md">Review status</a>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

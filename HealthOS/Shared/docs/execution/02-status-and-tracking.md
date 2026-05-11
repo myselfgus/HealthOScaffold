@@ -6,6 +6,20 @@ Current phase: Controlled implementation — first vertical slice started
 
 ## Completed recently
 
+## PUBLIC-LANDING-001 — External stakeholder landing page (2026-05-11)
+
+- Objective: add a dependency-free public landing page for investors, partners, early adopters, press, and technical stakeholders using only repository-verifiable HealthOS claims.
+- Classification: External — public presentation/documentation surface. It is not Core, GOS/runtime, Boundary, Stage, Construction System authority, clinical authority, regulatory authority, or production-readiness evidence.
+- Outcome:
+  - Added `HealthOS/Public/landing/index.html` and `HealthOS/Public/landing/styles.css` as a static, responsive, accessible landing page that can be served from the repository without introducing web-framework dependencies.
+  - Copy is constrained to documented HealthOS identity: scaffold/foundation-stage Juridical Application Engine posture, Core Law, tiered platform model, executable first-slice orchestration, cross-language contracts, native macOS Stage scaffolds, and explicit non-production maturity.
+  - CTAs point only to existing repository documentation (`README.md`, architecture overview, and status tracking).
+- Validation status:
+  - `python3 -m html.parser HealthOS/Public/landing/index.html` PASS.
+  - `git diff --check` PASS.
+  - `make validate-docs` PASS.
+
+
 ## GAI-001 — Governed AI Agent Society first slice (2026-05-09)
 
 - Objective: introduce a governed AI agent society across Tier 1-3: personal AI agents for patient/professional/user plus internal Core, runtime, provider/model, and Boundary/protocol agent families.

@@ -458,3 +458,21 @@ Unblock criterion:
 - `swift run Scribe --smoke-test-audio`
 - `swift run Veridia --smoke-test`
 - `swift run CloudClinic --smoke-test`
+
+
+## Completed
+
+### PUBLIC-LANDING-001 External stakeholder landing page
+
+Status: COMPLETED (2026-05-11)
+Classification: External — public presentation/documentation surface; not a HealthOS clinical/runtime tier and not a production-readiness claim.
+
+Outcome:
+- Added a static public landing page under `HealthOS/Public/landing/` for investors, partners, early adopters, press, and technical stakeholders.
+- Preserved HealthOS maturity honesty by stating scaffold/foundation-stage status and avoiding traction, customer, revenue, certification, production, and regulatory-integration claims.
+- Used only repository-backed claims about Core Law, GOS/runtimes, Boundary, Stage scaffolds, executable first slice, cross-language contracts, native macOS posture, Construction System, and validation baselines.
+
+Validation:
+- `python3 -m html.parser HealthOS/Public/landing/index.html` PASS.
+- `git diff --check` PASS.
+- `make validate-docs` PASS.

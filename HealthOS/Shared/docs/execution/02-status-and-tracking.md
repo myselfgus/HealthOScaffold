@@ -6,6 +6,26 @@ Current phase: Controlled implementation — first vertical slice started
 
 ## Completed recently
 
+## ST-GUIDANCE-MAINT-2026-05-26 — Steward guidance command-count drift correction (2026-05-26)
+
+- Objective: run the weekly Steward-scoped agent guidance maintenance pass and correct drift between guidance surfaces and the implemented `healthos-steward` command surface.
+- Classification: External — Construction System documentation and agent guidance. No HealthOS clinical/runtime hierarchy, Core law, GOS, AACI, Boundary, Stage behavior, provider behavior, merge authority, or production-readiness claim changed.
+- Evidence:
+  - `HealthOS/Constructor/ts/agent-infra/healthos-steward/src/index.ts` and `src/cli.ts` expose `validate-construction-system` alongside `status`, `runtime`, `session`, `list`, `inspect`, `next`, `generate-prompt`, `validate-settlement`, `pr-draft`, and `build-memory`.
+  - `HealthOS/Shared/docs/execution/12-next-agent-handoff.md` already listed the 11-command baseline.
+  - `README.md`, `AGENTS.md`, and `CLAUDE.md` still carried partial 10-command wording or omitted the `validate-construction-system` invocation.
+- Files updated:
+  - `README.md` — Construction System summaries and Steward diagrams now say 11 CLI commands while preserving `healthos-forge-mcp` as 10 deterministic MCP tools.
+  - `AGENTS.md` and `CLAUDE.md` — Steward command baseline now includes `validate-construction-system`.
+  - `CLAUDE.md` — prose summary now describes 11 implemented `healthos-steward` CLI commands and keeps target operations such as `validate-docs` / `validate-all` out of the delivered CLI surface.
+  - `HealthOS/Shared/docs/execution/20-documental-todos-work-plan.md` — live ST-004 references now use `healthos-forge-mcp`; only historical rename notes retain `healthos-mcp`.
+- Validation status:
+  - `git fetch origin --prune` PASS.
+  - `HEAD` matched `origin/main` before branch creation (`5c8a566273d56dc2b61b1dd1149c58d6772d9fb8`; left/right `0 0`).
+  - `git diff --check` PASS.
+  - `make validate-docs` PASS.
+  - `make ts-build` BLOCKED by environment/package install: `npm install` failed with npm internal `Exit handler never called!`; npm log showed repeated `ENOTFOUND` resolving `registry.npmjs.org`, and direct `npm run build` then failed because `tsc` was absent from `node_modules/.bin`.
+
 ## GAI-001 — Governed AI Agent Society first slice (2026-05-09)
 
 - Objective: introduce a governed AI agent society across Tier 1-3: personal AI agents for patient/professional/user plus internal Core, runtime, provider/model, and Boundary/protocol agent families.

@@ -13,7 +13,7 @@ The plan covers only **documental tasks** — tasks whose primary deliverable is
 ## Invariants (never violate)
 
 1. HealthOS is the whole platform. HealthOScaffold is the historical repository name.
-2. `healthos-mcp` is repository-maintenance MCP only — never clinical, never runtime authority.
+2. `healthos-forge-mcp` is repository-maintenance MCP only — never clinical, never runtime authority.
 3. Settler, Settlement, Territory records are engineering documents. They are not clinical agents, runtime actors, or authority records.
 4. No maturity, production-readiness, or real-provider claim is made in any document.
 5. Official docs (`HealthOS/Shared/docs/`) remain canonical. Repository-local roots (`HealthOS/Constructor/Settler/`, `HealthOS/Constructor/Territory/`) are derived and subordinate.
@@ -31,7 +31,7 @@ The plan covers only **documental tasks** — tasks whose primary deliverable is
 | ST-003 | Define Settlement record schema | `HealthOS/Constructor/Settler/settlements/SCHEMA.md` | Pure doc | 1 |
 | CL-006 | Shared error-envelope proposal | `HealthOS/Shared/docs/architecture/06-core-services.md` + optional schema | Architecture proposal | 2 |
 | OPS-003 | Incident-response command set | `HealthOS/Shared/docs/architecture/14-operations-runbook.md` | Operations doc | 2 |
-| ST-004 | Define healthos-mcp Settler operations | `HealthOS/Shared/docs/architecture/47-steward-settler-engineering-model.md` + `HealthOS/Shared/docs/execution/19-settler-model-task-tracker.md` | Architecture spec | 2 |
+| ST-004 | Define healthos-forge-mcp Settler operations | `HealthOS/Shared/docs/architecture/47-steward-settler-engineering-model.md` + `HealthOS/Shared/docs/execution/19-settler-model-task-tracker.md` | Architecture spec | 2 |
 | Stream C (XA-004) | Tool runtime contracts | `HealthOS/Shared/docs/architecture/45-healthos-xcode-agent.md` + `HealthOS/Shared/docs/execution/18-healthos-xcode-agent-task-tracker.md` | Design spec | 3 |
 | Stream D | Model backend layer contract | `HealthOS/Shared/docs/architecture/45-healthos-xcode-agent.md` + `HealthOS/Shared/docs/execution/18-healthos-xcode-agent-task-tracker.md` | Design spec | 3 |
 | Stream F | Xcode context envelope | `HealthOS/Shared/docs/architecture/45-healthos-xcode-agent.md` + `HealthOS/Shared/docs/execution/18-healthos-xcode-agent-task-tracker.md` | Design spec | 3 |
@@ -115,7 +115,7 @@ These tasks are self-contained, require no code, and are prerequisites for Phase
 | `settler-aaci` | TERRITORY-AACI | Settler for AACI runtime, provider governance, capability signaling |
 | `settler-ops` | TERRITORY-OPS | Settler for operations runbook, observability, incident response |
 | `settler-apps` | TERRITORY-APPS | Settler for application surfaces, app-boundary contracts |
-| `settler-xcode-tooling` | TERRITORY-XCODE-TOOLING | Settler for Steward, healthos-mcp, Xcode tooling streams |
+| `settler-xcode-tooling` | TERRITORY-XCODE-TOOLING | Settler for Steward, healthos-forge-mcp, Xcode tooling streams |
 | `settler-documentation` | TERRITORY-DOCUMENTATION | Settler for documentation drift, execution protocol, invariant matrix |
 | `settler-validation` | TERRITORY-VALIDATION | Settler for coverage matrix, release criteria, contract validation |
 
@@ -269,7 +269,7 @@ A new section `## Incident-response command vocabulary` following the existing b
 
 ---
 
-### Task 6 of 9 — ST-004: Define healthos-mcp Settler operations spec
+### Task 6 of 9 — ST-004: Define healthos-forge-mcp Settler operations spec
 
 > ⚠️ Nota de nomenclatura (2026-05-01): `healthos-mcp` foi renomeado para `healthos-forge-mcp` via ST-011A (commits c433b72/3562320). Esta spec deve usar a nova nomenclatura `healthos-forge-mcp` em toda a escrita.
 
@@ -277,11 +277,11 @@ A new section `## Incident-response command vocabulary` following the existing b
 
 **Source tracker**: `HealthOS/Shared/docs/execution/19-settler-model-task-tracker.md` → ST-004.
 
-**Objective**: Write a specification for the repository-maintenance MCP operations that Steward and Settlers will use via `healthos-mcp`. This is a design document — no implementation exists yet. The spec must stay outside the HealthOS clinical/runtime hierarchy.
+**Objective**: Write a specification for the repository-maintenance MCP operations that Steward and Settlers will use via `healthos-forge-mcp`. This is a design document — no implementation exists yet. The spec must stay outside the HealthOS clinical/runtime hierarchy.
 
 **Read before writing**:
 - `HealthOS/Shared/docs/architecture/47-steward-settler-engineering-model.md` (canonical model doc)
-- `CLAUDE.md` (healthos-mcp boundary doctrine)
+- `CLAUDE.md` (`healthos-forge-mcp` boundary doctrine)
 - `HealthOS/Shared/docs/execution/17-healthos-xcode-agent-migration-plan.md` (WS-2 definition)
 
 **Operations to specify** (from canonical model doc + CLAUDE.md):

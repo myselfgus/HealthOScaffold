@@ -2,6 +2,24 @@
 
 ## COMPLETED
 
+### ST-GUIDANCE-MAINT-2026-05-26 Steward guidance command-count drift correction
+Outcome:
+- corrected weekly Steward-scoped guidance drift where some agent-facing surfaces still described `healthos-steward` as a 10-command CLI after `validate-construction-system` was implemented
+- kept `healthos-forge-mcp` as the separate 10-tool repository-maintenance MCP seam
+- corrected live documentary work-plan references from `healthos-mcp` to `healthos-forge-mcp`, leaving only historical rename notes
+- preserved Codex/Claude as external executors, Steward for Xcode as an Xcode-integration posture, and Construction System tooling as outside clinical/runtime authority and merge authority
+Files touched:
+- `README.md`
+- `AGENTS.md`
+- `CLAUDE.md`
+- `HealthOS/Shared/docs/execution/02-status-and-tracking.md`
+- `HealthOS/Shared/docs/execution/20-documental-todos-work-plan.md`
+- `HealthOS/Shared/docs/execution/todo/ops-network-ml.md`
+Validation:
+- `git diff --check` PASS
+- `make validate-docs` PASS
+- `make ts-build` BLOCKED by environment/package install: npm could not resolve `registry.npmjs.org`; direct build then failed because `tsc` was absent
+
 ### DOC-JAE-APPLE-SUBSTRATE Apple substrate capability doctrine
 Outcome:
 - added `HealthOS/Shared/docs/architecture/51-apple-substrate-capabilities-for-jae.md` as the canonical doctrine for Apple-native substrate capabilities in the HealthOS JAE

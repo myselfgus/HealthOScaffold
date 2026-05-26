@@ -215,6 +215,7 @@ cd HealthOS/Constructor/ts && npx --yes --workspace @healthos/steward healthos-s
 cd HealthOS/Constructor/ts && npx --yes --workspace @healthos/steward healthos-steward validate-settlement <settlement-id>
 cd HealthOS/Constructor/ts && npx --yes --workspace @healthos/steward healthos-steward pr-draft <settlement-id>
 cd HealthOS/Constructor/ts && npx --yes --workspace @healthos/steward healthos-steward build-memory
+cd HealthOS/Constructor/ts && npx --yes --workspace @healthos/steward healthos-steward validate-construction-system
 ```
 
 Treat those as the implemented `healthos-steward` CLI commands as of ST-017/FORGE-MCP-V2. Do not describe `scan-status`, `validate-docs`, `validate-all`, `check-invariants`, `check-doc-drift`, or other target repository-maintenance operations as delivered CLI behavior until implemented and locally smoked.

@@ -232,7 +232,7 @@ graph TB
 
     subgraph BUILD["  Constructor / Construction System · External Repository-Maintenance Layer  "]
         direction LR
-        STEW_N["Steward\ncoordinator · 10 CLI commands (ST-010–ST-017)\nderived memory · session state"]:::build
+        STEW_N["Steward\ncoordinator · 11 CLI commands\nderived memory · session state"]:::build
         SETT_N["Settler profiles\n9 specialized engineering profiles\noperates within Territory scope"]:::build
         TERR_N["Territory Registry\n15 JSON-defined repository domains\nscope · boundaries · maturity"]:::build
         WORK_N["Settlements\nbounded work records · done criteria\nscope · validation · evidence"]:::build
@@ -684,7 +684,7 @@ graph TB
         TSGOS["@healthos/healthos-gos-tooling\nGOS compiler · validator · bundler\nbundle lifecycle tooling\npackages/healthos-gos-tooling/"]:::ts
         TSASYNC["@healthos/runtime-async\nTS reference implementation\nfor HealthOSAsyncRuntime\npackages/runtime-async/"]:::ts
         TSUA["@healthos/runtime-user-agent\nTS reference implementation\nfor HealthOSUserAgentRuntime\npackages/runtime-user-agent/"]:::ts
-        TSSTEW["@healthos/steward\n10 CLI commands · ST-010–ST-017\ncoordinator · derived memory · sessions\nagent-infra/healthos-steward/"]:::build
+        TSSTEW["@healthos/steward\n11 CLI commands\ncoordinator · derived memory · sessions\nagent-infra/healthos-steward/"]:::build
         TSMCP["@healthos/forge-mcp\n10 steward_* MCP tools · ST-018\nstdio + Streamable HTTP · repo-maintenance only\nagent-infra/healthos-forge-mcp/"]:::build
         TSMA["@healthos/managed-agent\nST-022 · Anthropic Managed Agents API\ndiscover · brief · validate · handoff\nhuman-triggered only · not a clinical surface\nagent-infra/healthos-managed-agent/"]:::build
     end
@@ -860,7 +860,7 @@ This repository is in **controlled implementation / scaffold hardening**:
 | **Provider / ML** | ⚠️ Stub / Contract | `AppleFoundationProvider` adapter; deterministic safety posture |
 | **Stage / UI** | 🧩 Contract-First | Minimal Scribe validation surface; Veridia Boundary scaffold; CloudClinic blocked before new wiring |
 | **Liquid Glass UI** | 🎯 macOS 26+ Baseline | `HealthOS/Shared/DesignSystem/` baseline (DS-001); glass adoption in progress |
-| **Construction System** | ✅ Implemented Seam | 10 CLI commands (healthos-steward) + 10 MCP tools (healthos-forge-mcp) |
+| **Construction System** | ✅ Implemented Seam | 11 CLI commands (healthos-steward) + 10 MCP tools (healthos-forge-mcp) |
 
 Read this table as an onboarding summary. The authoritative maturity ladder is `doctrine-only` → `scaffolded contract` → `implemented seam` → `tested operational path` → `production-hardened`, maintained in `HealthOS/Shared/docs/execution/11-current-maturity-map.md`.
 
@@ -1208,9 +1208,10 @@ cd HealthOS/Constructor/ts && npx --yes --workspace @healthos/steward healthos-s
 cd HealthOS/Constructor/ts && npx --yes --workspace @healthos/steward healthos-steward validate-settlement <settlement-id>
 cd HealthOS/Constructor/ts && npx --yes --workspace @healthos/steward healthos-steward pr-draft <settlement-id>
 cd HealthOS/Constructor/ts && npx --yes --workspace @healthos/steward healthos-steward build-memory
+cd HealthOS/Constructor/ts && npx --yes --workspace @healthos/steward healthos-steward validate-construction-system
 ```
 
-Ten `healthos-steward` CLI commands are implemented (ST-010 through ST-017). `dist/` is not committed — run `make ts-build` once before invoking.
+Eleven `healthos-steward` CLI commands are implemented. `dist/` is not committed — run `make ts-build` once before invoking.
 
 **Steward for Xcode** is the Xcode-integration posture: integrates with Xcode Intelligence as an Apple-controlled engineering runtime surface. See `HealthOS/Shared/docs/architecture/45-healthos-xcode-agent.md` for target architecture.
 
@@ -1228,7 +1229,7 @@ flowchart TD
     classDef agent     fill:#fce7f3,stroke:#f472b6,stroke-width:2px,color:#831843
 
     DOCS[Official docs\ncanonical truth]:::docs
-    STEW[Steward\n10 CLI commands · ST-010–ST-017]:::steward
+    STEW[Steward\n11 CLI commands]:::steward
     SETTLER[Settler profiles\n9 profiles · settlers/]:::settler
     TERR[Territory Registry\n15 territories · territories/]:::territory
     SETTLE[Settlements\nbounded work records]:::settler
@@ -1397,7 +1398,7 @@ Full detail: `HealthOS/Shared/docs/execution/11-current-maturity-map.md`.
 - **AACI + first slice orchestration:** implemented seam / tested operational path (bounded scope)
 - **MSR pipeline:** scaffold — executors present, provenance metadata defined, provider integration pending
 - **Liquid Glass UI:** design baseline established; `HealthOS/Shared/DesignSystem/` implemented (DS-001)
-- **Construction system (Steward + Forge MCP):** implemented seam — 10 CLI commands + 10 MCP tools deterministic; no LLM, no merge authority, no clinical scope
+- **Construction system (Steward + Forge MCP):** implemented seam — 11 CLI commands + 10 MCP tools deterministic; no LLM, no merge authority, no clinical scope
 
 ## Contributing
 
